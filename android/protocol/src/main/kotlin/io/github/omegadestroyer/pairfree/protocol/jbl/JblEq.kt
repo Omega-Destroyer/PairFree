@@ -76,6 +76,8 @@ public object JblEq {
     /** The frequencies of JBL's ten bands, for a curve of the user's own (pp.a's default list). */
     public val BANDS_HZ: List<Int> = listOf(32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000)
 
+    private const val PERSONIFY_41 = 3
+
     /** The sample rate JBL's app writes when the product names none, in kHz. */
     public const val SAMPLE_RATE: Int = 48
 
@@ -125,10 +127,11 @@ public object JblEq {
      * the category ([graphic] for a curve of the user's own, else 0, as BesEQControl maps a preset's), the calibration, the
      * sample rate, the two gains, the band count (four bytes), then per band its type (four bytes), gain, frequency and Q.
      */
-    public fun write41(curve: JblEqCurve, graphic: Boolean): List<JblRaw> {
+    public fun write41(curve: JblEqCurve, graphic: Boolean, personify: Boolean = false): List<JblRaw> {
         val out = ArrayList<Byte>(HEADER_41 + curve.bands.size * BAND_41)
         out += JblEq41.USER_INDEX.toByte()
-        out += (if (graphic) JblEq41.GRAPHIC else JblEq41.DESIGN).toByte()
+        // The category: 1 for a curve of the user's own, 3 for PersoniFi's (EnumEqCategory.PERSONIFY_EQ), else 0.
+        out += (if (personify) PERSONIFY_41 else if (graphic) JblEq41.GRAPHIC else JblEq41.DESIGN).toByte()
         out += float(curve.calibration)
         out += curve.sampleRate.toByte()
         out += float(curve.leftGain)

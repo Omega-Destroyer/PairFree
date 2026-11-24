@@ -87,7 +87,7 @@ recorder does not read JBL's commands.
 
 <table>
 <tr><th>Model</th><th>Product</th><th>Type</th><th>Connection</th><th>Settings</th><th>Status</th></tr>
-<tr><td>CLUB ONE</td><td><code>1F42</code> <code>2015</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, auto power-off, equalizer</td><td>Not tested</td></tr>
+<tr><td>CLUB ONE</td><td><code>1F42</code> <code>2015</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, auto power-off, PersoniFi (the hearing test and its switch), equalizer</td><td>Not tested</td></tr>
 <tr><td>LIVE460NC</td><td><code>2031</code> <code>2032</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, equalizer</td><td>Not tested</td></tr>
 <tr><td>LIVE660NC</td><td><code>2033</code> <code>2034</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, equalizer</td><td>Not tested</td></tr>
 <tr><td>TOUR ONE</td><td><code>2021</code> <code>2028</code></td><td>Headphones</td><td>Bluetooth LE</td><td>noise cancelling, Ambient Aware, TalkThru, auto power-off, pause when taken off, Smart Audio &amp; Video, VoiceAware, equalizer</td><td>Not tested</td></tr>

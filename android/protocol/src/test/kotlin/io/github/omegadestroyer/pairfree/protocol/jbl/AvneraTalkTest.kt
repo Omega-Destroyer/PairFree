@@ -84,9 +84,22 @@ class AvneraTalkTest {
         assertTrue(!talk.allowed(AvneraPacket.write(42, 1)), "BootJumpToApplication")
         assertTrue(!talk.allowed(AvneraPacket.write(39, 1)), "BootWriteImage")
         assertTrue(talk.allowed(AvneraPacket.write(133, 1)))
-        assertNull(AvneraModels.fromName("JBL EVEREST ELITE 150NC"), "the 150NC speaks Avnera's LE accessory protocol")
+        assertEquals("JBL Everest Elite 150NC", AvneraModels.fromName("JBL EVEREST ELITE 150NC")?.name)
         assertEquals("JBL Everest Elite 750NC", AvneraModels.fromName("Everest Elite 750NC")?.name)
         assertEquals("JBL Reflect Aware", AvneraModels.fromName("JBL Reflect Aware")?.name)
         assertNull(AvneraModels.fromName("JBL Live 670NC"))
+    }
+
+    @Test
+    fun theOneFiftyNcWrapsTheSameKeysInTheAccessoryHeader() {
+        val talk = AvneraTalk(AvneraModels.fromName("JBL Everest Elite 150NC")!!)
+        // ANC on: F085 is key 0x85 of class 0xF0, module 0x43 (z6.s, z6.f0.a): header 0f 43 82 00, the word 00 00 f0 85, one word of buffer.
+        val on = talk.change(SettingChange.Toggle("jbl_av_anc", true))!!.single()
+        assertEquals("ff5a00000017" + "0f43820000" + "00f085" + "04000000" + "01000000", hex(talk.bytes(on)).dropLast(2))
+        // A read carries the answer's size (one word), not 256 bytes.
+        val read = talk.start().first { it.key == 133 }
+        assertEquals("ff5a00000017" + "0f43810000" + "00f085" + "04000000" + "00000000", hex(talk.bytes(read)).dropLast(2))
+        // The band write is class F3, three words.
+        assertEquals(0xF3, talk.bytes(AvneraPacket.write(149, 4, 0, 1))[6 + 6].toInt() and 0xFF)
     }
 }

@@ -12,8 +12,8 @@ public class AvneraPacket(
     public val buffer: ByteArray? = null,
     public val status: Int = 0,
     public val offset: Int = 0,
-    private val source: Int = BLUETOOTH,
-    private val destination: Int = APPLICATION,
+    public val source: Int = BLUETOOTH,
+    public val destination: Int = APPLICATION,
 ) {
     /** The frame as it goes over the serial channel. */
     public fun bytes(): ByteArray {
@@ -51,6 +51,9 @@ public class AvneraPacket(
         public const val WRITE: Int = 2
         public const val BLUETOOTH: Int = 15
         public const val APPLICATION: Int = 64
+
+        /** The 150NC's accessory module (`ModuleId` 43 in the app's commands.json, read as hex by `z6.s`). */
+        public const val ACCESSORY: Int = 0x43
         private const val BUFFER_FLAG = 0x80
         private const val MASK = 0x3F
         private const val HEADER = 6

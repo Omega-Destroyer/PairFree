@@ -12,7 +12,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
  * commands for the direct and feature families (with feature records for the effect, the limiter and Hi-Res on the
  * feature family), protocol 4's features for the p4 family, Airoha's RACE commands for the Airoha models.
  */
-internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock? = { null }) {
+internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock? = { null }, env: () -> RaceEnv = { RaceEnv(null, false) }) {
     private val p4 get() = model.family == JblModel.Family.P4
     private val race get() = model.family == JblModel.Family.AIROHA
     private fun has(id: String) = id in model.extras
@@ -44,7 +44,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
     private var mutedRight = false
 
     /** PSAP, the smart case, the clock, the fit test and the ear tips (docs/jbl/PROTOCOL.md section 4.11). */
-    val kit = JblHarmanKit(model, clock)
+    val kit = JblHarmanKit(model, clock, env)
 
     /** The reads of a direct or feature model, after its own. */
     fun reads(): List<JblFrame> = if (p4 || race) emptyList() else buildList {

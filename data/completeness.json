@@ -350,8 +350,18 @@
       "models": [
         "Live Buds 3, Tour Pro 3, Live Free 2, Reflect Aero, Quantum TWS"
       ],
+      "status": "built",
+      "what": "The noise check (RACE 0E17 status read, then 0E15 or, on the AB1562, 0E18; the level by the per-model line of getEnvironmentNoise) and the seal check (0E13 leakage detection, answered by an indication) on the five Airoha models whose dashboard has the fit card; JblHarmanKitRace, docs/jbl/PROTOCOL.md section 4.13. The ear canal test is in jbl-airoha-ear-canal-test.",
+      "reported": "audit 2026-11-24 (building JblHarmanKitRace)"
+    },
+    {
+      "id": "jbl-airoha-ear-canal-test",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3, Live Free 2, Reflect Aero, Quantum TWS"
+      ],
       "status": "open",
-      "what": "The noise check (ENVIRONMENT_NOISE_CHECKING: the ANC manager's environment detection, RACE 0E15 or 0E18 by chip with a gain-control status read, whose value AirohaDeviceStatusControl.getEnvironmentNoise turns into a level by a formula per model name), the seal check (GET_SEALING_STATUS: AirohaMmiMgr.doLeakageDetection) and the ear canal test (EAR_CANAL_TESTING: an ANC user trigger state machine, AirohaAncUserTriggerStateMachine, fed with ut_para.txt from the app's per-model EarCanalTesting.zip asset) are not built. Read so far: the flows and the id of the first two; the leakage stage, the chip choice, the formulas and the state machine are unread.",
+      "what": "The ear canal test (EAR_CANAL_TESTING) is an ANC user trigger: AncStageStartAncUserTrigger (RACE 0901 with module 5) drives AirohaAncUserTriggerStateMachine (about 1500 lines, with relays to the other earbud and per-step RACE exchanges) from a ut_para.txt that AirohaDeviceStatusControl unzips from the app's EarCanalTesting.zip asset for the model, and reports the status as done (0 to 4) or failed (17). Not read beyond the stage and the flow; the state machine, the parameter file's use and what the test writes into the earbuds are unread.",
       "reported": "audit 2026-11-24 (building JblHarmanKitRace)"
     }
   ]

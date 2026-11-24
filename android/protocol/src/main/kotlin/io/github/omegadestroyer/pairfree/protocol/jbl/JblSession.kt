@@ -67,7 +67,7 @@ public class JblSession(initial: JblModel) {
     private var ascOn: Boolean? = null
 
     // The settings beyond noise control, auto power-off and auto play/pause.
-    private var extras = JblExtras(initial) { clock() }
+    private var extras = JblExtras(initial, { clock() }, { RaceEnv(chip, agentRight) })
 
     /** The phone's local time, which the case's clock is set to when the channel opens (docs/jbl/PROTOCOL.md section 4.11). */
     public var clock: () -> JblWallClock? = { null }
@@ -549,7 +549,7 @@ public class JblSession(initial: JblModel) {
         val reread = known.family != model.family || known.noise != model.noise
         val more = known.extras != model.extras || known.smartAudioVideo != model.smartAudioVideo || known.effects != model.effects
         model = known
-        if (more) extras = JblExtras(known) { clock() }
+        if (more) extras = JblExtras(known, { clock() }, { RaceEnv(chip, agentRight) })
         if (reread) {
             outbox += start()
         } else if (more) {

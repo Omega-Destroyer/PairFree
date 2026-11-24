@@ -22,7 +22,10 @@ public class JblWallClock(
  * PSAP (`A0`), the smart case's screen (`A3`) and pages (`A4`), the clock (`A7`), the noise check (`99`) and the ear canal test (`9A`) and the ear tips (`9C`).
  * A model has the ones its dashboard cards and its control class both have ([JblModel.extras]).
  */
-internal class JblHarmanKit(private val model: JblModel, private val clock: () -> JblWallClock? = { null }) {
+/** What an Airoha session knows of its earbuds that the fit checks need: the chip family and whether the earbud PairFree talks to is the right one. */
+internal class RaceEnv(val chip: RaceChip?, val agentRight: Boolean)
+
+internal class JblHarmanKit(private val model: JblModel, private val clock: () -> JblWallClock? = { null }, private val env: () -> RaceEnv = { RaceEnv(null, false) }) {
     private fun has(id: String) = id in model.extras
 
     val any: Boolean get() = model.extras.any { it in IDS }
@@ -30,7 +33,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     // The protocol 4 models send the same settings as features (section 4.12).
     private val k4 = if (model.family == JblModel.Family.P4) JblHarmanKit4(model, clock) else null
 
-    private val kr = if (model.family == JblModel.Family.AIROHA) JblHarmanKitRace(model, clock) else null
+    private val kr = if (model.family == JblModel.Family.AIROHA) JblHarmanKitRace(model, clock, env) else null
 
     fun raceReads(): List<JblFrame> = kr?.reads().orEmpty()
     fun raceHandles(id: Int): Boolean = kr?.handles(id) == true

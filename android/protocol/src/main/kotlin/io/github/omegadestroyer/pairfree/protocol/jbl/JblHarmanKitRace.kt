@@ -4,6 +4,7 @@ import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
+import kotlin.math.roundToInt
 
 /**
  * The settings of [JblHarmanKit] on the Airoha models (docs/jbl/PROTOCOL.md section 4.13), as RACE commands of JBL's Airoha adapter
@@ -11,12 +12,16 @@ import io.github.omegadestroyer.pairfree.protocol.SettingTab
  * reads are empty, the answer starts with a status byte and then the values; a write carries every field, 0xFF in those it leaves alone (the app builds each from an info
  * object whose fields start at -1). No JBL earbuds have answered them.
  */
-internal class JblHarmanKitRace(private val model: JblModel, private val clock: () -> JblWallClock?) {
+internal class JblHarmanKitRace(private val model: JblModel, private val clock: () -> JblWallClock?, private val env: () -> RaceEnv) {
     private fun has(id: String) = id in model.extras
 
     private var psap: ByteArray? = null
     private var display: ByteArray? = null
     private var features: ByteArray? = null
+    private var noise: Pair<Int, Int>? = null
+    private var seal: Pair<Boolean, Boolean>? = null
+    private var checkingNoise = false
+    private var checkingSeal = false
 
     fun reads(): List<JblFrame> = buildList {
         addAll(start())
@@ -40,7 +45,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
         JblHarmanKit.CASE_BRIGHTNESS, JblHarmanKit.CASE_NOTIFICATIONS, JblHarmanKit.CASE_SCREEN_SAVER, JblHarmanKit.CASE_LANGUAGE, JblHarmanKit.CASE_WAKE, JblHarmanKit.CASE_INFO,
     ).any { has(it) }
 
-    fun handles(id: Int) = id in setOf(JblRace.PSAP_GET, JblRace.PSAP_SET, JblRace.CASE_DISPLAY_GET, JblRace.CASE_DISPLAY_SET, JblRace.CASE_FEATURE_GET, JblRace.CASE_FEATURE_SET)
+    fun handles(id: Int) = id in setOf(JblRace.PSAP_GET, JblRace.PSAP_SET, JblRace.CASE_DISPLAY_GET, JblRace.CASE_DISPLAY_SET, JblRace.CASE_FEATURE_GET, JblRace.CASE_FEATURE_SET, JblRace.ENV_INFO, JblRace.ENV_INFO_1562, JblRace.LEAKAGE)
 
     fun receive(p: RacePacket) {
         if (p.status != 0) return
@@ -50,6 +55,19 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
             JblRace.PSAP_GET, JblRace.PSAP_SET -> if (d.size >= 3) psap = d.copyOf(3)
             JblRace.CASE_DISPLAY_GET, JblRace.CASE_DISPLAY_SET -> if (d.size >= 12) display = d.copyOf()
             JblRace.CASE_FEATURE_GET -> if (d.size >= 27) features = d.copyOf()
+            JblRace.ENV_INFO, JblRace.ENV_INFO_1562 -> if (d.size >= 10 && d[0].toInt() == 3) {
+                // The type, the two gains, the level, then the stationary noise of the agent and of the partner, two bytes each, low first (`AncStageGetEnvironmentDetectionInfo`).
+                val agent = noiseLevel(short(d, 6)).also { checkingNoise = false }
+                val partner = noiseLevel(short(d, 8))
+                noise = if (env().agentRight) partner to agent else agent to partner
+            }
+            // An indication of 21 bytes: the mode 0, then at 12 and 13 the first and the second earbud's byte, 0 for sealed (`MmiStageLeakageDetecttion`, `OnAncAdaptiveStatus`).
+            JblRace.LEAKAGE -> if (d.size >= 14 && d[0].toInt() == 0) {
+                val first = d[12].toInt() == 0
+                val second = d[13].toInt() == 0
+                seal = if (env().agentRight) second to first else first to second
+                checkingSeal = false
+            }
         }
     }
 
@@ -59,6 +77,7 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
         psapRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("psap", SettingTab.SOUND, it) },
         caseRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("case", SettingTab.DEVICE, it) },
         pageRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("case_pages", SettingTab.DEVICE, it) },
+        fitRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("fit", SettingTab.DEVICE, it) },
     )
 
     private fun psapRows(): List<Setting> {
@@ -90,6 +109,30 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
         }
     }
 
+    private fun short(d: ByteArray, at: Int): Int = ((d[at].toInt() and 0xFF) or (d[at + 1].toInt() shl 8)).toShort().toInt()
+
+    /**
+     * `AirohaDeviceStatusControl.getEnvironmentNoise`: the stationary noise as a level from 0 to 100, by a line of its own for each model (the numbers are the product ids):
+     * (noise x 45 + a) / b, less or plus a constant.
+     */
+    private fun noiseLevel(n: Int): Int {
+        val ids = model.pids.map { it.toString(16).uppercase() }
+        val line = NOISE.entries.firstOrNull { e -> ids.any { it in e.key } }?.value
+        val d = line?.invoke(n * 45.0) ?: 0.0
+        return d.coerceIn(0.0, 100.0).roundToInt()
+    }
+
+    private fun fitRows(): List<Setting> = buildList {
+        if (!has(JblHarmanKit.FIT_TEST)) return@buildList
+        add(Setting.Action(JblHarmanKit.SEAL_CHECK_KEY, checkingSeal))
+        seal?.let { (l, r) ->
+            add(Setting.Information(JblHarmanKit.SEAL_LEFT_KEY, if (l) JblHarmanKit.SEALED else JblHarmanKit.NOT_SEALED))
+            add(Setting.Information(JblHarmanKit.SEAL_RIGHT_KEY, if (r) JblHarmanKit.SEALED else JblHarmanKit.NOT_SEALED))
+        }
+        add(Setting.Action(JblHarmanKit.NOISE_CHECK_KEY, checkingNoise))
+        noise?.let { (l, r) -> add(Setting.Information(JblHarmanKit.FIT_NOISE_KEY, "$l / $r")) }
+    }
+
     private fun pageRows(): List<Setting> = if (!has(JblHarmanKit.CASE_PAGES)) emptyList() else PAGE_AT.mapNotNull { (at, key) ->
         u(features, at)?.let { Setting.Toggle(key, it == 1) }
     }
@@ -115,7 +158,19 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
             JblHarmanKit.WAKE_TAP_KEY -> JblHarmanKit.WAKE_TAPS.indexOf(change.option).takeIf { it >= 0 }?.let { displayWrite(WAKE_STATUS to 1, WAKE_ACTION to it + 1) }
             else -> null
         }
-        is SettingChange.Press -> null
+        is SettingChange.Press -> when (change.key) {
+            // The app reads the detection's status (type 3, action 2) and then its information; the information's id is the 1562's own on that chip (`AB1562DeviceControl`).
+            JblHarmanKit.NOISE_CHECK_KEY -> if (has(JblHarmanKit.FIT_TEST)) {
+                checkingNoise = true
+                listOf(RacePacket(JblRace.ENV_STATUS, byteArrayOf(3, 2)), RacePacket(if (env().chip == RaceChip.AB1562) JblRace.ENV_INFO_1562 else JblRace.ENV_INFO, byteArrayOf(3)))
+            } else null
+            // Leakage detection, mode 0 enabled (`MmiStageLeakageDetecttion`); the answer is an indication up to 15 seconds later.
+            JblHarmanKit.SEAL_CHECK_KEY -> if (has(JblHarmanKit.FIT_TEST)) {
+                checkingSeal = true
+                listOf(RacePacket(JblRace.LEAKAGE, byteArrayOf(0, 1)))
+            } else null
+            else -> null
+        }
     }
 
     /** `MmiStage_SetPsapStatus`: the on byte, the balance and the gain, with what the earbuds last said for the two not changed. */
@@ -158,6 +213,17 @@ internal class JblHarmanKitRace(private val model: JblModel, private val clock: 
     }
 
     companion object {
+        /** `getEnvironmentNoise`: the line for each pair of product ids. */
+        private val NOISE: Map<Set<String>, (Double) -> Double> = mapOf(
+            setOf("2067", "2068") to { x -> (x + 1183900.0) / 11420.0 },
+            setOf("207B", "207C") to { x -> (x + 1100500.0) / 11300.0 },
+            setOf("207D", "207E") to { x -> (x + 1105000.0) / 11300.0 },
+            setOf("20D4", "20D5") to { x -> (x + 1244400.0) / 11370.0 - 10.0 },
+            setOf("20D8", "20D9") to { x -> (x + 1174200.0) / 11280.0 - 10.0 },
+            setOf("20F1") to { x -> (x + 1133800.0) / 11210.0 - 9.0 },
+            setOf("20F2") to { x -> (x + 1133550.0) / 11340.0 + 3.0 },
+        )
+
         // The display struct (`MmiStage_SetChargingCaseDisplaySetting`, `notifyChargingCaseDisplaySetting`).
         private const val BRIGHTNESS = 0
         private const val NOTIFICATION = 1

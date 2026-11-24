@@ -397,8 +397,15 @@ numbers of the stages' `mRaceId`:
   `0083` (`MmiStage_SetSmartCaseAction`, the case's firmware update) stays never sent. The adapter's own `SET_DEVICE_TIME` flow (`MmiStage_SetDeviceTime`, `0090`, seconds since 1970) is for other models and stays on the list.
 - The Airoha adapter's `getTipsType` and `setTipsType` only log that nothing is there, so the ear tips row stays on the other families.
 
-Open, in `data/completeness.json`: the noise check (the adapter reads the ANC manager's environment detection, whose id depends on the chip and whose level is worked out per model), the seal check (the leakage
-detection), and the ear canal test (an ANC user trigger state machine fed with a per-model parameter file from the app's assets).
+- **The noise check**: the app reads the environment detection's status (`0E17`, payload 3 and 2) and then its information (`0E15`, payload 3; `0E18` on the AB1562, `AncStageGetEnvironmentDetectionInfo1562`).
+  The answer's data holds the type 3, the two gains, the level, then the stationary noise of the agent and of the partner earbud (two bytes each, low first, signed); the earbud PairFree talks to is the right one when
+  the session's agent read says so, which swaps the two. A level from 0 to 100 comes from each noise by a line of the model's own (`getEnvironmentNoise`: (noise x 45 + a) / b, less or plus a constant; the Live Free 2,
+  Reflect Aero, Quantum TWS, Live Buds 3 and Tour Pro 3 each have one), and a model with none shows 0.
+- **The seal check**: `0E13` with the mode 0 and 1 (`MmiStageLeakageDetecttion`), answered up to 15 seconds later by an indication of 21 bytes whose bytes 19 and 20 are the first and second earbud, 0 for sealed
+  (`OnAncAdaptiveStatus`); the right earbud is first when the agent is the right one.
+
+Open, in `data/completeness.json`: the ear canal test, an ANC user trigger (`AncStageStartAncUserTrigger`, a state machine of 1,500 lines fed with a per-model parameter file from the app's assets), of which only
+the entry and the stage are read.
 
 ## 5. How each model sends its settings
 

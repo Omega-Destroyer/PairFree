@@ -100,4 +100,20 @@ class JblHarmanKitRaceTest {
         out[1] = 1
         assertEquals(RacePacket(0x82, out), s.change(SettingChange.Toggle("jbl_case_page_equalizer", true))!!.single())
     }
+
+    @Test
+    fun theNoiseCheckReadsTheDetectionAndTheSealCheckTheLeakageIndication() {
+        val s = JblSession(model("JBL Live Buds 3"))
+        assertTrue("fit_test" in model("JBL Live Buds 3").extras)
+        // The status read (type 3, action 2), then the information (type 3), on the id the AB1562 does not have.
+        assertEquals(listOf(RacePacket(0x0E17, byteArrayOf(3, 2)), RacePacket(0x0E15, byteArrayOf(3))), s.change(SettingChange.Press("jbl_noise_check")))
+        // The agent's noise -5000, the partner's 0: the Live Buds 3's line is (noise x 45 + 1133800) / 11210 - 9, 72 and 92.
+        s.receive(packet("055b0d00" + "150e" + "00" + "03" + "0000" + "0000" + "01" + "78ec" + "0000"))
+        assertEquals(Setting.Information("jbl_fit_noise", "72 / 92"), setting(s, "jbl_fit_noise"))
+        assertEquals(listOf(RacePacket(0x0E13, byteArrayOf(0, 1))), s.change(SettingChange.Press("jbl_seal_check")))
+        // The indication: the mode 0 and, at 12 and 13, the first earbud sealed (0) and the second not (1).
+        s.receive(packet("055d1100" + "130e" + "00" + "00" + "00".repeat(11) + "00" + "01"))
+        assertEquals(Setting.Information("jbl_seal_left", "sealed"), setting(s, "jbl_seal_left"))
+        assertEquals(Setting.Information("jbl_seal_right", "not_sealed"), setting(s, "jbl_seal_right"))
+    }
 }

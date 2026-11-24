@@ -54,6 +54,9 @@ interface GattChannel : ControlLink {
 /** QCY earbuds as a scan found them: their LE side, and the advert that names the model. */
 class QcyFound(val target: LeTarget, val advert: QcyAdvert)
 
+/** The local date and time as the system shows them; [weekday] is 0 for Sunday. */
+class LocalTime(val year: Int, val month: Int, val day: Int, val weekday: Int, val hour: Int, val minute: Int, val second: Int)
+
 /**
  * The Bluetooth of the system PairFree runs on, as the brands open their channels through it ([BrandSpec.open]): Android's
  * in the app, Windows' and macOS' in the desktop apps (docs/DESKTOP.md). A brand's file decides which channel its earbuds
@@ -90,6 +93,9 @@ interface Transport {
 
     /** This phone's or computer's own Bluetooth name, or null where it may not be read. */
     fun hostName(): String?
+
+    /** The local date and time, for the earbuds whose case keeps a clock (JBL's smart case); null where the system does not say. */
+    fun localTime(): LocalTime? = null
 
     /** The LE side of the device at its classic [address]. */
     fun at(address: String): LeTarget

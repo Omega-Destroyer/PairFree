@@ -299,6 +299,60 @@ needs the phone to reconnect over LE Audio while JBL's app waits on dialogs; Per
 (`PersoniFiCard`), a hearing test that plays tones through JBL's app; relax sounds, which the phone
 plays; and the equalizer (section 9).
 
+### 4.11 PSAP, the smart case, the clock, the fit checks and the ear tips: `A0`, `A3`, `A4`, `A7`, `99`, `9A`, `9C`
+
+Read from JBL Headphones 5.37.10 (2026-11-23): the command classes `PSAPCmd`, `ChargingCaseDisplayStatusCmd`, `ChargingCaseFeatureCmd`, `SyncTimeToDeviceCmd`,
+`EnvironmentNoiseCheckCmd`, `EarCanalTestingCmd` and `TipsTypeCmd` of `com.harman.bluetooth.imp.cmd`, and the dashboard cards that call them. Each is a Harman frame
+(`AA`, the command, the payload's length, then the payload) whose first payload byte is the sub-command: 00 write, 01 read, 02 reply (`CmdBase.combine` adds the length).
+A model has a setting when its dashboard card is in its config and its control class implements the write (`BesDeviceStatusControl` carries them for the BES models; the
+protocol 4 models send the same settings as `DeviceInfoFeature5` records and the Airoha models through their own adapter, see the end of this section). So far:
+Tour Pro 2, Live Beam 3 and Live Flex 3 (the smart case), the Tour One M2, Tour Pro 2, Live 670NC, 675NC, 770NC, 775NC and Live Beam 3 (PSAP), the Live Pro 2 TWS, Tour Pro 2 and
+Live Beam 3 (the fit checks), the Tune Flex and Tune Flex 2 (the ear tips) and eight models for the Auracast receiver: `settings` in `devices.json`.
+
+- **PSAP** (`A0`, `PSAP2Card`, `iq/g.java`: the page "Personal Sound Amplification"). Read `01`; the reply `02` then pairs of feature and value: 01 on, 02 the balance, 03 the gain
+  (`PSAPCmd.parse`; a reply of fewer than ten bytes holds only the on byte and the balance). The page's balance bar is 95 to 105 (100 in the middle, `M0`), its gain bar has
+  five steps (`GradientProgressBar` with `PartSplictLineCount` 5, so 0 to 5). A write is `00` and the three pairs together, with the values last reported (`toBytesSet`).
+  JBL's text says that turning it on turns off spatial sound and the low volume EQ (`enabling_psap_will_diable_ss_and_lvd_eq`); PairFree shows that note and does not switch the
+  other two itself, since the earbuds do. The page's reduce-background-noise and beamforming switches (`setPSAPReduceBackgroundNoise`, `setPSAPBeamforming`) are implemented only
+  by the protocol 4 base class (`General4Control`), so a BES model has neither.
+- **The smart case's screen** (`A3`, the cards `BrightnessCard`, `MsgNotificationCard`, `ScreenSaverCard`, `CaseLanguageCard`, `TapToWakeCard`, `CaseInfoCard`). Read `01`; the
+  reply `02` then pairs of id and value (`parse`): 1 brightness (0 to 3: `BrightnessCard` has a three-step bar), 2 message notification, 3 the screen saver's index, 4 the screen
+  saver's time in seconds (two bytes, low first; the card's slider has 31 positions of five seconds, 0 is "never"), 5 message preview, 6 whether the screen saver is the user's
+  own, 7 that picture's CRC (four bytes), 8 the case's language (`CaseLangType`: 1 English, 2 Dutch, 3 French, 4 German, 5 Italian, 6 Japanese, 7 Korean, 8 Portuguese, 9 Russian,
+  10 Simplified Chinese, 11 Spanish, 12 Thai, 13 Vietnamese), 9 the unlock indicator, 10 quick wake-up (the status in the bits above the seventh, the tap in the low seven: 1 single,
+  2 double, 3 triple; the switch sends the status with action 0 and a tap its number with the status on, `TapToWakeCard`), 11 and 12 the earbuds' and the case's latest firmware
+  as three bytes, 13 find my case. A write is `00` and the pairs, the screen saver time in two bytes (`toBytesSet`); `03 06 xx` deletes the user's own screen saver
+  (`delCustomizeScreenSaver`).
+- **The smart case's pages** (`A4`, `SmartCaseSettingCard` and `CaseCard`). Read `01`; the reply `02` and pairs of id and one byte (192 the case's version as three bytes, 193 its
+  Bluetooth address as six bytes, 194 its language): ids 1 to 17 are the pages the case's screen can show (ambient sound control, equalizer, speak to chat, 3D spatial sound,
+  low volume EQ, VoiceAware, auto play and pause, Silent Now, earbuds in the case, timer, lock screen wallpaper, notifications, find my buds, flashlight, music playback, volume,
+  screen brightness), each 1 for shown and 0 for hidden (`ChargingCaseFeatureCmd.toBytesSet`, whose list form writes each page's id with `pageDisplay`). A write is `00` and the pairs.
+  `03` launches the case's firmware update and is never sent.
+- **The clock** (`A7`). JBL's app sends it on every connection to every model (`gn/p0.java` on `CONNECT_STATUS`), and the control class decides: the BES models write
+  `00 01 hh mm ss weekday day month yearLo yearHi` with the phone's local time (weekday 0 is Sunday; `SyncTimeToDeviceCmd.toBytesSet(long)`), and so does PairFree, once, when the
+  channel opens, on the models whose config has the `SyncTimeCard`. The display format (`02` and 1 for 12 hours, 2 for 24 hours, the variant with the format) belongs to the models that
+  list `syncTimeFormat`, which these three do not.
+- **The noise check** (`99`) and **the ear canal test** (`9A`). Read `01` starts each. The noise check's reply `02` holds the left and the right level, two bytes each, low first
+  (`EnvironmentNoiseCheckCmd.parse`); the ear canal test's reply `02` holds a result byte, 3 for success, anything else a failure (`EarCanalTestingFragment`: `T0(result == 3)`). The
+  test plays tones in the earbuds and compensates noise cancelling for the ear canal. PairFree shows the two levels and "done" or "failed" as they come.
+- **The seal check** (`21` with the status type `42`, `CmdGen.genGetSealingStatus`): the reply `22` holds `42`, then the left and the right earbud, 1 for sealed and 0 for not
+  (`HandleParse.parseDevStatus`, `SEAL_CHECK_STATUS`); JBL's fit page (`gp/j.java`, `k1`) asks the user to adjust the earbud whose byte is 0. JBL's page runs its steps in an order
+  of its own (in-ear status `41`, the noise check, the seal check, the ear canal test) and gates them on the noise levels (both 50 or more); PairFree offers each as a button.
+- **The Auracast receiver** (`B0`, `LeaAudioCmd`; the Auracast cards of the Tour One M2, Tour Pro 2, Live Beam 3, Live Flex 3, Tune Buds 2, Tune Flex 2, Tune Beam 2 and Tune 255NC; the
+  LE Audio switch is a different card and a different command). The earbuds scan for broadcasts themselves; the sub-command is the first payload byte: `00` asks what they receive, `01` `01`
+  and the seconds (30) starts a scan, `02` `00` stops it, `20` `01` the six address bytes and the password's characters receives a source, `21` `00` stops receiving, `22` and an index picks a
+  sub-group. The replies are `10` (what they receive), `11` (one scan result per message), `12` (the scan stopped), `30`, `31` and `32` (the answers to `20`, `21` and `22`), each then a
+  return status (for `30`: 0 done, 1 wrong password, 2 timed out; for `10` and `11`: 0 done, 1 not receiving, 2 the scan timed out) and, for `10` and `11`, records of a type, a length and a
+  value: type 0 is the source and any other a sub-group of it, each holding records of an id, a length and a value (1 the address, 2 the name in UTF-8, 3 the receive status, 4 whether it
+  needs a password, 32 the sub-group's index, 33 whether it is on, 35 its quality: 2 high). The address a reply gives goes back in the reverse order in `20` (`receiveLeAudioSource`). A
+  source counts as received when one of its sub-groups is on (`AuracastP2Ui2ViewModel.I`).
+- **The ear tips** (`9C`, `SoundFitCard`, only the Tune Flex family: `TIPS_OPEN` 0 and `TIPS_SEALING` 1). Read `01`, the reply `02` and the type, a write `00` and the type.
+
+None of these is on the never-sent list. Open, in `data/completeness.json`: the screen saver's pictures and the user's own screen saver (a file transfer to the case,
+`ScreenSaverAdapter`, ids 3, 6 and 7 of `A3`), find my case (`FindMyCaseCard`, id 13), and the same settings on the protocol 4 and Airoha models, which send them as other messages
+(`General4Control.setPSAPStatus` writes the `PSAPStatus`, `PSAPBalance` and gain features, `setTipsType` writes `EarTips`, `setChargingCaseFeatureSettingsStatus` writes a
+`CasePageConfigFeature` per page).
+
 ## 5. How each model sends its settings
 
 The ten older BES models with no dashboard config (`com.harman.cmdctrl.imp.bes.*SdkControl`: the Live 220BT, 300TWS,

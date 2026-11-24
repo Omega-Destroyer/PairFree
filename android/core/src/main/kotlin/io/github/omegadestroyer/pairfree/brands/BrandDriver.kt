@@ -62,6 +62,9 @@ interface DriverHost {
     /** Whether the phone's digital assistant is Google's (Samsung's touch-and-hold option asks). */
     fun assistantIsGoogle(): Boolean
 
+    /** The local date and time, for the earbuds whose case keeps a clock (JBL's smart case); null where the system does not say. */
+    fun localTime(): LocalTime?
+
     /** The system PairFree runs on. */
     val platform: PlatformInfo
 }

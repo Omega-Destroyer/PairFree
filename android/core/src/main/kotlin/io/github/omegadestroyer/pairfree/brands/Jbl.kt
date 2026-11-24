@@ -21,6 +21,7 @@ import io.github.omegadestroyer.pairfree.protocol.jbl.JblP4Packet
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblSession
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblTalk
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblWallClock
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import kotlinx.io.IOException
 import kotlinx.coroutines.currentCoroutineContext
@@ -104,8 +105,10 @@ class JblDriver(host: DriverHost, private val device: Paired) : TalkDriver<JblFr
     /** The session of the channel now or last open; for the device report and the EQ. */
     val session: JblSession? get() = talk?.session
 
+    private fun clock(): JblWallClock? = host.localTime()?.let { JblWallClock(it.year, it.month, it.day, it.weekday, it.hour, it.minute, it.second) }
+
     override fun talk(opened: ControlLink): JblTalk? =
-        JblSpec.modelOf(device)?.let { JblTalk(it, notifications = opened is GattChannel, mtu = (opened as? GattChannel)?.mtu) }
+        JblSpec.modelOf(device)?.let { JblTalk(it, notifications = opened is GattChannel, mtu = (opened as? GattChannel)?.mtu, clock = ::clock) }
 
     /**
      * JBL's EQ target has its session build the write; its frames go through the talk's queue as the session built

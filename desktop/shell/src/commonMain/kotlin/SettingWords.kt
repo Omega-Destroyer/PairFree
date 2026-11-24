@@ -26,6 +26,11 @@ class SettingWords(private val strings: DesktopStrings) {
             "sound_effects" -> "setting_group_sound_effects"
             "noise_adaptive" -> "setting_group_noise_adaptive"
             "find" -> "find_earbuds"
+            "psap" -> "setting_group_psap"
+            "auracast" -> "setting_group_auracast"
+            "case" -> "setting_group_case"
+            "case_pages" -> "setting_group_case_pages"
+            "fit" -> "setting_group_fit"
             "find_hub" -> "setting_group_find_hub"
             "sk_tile" -> "setting_group_sk_tile"
             "light" -> "setting_group_light"
@@ -379,6 +384,44 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_smart_audio_video" -> t("setting_jbl_smart_audio_video")
         "jbl_voice_aware" -> t("setting_jbl_voice_aware")
         "jbl_safe_sound" -> t("setting_jbl_safe_sound")
+        "jbl_psap" -> t("setting_jbl_psap")
+        "jbl_psap_balance" -> t("setting_jbl_psap_balance")
+        "jbl_psap_gain" -> t("setting_jbl_psap_gain")
+        "jbl_case_brightness" -> t("setting_jbl_case_brightness")
+        "jbl_case_notifications" -> t("setting_jbl_case_notifications")
+        "jbl_case_preview" -> t("setting_jbl_case_preview")
+        "jbl_case_screen_time" -> t("setting_jbl_case_screen_time")
+        "jbl_case_language" -> t("setting_jbl_case_language")
+        "jbl_case_wake" -> t("setting_jbl_case_wake")
+        "jbl_case_wake_tap" -> t("setting_jbl_case_wake_tap")
+        "jbl_case_version" -> t("setting_jbl_case_version")
+        "jbl_case_latest" -> t("setting_jbl_case_latest")
+        "jbl_fit_noise" -> t("setting_jbl_fit_noise")
+        "jbl_canal_result" -> t("setting_jbl_canal_result")
+        "jbl_ear_tips" -> t("setting_jbl_ear_tips")
+        "jbl_seal_left" -> t("setting_jbl_seal_left")
+        "jbl_auracast_add" -> t("setting_jbl_auracast_add")
+        "jbl_auracast_code" -> t("setting_jbl_auracast_code")
+        "jbl_auracast_source" -> t("setting_jbl_auracast_source")
+        "jbl_auracast_subgroup" -> t("setting_jbl_auracast_subgroup")
+        "jbl_seal_right" -> t("setting_jbl_seal_right")
+        "jbl_case_page_ambient" -> t("setting_jbl_case_page_ambient")
+        "jbl_case_page_equalizer" -> t("setting_jbl_case_page_equalizer")
+        "jbl_case_page_speak_to_chat" -> t("setting_jbl_case_page_speak_to_chat")
+        "jbl_case_page_spatial" -> t("setting_jbl_case_page_spatial")
+        "jbl_case_page_low_eq" -> t("setting_jbl_case_page_low_eq")
+        "jbl_case_page_voice_aware" -> t("setting_jbl_case_page_voice_aware")
+        "jbl_case_page_auto_pause" -> t("setting_jbl_case_page_auto_pause")
+        "jbl_case_page_silent_now" -> t("setting_jbl_case_page_silent_now")
+        "jbl_case_page_in_case" -> t("setting_jbl_case_page_in_case")
+        "jbl_case_page_timer" -> t("setting_jbl_case_page_timer")
+        "jbl_case_page_wallpaper" -> t("setting_jbl_case_page_wallpaper")
+        "jbl_case_page_notification" -> t("setting_jbl_case_page_notification")
+        "jbl_case_page_find" -> t("setting_jbl_case_page_find")
+        "jbl_case_page_flashlight" -> t("setting_jbl_case_page_flashlight")
+        "jbl_case_page_music" -> t("setting_jbl_case_page_music")
+        "jbl_case_page_volume" -> t("setting_jbl_case_page_volume")
+        "jbl_case_page_brightness" -> t("setting_jbl_case_page_brightness")
         "jbl_spatial" -> t("setting_jbl_spatial")
         "jbl_call_effect" -> t("setting_jbl_call_effect")
         "jbl_audio_limiter" -> t("setting_jbl_audio_limiter")
@@ -741,6 +784,9 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_smart_audio_video" -> t("setting_jbl_smart_audio_video_note")
         "jbl_voice_aware" -> t("setting_jbl_voice_aware_note")
         "jbl_safe_sound" -> t("setting_jbl_safe_sound_note")
+        "jbl_psap" -> t("setting_jbl_psap_note")
+        "jbl_case_wake" -> t("setting_jbl_case_wake_note")
+        "jbl_ear_tips" -> t("setting_jbl_ear_tips_note")
         "jbl_speak_to_chat" -> t("setting_jbl_speak_to_chat_note")
         "jbl_touch_left", "jbl_touch_right" -> t("setting_jbl_touch_note")
         "jbl_adaptive_anc" -> t("setting_jbl_adaptive_anc_note")
@@ -1197,6 +1243,11 @@ class SettingWords(private val strings: DesktopStrings) {
                 else -> "action_off"
             },
         )
+        key == "jbl_case_language" -> JBL_CASE_LANGUAGES[option]?.let { t(it) } ?: option
+        key == "jbl_case_wake_tap" -> t(when (option) { "single_tap" -> "setting_jbl_tap_single"; "double_tap" -> "setting_jbl_tap_double"; else -> "setting_jbl_tap_triple" })
+        key == "jbl_ear_tips" -> t(if (option == "open") "setting_jbl_tips_open" else "setting_jbl_tips_sealing")
+        key == "jbl_seal_left" || key == "jbl_seal_right" -> t(if (option == "sealed") "setting_jbl_sealed" else "setting_jbl_not_sealed")
+        key == "jbl_canal_result" -> t(if (option == "done") "setting_jbl_canal_done" else "setting_jbl_canal_failed")
         key == "jbl_spatial" -> t(
             when (option) {
                 "music" -> "setting_jbl_music"
@@ -1349,8 +1400,34 @@ class SettingWords(private val strings: DesktopStrings) {
         else -> option
     }
 
+    /** The smart case's languages, each named in itself. */
+    private val JBL_CASE_LANGUAGES = mapOf(
+        "english" to "setting_jbl_lang_english",
+        "dutch" to "setting_jbl_lang_dutch",
+        "french" to "setting_jbl_lang_french",
+        "german" to "setting_jbl_lang_german",
+        "italian" to "setting_jbl_lang_italian",
+        "japanese" to "setting_jbl_lang_japanese",
+        "korean" to "setting_jbl_lang_korean",
+        "portuguese" to "setting_jbl_lang_portuguese",
+        "russian" to "setting_jbl_lang_russian",
+        "chinese_simplified" to "setting_jbl_lang_chinese_simplified",
+        "spanish" to "setting_jbl_lang_spanish",
+        "thai" to "setting_jbl_lang_thai",
+        "vietnamese" to "setting_jbl_lang_vietnamese",
+    )
+
     /** A level's value in words where it has some: balance from the middle, the tone from soft to clear. */
     fun levelName(key: String, value: Int, max: Int): String = when (key) {
+        "jbl_case_screen_time" -> if (value == 0) t("setting_jbl_case_never") else t("setting_jbl_case_seconds", value * 5)
+        "jbl_psap_balance" -> {
+            val middle = max / 2
+            when {
+                value < middle -> t("setting_balance_left", middle - value)
+                value > middle -> t("setting_balance_right", value - middle)
+                else -> t("setting_balance_middle")
+            }
+        }
         "balance" -> {
             val middle = max / 2
             when {
@@ -1390,6 +1467,11 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_left" -> "setting_sh_find_left"
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
+        "jbl_seal_check" -> "setting_jbl_seal_check"
+        "jbl_auracast_scan" -> "setting_jbl_auracast_scan"
+        "jbl_auracast_stop" -> "setting_jbl_auracast_stop"
+        "jbl_noise_check" -> "setting_jbl_noise_check"
+        "jbl_canal_test" -> "setting_jbl_canal_test"
         "sh_auracast_scan" -> "setting_sh_auracast_scan"
         "sk_voice_on" -> "setting_sk_voice_on"
         "sk_voice_off" -> "setting_sk_voice_off"
@@ -1401,6 +1483,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"
         "sh_fit_test" -> "setting_sh_fit_cancel"
+        "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> "setting_jbl_testing"
+        "jbl_auracast_scan" -> "setting_jbl_auracast_scanning"
         else -> "setting_action_stop"
     }
 }

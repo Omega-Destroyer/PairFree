@@ -3,6 +3,7 @@ package io.github.omegadestroyer.pairfree.bluetooth
 import io.github.omegadestroyer.pairfree.brands.BrandDriver
 import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.brands.DriverHost
+import io.github.omegadestroyer.pairfree.brands.LocalTime
 import io.github.omegadestroyer.pairfree.brands.EqEvent
 import io.github.omegadestroyer.pairfree.brands.NeedsNewerAndroid
 import io.github.omegadestroyer.pairfree.brands.NotFound
@@ -148,6 +149,7 @@ class EarbudsConnection(
             _eqEvents.tryEmit(event)
         }
         override fun assistantIsGoogle(): Boolean = this@EarbudsConnection.assistantIsGoogle()
+        override fun localTime(): LocalTime? = transport.localTime()
         override val platform: PlatformInfo get() = this@EarbudsConnection.platform
     }
 

@@ -43,7 +43,7 @@ EXTRAS = {
     "case_pages": "the smart case's pages",
     "case_brightness": "the smart case's brightness",
     "case_notifications": "the smart case's message notifications",
-    "case_screen_saver": "the smart case's screen saver time",
+    "case_screen_saver": "the smart case's screen saver (time and picture)",
     "case_language": "the smart case's language",
     "case_wake": "the smart case's quick wake-up",
     "case_info": "the smart case's version",
@@ -54,6 +54,8 @@ EXTRAS = {
     "personifi": "PersoniFi (the hearing test and its switch)",
     "personifi_open": "",
     "le_audio": "LE Audio switch",
+    "case_find": "find my case",
+    "case_unlock": "the smart case's unlock indicator",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",

@@ -348,11 +348,40 @@
       "id": "jbl-case-screen-saver-and-find-case",
       "brand": "jbl",
       "models": [
-        "Tour Pro 2, Live Beam 3, Live Flex 3 and the protocol 4 models with the smart case"
+        "the models whose dashboard has ScreenSaverCard, LockScreenCard or FindMyCaseCard"
       ],
-      "status": "open",
-      "what": "The smart case's screen saver pictures (A3 ids 3, 6, 7 and the delete command 03 06; on protocol 4 7942, 7945 and 7954 to 7959; ScreenSaverAdapter, LockScreenCard, the custom picture's transfer), find my case (FindMyCaseCard; A3 id 13, protocol 4 7951) and the unlock indicator (A3 id 9, protocol 4 7947, Smart Tx's page) are not built; the transfer of a picture to the case has not been read.",
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.11): the built-in screen saver pictures by number (A3 id 3, protocol 4 7942, the Airoha display array's byte 3; five pictures, from every dashboard's defaultScreenSaver), the custom picture's removal behind a confirmation (A3 03 06 C1, protocol 4 7955 with 193, RACE 0089), the unlock indicator (A3 id 9, 7947, byte 11) and find my case (A3 id 13: 1 plays, 2 stops; 7951; byte 19), each shown once the case answers. The custom picture's upload is the next item.",
       "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-case-custom-screen-saver-upload",
+      "brand": "jbl",
+      "models": [
+        "the models whose dashboard has ScreenSaverCard or LockScreenCard"
+      ],
+      "status": "blocked",
+      "rule": "firmware",
+      "what": "Putting a picture of the user's own on the case (and the lock screen's pictures, features 7954 to 7960 with their opacity and colour theme) is not a display setting: JBL's LockScreenOtaViewModel builds image_ota.bin, checks its CRC32 and sends it through the case's firmware updater (HmOtaMgr's startOta with UpgradeInfo, OTADfuInfo.IS_CASE_OTA and SCREEN_SAVER_IMAGE_FILE_SIZE, the same upgrading, reboot and failure statuses as a firmware update). PairFree never sends firmware-update traffic (CLAUDE.md, Hard rules: only Qualcomm, behind an opt-in flag, with a user's image); the CRC32 write (A3 id 7, feature 7955's neighbour) is part of that transfer.",
+      "reported": "audit 2026-11-23",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/fr/m.java",
+          "what": "LockScreenOtaViewModel: image_ota.bin created and mixed, ImgBinCRC32 checks, startOtaProcess builds UpgradeInfo with OTADfuInfo.IS_CASE_OTA and the screen saver image sizes and calls startOta; the statuses are the firmware updater's (STATUS_REBOOT, TRANSFER_DONE)"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/jbl/stc/com/ui3/fragment/dashboard/card/ScreenSaverCard.java",
+          "what": "the card picks the built-in pictures by index and shows the custom one as index 193; adding one goes through the lock screen OTA page"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/jbl/sources/fr",
+          "glob": "m\\.java$",
+          "pattern": "IS_CASE_OTA",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "jbl-airoha-fit-checks",

@@ -213,6 +213,11 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
             display[ID_PREVIEW]?.let { add(Setting.Toggle(PREVIEW_KEY, it == 1, enabled = on != false)) }
         }
         if (has(CASE_SCREEN_SAVER)) display[ID_SCREEN_TIME]?.let { add(Setting.Level(SCREEN_TIME_KEY, (it / SCREEN_TIME_STEP).coerceIn(0, SCREEN_TIME_MAX), 0, SCREEN_TIME_MAX)) }
+        // The built-in screen savers by number (a custom picture is 193, which the app shows apart); the custom picture can be removed.
+        if (has(CASE_SCREEN_SAVER)) display[ID_SAVER]?.takeIf { it < SAVER_COUNT }?.let { add(Setting.Level(SAVER_KEY, it + 1, 1, SAVER_COUNT)) }
+        if (has(CASE_SCREEN_SAVER) && display[ID_CUSTOM] == 1) add(Setting.Action(SAVER_REMOVE_KEY))
+        if (has(CASE_UNLOCK)) display[ID_UNLOCK]?.let { add(Setting.Toggle(UNLOCK_KEY, it == 1)) }
+        if (has(CASE_FIND)) display[ID_FIND]?.let { add(Setting.Toggle(FIND_KEY, it == 1)) }
         if (has(CASE_LANGUAGE)) display[ID_LANGUAGE]?.let { code ->
             add(Setting.Choice(LANGUAGE_KEY, LANGUAGES.getOrNull(code - 1), LANGUAGES))
         }
@@ -253,6 +258,9 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
             PSAP_KEY -> if (has(PSAP)) listOf(psapWrite(on = change.on)).also { psapOn = change.on } else null
             NOTIFICATIONS_KEY -> displayWrite(ID_NOTIFICATION, if (change.on) 1 else 0)
             PREVIEW_KEY -> displayWrite(ID_PREVIEW, if (change.on) 1 else 0)
+            UNLOCK_KEY -> displayWrite(ID_UNLOCK, if (change.on) 1 else 0)
+            // Find my case: 1 plays the case's sound, 2 stops it (`FindMyCaseViewModel`).
+            FIND_KEY -> displayWrite(ID_FIND, if (change.on) 1 else 2)
             WAKE_KEY -> displayWrite(ID_WAKE, wakeValue(change.on, 0))
             else -> PAGES.entries.firstOrNull { it.value == change.key }?.let { pageWrite(it.key, if (change.on) 1 else 0) }
         }
@@ -260,6 +268,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
             PSAP_BALANCE_KEY -> if (has(PSAP)) listOf(psapWrite(balance = change.value + BALANCE_MIN)).also { psapBalance = change.value + BALANCE_MIN } else null
             PSAP_GAIN_KEY -> if (has(PSAP)) listOf(psapWrite(gain = change.value)).also { psapGain = change.value } else null
             BRIGHTNESS_KEY -> displayWrite(ID_BRIGHTNESS, change.value)
+            SAVER_KEY -> displayWrite(ID_SAVER, change.value - 1)
             SCREEN_TIME_KEY -> displayWrite(ID_SCREEN_TIME, change.value * SCREEN_TIME_STEP)
             else -> null
         }
@@ -274,6 +283,8 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         }
         is SettingChange.Press -> when (change.key) {
             SEAL_CHECK_KEY -> if (has(FIT_TEST)) listOf(JblPacket.of(JblCommand.STATUS, JblStatus.SEAL_CHECK)).also { checkingSeal = true } else null
+            // `ChargingCaseDisplayStatusCmd.delCustomizeScreenSaver`: the delete sub-command, the custom picture's id 6 and 193.
+            SAVER_REMOVE_KEY -> if (has(CASE_SCREEN_SAVER)) listOf(JblPacket.of(JblCommand.CHARGING_CASE_DISPLAY, 3, ID_CUSTOM, CUSTOM_SAVER)).also { display[ID_CUSTOM] = 0 } else null
             NOISE_CHECK_KEY -> if (has(FIT_TEST)) listOf(JblPacket.of(JblCommand.ENVIRONMENT_NOISE, READ)).also { checkingNoise = true } else null
             CANAL_TEST_KEY -> if (has(FIT_TEST)) listOf(JblPacket.of(JblCommand.EAR_CANAL_TEST, READ)).also { testingCanal = true } else null
             else -> null
@@ -285,7 +296,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
 
     private fun ownReadBack(key: String): JblFrame? = when (key) {
         PSAP_KEY, PSAP_BALANCE_KEY, PSAP_GAIN_KEY -> JblPacket.of(JblCommand.PSAP, READ)
-        NOTIFICATIONS_KEY, PREVIEW_KEY, BRIGHTNESS_KEY, SCREEN_TIME_KEY, LANGUAGE_KEY, WAKE_KEY, WAKE_TAP_KEY -> JblPacket.of(JblCommand.CHARGING_CASE_DISPLAY, READ)
+        NOTIFICATIONS_KEY, PREVIEW_KEY, BRIGHTNESS_KEY, SCREEN_TIME_KEY, LANGUAGE_KEY, WAKE_KEY, WAKE_TAP_KEY, UNLOCK_KEY, FIND_KEY, SAVER_KEY, SAVER_REMOVE_KEY -> JblPacket.of(JblCommand.CHARGING_CASE_DISPLAY, READ)
         EAR_TIPS_KEY -> JblPacket.of(JblCommand.EAR_TIPS, READ)
         else -> if (PAGES.containsValue(key)) JblPacket.of(JblCommand.CHARGING_CASE_FEATURE, READ) else null
     }
@@ -337,10 +348,19 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         const val AURACAST = "auracast"
         const val PERSONIFI = "personifi"
         const val LE_AUDIO = "le_audio"
+        const val CASE_FIND = "case_find"
+        const val CASE_UNLOCK = "case_unlock"
+        const val FIND_KEY = "jbl_case_find"
+        const val UNLOCK_KEY = "jbl_case_unlock"
+        const val SAVER_KEY = "jbl_case_saver"
+        const val SAVER_REMOVE_KEY = "jbl_case_saver_remove"
+        /** The built-in screen savers every case with the card lists (`defaultScreenSaver` in the dashboards: five), and the number a custom picture has. */
+        const val SAVER_COUNT = 5
+        const val CUSTOM_SAVER = 193
         val PERSONIFI_RACE = setOf(JblRace.PERSONIFI_STATUS_GET, JblRace.PERSONIFI_STATUS_SET)
         const val PERSONIFI_OPEN = "personifi_open"
 
-        private val DISPLAY_IDS = listOf(CASE_BRIGHTNESS, CASE_NOTIFICATIONS, CASE_SCREEN_SAVER, CASE_LANGUAGE, CASE_WAKE, CASE_INFO)
+        private val DISPLAY_IDS = listOf(CASE_BRIGHTNESS, CASE_NOTIFICATIONS, CASE_SCREEN_SAVER, CASE_LANGUAGE, CASE_WAKE, CASE_INFO, CASE_FIND, CASE_UNLOCK)
         val IDS = setOf(PSAP, CASE_PAGES, CASE_CLOCK, FIT_TEST, EAR_TIPS, AURACAST, PERSONIFI, LE_AUDIO) + DISPLAY_IDS
 
         val AA_COMMANDS = setOf(
@@ -409,7 +429,11 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
 
         private const val ID_BRIGHTNESS = 1
         private const val ID_NOTIFICATION = 2
+        private const val ID_SAVER = 3
         private const val ID_SCREEN_TIME = 4
+        private const val ID_CUSTOM = 6
+        private const val ID_UNLOCK = 9
+        private const val ID_FIND = 13
         private const val ID_PREVIEW = 5
         private const val ID_DFU_CRC = 7
         private const val ID_LANGUAGE = 8

@@ -411,6 +411,36 @@ abstract class BrandSpec(val brand: Brand) {
 sealed interface OwnHearingTest {
     /** The Galaxy Buds' (the Buds4 family); [legacy] picks the older packet framing. */
     data class Samsung(val legacy: Boolean) : OwnHearingTest
+
+    /** JBL's PersoniFi (docs/jbl/PROTOCOL.md section 4.14); [openFit] models leave their lowest tone out of the curve. */
+    data class Jbl(val openFit: Boolean) : OwnHearingTest
+}
+
+/**
+ * What JBL's hearing test needs of the open channel: the messages around each tone, the earbuds' answers it waits for, and the curve's write. Every call goes through the
+ * brand's own queue. Implemented by the JBL driver.
+ */
+interface PersonifiHost {
+    /** True on the open-fit models. */
+    val openFit: Boolean
+
+    /** The setup flow starts. */
+    fun begin()
+
+    /** The earbuds are told which tone comes next: [left] earbud, [hz]. */
+    fun tone(left: Boolean, hz: Int)
+
+    /** The frequency the earbuds say they have ready, or null until they say. */
+    val readyHz: Int?
+
+    /** The hearing test's status as the earbuds last reported it: 1 on, 3 and 4 failed (a call, or lost focus). */
+    val status: Int?
+
+    /** Puts the curve of the finished test on the earbuds and turns PersoniFi on. False when the model's EQ cannot take it. */
+    fun apply(curve: io.github.omegadestroyer.pairfree.protocol.jbl.JblPersonifi.Curve): Boolean
+
+    /** The test is over or left: the flags go back. */
+    fun end()
 }
 
 /** What a brand's Controls tab is made of. */

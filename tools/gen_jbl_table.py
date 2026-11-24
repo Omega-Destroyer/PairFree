@@ -51,6 +51,8 @@ EXTRAS = {
     "fit_test": "noise check and ear canal test",
     "ear_tips": "ear tips",
     "auracast": "Auracast listening",
+    "personifi": "PersoniFi (the hearing test and its switch)",
+    "personifi_open": "",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",
@@ -77,7 +79,7 @@ def settings(m):
         out.append("auto power-off")
     if m.get("auto_play_pause"):
         out.append("pause when taken off")
-    out += [EXTRAS[x] for x in m.get("settings", [])]
+    out += [EXTRAS[x] for x in m.get("settings", []) if EXTRAS[x]]
     # Airoha models' key map (docs/jbl/PROTOCOL.md section 10.1).
     if (m.get("airoha_gestures") or m.get("p5_gestures")) and "touch controls" not in out:
         out.append("touch controls")

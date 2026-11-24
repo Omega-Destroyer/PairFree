@@ -44,6 +44,9 @@ interface EarbudsActions {
     /** Sends [frames] as they are on the open channel (the Galaxy Buds' hearing test). */
     fun sendFrames(frames: List<ByteArray>) = Unit
 
+    /** The open channel's hold for JBL's PersoniFi hearing test, or null where the earbuds have none. */
+    fun jblPersonifi(): io.github.omegadestroyer.pairfree.brands.PersonifiHost? = null
+
     /** The Sleep A30's sound upload, or null where the earbuds have none. */
     fun sleepUploader(): io.github.omegadestroyer.pairfree.sleep.SleepUploader? = null
 

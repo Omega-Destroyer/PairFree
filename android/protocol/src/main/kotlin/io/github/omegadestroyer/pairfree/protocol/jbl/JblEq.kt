@@ -182,7 +182,7 @@ public object JblEq {
      * JBL's EQ card sends it), the band count, the calibration, the sample rate (four bytes), the left and right gain,
      * then per band its type, frequency, gain and Q, every number four bytes, low first.
      */
-    public fun p4Write(curve: JblEqCurve): JblP4Packet = JblP4Packet.set(JblP4.FEATURE_EQ_INFO to p4Info(curve))
+    public fun p4Write(curve: JblEqCurve, keep: Boolean = true): JblP4Packet = JblP4Packet.set(JblP4.FEATURE_EQ_INFO to p4Info(curve, keep))
 
     /**
      * Protocol 4's write on the models whose EQ library is Airoha's (General4Control with eqLibInfo platform airoha):
@@ -223,10 +223,10 @@ public object JblEq {
     }
 
     /** Protocol 4's EQ info value, as [p4Write] lays it out. */
-    private fun p4Info(curve: JblEqCurve): ByteArray {
+    private fun p4Info(curve: JblEqCurve, keep: Boolean = true): ByteArray {
         val out = ArrayList<Byte>(P4_HEADER + curve.bands.size * P4_BAND)
         out += (if (curve.category == JblEqWire.CUSTOM) JblP4.EQ_CUSTOM else curve.category).toByte()
-        out += 1
+        out += (if (keep) 1 else 0).toByte()
         out += curve.bands.size.toByte()
         out += float(curve.calibration)
         out += int(curve.sampleRate)

@@ -163,6 +163,43 @@ public class JblSession(initial: JblModel) {
      */
     public fun eqWrite(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? = eqFrames(preset, gains)?.also { eqOut = it }
 
+    // ---- PersoniFi's hearing test (docs/jbl/PROTOCOL.md section 4.14) ----
+
+    /** True when the model has PersoniFi's test and PairFree can put its curve on the earbuds (the A2 and protocol 4 writes). */
+    public val personifiTest: Boolean
+        get() = extras.kit.personifi != null && model.eq?.path.let { it == JblEqSpec.Path.A2 || it == JblEqSpec.Path.A2_Q10 || it == JblEqSpec.Path.P4 }
+
+    /** True on the open-fit models, whose 250 Hz tone the library does not get. */
+    public val personifiOpenFit: Boolean get() = JblHarmanKit.PERSONIFI_OPEN in model.extras
+
+    /** The frequency of the tone the earbuds have ready, once they said (the wizard waits for the one it asked for); null until then. */
+    public val personifiReadyHz: Int? get() = extras.kit.personifi?.confirmedHz
+
+    /** The hearing test's status as the earbuds last reported it: 1 on, 3 and 4 failed (a call, or the earbuds lost focus). */
+    public val personifiStatus: Int? get() = extras.kit.personifi?.testStatus
+
+    /** The test starts: the setup flow flag (the frames go out with [takeEqWrite]). */
+    public fun personifiBegin() { eqOut = extras.kit.personifi?.begin().orEmpty() }
+
+    /** A tone starts in one earbud. */
+    public fun personifiTone(left: Boolean, hz: Int) { eqOut = extras.kit.personifi?.tone(left, hz).orEmpty() }
+
+    /** The test is over or left: the hearing test mode and the flag off. */
+    public fun personifiEnd() { eqOut = extras.kit.personifi?.end().orEmpty() }
+
+    /**
+     * Puts [curve] on the earbuds as the app does after the test (`hh.c.Y0` with no keeping: category 201, A2 or protocol 4's EQ info), and turns PersoniFi on, as the
+     * app's own switch does. False when the model's EQ is not one of those.
+     */
+    public fun personifiApply(curve: JblPersonifi.Curve): Boolean {
+        if (!personifiTest) return false
+        val spec = model.eq ?: return false
+        val eqCurve = curve.eq()
+        val write: JblFrame = if (spec.path == JblEqSpec.Path.P4) JblEq.p4Write(eqCurve, keep = false) else JblEq.write(eqCurve, spec.path == JblEqSpec.Path.A2_Q10)
+        eqOut = listOf(write) + extras.kit.personifi?.change(SettingChange.Toggle(JblPersonifiMode.KEY, true)).orEmpty()
+        return true
+    }
+
     /** The frames of the last [eqWrite], once: the connection sends them as they are, since the 41 transfer's are not all frames. */
     public fun takeEqWrite(): List<JblFrame> = eqOut.also { eqOut = emptyList() }
 

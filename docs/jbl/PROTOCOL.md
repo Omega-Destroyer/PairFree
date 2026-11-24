@@ -428,8 +428,30 @@ gain is worked out again as 0.6 x (the level - the library's own references 20, 
 curve is flat), merged bands set to type 5 (off), and the master gain is minus the largest gain. `JblPersonifi` is a port, and `data/jbl/personifi_vectors.json` holds 400 cases of the library run in an emulator, which
 `JblPersonifiTest` reproduces exactly.
 
-Open, in `data/completeness.json`: writing the curve (the app sends it as EQ category 201 with the two ears' twelve bands each and the calibration worked out against the design EQ), the test's screen and its tone, and the
-`A1` commands and protocol 4 features around them.
+**The messages around the test** (`PersoniFiModeHearingTextCmd`, `PersoniFi2Info`; `JblPersonifiMode`). On the Harman models they are command `A1`: `01` reads; the reply is `02` and pairs of id and value; a write is `00` and the
+pairs in id order. The ids: `01` PersoniFi on, `02` the hearing test mode, `03` the setup flow, `04` the test file, `05` the side being tested (1 left, 2 right) and `06` the tone's frequency in Hz in four bytes, low first; the
+others take one byte. On protocol 4 they are features 7680 to 7684 (`PersoniFiMode`, `HearingTestMode`, `PersoniFiSetupFlow`, `HearingTestFileSide`, `HearingTestFileFrequency`: the names the app gives the Airoha race ids
+`RACE_GET_BOOT_REASON` to `RACE_GET_DUMP_REGION_INFO`), each a status bit and level byte written as the app writes it (`StatusLevelSize1Feature`: the value in bit 7, 127 as the level), the side as 0 or 1 and the
+frequency in four bytes. The wizard sends the setup flow flag as it starts (`pk.e.startPersonifiFlow`) and, when a tone is due, the side and frequency (`sk.q.q2`, `A1` ids 5 and 6 in one write); it plays the tone only
+when the finger is down and the earbuds have answered with that frequency (`sk.q.Y1`, polled every 500 ms: the app's status SUCCESS); the hearing test mode the earbuds report is 1 while it runs and 3 or 4 when they end it
+(a call, or the earbuds lost the phone's sound), on protocol 4 read from levels 1 to 4 as 2 to 5 (`gn.l0`), and the wizard then asks whether to continue. At the end, or when the user leaves, it sends the hearing test mode 0 and
+the setup flow 0 (`pk.e.stopPersonifiFlow`).
+
+**The curve's write.** The wizard puts the library's output on the earbuds as `EQSettings2` (`zk.c.a`, `ih.b.c`, `hh.c.Y0` with no keeping): category 201, calibration 0 (it is not worked out against the design EQ, as the BES
+models' custom curves are), 48 kHz, the master gain for both ears, 24 bands (the left ear's twelve, then the right's, a band set off sent as type 5), and the EQ's own path writes it: A2 (with Q in tenths on the models that
+mark it), or protocol 4's EQ info with the keep byte at 0 and, on the Airoha-library models, no EQ curve feature (`General4Control.setEQSettings2`). The earbuds' PersoniFi switch (`A1` id 1, feature 7680) is turned on by the app's
+own screen; PairFree turns it on after the curve and offers it as a row.
+
+**The tone.** The resource pack's files decoded (a plain read of the mp3s outside the repo): 14 s long, one earbud only, the last second silent from 13 s; a pulse of about 185 ms every 400 ms with ramps of about 10 ms; the pitch
+swings about 11 % either way about ten times a second; 3 dB quieter for each second (the 1-second RMS values fall 3.00 dB each); and each frequency starts at its own level, the peak of its first pulse in dB below full
+scale: 250 Hz -0.5, 500 -14, 750 -17, 1000 -20, 1500 -19, 2000 -18.5, 3000 -17, 4000 -15.5, 6000 -20, 8000 -11.5, 10000 -7.5, 12000 -2.5. PairFree makes its own tone to that description (`JblWarble`) and ships none of the files.
+Phone volume is set to the top for the test, as PairFree's other hearing tests do (`TonePlayer.begin`); how the app handles volume belongs to the wizard's other pages, listed as open below.
+
+**What PairFree builds** (27 of the 30 models with the card: those whose EQ is A2, A2 with Q in tenths or protocol 4): `JblPersonifiRun` (the order of the tones, the extra ones, the scale), `JblWarble`, the screen
+(`JblPersonifiScreen`: hold while the tone is heard, let go when it is gone; the seconds held give the level, `caldB`; a tone that plays out counts as heard to the end; a button back one tone), the write and the switch. Never tried on JBL earbuds.
+
+Open, in `data/completeness.json`: the Club One (its EQ goes as the older 41 transfer, `ClubOneControl.setEQSettings2` maps category 201 to 102), the Live Buds 3 and Tour Pro 3 (Airoha's own flows `SET_PERSONI_FI_EQ` and
+`SET_PERSONI_FI_STATUS`, not traced to RACE frames), and the wizard's other pages (the sealing and noise checks before the test and the report screen), unread.
 
 ## 5. How each model sends its settings
 

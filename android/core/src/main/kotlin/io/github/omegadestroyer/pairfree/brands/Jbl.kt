@@ -13,6 +13,7 @@ import io.github.omegadestroyer.pairfree.protocol.EqLayout
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Wire
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblAdvert
+import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqSpec
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblFrame
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
@@ -35,6 +36,11 @@ object JblSpec : BrandSpec(Brand.JBL) {
     override val needsScan: Boolean get() = true
 
     override fun eqNote(device: Paired): EqNote = EqNote.JBL
+
+    /** PersoniFi's test, on the models whose dashboard has it and whose EQ PairFree can write its curve to. */
+    override fun ownHearingTest(device: Paired): OwnHearingTest? =
+        modelOf(device)?.takeIf { "personifi" in it.extras && it.eq?.path.let { p -> p == JblEqSpec.Path.A2 || p == JblEqSpec.Path.A2_Q10 || p == JblEqSpec.Path.P4 } }
+            ?.let { OwnHearingTest.Jbl("personifi_open" in it.extras) }
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         JblModels.fromName(name)?.let { Paired(address, name, Brand.JBL, model = it.name) }
@@ -118,6 +124,25 @@ class JblDriver(host: DriverHost, private val device: Paired) : TalkDriver<JblFr
         val talk = talk ?: return
         if (!host.connected) return
         if (send(talk, talk.session.takeEqWrite())) publish(talk)
+    }
+
+    /** The hearing test's hold on the channel: each call has the session build its messages, which go out through the talk's queue. */
+    fun personifi(): PersonifiHost? {
+        val talk = talk ?: return null
+        val session = talk.session
+        if (!session.personifiTest) return null
+        fun go() {
+            if (host.connected && send(talk, session.takeEqWrite())) publish(talk)
+        }
+        return object : PersonifiHost {
+            override val openFit get() = session.personifiOpenFit
+            override fun begin() { session.personifiBegin(); go() }
+            override fun tone(left: Boolean, hz: Int) { session.personifiTone(left, hz); go() }
+            override val readyHz get() = session.personifiReadyHz
+            override val status get() = session.personifiStatus
+            override fun apply(curve: io.github.omegadestroyer.pairfree.protocol.jbl.JblPersonifi.Curve): Boolean = session.personifiApply(curve).also { if (it) go() }
+            override fun end() { session.personifiEnd(); go() }
+        }
     }
 
     /** JBL models whose EQ PairFree writes, once the ones that report their EQ have reported it. */

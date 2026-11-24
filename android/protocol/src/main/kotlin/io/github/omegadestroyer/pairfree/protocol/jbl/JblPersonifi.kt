@@ -7,15 +7,24 @@ import kotlin.math.abs
  * (`HearingTestBandComputation`, `HearingTestBandProvider`, `sk/q.java`) and of `calCompensation` of its native library `libpersonifiAlgorithm.so` (mode 3, the one every model
  * uses), checked against that library run in an emulator on thousands of inputs (`data/jbl/personifi_vectors.json`).
  */
-internal object JblPersonifi {
+public object JblPersonifi {
     /** One band of the curve: [type] 0 low shelf, 1 peaking, 2 high shelf, 5 off (`PersoniFiBand`, `Band`). */
-    class Band(val type: Int, val gain: Double, val freq: Double, val q: Double)
+    public class Band(public val type: Int, public val gain: Double, public val freq: Double, public val q: Double)
 
     /** The two ears' curves and the master gain that keeps them from clipping, both ears the same (`BandPayload`). */
-    class Curve(val master: Double, val left: List<Band>, val right: List<Band>)
+    public class Curve(public val master: Double, public val left: List<Band>, public val right: List<Band>) {
+        /**
+         * The curve as the app puts it on the earbuds (`zk.c.a`, `ih.b.c`): category 201, no calibration, 48 kHz, the master gain for both ears and the two ears'
+         * twelve bands each, the left ear first. A band of type 5 stays in the list, off.
+         */
+        public fun eq(): JblEqCurve = JblEqCurve(
+            JblEqWire.PERSONIFI, 0f, JblEq.SAMPLE_RATE, master.toFloat(), master.toFloat(),
+            (left + right).map { JblEqBand(it.type, it.freq.toFloat(), it.gain.toFloat(), it.q.toFloat()) },
+        )
+    }
 
     /** The nine tones of the test, in the order the app plays them (`ek.a`); 1 kHz first, as the app does. */
-    val TEST_FREQS = listOf(1000, 500, 250, 2000, 4000, 6000, 8000, 10000, 12000)
+    public val TEST_FREQS: List<Int> = listOf(1000, 500, 250, 2000, 4000, 6000, 8000, 10000, 12000)
 
     /** The calibration's frequencies in the library's own order (`freq_table`), and what each is compared against (the table at 0xf70) and its Q (0xf40). */
     private val FREQS = intArrayOf(250, 500, 1000, 2000, 4000, 6000, 8000, 10000, 12000, 750, 1500, 3000)
@@ -25,20 +34,20 @@ internal object JblPersonifi {
     private const val TOL = 1e-8
 
     /** The level a tone is at when the user stops hearing it after [seconds] of its fade: 43 - 3n dB for n from 1 to 14 (`caldB`). */
-    fun levelDb(seconds: Long): Double = (43f + (seconds.coerceIn(1, 14).toFloat()) * -3f).toDouble()
+    public fun levelDb(seconds: Long): Double = (43f + (seconds.coerceIn(1, 14).toFloat()) * -3f).toDouble()
 
     /**
      * The curve for a test: each ear's level in dB by tone frequency (as [levelDb] gives them). JBL's app also works out gains of its own for the report screen
      * (`HearingTestBandComputation`), but the library takes only each band's frequency and level and works the gains out again, so only those go in. [openFit] leaves the
      * 250 Hz tone out, as the app does for the open-fit models (`sk/q.H1`, `zk.d.i`).
      */
-    fun curve(left: Map<Int, Float>, right: Map<Int, Float>, openFit: Boolean = false): Curve {
+    public fun curve(left: Map<Int, Float>, right: Map<Int, Float>, openFit: Boolean = false): Curve {
         fun bands(m: Map<Int, Float>) = m.entries.filter { !(openFit && it.key == 250) }.map { (f, v) -> doubleArrayOf(1.0, 0.0, f.toDouble(), 2.0, maxOf(v, 0f).toDouble()) }
         return calCompensation(bands(left), bands(right))
     }
 
     /** The library's `calCompensation`, mode 3: bands as (type, gain, frequency, q, dB), of which only the frequency and the level are read. */
-    fun calCompensation(left: List<DoubleArray>, right: List<DoubleArray>): Curve {
+    internal fun calCompensation(left: List<DoubleArray>, right: List<DoubleArray>): Curve {
         val lo = shape(sideRaw(left))
         val ro = shape(sideRaw(right))
         var m = 0.0

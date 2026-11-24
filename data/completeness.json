@@ -397,11 +397,38 @@
       "id": "jbl-airoha-ear-canal-test",
       "brand": "jbl",
       "models": [
-        "Live Buds 3, Tour Pro 3, Live Free 2, Reflect Aero, Quantum TWS"
+        "Live Free 2, Reflect Aero, Quantum TWS (the models whose folder EarCanalTesting.zip holds)"
       ],
-      "status": "open",
-      "what": "The ear canal test (EAR_CANAL_TESTING) is an ANC user trigger: AncStageStartAncUserTrigger (RACE 0901 with module 5) drives AirohaAncUserTriggerStateMachine (about 1500 lines, with relays to the other earbud and per-step RACE exchanges) from a ut_para.txt that AirohaDeviceStatusControl unzips from the app's EarCanalTesting.zip asset for the model, and reports the status as done (0 to 4) or failed (17). Not read beyond the stage and the flow; the state machine, the parameter file's use and what the test writes into the earbuds are unread.",
-      "reported": "audit 2026-11-24 (building JblHarmanKitRace)"
+      "status": "blocked",
+      "what": "The ear canal test of the Airoha models is not a read: AirohaDeviceStatusControl's EAR_CANAL_TESTING flow unzips the asset EarCanalTesting.zip and runs Airoha's ANC user trigger (AncStageStartAncUserTrigger, RACE 0901 with module 5, AirohaAncUserTriggerStateMachine) which measures the ear canal, works out new feedback ANC filter coefficients in Java (AncUserTriggerUtils) from per-model tuning tables, and writes them to both earbuds (AncStageUpdateAncUserTriggerCoef and its relay to the partner). The tables are the zip's folders 2067 (Live Free 2), 207B (Reflect Aero) and 207D (Quantum TWS): about 3 MB each (Pzp.txt, Pzp2.txt, sz_fb.txt of about 970 KB each, with ut_para.txt, wz_*_filter.txt and loss_*.txt). They are the vendor's own tuning data, so including them (or numbers derived from them) in PairFree needs the owner's agreement (CLAUDE.md, Hard rules: derived facts go into data/ only after the owner has agreed), and the test rewrites the earbuds' noise cancelling filters. The Live Buds 3 and Tour Pro 3 have no folder in the zip, so the flow cannot run for them; their fit checks (the seal check and noise check) are built. Question for the owner: whether PairFree may carry those tables (compacted) and write ANC coefficients as the app does.",
+      "reported": "audit 2026-11-24 (building JblHarmanKitRace)",
+      "rule": "decision the owner has reserved",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman/AirohaDeviceStatusControl.java",
+          "what": "case 38 of execFlow (EAR_CANAL_TESTING): picks the folder by model name, unzips assets/EarCanalTesting/EarCanalTesting.zip and calls startAncUserTrigger with that folder; asks for the partner earbud"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/libanc/model/AncUserTriggerUtils.java",
+          "what": "the calculation reads ut_para.txt, loss_*.txt, sz_fb.txt, Pzp2.txt and wz_*_filter.txt from the input folder"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/libanc/stage/AncStageStartAncUserTrigger.java",
+          "what": "RACE 0901 with module 5 starts the trigger and feeds every response (and the partner's relay) to AirohaAncUserTriggerStateMachine"
+        },
+        {
+          "path": "E:/Builds/research/jbl-resdec/resources/assets/EarCanalTesting/EarCanalTesting.zip",
+          "what": "folders 2067, 207B and 207D only, each with about 3 MB of tuning tables"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/jbl/sources/com/airoha/libanc/model",
+          "glob": "AncUserTriggerUtils\\.java$",
+          "pattern": "ut_para\\.txt",
+          "expect": "some"
+        }
+      ]
     }
   ]
 }

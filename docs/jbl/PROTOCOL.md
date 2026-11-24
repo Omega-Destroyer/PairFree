@@ -404,8 +404,7 @@ numbers of the stages' `mRaceId`:
 - **The seal check**: `0E13` with the mode 0 and 1 (`MmiStageLeakageDetecttion`), answered up to 15 seconds later by an indication of 21 bytes whose bytes 19 and 20 are the first and second earbud, 0 for sealed
   (`OnAncAdaptiveStatus`); the right earbud is first when the agent is the right one.
 
-Open, in `data/completeness.json`: the ear canal test, an ANC user trigger (`AncStageStartAncUserTrigger`, a state machine of 1,500 lines fed with a per-model parameter file from the app's assets), of which only
-the entry and the stage are read.
+The ear canal test (`EAR_CANAL_TESTING`; read 2026-11-24): `AirohaDeviceStatusControl` unzips the asset `EarCanalTesting.zip` and starts Airoha's ANC user trigger (`AncStageStartAncUserTrigger`: RACE `0901` with module 5, whose responses and the partner's relays go to `AirohaAncUserTriggerStateMachine`). The state machine measures the ear canal, `AncUserTriggerUtils` works out new feedback filter coefficients from the model's tuning tables and the coefficients are written to both earbuds (`AncStageUpdateAncUserTriggerCoef`). The zip holds tables for three models only, folders 2067 (Live Free 2), 207B (Reflect Aero) and 207D (Quantum TWS), about 3 MB each. Blocked: decision the owner has reserved (the tables are the vendor's tuning data and derived data goes into `data/` only with the owner's agreement; the test rewrites the earbuds' noise cancelling filters); checked: the flow, the stage, the utility's file list and the zip's folders, in the registry item. The Live Buds 3 and Tour Pro 3 have no folder, so their fit checks are the seal check and the noise check.
 
 ### 4.14 PersoniFi: the hearing test's curve
 

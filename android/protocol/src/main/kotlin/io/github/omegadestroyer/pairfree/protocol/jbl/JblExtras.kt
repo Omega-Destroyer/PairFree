@@ -69,7 +69,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
     }
 
     /** The protocol 4 features read with the model's own. */
-    fun p4Features(): List<Int> = if (!p4) emptyList() else listOfNotNull(
+    fun p4Features(): List<Int> = if (!p4) emptyList() else kit.p4Features() + listOfNotNull(
         JblP4.FEATURE_SMART_SWITCH.takeIf { has(SMART_AV) },
         JblP4.FEATURE_VOICE_PROMPT.takeIf { has(VOICE_PROMPTS) },
         JblP4.FEATURE_BALANCE.takeIf { has(BALANCE) },
@@ -219,6 +219,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
     /** A protocol 4 feature: most are a status bit (7) and a level (bits 0 to 6). */
     fun p4(id: Int, v: ByteArray) {
         if (v.isEmpty()) return
+        if (id in JblHarmanKit4.IDS) return kit.p4(id, v)
         val on = v.u8(0) and 0x80 != 0
         val level = v.u8(0) and 0x7F
         when (id) {
@@ -746,7 +747,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
 
         /** The feature records and protocol 4 features these settings are read from. */
         val FEATURE_IDS = setOf(JblFeature.SOUND_EFFECT, JblFeature.AUDIO_LIMITER, JblFeature.HI_RES, JblFeature.LOW_VOLUME_EQ)
-        val P4_IDS = setOf(
+        val P4_IDS = JblHarmanKit4.IDS + setOf(
             JblP4.FEATURE_SMART_SWITCH, JblP4.FEATURE_VOICE_PROMPT, JblP4.FEATURE_BALANCE, JblP4.FEATURE_SIDETONE,
             JblP4.FEATURE_MAX_VOLUME_LIMIT, JblP4.FEATURE_SPATIAL_SCENE, JblP4.FEATURE_SOUND_EFFECT, JblP4.FEATURE_AUDIO_LIMITER,
             JblP4.FEATURE_SMART_TALK, JblP4.FEATURE_HI_RES, JblP4.FEATURE_ADAPTIVE_ANC, JblP4.FEATURE_AUTO_COMPENSATION,

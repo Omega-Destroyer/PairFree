@@ -100,7 +100,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" -> optionName(setting.key, setting.value)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
@@ -623,6 +623,11 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_canal_result" -> stringResource(R.string.setting_jbl_canal_result)
     "jbl_ear_tips" -> stringResource(R.string.setting_jbl_ear_tips)
     "jbl_seal_left" -> stringResource(R.string.setting_jbl_seal_left)
+    "jbl_psap_noise" -> stringResource(R.string.setting_jbl_psap_noise)
+    "jbl_psap_voice" -> stringResource(R.string.setting_jbl_psap_voice)
+    "jbl_case_24h" -> stringResource(R.string.setting_jbl_case_24h)
+    "jbl_noise_left" -> stringResource(R.string.setting_jbl_noise_left)
+    "jbl_noise_right" -> stringResource(R.string.setting_jbl_noise_right)
     "jbl_auracast_add" -> stringResource(R.string.setting_jbl_auracast_add)
     "jbl_auracast_code" -> stringResource(R.string.setting_jbl_auracast_code)
     "jbl_auracast_source" -> stringResource(R.string.setting_jbl_auracast_source)
@@ -645,6 +650,8 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_case_page_music" -> stringResource(R.string.setting_jbl_case_page_music)
     "jbl_case_page_volume" -> stringResource(R.string.setting_jbl_case_page_volume)
     "jbl_case_page_brightness" -> stringResource(R.string.setting_jbl_case_page_brightness)
+    "jbl_case_page_language" -> stringResource(R.string.setting_jbl_case_page_language)
+    "jbl_case_page_time24" -> stringResource(R.string.setting_jbl_case_page_time24)
     "jbl_spatial" -> stringResource(R.string.setting_jbl_spatial)
     "jbl_call_effect" -> stringResource(R.string.setting_jbl_call_effect)
     "jbl_audio_limiter" -> stringResource(R.string.setting_jbl_audio_limiter)
@@ -1477,6 +1484,8 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     key == "jbl_case_wake_tap" -> getString(when (option) { "single_tap" -> R.string.setting_jbl_tap_single; "double_tap" -> R.string.setting_jbl_tap_double; else -> R.string.setting_jbl_tap_triple })
     key == "jbl_ear_tips" -> getString(if (option == "open") R.string.setting_jbl_tips_open else R.string.setting_jbl_tips_sealing)
     key == "jbl_seal_left" || key == "jbl_seal_right" -> getString(if (option == "sealed") R.string.setting_jbl_sealed else R.string.setting_jbl_not_sealed)
+    key == "jbl_noise_left" || key == "jbl_noise_right" -> getString(if (option == "quiet") R.string.setting_jbl_quiet else R.string.setting_jbl_noisy)
+    key == "jbl_psap_voice" -> getString(when (option) { "medium" -> R.string.setting_level_medium; "high" -> R.string.setting_level_high; else -> R.string.action_off })
     key == "jbl_canal_result" -> getString(if (option == "done") R.string.setting_jbl_canal_done else R.string.setting_jbl_canal_failed)
     key == "jbl_spatial" -> getString(
         when (option) {

@@ -35,20 +35,24 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
 
     private val kr = if (model.family == JblModel.Family.AIROHA) JblHarmanKitRace(model, clock, env) else null
 
+    // The LE Audio switch (B1 key 1, protocol 4 feature 2976, the passthrough on Airoha).
+    internal val leAudio = if (has(LE_AUDIO)) JblLeAudio(model.family == JblModel.Family.P4, model.family == JblModel.Family.AIROHA) else null
+
     // PersoniFi's switch and the messages around its hearing test (A1, or protocol 4's features 7680 to 7684).
     internal val personifi = if (has(PERSONIFI)) JblPersonifiMode(model.family == JblModel.Family.P4, model.family == JblModel.Family.AIROHA) else null
 
-    fun raceReads(): List<JblFrame> = kr?.reads().orEmpty() + (if (kr != null) personifi?.reads().orEmpty() else emptyList())
-    fun raceHandles(id: Int): Boolean = kr?.handles(id) == true || (personifi != null && id in PERSONIFI_RACE)
+    fun raceReads(): List<JblFrame> = kr?.reads().orEmpty() + (if (kr != null) personifi?.reads().orEmpty() + leAudio?.reads().orEmpty() else emptyList())
+    fun raceHandles(id: Int): Boolean = kr?.handles(id) == true || (personifi != null && id in PERSONIFI_RACE) || (leAudio != null && id == JblRace.HM_PASSTHROUGH)
     fun race(p: RacePacket) {
-        if (personifi != null && p.id in PERSONIFI_RACE) { if (p.status == 0) personifi.raceReply(p.data) } else kr?.receive(p)
+        if (personifi != null && p.id in PERSONIFI_RACE) { if (p.status == 0) personifi.raceReply(p.data) } else if (p.id == JblRace.HM_PASSTHROUGH) { if (p.status == 0) leAudio?.passthroughReply(p.data) } else kr?.receive(p)
     }
 
-    fun p4Features(): List<Int> = k4?.features().orEmpty() + personifi?.p4Features().orEmpty()
+    fun p4Features(): List<Int> = k4?.features().orEmpty() + personifi?.p4Features().orEmpty() + leAudio?.p4Features().orEmpty()
     fun p4Start(): List<JblFrame> = k4?.start().orEmpty()
     fun p4(id: Int, v: ByteArray) {
         k4?.record(id, v)
         personifi?.record(id, v)
+        leAudio?.record(id, v)
     }
 
     // The Auracast receiver (`B0`).
@@ -85,6 +89,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         if (has(CASE_CLOCK)) clock()?.let { add(time(it)) }
         if (has(AURACAST)) addAll(auracast.reads())
         if (kr == null) personifi?.let { addAll(it.reads()) }
+        if (kr == null) leAudio?.let { addAll(it.reads()) }
     }
 
     private val usesDisplay: Boolean get() = DISPLAY_IDS.any { has(it) }
@@ -110,6 +115,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
             JblCommand.EAR_TIPS -> if (p.u8(0) == RET && p.size >= 2) tips = p.u8(1)
             JblCommand.LE_AUDIO -> auracast.reply(p)
             JblCommand.PERSONIFI -> personifi?.reply(p)
+            JblCommand.GET_SET_FEATURE -> leAudio?.reply(p)
         }
     }
 
@@ -176,7 +182,10 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     // ---- rows ----
 
     fun groups(): List<SettingGroup> = (k4?.groups() ?: kr?.groups() ?: groupsOwn()) +
-        listOfNotNull(personifi?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("personifi", SettingTab.SOUND, it) })
+        listOfNotNull(
+            personifi?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("personifi", SettingTab.SOUND, it) },
+            leAudio?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("le_audio", SettingTab.DEVICE, it) },
+        )
 
     private fun groupsOwn(): List<SettingGroup> = listOfNotNull(
         psapRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("psap", SettingTab.SOUND, it) },
@@ -237,7 +246,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     // ---- writes ----
 
     /** The frames for a change to one of these rows, or null when it is not one of them. */
-    fun change(change: SettingChange): List<JblFrame>? = personifi?.change(change) ?: if (k4 != null) k4.change(change) else if (kr != null) kr.change(change) else if (has(AURACAST) && change.key in JblAuracast.KEYS) auracast.change(change) else own(change)
+    fun change(change: SettingChange): List<JblFrame>? = personifi?.change(change) ?: leAudio?.change(change) ?: if (k4 != null) k4.change(change) else if (kr != null) kr.change(change) else if (has(AURACAST) && change.key in JblAuracast.KEYS) auracast.change(change) else own(change)
 
     private fun own(change: SettingChange): List<JblFrame>? = when (change) {
         is SettingChange.Toggle -> when (change.key) {
@@ -272,7 +281,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     }
 
     /** The read that confirms a change to [key]. */
-    fun readBack(key: String): JblFrame? = personifi?.readBack(key) ?: if (k4 != null) k4.readBack(key) else if (kr != null) kr.readBack(key) else if (has(AURACAST)) auracast.readBack(key) ?: ownReadBack(key) else ownReadBack(key)
+    fun readBack(key: String): JblFrame? = personifi?.readBack(key) ?: leAudio?.readBack(key) ?: if (k4 != null) k4.readBack(key) else if (kr != null) kr.readBack(key) else if (has(AURACAST)) auracast.readBack(key) ?: ownReadBack(key) else ownReadBack(key)
 
     private fun ownReadBack(key: String): JblFrame? = when (key) {
         PSAP_KEY, PSAP_BALANCE_KEY, PSAP_GAIN_KEY -> JblPacket.of(JblCommand.PSAP, READ)
@@ -327,15 +336,16 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         const val EAR_TIPS = "ear_tips"
         const val AURACAST = "auracast"
         const val PERSONIFI = "personifi"
+        const val LE_AUDIO = "le_audio"
         val PERSONIFI_RACE = setOf(JblRace.PERSONIFI_STATUS_GET, JblRace.PERSONIFI_STATUS_SET)
         const val PERSONIFI_OPEN = "personifi_open"
 
         private val DISPLAY_IDS = listOf(CASE_BRIGHTNESS, CASE_NOTIFICATIONS, CASE_SCREEN_SAVER, CASE_LANGUAGE, CASE_WAKE, CASE_INFO)
-        val IDS = setOf(PSAP, CASE_PAGES, CASE_CLOCK, FIT_TEST, EAR_TIPS, AURACAST, PERSONIFI) + DISPLAY_IDS
+        val IDS = setOf(PSAP, CASE_PAGES, CASE_CLOCK, FIT_TEST, EAR_TIPS, AURACAST, PERSONIFI, LE_AUDIO) + DISPLAY_IDS
 
         val AA_COMMANDS = setOf(
             JblCommand.PSAP, JblCommand.CHARGING_CASE_DISPLAY, JblCommand.CHARGING_CASE_FEATURE, JblCommand.EAR_CANAL_TEST,
-            JblCommand.ENVIRONMENT_NOISE, JblCommand.EAR_TIPS, JblCommand.LE_AUDIO, JblCommand.PERSONIFI,
+            JblCommand.ENVIRONMENT_NOISE, JblCommand.EAR_TIPS, JblCommand.LE_AUDIO, JblCommand.PERSONIFI, JblCommand.GET_SET_FEATURE,
         )
 
         const val PSAP_KEY = "jbl_psap"

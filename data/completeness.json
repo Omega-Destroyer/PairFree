@@ -315,13 +315,25 @@
       "reported": "audit 2026-11-23"
     },
     {
+      "id": "jbl-personifi-test",
+      "brand": "jbl",
+      "models": [
+        "the 27 models whose dashboard has PersoniFiCard and whose EQ goes as A2, A2 with Q in tenths or protocol 4's EQ info"
+      ],
+      "status": "built",
+      "what": "PersoniFi's hearing test as JBL Headphones 5.37.10 runs it (2026-11-24, docs/jbl/PROTOCOL.md section 4.14): the curve (JblPersonifi, a port of libpersonifiAlgorithm.so checked against the library in an emulator), JblPersonifiRun (nine tones for each ear, the extra 750 Hz, 1.5 kHz and 3 kHz tones, the scale), the A1 and protocol 4 messages around each tone (JblPersonifiMode: setup flow, side and frequency, the earbuds' answer the app waits for, the end), the warble tones PairFree makes (JblWarble, levels and shape measured from the decoded resource files), the hold-to-hear screen (JblPersonifiScreen), the curve written as category 201 with its 24 bands and PersoniFi switched on, and the PersoniFi switch itself as a row. Never tried on JBL earbuds.",
+      "reported": "audit 2026-11-23"
+    },
+    {
       "id": "jbl-personifi",
       "brand": "jbl",
       "models": [
-        "the 39 models whose dashboard has PersoniFiCard"
+        "JBL CLUB ONE",
+        "JBL Live Buds 3",
+        "JBL Tour Pro 3"
       ],
       "status": "open",
-      "what": "PersoniFi (39 models). Read and built so far (2026-11-24): the curve, JblPersonifi (docs/jbl/PROTOCOL.md section 4.14), a port of libpersonifiAlgorithm.so's calCompensation checked against the library in an emulator on 400 cases (data/jbl/personifi_vectors.json), with the test's scale (caldB) and which tones the wizard plays and in what order. Not built: the test itself (a screen where the user holds a finger down while a synthesized warble fades by 3 dB a second over 14 seconds, nine tones for each ear, the extra 750 Hz, 1.5 kHz and 3 kHz tones, the earbuds told the side and frequency with A1 ids 5 and 6 or the protocol 4 features, the setup flow flag), writing the result (EQ category 201: twelve bands for each ear, the master gain, the calibration against the design EQ, per family: Harman A2, protocol 4's EQ features, Airoha's PEQ), and the PersoniFi on/off switch (A1 id 1, protocol 4 feature PersoniFiMode). Unread: the wizard's other pages (sealing and noise checks before the test, the report screen) and what the earbuds do while the hearing test mode is on.",
+      "what": "PersoniFi on the three models the test is not built for (2026-11-24; the other 27 are in jbl-personifi-test). The Club One writes its EQ through the older 41 transfer: JBL's ClubOneControl.setEQSettings2 maps category 201 to 102 and sends it as a custom curve with PersoniFi's twelve bands for each ear, which PairFree's CLUB path has not been given. The Live Buds 3 and Tour Pro 3 (Airoha) send the curve as a flow of their own (AirohaHmSDK.FLOW_ENUM.SET_PERSONI_FI_EQ, from AirohaEQControl.setEQSettings2) and the test's messages as SET_PERSONI_FI_STATUS; neither flow has been traced to its RACE frames. Unread on every model: the wizard's other pages (the sealing and noise checks before the test, the report screen) and what the earbuds do with the hearing test mode on.",
       "reported": "issue #1 notes; audit 2026-11-23"
     },
     {

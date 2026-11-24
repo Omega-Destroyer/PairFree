@@ -246,6 +246,7 @@ private fun groupTitle(key: String): String = stringResource(
         "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
         "psap" -> R.string.setting_group_psap
+        "personifi" -> R.string.setting_group_personifi
         "auracast" -> R.string.setting_group_auracast
         "case" -> R.string.setting_group_case
         "case_pages" -> R.string.setting_group_case_pages
@@ -608,6 +609,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware)
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound)
     "jbl_psap" -> stringResource(R.string.setting_jbl_psap)
+    "jbl_personifi" -> stringResource(R.string.setting_jbl_personifi)
     "jbl_psap_balance" -> stringResource(R.string.setting_jbl_psap_balance)
     "jbl_psap_gain" -> stringResource(R.string.setting_jbl_psap_gain)
     "jbl_case_brightness" -> stringResource(R.string.setting_jbl_case_brightness)
@@ -1019,6 +1021,7 @@ private fun settingNote(key: String): String? = when (key) {
     "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware_note)
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound_note)
     "jbl_psap" -> stringResource(R.string.setting_jbl_psap_note)
+    "jbl_personifi" -> stringResource(R.string.setting_jbl_personifi_note)
     "jbl_case_wake" -> stringResource(R.string.setting_jbl_case_wake_note)
     "jbl_ear_tips" -> stringResource(R.string.setting_jbl_ear_tips_note)
     "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat_note)

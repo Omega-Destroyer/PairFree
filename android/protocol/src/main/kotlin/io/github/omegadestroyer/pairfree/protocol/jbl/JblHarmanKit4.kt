@@ -236,6 +236,6 @@ internal class JblHarmanKit4(private val model: JblModel, private val clock: () 
         val IDS: Set<Int> = setOf(
             PSAP_STATUS, PSAP_BALANCE, PSAP_GAIN, PSAP_NOISE, PSAP_BEAMFORMING, SEALING, ENV_NOISE, EAR_TIPS, CASE_VERSION, CASE_BRIGHTNESS, CASE_NOTIFICATION,
             CASE_SCREEN_TIME, CASE_PREVIEW, CASE_LANGUAGE, CASE_WAKE, CASE_LATEST, CASE_24H,
-        ) + PAGES.keys
+        ) + PAGES.keys + JblPersonifiMode.P4_IDS
     }
 }

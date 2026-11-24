@@ -80,6 +80,38 @@ class TonePlayer(context: Context) {
         t.play()
     }
 
+    /**
+     * Plays [mono] (JBL's warble, made at [WARBLE_RATE]) in the left or the right earbud only, from the start and once through; [onEnd] runs on the main thread when it
+     * has played out.
+     */
+    fun playWarble(mono: FloatArray, left: Boolean, onEnd: () -> Unit) {
+        stop()
+        val frames = mono.size
+        if (frames == 0) return
+        val samples = FloatArray(frames * 2)
+        for (i in 0 until frames) samples[2 * i + if (left) 0 else 1] = mono[i]
+        val t = AudioTrack.Builder()
+            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+            .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(WARBLE_RATE).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
+            .build()
+        t.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        t.notificationMarkerPosition = frames - 1
+        t.setPlaybackPositionUpdateListener(
+            object : AudioTrack.OnPlaybackPositionUpdateListener {
+                override fun onMarkerReached(track: AudioTrack) {
+                    if (track === this@TonePlayer.track) onEnd()
+                }
+
+                override fun onPeriodicNotification(track: AudioTrack) = Unit
+            },
+            main,
+        )
+        track = t
+        t.play()
+    }
+
     fun stop() {
         track?.let {
             track = null
@@ -92,6 +124,9 @@ class TonePlayer(context: Context) {
         const val LEFT = 1
         const val RIGHT = 2
         private const val RATE = 48000
+
+        /** The rate of the warble tones the hearing test of JBL's PersoniFi plays. */
+        const val WARBLE_RATE = 48000
         private const val FADE_FRAMES = 480
     }
 }

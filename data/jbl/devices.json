@@ -3,11 +3,6 @@
   "app": "JBL Headphones 5.37.10 (jbl.stc.com)",
   "not_covered": [
     {
-      "name": "JBL EVEREST ELITE 150NC",
-      "pids": ["1003"],
-      "why": "avnera_le"
-    },
-    {
       "name": "JBL Smart Tx",
       "pids": ["21BE"],
       "why": "unsupported"
@@ -3169,6 +3164,10 @@
     {
       "name": "Everest Elite 100",
       "pid": "1002"
+    },
+    {
+      "name": "Everest Elite 150NC",
+      "pid": "1003"
     },
     {
       "name": "Everest Elite 300",

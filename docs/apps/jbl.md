@@ -155,11 +155,9 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>Soundgear Frames</td><td><code>20E6</code></td><td>Glasses</td><td>Bluetooth LE</td><td>auto power-off, Smart Audio &amp; Video, voice prompts, balance, touch controls, equalizer</td><td>Not tested</td></tr>
 </table>
 
-<b>Avnera platform</b> (5, not tested): Everest Elite 100, Everest Elite 300, Everest Elite 700, Everest Elite 750NC, Reflect Aware. They speak Avnera's own protocol over the standard serial port, and PairFree shows what the headphones answer: the battery, noise cancelling, the ambient level and each ear's outside sound, the equalizer's presets and your own ten bands, power off when taken off, voice prompts and the smart button.
+<b>Avnera platform</b> (6, not tested): Everest Elite 100, Everest Elite 150NC, Everest Elite 300, Everest Elite 700, Everest Elite 750NC, Reflect Aware. They speak Avnera's own protocol over the standard serial port, and PairFree shows what the headphones answer: the battery, noise cancelling, the ambient level and each ear's outside sound, the equalizer's presets and your own ten bands, power off when taken off, voice prompts and the smart button.
 
-<b>Not covered yet</b> (5): PairFree does not list these among your earbuds.
-
-JBL's app controls it as an Avnera Bluetooth LE accessory, which PairFree does not read yet: EVEREST ELITE 150NC.
+<b>Not covered yet</b> (4): PairFree does not list these among your earbuds.
 
 JBL's app itself has no controls for them: Smart Tx, Tour One M4, Tour Pro 4.
 

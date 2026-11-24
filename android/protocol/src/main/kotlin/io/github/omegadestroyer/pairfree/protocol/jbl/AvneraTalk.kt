@@ -14,10 +14,10 @@ import io.github.omegadestroyer.pairfree.protocol.SessionTalk
 import io.github.omegadestroyer.pairfree.protocol.Value
 
 /**
- * An Avnera-platform JBL headphone that speaks LightX: the Everest Elite 100, 300, 700 and 750NC and the Reflect Aware (the 150NC speaks Avnera's Bluetooth LE accessory protocol instead and is not here) (`platform` Avnera in JBL Headphones 5.37.10's product list,
+ * An Avnera-platform JBL headphone that speaks LightX: the Everest Elite 100, 300, 700 and 750NC and the Reflect Aware (the 150NC's accessory manager wraps the same keys in another header, `accessory`) (`platform` Avnera in JBL Headphones 5.37.10's product list,
  * `EverestControl`). [smartButton], [autoOff] and [prompts] are the product list's `hasProgSmartButton`, `autoOffType` and `hasVoicePrompt`.
  */
-public data class AvneraModel(val name: String, val pin: String, val smartButton: Boolean, val autoOff: Boolean, val prompts: Boolean = true)
+public data class AvneraModel(val name: String, val pin: String, val smartButton: Boolean, val autoOff: Boolean, val prompts: Boolean = true, val accessory: Boolean = false)
 
 public object AvneraModels {
     public val ALL: List<AvneraModel> = listOf(
@@ -26,6 +26,8 @@ public object AvneraModels {
         AvneraModel("JBL Everest Elite 700", "700A", smartButton = true, autoOff = true),
         AvneraModel("JBL Everest Elite 750NC", "750A", smartButton = true, autoOff = true),
         AvneraModel("JBL Reflect Aware", "AWCA", smartButton = false, autoOff = false),
+        // The 150NC: the same keys behind the accessory manager's header (docs/jbl/PROTOCOL.md section 12.4).
+        AvneraModel("JBL Everest Elite 150NC", "1003", smartButton = true, autoOff = true, accessory = true),
     )
 
     /** By the Bluetooth name: the model's name, with or without the "JBL" and in any case, and the Everest's "Elite" and the "NC" as the app's list has them. */
@@ -67,9 +69,10 @@ public class AvneraTalk(public val model: AvneraModel) : SessionTalk<AvneraPacke
 
     private fun group(key: String, tab: SettingTab, rows: List<Setting>): SettingGroup? = rows.takeIf { it.isNotEmpty() }?.let { SettingGroup(key, tab, it) }
 
-    private fun on(key: Int): Boolean? = known[key]?.takeIf { it.size >= 4 }?.let { AvneraPacket(0, key, it).number() != 0 }
+    private fun on(key: Int): Boolean? = number(key)?.let { it != 0 }
 
-    private fun number(key: Int): Int? = known[key]?.takeIf { it.size >= 4 }?.let { AvneraPacket(0, key, it).number() }
+    // A one-byte answer (the smart button's `UInt8`) is padded to the word the others come in.
+    private fun number(key: Int): Int? = known[key]?.takeIf { it.isNotEmpty() }?.let { AvneraPacket(0, key, it.copyOf(maxOf(4, it.size))).number() }
 
     private fun noiseRows(): List<Setting> = listOfNotNull(
         on(ANC)?.let { Setting.Toggle(ANC_KEY, it) },
@@ -100,25 +103,34 @@ public class AvneraTalk(public val model: AvneraModel) : SessionTalk<AvneraPacke
     private fun bands(): List<Int>? = known[BANDS]?.takeIf { it.size >= 48 }?.let { b -> (0 until 10).map { b[8 + 4 * it].toInt() } }
 
     override fun start(): List<AvneraPacket> = buildList {
-        add(AvneraPacket.read(FIRMWARE))
-        add(AvneraPacket.read(BATTERY))
-        add(AvneraPacket.read(ANC))
-        add(AvneraPacket.read(AWARENESS))
-        add(AvneraPacket.read(EQ_PRESET))
-        add(AvneraPacket.read(RAW_STEPS))
-        add(AvneraPacket.read(RAW_LEFT))
-        add(AvneraPacket.read(RAW_RIGHT))
-        if (model.autoOff) add(AvneraPacket.read(AUTO_OFF))
-        if (model.prompts) add(AvneraPacket.read(PROMPTS))
-        if (model.smartButton) add(AvneraPacket.read(SMART_BUTTON))
+        add(read(FIRMWARE))
+        add(read(BATTERY))
+        add(read(ANC))
+        add(read(AWARENESS))
+        add(read(EQ_PRESET))
+        add(read(RAW_STEPS))
+        add(read(RAW_LEFT))
+        add(read(RAW_RIGHT))
+        if (model.autoOff) add(read(AUTO_OFF))
+        if (model.prompts) add(read(PROMPTS))
+        if (model.smartButton) add(read(SMART_BUTTON))
         add(bandRead(USER))
     }
 
-    override fun poll(): List<AvneraPacket> = listOf(AvneraPacket.read(BATTERY))
+    override fun poll(): List<AvneraPacket> = listOf(read(BATTERY))
+
+    /** A read: the LightX app sends 256 zero bytes, the accessory manager as many as the answer holds (`z6.f0`: the larger of the two formats). */
+    private fun read(key: Int): AvneraPacket = AvneraPacket.read(key, ByteArray(if (model.accessory) 4 else 256))
 
     override fun allowed(message: AvneraPacket): Boolean = message.key in ALLOWED && message.opcode in listOf(AvneraPacket.READ, AvneraPacket.WRITE)
 
-    override fun bytes(message: AvneraPacket): ByteArray = message.bytes()
+    override fun bytes(message: AvneraPacket): ByteArray = (if (model.accessory) accessory(message) else message).bytes()
+
+    /** The accessory manager's header: the module 0x43 as destination and the id's class byte (`F0` of `F085`) as the top of the 24-bit offset (`z6.s`, `z6.f0.a`, `z6.x0.z0`). */
+    private fun accessory(m: AvneraPacket): AvneraPacket {
+        val cls = CLASSES[m.key] ?: return m
+        return AvneraPacket(m.opcode, m.key, m.buffer, m.status, cls shl 16, m.source, AvneraPacket.ACCESSORY)
+    }
 
     override fun answers(sent: AvneraPacket, got: Any): Boolean = got is AvneraPacket && got.key == sent.key
 
@@ -179,7 +191,7 @@ public class AvneraTalk(public val model: AvneraModel) : SessionTalk<AvneraPacke
 
     private fun number(key: Int, value: Int): List<AvneraPacket>? {
         known[key] = AvneraPacket.write(key, value).buffer!!
-        readBacks += AvneraPacket.read(key)
+        readBacks += read(key)
         return listOf(AvneraPacket.write(key, value))
     }
 
@@ -212,6 +224,11 @@ public class AvneraTalk(public val model: AvneraModel) : SessionTalk<AvneraPacke
         public const val SMART_BUTTON: Int = 181
         public const val AUTO_OFF: Int = 182
         public const val PROMPTS: Int = 183
+        /** The class byte of each key's id in the accessory manager's table (`F085` is key 0x85 of class 0xF0). */
+        private val CLASSES: Map<Int, Int> = mapOf(
+            ANC to 0xF0, AWARENESS to 0xAA, RAW_LEFT to 0xAA, RAW_RIGHT to 0xAA, RAW_STEPS to 0xAA, FIRMWARE to 0x01, BATTERY to 0x01, AUTO_OFF to 0x01, PROMPTS to 0x01,
+            SMART_BUTTON to 0xB0, EQ_PRESET to 0xF1, BANDS to 0xF3, BAND to 0xF3,
+        )
         private val ALLOWED = setOf(ANC, AWARENESS, RAW_LEFT, RAW_RIGHT, RAW_STEPS, FIRMWARE, EQ_PRESET, BANDS, BAND, BATTERY, SMART_BUTTON, AUTO_OFF, PROMPTS)
 
         public const val ANC_KEY: String = "jbl_av_anc"

@@ -253,7 +253,7 @@
         "Tour Pro 3, Tour One M3, Tour One 2, Tour Pro 2 and others on the Harman command layer"
       ],
       "status": "built",
-      "what": "The Harman command classes of JBL Headphones 5.37.10's com/harman/bluetooth/imp/cmd were read themselves (2026-11-23) and built for the BES models whose dashboard card and control class both have them: PSAP (A0), the smart case's screen (A3) and pages (A4), the clock (A7), the noise check (99), the ear canal test (9A), the seal check (status 42), the ear tips (9C) and the Auracast receiver (B0); docs/jbl/PROTOCOL.md section 4.11, JblHarmanKit and JblAuracast. What the same cards need on the protocol 4 and Airoha models, PersoniFi (A1) and the LE Audio switch are the items below.",
+      "what": "The Harman command classes of JBL Headphones 5.37.10's com/harman/bluetooth/imp/cmd were read themselves (2026-11-23) and built for the BES models whose dashboard card and control class both have them: PSAP (A0), the smart case's screen (A3) and pages (A4), the clock (A7), the noise check (99), the ear canal test (9A), the seal check (status 42), the ear tips (9C) and the Auracast receiver (B0); docs/jbl/PROTOCOL.md section 4.11, JblHarmanKit and JblAuracast. The protocol 4 (section 4.12) and Airoha (section 4.13) versions are built; PersoniFi (A1), the LE Audio switch, the Airoha fit checks and the case's screen saver pictures are the items below.",
       "reported": "issue #1 (a posted archive of third-party notes, not used)"
     },
     {
@@ -308,10 +308,10 @@
       "id": "jbl-harman-commands-airoha",
       "brand": "jbl",
       "models": [
-        "Live Buds 3, Tour Pro 3 (smart case, PSAP, clock), Live Free 2, Reflect Aero, Quantum TWS (fit checks)"
+        "Live Buds 3, Tour Pro 3"
       ],
-      "status": "open",
-      "what": "The Airoha models whose dashboard has the PSAP, smart case, clock and fit cards (Live Buds 3, Tour Pro 3 over TourPro3LeControl and LiveBuds3Control, the fit cards on Live Free 2, Reflect Aero and Quantum TWS) send them through the Airoha adapter (AirohaDeviceStatusControl, ChargingCaseFeatureAirohaCmd); how they are framed on RACE is not read yet.",
+      "status": "built",
+      "what": "PSAP (RACE 0077, 0078), the smart case's screen (0079, 0080) and pages (0081, 0082) and the clock (Harman frame A7 through 0093) on the Live Buds 3 and Tour Pro 3, as JBL's Airoha adapter sends them; JblHarmanKitRace, docs/jbl/PROTOCOL.md section 4.13. The fit checks are in jbl-airoha-fit-checks.",
       "reported": "audit 2026-11-23"
     },
     {
@@ -343,6 +343,16 @@
       "status": "open",
       "what": "The smart case's screen saver pictures (A3 ids 3, 6, 7 and the delete command 03 06; on protocol 4 7942, 7945 and 7954 to 7959; ScreenSaverAdapter, LockScreenCard, the custom picture's transfer), find my case (FindMyCaseCard; A3 id 13, protocol 4 7951) and the unlock indicator (A3 id 9, protocol 4 7947, Smart Tx's page) are not built; the transfer of a picture to the case has not been read.",
       "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-airoha-fit-checks",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3, Live Free 2, Reflect Aero, Quantum TWS"
+      ],
+      "status": "open",
+      "what": "The noise check (ENVIRONMENT_NOISE_CHECKING: the ANC manager's environment detection, RACE 0E15 or 0E18 by chip with a gain-control status read, whose value AirohaDeviceStatusControl.getEnvironmentNoise turns into a level by a formula per model name), the seal check (GET_SEALING_STATUS: AirohaMmiMgr.doLeakageDetection) and the ear canal test (EAR_CANAL_TESTING: an ANC user trigger state machine, AirohaAncUserTriggerStateMachine, fed with ut_para.txt from the app's per-model EarCanalTesting.zip asset) are not built. Read so far: the flows and the id of the first two; the leakage stage, the chip choice, the formulas and the state machine are unread.",
+      "reported": "audit 2026-11-24 (building JblHarmanKitRace)"
     }
   ]
 }

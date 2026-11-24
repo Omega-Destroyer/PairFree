@@ -87,6 +87,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
 
     /** The reads of an Airoha model, after its own: each setting's read as JBL's app sends it over RACE (docs/jbl/PROTOCOL.md section 10). */
     fun raceReads(): List<JblFrame> = if (!race) emptyList() else buildList {
+        addAll(kit.raceReads())
         if (has(SMART_AV)) add(RacePacket.of(JblRace.KEY_EVENT, JblRace.KEY_SMART_SWITCH_GET and 0xFF, JblRace.KEY_SMART_SWITCH_GET shr 8))
         if (has(VOICE_PROMPTS)) add(RacePacket.configGet(JblRace.CONFIG_PROMPT_LANGUAGE))
         if (has(BALANCE)) add(RacePacket.of(JblRace.BALANCE_GET))
@@ -108,6 +109,7 @@ internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock?
      * them through). Writes answer with the status alone; their read-backs bring the values.
      */
     fun race(p: RacePacket) {
+        if (kit.raceHandles(p.id)) return kit.race(p)
         if (p.status != 0) return
         val d = p.data
         if (d.isEmpty()) return

@@ -30,6 +30,12 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     // The protocol 4 models send the same settings as features (section 4.12).
     private val k4 = if (model.family == JblModel.Family.P4) JblHarmanKit4(model, clock) else null
 
+    private val kr = if (model.family == JblModel.Family.AIROHA) JblHarmanKitRace(model, clock) else null
+
+    fun raceReads(): List<JblFrame> = kr?.reads().orEmpty()
+    fun raceHandles(id: Int): Boolean = kr?.handles(id) == true
+    fun race(p: RacePacket) { kr?.receive(p) }
+
     fun p4Features(): List<Int> = k4?.features().orEmpty()
     fun p4Start(): List<JblFrame> = k4?.start().orEmpty()
     fun p4(id: Int, v: ByteArray) { k4?.record(id, v) }
@@ -156,7 +162,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
 
     // ---- rows ----
 
-    fun groups(): List<SettingGroup> = k4?.groups() ?: groupsOwn()
+    fun groups(): List<SettingGroup> = k4?.groups() ?: kr?.groups() ?: groupsOwn()
 
     private fun groupsOwn(): List<SettingGroup> = listOfNotNull(
         psapRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("psap", SettingTab.SOUND, it) },
@@ -217,7 +223,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     // ---- writes ----
 
     /** The frames for a change to one of these rows, or null when it is not one of them. */
-    fun change(change: SettingChange): List<JblFrame>? = if (k4 != null) k4.change(change) else if (has(AURACAST) && change.key in JblAuracast.KEYS) auracast.change(change) else own(change)
+    fun change(change: SettingChange): List<JblFrame>? = if (k4 != null) k4.change(change) else if (kr != null) kr.change(change) else if (has(AURACAST) && change.key in JblAuracast.KEYS) auracast.change(change) else own(change)
 
     private fun own(change: SettingChange): List<JblFrame>? = when (change) {
         is SettingChange.Toggle -> when (change.key) {
@@ -252,7 +258,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     }
 
     /** The read that confirms a change to [key]. */
-    fun readBack(key: String): JblFrame? = if (k4 != null) k4.readBack(key) else if (has(AURACAST)) auracast.readBack(key) ?: ownReadBack(key) else ownReadBack(key)
+    fun readBack(key: String): JblFrame? = if (k4 != null) k4.readBack(key) else if (kr != null) kr.readBack(key) else if (has(AURACAST)) auracast.readBack(key) ?: ownReadBack(key) else ownReadBack(key)
 
     private fun ownReadBack(key: String): JblFrame? = when (key) {
         PSAP_KEY, PSAP_BALANCE_KEY, PSAP_GAIN_KEY -> JblPacket.of(JblCommand.PSAP, READ)
@@ -286,12 +292,14 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     }
 
     /** SyncTimeToDeviceCmd.toBytesSet(long): the time the app has, hour first, the year in two bytes. */
-    fun time(c: JblWallClock): JblFrame =
-        JblPacket.of(JblCommand.SYNC_TIME, WRITE, 1, c.hour, c.minute, c.second, c.weekday, c.day, c.month, c.year and 0xFF, (c.year shr 8) and 0xFF)
+    fun time(c: JblWallClock): JblFrame = timeFrame(c)
 
     private fun ByteArray.u8(at: Int): Int = this[at].toInt() and 0xFF
 
     companion object {
+        fun timeFrame(c: JblWallClock): JblPacket =
+            JblPacket.of(JblCommand.SYNC_TIME, WRITE, 1, c.hour, c.minute, c.second, c.weekday, c.day, c.month, c.year and 0xFF, (c.year shr 8) and 0xFF)
+
         const val PSAP = "psap"
         const val CASE_PAGES = "case_pages"
         const val CASE_BRIGHTNESS = "case_brightness"

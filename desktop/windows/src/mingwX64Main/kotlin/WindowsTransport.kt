@@ -18,6 +18,8 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.toKString
 import kotlinx.cinterop.value
 import kotlinx.io.IOException
+import platform.windows.GetLocalTime
+import platform.windows.SYSTEMTIME
 
 /**
  * Windows' Bluetooth as the brands open their channels through it: the classic serial channel (Winsock) and Bluetooth LE (the Windows
@@ -43,8 +45,8 @@ class WindowsTransport : Transport {
     override fun hostName(): String? = computerName()
 
     override fun localTime(): LocalTime = memScoped {
-        val t = alloc<platform.windows.SYSTEMTIME>()
-        platform.windows.GetLocalTime(t.ptr)
+        val t = alloc<SYSTEMTIME>()
+        GetLocalTime(t.ptr)
         LocalTime(t.wYear.toInt(), t.wMonth.toInt(), t.wDay.toInt(), t.wDayOfWeek.toInt(), t.wHour.toInt(), t.wMinute.toInt(), t.wSecond.toInt())
     }
 

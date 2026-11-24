@@ -330,8 +330,8 @@
       "models": [
         "the 30 models whose dashboard has PersoniFiCard"
       ],
-      "status": "open",
-      "what": "The wizard's pages before the tones (2026-11-24, read: tk/l, tk/w, tk/k0, tk/w0, rk/e, rk/j, rk/o, pk/e, qk/b, rk/v). Their device traffic is the noise check (environmentNoiseChecking), the sealing status (getSealingStatus), the in-ear status (getInEarStatus), the hearing test mode and setup flow flags (A1 ids 2 and 3), PersoniFi off/on (id 1) and, on tk/w0's \"can you hear it\" page, the hearing test file side (id 5, 1 or 2) with a 75 Hz tone the phone plays (check_seal_75hz_bong_left / _right); the report screen (rk/v) only shows the heard levels in low/mid/high bands. PairFree has the noise check, the seal check and the flags, but not the wizard's sequence of those pages (the fit checks, the 75 Hz seal tone per ear, the can't-hear page and the report) before the tones.",
+      "status": "built",
+      "what": "The wizard's pages before the tones (2026-11-24, read: tk/l, tk/w, tk/k0, tk/w0, rk/e, rk/j, rk/o, pk/e, qk/b, rk/v). Their device traffic is the noise check (environmentNoiseChecking), the sealing status (getSealingStatus), the in-ear status (getInEarStatus), the hearing test mode and setup flow flags (A1 ids 2 and 3), PersoniFi off/on (id 1) and, on tk/w0's \"can you hear it\" page, the hearing test file side (id 5, 1 or 2) with a 75 Hz tone the phone plays (check_seal_75hz_bong_left / _right); the report screen (rk/v) only shows the heard levels in low/mid/high bands. PairFree has the noise check, the seal check and the flags, but not the wizard's sequence of those pages (the fit checks, the 75 Hz seal tone per ear, the can't-hear page and the report) before the tones. Owner, 2026-11-24: PairFree's own noise check, seal check and fit tests already walk the user through these, so the wizard's pages are not replicated; the traffic they hold (the mode and flow flags, the checks' reads) is built.",
       "reported": "issue #1 notes; audit 2026-11-23"
     },
     {
@@ -340,8 +340,8 @@
       "models": [
         "the 31 models whose dashboard has LeAudioCard"
       ],
-      "status": "open",
-      "what": "The LE Audio switch (LeAudioCard) is not the Auracast receiver (B0). PROTOCOL.md says it restarts the earbuds and needs the phone to reconnect over LE Audio; which command writes it and what the reconnection needs on Android has not been read.",
+      "status": "built",
+      "what": "The LE Audio switch (LeAudioCard.showLeOpenDialog/showLeCloseDialog: BaseControl.setFeatures({1: on})) built for the 27 models whose control class implements setFeatures (2026-11-24, docs/jbl/PROTOCOL.md section 4.15): command B1 key 1 (GetSetFeatureCmd) on the Harman models, protocol 4 feature 2976 (LEAudioUniCastStatus), the same B1 frame through the 0093 passthrough on the Airoha models (Tune 770NC family, Tour Pro 3). The row shows once the earbuds answer the read. The Tune 670NC has the card but its control class inherits the default setFeatures that does nothing, so it has no switch to build. The app's firmware gate (qm.c LE_AUDIO_UNICAST, a per-model capability table) is replaced by showing the row only when the earbuds answer.",
       "reported": "audit 2026-11-23"
     },
     {

@@ -28,6 +28,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "find" -> "find_earbuds"
             "psap" -> "setting_group_psap"
             "personifi" -> "setting_group_personifi"
+            "le_audio" -> "setting_group_le_audio"
             "auracast" -> "setting_group_auracast"
             "case" -> "setting_group_case"
             "case_pages" -> "setting_group_case_pages"
@@ -387,6 +388,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_safe_sound" -> t("setting_jbl_safe_sound")
         "jbl_psap" -> t("setting_jbl_psap")
         "jbl_personifi" -> t("setting_jbl_personifi")
+        "jbl_le_audio" -> t("setting_jbl_le_audio")
         "jbl_psap_balance" -> t("setting_jbl_psap_balance")
         "jbl_psap_gain" -> t("setting_jbl_psap_gain")
         "jbl_case_brightness" -> t("setting_jbl_case_brightness")
@@ -795,6 +797,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_safe_sound" -> t("setting_jbl_safe_sound_note")
         "jbl_psap" -> t("setting_jbl_psap_note")
         "jbl_personifi" -> t("setting_jbl_personifi_note")
+        "jbl_le_audio" -> t("setting_jbl_le_audio_note")
         "jbl_case_wake" -> t("setting_jbl_case_wake_note")
         "jbl_ear_tips" -> t("setting_jbl_ear_tips_note")
         "jbl_speak_to_chat" -> t("setting_jbl_speak_to_chat_note")

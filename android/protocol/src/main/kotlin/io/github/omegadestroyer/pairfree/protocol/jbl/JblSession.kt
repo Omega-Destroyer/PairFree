@@ -899,7 +899,7 @@ public class JblSession(initial: JblModel) {
      */
     private fun raceAllowed(p: RacePacket): Boolean = when {
         // The case's clock: JBL's own Harman frame A7 through the passthrough, as the app writes it on connecting (section 4.13).
-        p.id == JblRace.HM_PASSTHROUGH -> p.payload.size >= 4 && (p.payload[0].toInt() and 0xFF) == 0xAA && (p.payload[1].toInt() and 0xFF) == JblCommand.SYNC_TIME
+        p.id == JblRace.HM_PASSTHROUGH -> p.payload.size >= 4 && (p.payload[0].toInt() and 0xFF) == 0xAA && ((p.payload[1].toInt() and 0xFF) == JblCommand.SYNC_TIME || JblLeAudio.allowed(p.payload))
         p.id == JblRace.PERSONIFI_EQ_SET || p.id == JblRace.PERSONIFI_FLOW_SET || p.id == JblRace.PERSONIFI_STATUS_SET -> true
         p.id in JblRace.NEVER_SEND -> false
         p.id == JblRace.KEY_EVENT -> p.payload.size >= 2 && ((p.payload[0].toInt() and 0xFF) or ((p.payload[1].toInt() and 0xFF) shl 8)) in JblRace.KEY_EVENTS

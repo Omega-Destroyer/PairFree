@@ -557,6 +557,9 @@
     <string name="setting_jbl_safe_sound_note">Keeps the volume at a level that is safe for your hearing.</string>
     <string name="setting_group_psap">Personal sound amplification</string>
     <string name="setting_group_personifi">PersoniFi</string>
+    <string name="setting_group_le_audio">LE Audio</string>
+    <string name="setting_jbl_le_audio">LE Audio</string>
+    <string name="setting_jbl_le_audio_note">Lets the earbuds use Bluetooth LE Audio with a phone that has it. The earbuds restart their Bluetooth link when this changes, so the connection drops for a moment and PairFree reconnects.</string>
     <string name="setting_jbl_personifi">PersoniFi sound profile</string>
     <string name="setting_jbl_personifi_note">Plays everything through the sound profile that the hearing test made for your ears. Take the test from the Sound tab; the profile is the one the test last put on the earbuds.</string>
     <string name="personifi_test">PersoniFi hearing test</string>

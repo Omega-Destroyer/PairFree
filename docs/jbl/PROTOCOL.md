@@ -456,6 +456,10 @@ The Airoha models (Live Buds 3, Tour Pro 3) send the same over RACE (`MmiStage_S
 
 Open, in `data/completeness.json`: the wizard's pages before the tones (the sealing page with the noise check, the sealing status and the in-ear status, the 75 Hz seal tone per ear with the file side flag, the can't-hear page and the report of the levels in bands), whose device traffic PairFree has in its own noise check and seal check but not as the wizard's sequence.
 
+### 4.15 The LE Audio switch
+
+Read from JBL Headphones 5.37.10 (2026-11-24): `LeAudioCard`, `GetSetFeatureCmd`, `General4Control.setFeatures`, `TourPro3LeControl`, `Tune770ncControl` and `AirohaDeviceStatusControl.writeHmCommand`. The card calls `BaseControl.setFeatures({1: on})` after a dialog that says the earbuds restart their link. On the Harman models that is command `B1` (`GetSetFeatureCmd`): a read is `00` and, for each key, the key and `00`; a write `01`, the key, the size 1 and the value; the answer (`aab1`) holds the sub-command and then key, size and value. Key 1 is the LE Audio switch (`LEAudioStatus`), 2 Auracast and 4 accidental touch prevention. On protocol 4 it is feature 2976 (`LEAudioUniCastStatus`), a status bit and level byte. On the Airoha models the `B1` frame goes inside the passthrough `0093` (`MmiStage_SendHmCmd`), as the clock does; PairFree lets through only a read or a write of key 1. The Tune 670NC has the card but its control class does nothing for `setFeatures`, so it gets no row. PairFree shows the row once the earbuds answer the read, instead of the app's per-model capability table (`qm.c`'s `le_audio_unicast`). Never tried on earbuds.
+
 ## 5. How each model sends its settings
 
 The ten older BES models with no dashboard config (`com.harman.cmdctrl.imp.bes.*SdkControl`: the Live 220BT, 300TWS,

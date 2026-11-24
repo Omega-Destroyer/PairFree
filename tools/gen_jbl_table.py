@@ -53,6 +53,7 @@ EXTRAS = {
     "auracast": "Auracast listening",
     "personifi": "PersoniFi (the hearing test and its switch)",
     "personifi_open": "",
+    "le_audio": "LE Audio switch",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",

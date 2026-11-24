@@ -307,7 +307,7 @@ Read from JBL Headphones 5.37.10 (2026-11-23): the command classes `PSAPCmd`, `C
 A model has a setting when its dashboard card is in its config and its control class implements the write (`BesDeviceStatusControl` carries them for the BES models; the
 protocol 4 models send the same settings as `DeviceInfoFeature5` records and the Airoha models through their own adapter, see the end of this section). So far:
 Tour Pro 2, Live Beam 3 and Live Flex 3 (the smart case), the Tour One M2, Tour Pro 2, Live 670NC, 675NC, 770NC, 775NC and Live Beam 3 (PSAP), the Live Pro 2 TWS, Tour Pro 2 and
-Live Beam 3 (the fit checks) and the Tune Flex and Tune Flex 2 (the ear tips): `settings` in `devices.json`.
+Live Beam 3 (the fit checks), the Tune Flex and Tune Flex 2 (the ear tips) and eight models for the Auracast receiver: `settings` in `devices.json`.
 
 - **PSAP** (`A0`, `PSAP2Card`, `iq/g.java`: the page "Personal Sound Amplification"). Read `01`; the reply `02` then pairs of feature and value: 01 on, 02 the balance, 03 the gain
   (`PSAPCmd.parse`; a reply of fewer than ten bytes holds only the on byte and the balance). The page's balance bar is 95 to 105 (100 in the middle, `M0`), its gain bar has
@@ -338,6 +338,14 @@ Live Beam 3 (the fit checks) and the Tune Flex and Tune Flex 2 (the ear tips): `
 - **The seal check** (`21` with the status type `42`, `CmdGen.genGetSealingStatus`): the reply `22` holds `42`, then the left and the right earbud, 1 for sealed and 0 for not
   (`HandleParse.parseDevStatus`, `SEAL_CHECK_STATUS`); JBL's fit page (`gp/j.java`, `k1`) asks the user to adjust the earbud whose byte is 0. JBL's page runs its steps in an order
   of its own (in-ear status `41`, the noise check, the seal check, the ear canal test) and gates them on the noise levels (both 50 or more); PairFree offers each as a button.
+- **The Auracast receiver** (`B0`, `LeaAudioCmd`; the Auracast cards of the Tour One M2, Tour Pro 2, Live Beam 3, Live Flex 3, Tune Buds 2, Tune Flex 2, Tune Beam 2 and Tune 255NC; the
+  LE Audio switch is a different card and a different command). The earbuds scan for broadcasts themselves; the sub-command is the first payload byte: `00` asks what they receive, `01` `01`
+  and the seconds (30) starts a scan, `02` `00` stops it, `20` `01` the six address bytes and the password's characters receives a source, `21` `00` stops receiving, `22` and an index picks a
+  sub-group. The replies are `10` (what they receive), `11` (one scan result per message), `12` (the scan stopped), `30`, `31` and `32` (the answers to `20`, `21` and `22`), each then a
+  return status (for `30`: 0 done, 1 wrong password, 2 timed out; for `10` and `11`: 0 done, 1 not receiving, 2 the scan timed out) and, for `10` and `11`, records of a type, a length and a
+  value: type 0 is the source and any other a sub-group of it, each holding records of an id, a length and a value (1 the address, 2 the name in UTF-8, 3 the receive status, 4 whether it
+  needs a password, 32 the sub-group's index, 33 whether it is on, 35 its quality: 2 high). The address a reply gives goes back in the reverse order in `20` (`receiveLeAudioSource`). A
+  source counts as received when one of its sub-groups is on (`AuracastP2Ui2ViewModel.I`).
 - **The ear tips** (`9C`, `SoundFitCard`, only the Tune Flex family: `TIPS_OPEN` 0 and `TIPS_SEALING` 1). Read `01`, the reply `02` and the type, a write `00` and the type.
 
 None of these is on the never-sent list. Open, in `data/completeness.json`: the screen saver's pictures and the user's own screen saver (a file transfer to the case,

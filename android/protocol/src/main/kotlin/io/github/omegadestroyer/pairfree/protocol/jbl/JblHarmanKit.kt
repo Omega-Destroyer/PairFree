@@ -27,6 +27,9 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
 
     val any: Boolean get() = model.extras.any { it in IDS }
 
+    // The Auracast receiver (`B0`).
+    private val auracast = JblAuracast()
+
     // PSAP: on, the balance (95 to 105) and the gain step (0 to 5).
     private var psapOn: Boolean? = null
     private var psapBalance = BALANCE_MIDDLE
@@ -56,6 +59,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         if (has(CASE_PAGES)) add(JblPacket.of(JblCommand.CHARGING_CASE_FEATURE, READ))
         if (has(EAR_TIPS)) add(JblPacket.of(JblCommand.EAR_TIPS, READ))
         if (has(CASE_CLOCK)) clock()?.let { add(time(it)) }
+        if (has(AURACAST)) addAll(auracast.reads())
     }
 
     private val usesDisplay: Boolean get() = DISPLAY_IDS.any { has(it) }
@@ -79,6 +83,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
                 checkingNoise = false
             }
             JblCommand.EAR_TIPS -> if (p.u8(0) == RET && p.size >= 2) tips = p.u8(1)
+            JblCommand.LE_AUDIO -> auracast.reply(p)
         }
     }
 
@@ -149,6 +154,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         caseRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("case", SettingTab.DEVICE, it) },
         pageRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("case_pages", SettingTab.DEVICE, it) },
         fitRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("fit", SettingTab.DEVICE, it) },
+        (if (has(AURACAST)) auracast.rows() else emptyList()).takeIf { it.isNotEmpty() }?.let { SettingGroup("auracast", SettingTab.DEVICE, it) },
     )
 
     private fun psapRows(): List<Setting> {
@@ -202,7 +208,9 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     // ---- writes ----
 
     /** The frames for a change to one of these rows, or null when it is not one of them. */
-    fun change(change: SettingChange): List<JblFrame>? = when (change) {
+    fun change(change: SettingChange): List<JblFrame>? = if (has(AURACAST) && change.key in JblAuracast.KEYS) auracast.change(change) else own(change)
+
+    private fun own(change: SettingChange): List<JblFrame>? = when (change) {
         is SettingChange.Toggle -> when (change.key) {
             PSAP_KEY -> if (has(PSAP)) listOf(psapWrite(on = change.on)).also { psapOn = change.on } else null
             NOTIFICATIONS_KEY -> displayWrite(ID_NOTIFICATION, if (change.on) 1 else 0)
@@ -235,7 +243,9 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     }
 
     /** The read that confirms a change to [key]. */
-    fun readBack(key: String): JblFrame? = when (key) {
+    fun readBack(key: String): JblFrame? = if (has(AURACAST)) auracast.readBack(key) ?: ownReadBack(key) else ownReadBack(key)
+
+    private fun ownReadBack(key: String): JblFrame? = when (key) {
         PSAP_KEY, PSAP_BALANCE_KEY, PSAP_GAIN_KEY -> JblPacket.of(JblCommand.PSAP, READ)
         NOTIFICATIONS_KEY, PREVIEW_KEY, BRIGHTNESS_KEY, SCREEN_TIME_KEY, LANGUAGE_KEY, WAKE_KEY, WAKE_TAP_KEY -> JblPacket.of(JblCommand.CHARGING_CASE_DISPLAY, READ)
         EAR_TIPS_KEY -> JblPacket.of(JblCommand.EAR_TIPS, READ)
@@ -284,13 +294,14 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         const val CASE_INFO = "case_info"
         const val FIT_TEST = "fit_test"
         const val EAR_TIPS = "ear_tips"
+        const val AURACAST = "auracast"
 
         private val DISPLAY_IDS = listOf(CASE_BRIGHTNESS, CASE_NOTIFICATIONS, CASE_SCREEN_SAVER, CASE_LANGUAGE, CASE_WAKE, CASE_INFO)
-        val IDS = setOf(PSAP, CASE_PAGES, CASE_CLOCK, FIT_TEST, EAR_TIPS) + DISPLAY_IDS
+        val IDS = setOf(PSAP, CASE_PAGES, CASE_CLOCK, FIT_TEST, EAR_TIPS, AURACAST) + DISPLAY_IDS
 
         val AA_COMMANDS = setOf(
             JblCommand.PSAP, JblCommand.CHARGING_CASE_DISPLAY, JblCommand.CHARGING_CASE_FEATURE, JblCommand.EAR_CANAL_TEST,
-            JblCommand.ENVIRONMENT_NOISE, JblCommand.EAR_TIPS,
+            JblCommand.ENVIRONMENT_NOISE, JblCommand.EAR_TIPS, JblCommand.LE_AUDIO,
         )
 
         const val PSAP_KEY = "jbl_psap"

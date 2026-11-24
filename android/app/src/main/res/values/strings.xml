@@ -579,6 +579,14 @@
     <string name="setting_jbl_case_version">Case version</string>
     <string name="setting_jbl_case_latest">Latest case version</string>
     <string name="setting_jbl_fit_noise">Noise level, left and right</string>
+    <string name="setting_group_auracast">Auracast listening</string>
+    <string name="setting_jbl_auracast_scan">Look for broadcasts</string>
+    <string name="setting_jbl_auracast_scanning">Looking…</string>
+    <string name="setting_jbl_auracast_add">Listen to a broadcast</string>
+    <string name="setting_jbl_auracast_code">Broadcast password</string>
+    <string name="setting_jbl_auracast_source">Listening to</string>
+    <string name="setting_jbl_auracast_stop">Stop listening</string>
+    <string name="setting_jbl_auracast_subgroup">Sub-group</string>
     <string name="setting_jbl_seal_check">Check the fit</string>
     <string name="setting_jbl_seal_left">Left earbud</string>
     <string name="setting_jbl_seal_right">Right earbud</string>

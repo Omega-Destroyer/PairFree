@@ -252,8 +252,8 @@
       "models": [
         "Tour Pro 3, Tour One M3, Tour One 2, Tour Pro 2 and others on the Harman command layer"
       ],
-      "status": "open",
-      "what": "JBL Headphones 5.37.10's com/harman/bluetooth/imp/cmd holds 20 command classes; PairFree has about eleven (beeping, spatial, speak to chat, safe sound, low volume EQ, gestures, balance, segment EQ, voice aware, advanced ANC, EQ). Not read or built: ChargingCaseDisplayStatusCmd (A3), ChargingCaseFeatureCmd (A4), PSAPCmd (A0), PersoniFiModeHearingTextCmd (A1), SyncTimeToDeviceCmd (A7), EarCanalTestingCmd, EnvironmentNoiseCheckCmd, TipsTypeCmd, LeaAudioCmd (command numbers behind DataBinderMapperImpl constants not resolved). Found by reading a third party's notes on the app (issue #1); read the classes themselves, not the notes.",
+      "status": "built",
+      "what": "The Harman command classes of JBL Headphones 5.37.10's com/harman/bluetooth/imp/cmd were read themselves (2026-11-23) and built for the BES models whose dashboard card and control class both have them: PSAP (A0), the smart case's screen (A3) and pages (A4), the clock (A7), the noise check (99), the ear canal test (9A), the seal check (status 42), the ear tips (9C) and the Auracast receiver (B0); docs/jbl/PROTOCOL.md section 4.11, JblHarmanKit and JblAuracast. What the same cards need on the protocol 4 and Airoha models, PersoniFi (A1) and the LE Audio switch are the items below.",
       "reported": "issue #1 (a posted archive of third-party notes, not used)"
     },
     {
@@ -293,6 +293,56 @@
           "expect": "some"
         }
       ]
+    },
+    {
+      "id": "jbl-harman-commands-protocol4",
+      "brand": "jbl",
+      "models": [
+        "Tour One M3, Live 680NC, Live 780NC, Live Beam 4, Live Buds 4, Live Flex 4, Tune Beam 3, Tune Buds 3, Smart Tx and the other protocol 4 models whose dashboard has the cards"
+      ],
+      "status": "open",
+      "what": "PSAP (PSAPStatus 3200, PSAPBalance 3201, PSAPTotalGainLevel 3202, PSAPReduceBackgroundNoise 3203, PSAPBeamforming 3204), the ear tips (EarTips 4101), the environment noise check (EnvironmentNoiseCheck), the clock (SyncTime 49 and Case24HourTime), the smart case's screen (DeviceInfoFeature5 7937 to 7960: brightness, notification, screen saver, language, tap to wake, find my case, version) and its page configs (8064 to 8081, CasePageConfigFeature) are protocol 4 features in General4Control, not Harman AA frames. PairFree's protocol 4 session (JblP4) carries 31 features; these are not among them.",
+      "reported": "audit 2026-11-23 (reading the cards against the control classes while building JblHarmanKit)"
+    },
+    {
+      "id": "jbl-harman-commands-airoha",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3 (smart case, PSAP, clock), Live Free 2, Reflect Aero, Quantum TWS (fit checks)"
+      ],
+      "status": "open",
+      "what": "The Airoha models whose dashboard has the PSAP, smart case, clock and fit cards (Live Buds 3, Tour Pro 3 over TourPro3LeControl and LiveBuds3Control, the fit cards on Live Free 2, Reflect Aero and Quantum TWS) send them through the Airoha adapter (AirohaDeviceStatusControl, ChargingCaseFeatureAirohaCmd); how they are framed on RACE is not read yet.",
+      "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-personifi",
+      "brand": "jbl",
+      "models": [
+        "the 39 models whose dashboard has PersoniFiCard"
+      ],
+      "status": "open",
+      "what": "PersoniFi: PersoniFiModeHearingTextCmd (A1: 1 PersoniFi on, 2 hearing test mode, 3 setup flow, 4 test file, 5 file side, 6 file frequency in four bytes) and the wizard behind PersoniFiCard, which first checks and downloads PersoniFi resources (checkPersoniFiResourceUpdate), runs a hearing test with the earbuds' own test files and writes the resulting curve as EQ category 201. Neither the command nor the wizard is built; the resource download and the curve's computation are unread.",
+      "reported": "issue #1 notes; audit 2026-11-23"
+    },
+    {
+      "id": "jbl-le-audio-switch",
+      "brand": "jbl",
+      "models": [
+        "the 31 models whose dashboard has LeAudioCard"
+      ],
+      "status": "open",
+      "what": "The LE Audio switch (LeAudioCard) is not the Auracast receiver (B0). PROTOCOL.md says it restarts the earbuds and needs the phone to reconnect over LE Audio; which command writes it and what the reconnection needs on Android has not been read.",
+      "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-case-screen-saver-and-find-case",
+      "brand": "jbl",
+      "models": [
+        "Tour Pro 2, Live Beam 3, Live Flex 3"
+      ],
+      "status": "open",
+      "what": "The smart case's screen saver pictures (A3 ids 3, 6, 7 and the delete command 03 06; ScreenSaverAdapter, LockScreenCard, the custom picture's transfer) and find my case (FindMyCaseCard, A3 id 13) are not built; the transfer of a picture to the case has not been read.",
+      "reported": "audit 2026-11-23"
     }
   ]
 }

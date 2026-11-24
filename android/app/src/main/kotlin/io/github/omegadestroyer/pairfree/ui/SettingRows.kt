@@ -246,6 +246,7 @@ private fun groupTitle(key: String): String = stringResource(
         "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
         "psap" -> R.string.setting_group_psap
+        "auracast" -> R.string.setting_group_auracast
         "case" -> R.string.setting_group_case
         "case_pages" -> R.string.setting_group_case_pages
         "fit" -> R.string.setting_group_fit
@@ -622,6 +623,10 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_canal_result" -> stringResource(R.string.setting_jbl_canal_result)
     "jbl_ear_tips" -> stringResource(R.string.setting_jbl_ear_tips)
     "jbl_seal_left" -> stringResource(R.string.setting_jbl_seal_left)
+    "jbl_auracast_add" -> stringResource(R.string.setting_jbl_auracast_add)
+    "jbl_auracast_code" -> stringResource(R.string.setting_jbl_auracast_code)
+    "jbl_auracast_source" -> stringResource(R.string.setting_jbl_auracast_source)
+    "jbl_auracast_subgroup" -> stringResource(R.string.setting_jbl_auracast_subgroup)
     "jbl_seal_right" -> stringResource(R.string.setting_jbl_seal_right)
     "jbl_case_page_ambient" -> stringResource(R.string.setting_jbl_case_page_ambient)
     "jbl_case_page_equalizer" -> stringResource(R.string.setting_jbl_case_page_equalizer)
@@ -1694,6 +1699,8 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
     "jbl_seal_check" -> R.string.setting_jbl_seal_check
+    "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scan
+    "jbl_auracast_stop" -> R.string.setting_jbl_auracast_stop
     "jbl_noise_check" -> R.string.setting_jbl_noise_check
     "jbl_canal_test" -> R.string.setting_jbl_canal_test
     "sh_auracast_scan" -> R.string.setting_sh_auracast_scan
@@ -1708,5 +1715,6 @@ private fun actionStop(key: String): Int = when (key) {
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
     "sh_fit_test" -> R.string.setting_sh_fit_cancel
     "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> R.string.setting_jbl_testing
+    "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scanning
     else -> R.string.setting_action_stop
 }

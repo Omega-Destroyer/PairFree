@@ -50,6 +50,7 @@ EXTRAS = {
     "case_clock": "the smart case's clock",
     "fit_test": "noise check and ear canal test",
     "ear_tips": "ear tips",
+    "auracast": "Auracast listening",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",

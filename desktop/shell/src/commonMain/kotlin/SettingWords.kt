@@ -27,6 +27,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "noise_adaptive" -> "setting_group_noise_adaptive"
             "find" -> "find_earbuds"
             "psap" -> "setting_group_psap"
+            "auracast" -> "setting_group_auracast"
             "case" -> "setting_group_case"
             "case_pages" -> "setting_group_case_pages"
             "fit" -> "setting_group_fit"
@@ -399,6 +400,10 @@ class SettingWords(private val strings: DesktopStrings) {
         "jbl_canal_result" -> t("setting_jbl_canal_result")
         "jbl_ear_tips" -> t("setting_jbl_ear_tips")
         "jbl_seal_left" -> t("setting_jbl_seal_left")
+        "jbl_auracast_add" -> t("setting_jbl_auracast_add")
+        "jbl_auracast_code" -> t("setting_jbl_auracast_code")
+        "jbl_auracast_source" -> t("setting_jbl_auracast_source")
+        "jbl_auracast_subgroup" -> t("setting_jbl_auracast_subgroup")
         "jbl_seal_right" -> t("setting_jbl_seal_right")
         "jbl_case_page_ambient" -> t("setting_jbl_case_page_ambient")
         "jbl_case_page_equalizer" -> t("setting_jbl_case_page_equalizer")
@@ -1463,6 +1468,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
         "jbl_seal_check" -> "setting_jbl_seal_check"
+        "jbl_auracast_scan" -> "setting_jbl_auracast_scan"
+        "jbl_auracast_stop" -> "setting_jbl_auracast_stop"
         "jbl_noise_check" -> "setting_jbl_noise_check"
         "jbl_canal_test" -> "setting_jbl_canal_test"
         "sh_auracast_scan" -> "setting_sh_auracast_scan"
@@ -1477,6 +1484,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_left", "sh_find_right" -> "setting_find_stop"
         "sh_fit_test" -> "setting_sh_fit_cancel"
         "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> "setting_jbl_testing"
+        "jbl_auracast_scan" -> "setting_jbl_auracast_scanning"
         else -> "setting_action_stop"
     }
 }

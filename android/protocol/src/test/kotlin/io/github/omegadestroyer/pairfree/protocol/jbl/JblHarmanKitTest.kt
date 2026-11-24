@@ -136,6 +136,34 @@ class JblHarmanKitTest {
     }
 
     @Test
+    fun theEarbudsScanForAuracastBroadcastsAndListenToOne() {
+        val s = JblSession(model("JBL TOUR PRO 2"))
+        assertTrue("aab00100" in s.start().map { it.hex() }, "what they receive is asked on connecting")
+        // Not receiving (status 1): the rows are there once the earbuds have answered.
+        s.receive(packet("aab0021001"))
+        assertEquals(Setting.Action("jbl_auracast_scan", false), setting(s, "jbl_auracast_scan"))
+        assertEquals("aab00301011e", s.change(SettingChange.Press("jbl_auracast_scan"))!!.single().hex())
+        assertEquals(Setting.Action("jbl_auracast_scan", true), setting(s, "jbl_auracast_scan"))
+        // One source: 11:22:33:44:55:66, "Gate", a password needed.
+        val value = "0106" + "112233445566" + "0204" + "47617465" + "040101"
+        s.receive(packet("aab015" + "1100" + "0011" + value))
+        assertEquals(Setting.Choice("jbl_auracast_add", null, listOf("Gate")), setting(s, "jbl_auracast_add"))
+        assertEquals(Setting.Text("jbl_auracast_code", "", 16), setting(s, "jbl_auracast_code"))
+        // The password goes after the six address bytes, which go back in the reverse order.
+        assertEquals(emptyList<JblFrame>(), s.change(SettingChange.Choice("jbl_auracast_code", "abc")))
+        assertEquals("aab00b" + "2001" + "665544332211" + "616263", s.change(SettingChange.Choice("jbl_auracast_add", "Gate"))!!.single().hex())
+        assertEquals("aab00100", s.takeReadBacks().last().hex())
+        // Receiving it, with one sub-group on in high quality.
+        val sub = "200100" + "210101" + "230102"
+        s.receive(packet("aab020" + "1000" + "0011" + value.replace("040101", "040101") + "0109" + sub))
+        assertEquals(Setting.Information("jbl_auracast_source", "Gate"), setting(s, "jbl_auracast_source"))
+        assertEquals(Setting.Action("jbl_auracast_stop", false), setting(s, "jbl_auracast_stop"))
+        assertEquals("aab0022100", s.change(SettingChange.Press("jbl_auracast_stop"))!!.single().hex())
+        s.receive(packet("aab0021001"))
+        assertNull(setting(s, "jbl_auracast_source"), "nothing is received after the earbuds say so")
+    }
+
+    @Test
     fun theEarTipsAreReadAndWritten() {
         val s = JblSession(model("JBL Tune Flex 2"))
         assertTrue("aa9c0101" in s.start().map { it.hex() })

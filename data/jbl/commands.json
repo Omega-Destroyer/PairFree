@@ -144,7 +144,7 @@
       "smart_talk_get": "0060",
       "smart_talk_set": "0061",
       "hi_res_get": "0075",
-      "hi_res_set": "0076", "psap_get": "0077", "psap_set": "0078", "case_display_get": "0079", "case_display_set": "0080", "case_feature_get": "0081", "case_feature_set": "0082", "hm_passthrough": "0093", "leakage": "0E13", "env_info": "0E15", "env_status": "0E17", "env_info_1562": "0E18",
+      "hi_res_set": "0076", "personifi_status_get": "0062", "personifi_status_set": "0063", "personifi_eq_set": "0071", "personifi_flow_set": "0073", "psap_get": "0077", "psap_set": "0078", "case_display_get": "0079", "case_display_set": "0080", "case_feature_get": "0081", "case_feature_set": "0082", "hm_passthrough": "0093", "leakage": "0E13", "env_info": "0E15", "env_status": "0E17", "env_info_1562": "0E18",
       "mmi_set": "0900",
       "mmi_get": "0901",
       "nv_read": "0A00",

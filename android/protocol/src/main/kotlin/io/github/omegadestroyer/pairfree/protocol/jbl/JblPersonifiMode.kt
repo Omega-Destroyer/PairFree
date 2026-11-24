@@ -9,7 +9,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
  * on protocol 4 the five features 7680 to 7684 (`PersoniFiMode`, `HearingTestMode`, `PersoniFiSetupFlow`, `HearingTestFileSide`,
  * `HearingTestFileFrequency`), a status and level byte each (`StatusLevelSize1Feature`: the value as bit 7, 127 as the level) and the frequency in four bytes.
  */
-internal class JblPersonifiMode(private val p4: Boolean) {
+internal class JblPersonifiMode(private val p4: Boolean, private val race: Boolean = false) {
     /** Whether PersoniFi's curve is on, once the earbuds said. */
     var on: Boolean? = null
         private set
@@ -24,7 +24,16 @@ internal class JblPersonifiMode(private val p4: Boolean) {
         private set
 
     /** The first read: the one command, or the five features (which [JblHarmanKit.p4Features] asks for on protocol 4). */
-    fun reads(): List<JblFrame> = if (p4) emptyList() else listOf(JblPacket.of(JblCommand.PERSONIFI, READ))
+    fun reads(): List<JblFrame> = if (p4) emptyList() else if (race) listOf(RacePacket(JblRace.PERSONIFI_STATUS_GET)) else listOf(JblPacket.of(JblCommand.PERSONIFI, READ))
+
+    /** The Airoha models' answers to the status read and write: the on byte, the test status, the file, the side and the frequency in two bytes, low first (`notifyPersoniFiStatus`). */
+    fun raceReply(d: ByteArray) {
+        if (d.size < 4) return
+        val b = { i: Int -> d[i].toInt() and 0xFF }
+        if (b(0) != 0xFF) on = b(0) == 1
+        if (b(1) != 0xFF) testStatus = b(1)
+        if (d.size >= 6 && (b(4) != 0xFF || b(5) != 0xFF)) confirmedHz = b(4) or (b(5) shl 8)
+    }
 
     fun p4Features(): List<Int> = if (p4) P4_IDS.toList() else emptyList()
 
@@ -64,10 +73,10 @@ internal class JblPersonifiMode(private val p4: Boolean) {
     }
 
     fun readBack(key: String): JblFrame? =
-        if (key != KEY) null else if (p4) JblP4Packet.get(listOf(FEATURE_MODE)) else JblPacket.of(JblCommand.PERSONIFI, READ)
+        if (key != KEY) null else if (p4) JblP4Packet.get(listOf(FEATURE_MODE)) else if (race) RacePacket(JblRace.PERSONIFI_STATUS_GET) else JblPacket.of(JblCommand.PERSONIFI, READ)
 
-    /** The setup flow starts (`pk.e.startPersonifiFlow`). */
-    fun begin(): List<JblFrame> = write(ID_FLOW to 1)
+    /** The setup flow starts (`pk.e.startPersonifiFlow`) and the hearing test mode goes on, as the wizard's pages before the tones set it (`tk.l`, `tk.w`, `tk.k0`: `setHearingTestStatus(1)`). */
+    fun begin(): List<JblFrame> = write(ID_FLOW to 1, ID_TEST to 1)
 
     /** A tone starts: which earbud (1 left, 2 right) and its frequency (`sk.q.q2`, sent each time the next tone is due). */
     fun tone(left: Boolean, hz: Int): List<JblFrame> {
@@ -79,6 +88,20 @@ internal class JblPersonifiMode(private val p4: Boolean) {
     fun end(): List<JblFrame> = write(ID_TEST to 0, ID_FLOW to 0)
 
     private fun write(vararg pairs: Pair<Int, Int>): List<JblFrame> {
+        if (race) {
+            // The setup flow is its own message (`MmiStage_SetPersoniFiSetupFlow`), the rest one status write with 255 for what is not set (`MmiStage_SetPersoniFiStatus`, version 3).
+            val m = pairs.toMap()
+            val flow = m[ID_FLOW]?.let { RacePacket(JblRace.PERSONIFI_FLOW_SET, byteArrayOf(it.toByte())) }
+            val rest = m.filterKeys { it != ID_FLOW }
+            val status = if (rest.isEmpty()) null else {
+                val hz = rest[ID_HZ] ?: 0xFFFF
+                RacePacket(
+                    JblRace.PERSONIFI_STATUS_SET,
+                    byteArrayOf((rest[ID_ON] ?: 0xFF).toByte(), (rest[ID_TEST] ?: 0xFF).toByte(), 0xFF.toByte(), (rest[ID_SIDE] ?: 0xFF).toByte(), hz.toByte(), (hz shr 8).toByte()),
+                )
+            }
+            return listOfNotNull(flow, status)
+        }
         if (!p4) {
             val ordered = pairs.sortedBy { it.first }
             val out = ArrayList<Byte>()
@@ -103,6 +126,23 @@ internal class JblPersonifiMode(private val p4: Boolean) {
     }
 
     companion object {
+        /** `MmiStage_SetPersoniFiEQ.genRacePackets`: every number as a four-byte int, low byte first, of the float times 100 cut to an int. */
+        fun raceEq(c: JblEqCurve): ByteArray {
+            val n = c.bands.size
+            val out = ArrayList<Byte>()
+            fun int(v: Float) { val i = (v * 100f).toInt(); repeat(4) { out += (i shr (8 * it)).toByte() } }
+            out += n.toByte()
+            int(c.leftGain)
+            for (b in c.bands) {
+                out += b.type.toByte()
+                int(b.hz)
+                int(b.gainDb)
+                int(b.q)
+            }
+            if (n >= 24) int(c.rightGain)
+            return out.toByteArray()
+        }
+
         const val KEY = "jbl_personifi"
         private const val READ = 1
         private const val WRITE = 0

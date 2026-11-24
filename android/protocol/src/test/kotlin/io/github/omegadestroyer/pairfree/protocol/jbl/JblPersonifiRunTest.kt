@@ -89,7 +89,7 @@ class JblPersonifiRunTest {
         assertTrue(s.personifiTest)
         assertTrue(s.start().any { it is JblPacket && it.command == JblCommand.PERSONIFI && it.sub == 1 })
         s.personifiBegin()
-        assertEquals(listOf("aaa10300" + "0301"), s.takeEqWrite().map { it.text() })
+        assertEquals(listOf("aaa10500" + "0201" + "0301"), s.takeEqWrite().map { it.text() })
         s.personifiTone(left = true, hz = 1000)
         assertEquals(listOf("aaa10800" + "0501" + "06e8030000"), s.takeEqWrite().map { it.text() })
         s.personifiTone(left = false, hz = 12000)
@@ -129,7 +129,7 @@ class JblPersonifiRunTest {
         val s = JblSession(model("JBL Tour One M3"))
         assertTrue(s.personifiTest)
         s.personifiBegin()
-        assertEquals(listOf(JblP4Packet.set(7682 to byteArrayOf(0xFF.toByte()))), s.takeEqWrite())
+        assertEquals(listOf(JblP4Packet.set(7681 to byteArrayOf(0xFF.toByte()), 7682 to byteArrayOf(0xFF.toByte()))), s.takeEqWrite())
         s.personifiTone(left = false, hz = 250)
         assertEquals(listOf(JblP4Packet.set(7683 to byteArrayOf(0xFF.toByte()), 7684 to byteArrayOf(0xFA.toByte(), 0, 0, 0))), s.takeEqWrite())
         s.personifiTone(left = true, hz = 250)
@@ -167,4 +167,36 @@ class JblPersonifiRunTest {
         assertEquals(4, part[1].toInt())
         assertEquals(3, part[2].toInt())
     }
+
+    @Test
+    fun theAirohaModelsSendRaceFrames() {
+        val s = JblSession(model("JBL Live Buds 3"))
+        assertTrue(s.personifiTest)
+        s.personifiBegin()
+        val begin = s.takeEqWrite().map { it.race() }
+        assertEquals(listOf(0x73, 0x63), begin.map { it.id })
+        assertEquals("ff01ffffffff", begin[1].payload.joinToString("") { "%02x".format(it) })
+        s.personifiTone(left = true, hz = 1000)
+        assertEquals("ffffff01e803", s.takeEqWrite().single().race().also { assertEquals(0x63, it.id) }.payload.joinToString("") { "%02x".format(it) })
+        s.personifiEnd()
+        val end = s.takeEqWrite().map { it.race() }
+        assertEquals(listOf(0x73, 0x63), end.map { it.id })
+        assertEquals("ff00ffffffff", end[1].payload.joinToString("") { "%02x".format(it) })
+    }
+
+    @Test
+    fun theAirohaCurveIsTwentyFourBandsOfThirteenBytesAndTheRightGain() {
+        val levels = JblPersonifi.TEST_FREQS.associateWith { 28f }
+        val curve = JblPersonifi.curve(levels, levels)
+        val s = JblSession(model("JBL Tour Pro 3"))
+        assertTrue(s.personifiApply(curve))
+        val write = s.takeEqWrite().first().race()
+        assertEquals(0x71, write.id)
+        assertEquals(24 * 13 + 9, write.payload.size)
+        assertEquals(24, write.payload[0].toInt())
+        val left = (0 until 4).sumOf { (write.payload[1 + it].toInt() and 0xFF) shl (8 * it) }
+        assertEquals((curve.master.toFloat() * 100f).toInt(), left)
+    }
+
+    private fun JblFrame.race() = this as RacePacket
 }

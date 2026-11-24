@@ -36,11 +36,13 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
     private val kr = if (model.family == JblModel.Family.AIROHA) JblHarmanKitRace(model, clock, env) else null
 
     // PersoniFi's switch and the messages around its hearing test (A1, or protocol 4's features 7680 to 7684).
-    internal val personifi = if (has(PERSONIFI)) JblPersonifiMode(model.family == JblModel.Family.P4) else null
+    internal val personifi = if (has(PERSONIFI)) JblPersonifiMode(model.family == JblModel.Family.P4, model.family == JblModel.Family.AIROHA) else null
 
-    fun raceReads(): List<JblFrame> = kr?.reads().orEmpty()
-    fun raceHandles(id: Int): Boolean = kr?.handles(id) == true
-    fun race(p: RacePacket) { kr?.receive(p) }
+    fun raceReads(): List<JblFrame> = kr?.reads().orEmpty() + (if (kr != null) personifi?.reads().orEmpty() else emptyList())
+    fun raceHandles(id: Int): Boolean = kr?.handles(id) == true || (personifi != null && id in PERSONIFI_RACE)
+    fun race(p: RacePacket) {
+        if (personifi != null && p.id in PERSONIFI_RACE) { if (p.status == 0) personifi.raceReply(p.data) } else kr?.receive(p)
+    }
 
     fun p4Features(): List<Int> = k4?.features().orEmpty() + personifi?.p4Features().orEmpty()
     fun p4Start(): List<JblFrame> = k4?.start().orEmpty()
@@ -82,7 +84,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         if (has(EAR_TIPS)) add(JblPacket.of(JblCommand.EAR_TIPS, READ))
         if (has(CASE_CLOCK)) clock()?.let { add(time(it)) }
         if (has(AURACAST)) addAll(auracast.reads())
-        personifi?.let { addAll(it.reads()) }
+        if (kr == null) personifi?.let { addAll(it.reads()) }
     }
 
     private val usesDisplay: Boolean get() = DISPLAY_IDS.any { has(it) }
@@ -325,6 +327,7 @@ internal class JblHarmanKit(private val model: JblModel, private val clock: () -
         const val EAR_TIPS = "ear_tips"
         const val AURACAST = "auracast"
         const val PERSONIFI = "personifi"
+        val PERSONIFI_RACE = setOf(JblRace.PERSONIFI_STATUS_GET, JblRace.PERSONIFI_STATUS_SET)
         const val PERSONIFI_OPEN = "personifi_open"
 
         private val DISPLAY_IDS = listOf(CASE_BRIGHTNESS, CASE_NOTIFICATIONS, CASE_SCREEN_SAVER, CASE_LANGUAGE, CASE_WAKE, CASE_INFO)

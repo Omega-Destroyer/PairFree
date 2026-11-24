@@ -54,4 +54,13 @@ class JblNoiseLevelTest {
         assertEquals(Setting.Level("jbl_aa_level", 2, 0, 7, false), row(s, "jbl_aa_level"))
         assertEquals(RacePacket.of(JblRace.ANC, 0, 0x1E, 6, 0), s.change(SettingChange.Level("jbl_anc_level", 6))!!.single())
     }
+
+    @Test
+    fun airohaAdaptiveNoiseCancellingIsTheEnvironmentDetectionStatus() {
+        val s = JblSession(model("JBL Live Buds 3"))
+        assertTrue(s.start().contains(RacePacket(JblRace.ENV_STATUS, byteArrayOf(3, 2))))
+        s.receive(RacePacket(JblRace.ENV_STATUS, byteArrayOf(0, 3, 1), JblRace.TYPE_RESPONSE))
+        assertEquals(Setting.Toggle("jbl_adaptive_anc", true), row(s, "jbl_adaptive_anc"))
+        assertEquals(RacePacket(JblRace.ENV_STATUS, byteArrayOf(3, 0)), s.change(SettingChange.Toggle("jbl_adaptive_anc", false))!!.single())
+    }
 }

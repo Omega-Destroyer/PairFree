@@ -407,6 +407,30 @@ numbers of the stages' `mRaceId`:
 Open, in `data/completeness.json`: the ear canal test, an ANC user trigger (`AncStageStartAncUserTrigger`, a state machine of 1,500 lines fed with a per-model parameter file from the app's assets), of which only
 the entry and the stage are read.
 
+### 4.14 PersoniFi: the hearing test's curve
+
+Read from JBL Headphones 5.37.10 (2026-11-24): the wizard `sk/q.java` and its helpers (`ek`, `fk`, `kk`, `zk`, `ih`), the Kotlin side of `com.jbl.personifi3`, and the native library `libpersonifiAlgorithm.so`
+(16 KB). The resource pack the wizard downloads (`personifi3_resource.zip` from `appstorage.onecloud.harman.com`, a plain GET) holds only the test tones: `warble_<frequency>_<left|right>_14s.mp3` for 250, 500, 750 Hz,
+1, 1.5, 2, 3, 4, 6, 8, 10 and 12 kHz. PairFree makes its own warbles and does not ship JBL's files.
+
+**The test.** Nine tones for each ear, in this order: 1 kHz, 500 Hz, 250 Hz, 2 kHz, 4, 6, 8, 10 and 12 kHz, the left ear first (`ek.a`, `q.initData`). The user holds a finger down while a tone is audible; the tone
+fades over 14 seconds, and the seconds between the finger going down and up give the level it was heard to (`m2`): `caldB(n)` is 43 - 3n dB for n from 1 to 14 (the library's own function, and the whole of the test's scale).
+After 500 Hz, 2 kHz and 4 kHz the app adds a 750 Hz, 1.5 kHz or 3 kHz tone for that ear when the result is more than 20 dB from the preceding 1 kHz or 2 kHz result (`y1`); those extra results go to the library with the rest. While a tone plays the app tells the earbuds which one (`A1` ids 5 and 6: the side 1 or 2 and the frequency in Hz), and brackets the whole flow with the setup flow flag (`A1` id 3, 1 at the start and
+0 at the end) and the hearing test mode (id 2, 0 when it is over).
+
+**From levels to bands.** The app works out gains of its own from the levels (0.6 x the level less the tone's reference and the smallest such difference over both ears, between 0 and 9 dB; an 8 kHz high shelf of 2 dB
+when nothing has a gain; `HearingTestBandComputation`, `A2`), but only for its report screen: the library takes each band's frequency and level and works the gains out again. The app drops the 250 Hz tone before the library
+on the open-fit models (`sk/q.H1`, `zk.d.i`).
+
+**The library** (`calCompensation`, mode 3, the only one any model passes): each tone is matched to a slot of the library's 12 frequencies (250, 500, 1000, 2000, 4000, 6000, 8000, 10000, 12000, 750, 1500, 3000 Hz), the
+gain is worked out again as 0.6 x (the level - the library's own references 20, 10, 10, 15, 10, 20, 20, 10, 5, 10, 10, 10), kept between 0 and 9, the Qs are 1, 2, 2, 2, 3, 3, 3, 3, 1, 2, 2, 3 and the types 0 for 250 Hz, 2 for
+12 kHz and 1 otherwise; then bands are merged where their gains differ by less than 1 dB (the three lowest into a low shelf, the highest three or four into a high shelf, everything into a shelf at 18 kHz when the whole
+curve is flat), merged bands set to type 5 (off), and the master gain is minus the largest gain. `JblPersonifi` is a port, and `data/jbl/personifi_vectors.json` holds 400 cases of the library run in an emulator, which
+`JblPersonifiTest` reproduces exactly.
+
+Open, in `data/completeness.json`: writing the curve (the app sends it as EQ category 201 with the two ears' twelve bands each and the calibration worked out against the design EQ), the test's screen and its tone, and the
+`A1` commands and protocol 4 features around them.
+
 ## 5. How each model sends its settings
 
 The ten older BES models with no dashboard config (`com.harman.cmdctrl.imp.bes.*SdkControl`: the Live 220BT, 300TWS,

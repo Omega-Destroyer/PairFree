@@ -39,7 +39,7 @@ object JblSpec : BrandSpec(Brand.JBL) {
 
     /** PersoniFi's test, on the models whose dashboard has it and whose EQ PairFree can write its curve to. */
     override fun ownHearingTest(device: Paired): OwnHearingTest? =
-        modelOf(device)?.takeIf { "personifi" in it.extras && it.eq?.path.let { p -> p == JblEqSpec.Path.A2 || p == JblEqSpec.Path.A2_Q10 || p == JblEqSpec.Path.P4 } }
+        modelOf(device)?.takeIf { "personifi" in it.extras && it.eq?.path.let { p -> p == JblEqSpec.Path.A2 || p == JblEqSpec.Path.A2_Q10 || p == JblEqSpec.Path.P4 || p == JblEqSpec.Path.CLUB } }
             ?.let { OwnHearingTest.Jbl("personifi_open" in it.extras) }
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =

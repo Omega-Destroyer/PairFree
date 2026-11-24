@@ -66,7 +66,7 @@
       "modes": ["anc"],
       "auto_off": "v1",
       "config": "jbl_club_one.json",
-      "settings": [],
+      "settings": ["personifi"],
       "eq": {
         "path": "club",
         "presets": "jbl_club_one",

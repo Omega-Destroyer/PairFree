@@ -151,4 +151,20 @@ class JblPersonifiRunTest {
         assertEquals(0, value[1].toInt())
         assertEquals(24, value[2].toInt())
     }
+
+    @Test
+    fun theClubOneSendsPersonifisCategoryThroughThe41Transfer() {
+        val levels = JblPersonifi.TEST_FREQS.associateWith { 28f }
+        val s = JblSession(model("JBL CLUB ONE"))
+        assertTrue(s.personifiTest)
+        assertTrue(s.personifiApply(JblPersonifi.curve(levels, levels)))
+        val frames = s.takeEqWrite()
+        assertEquals("aa4001" + "04", frames.first().text().take(8)) // the user's slot is picked first
+        val header = frames.filterIsInstance<JblRaw>().first().bytes()
+        assertEquals(0x41, header[1].toInt())
+        // The first part of the payload: the user's index, then category 3.
+        val part = frames.filterIsInstance<JblRaw>()[1].bytes()
+        assertEquals(4, part[1].toInt())
+        assertEquals(3, part[2].toInt())
+    }
 }

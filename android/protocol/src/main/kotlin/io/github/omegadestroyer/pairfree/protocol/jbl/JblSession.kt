@@ -167,7 +167,7 @@ public class JblSession(initial: JblModel) {
 
     /** True when the model has PersoniFi's test and PairFree can put its curve on the earbuds (the A2 and protocol 4 writes). */
     public val personifiTest: Boolean
-        get() = extras.kit.personifi != null && model.eq?.path.let { it == JblEqSpec.Path.A2 || it == JblEqSpec.Path.A2_Q10 || it == JblEqSpec.Path.P4 }
+        get() = extras.kit.personifi != null && model.eq?.path.let { it == JblEqSpec.Path.A2 || it == JblEqSpec.Path.A2_Q10 || it == JblEqSpec.Path.P4 || it == JblEqSpec.Path.CLUB }
 
     /** True on the open-fit models, whose 250 Hz tone the library does not get. */
     public val personifiOpenFit: Boolean get() = JblHarmanKit.PERSONIFI_OPEN in model.extras
@@ -195,6 +195,13 @@ public class JblSession(initial: JblModel) {
         if (!personifiTest) return false
         val spec = model.eq ?: return false
         val eqCurve = curve.eq()
+        if (spec.path == JblEqSpec.Path.CLUB) {
+            // ClubOneControl.setEQSettings2: the user's slot is picked (40), then the curve goes as the older 41 transfer in PersoniFi's category.
+            val raw = JblEq.write41(eqCurve, graphic = false, personify = true)
+            rawOut = raw.toSet()
+            eqOut = listOf(JblEq.preset40(JblEq41.USER_INDEX)) + raw + extras.kit.personifi?.change(SettingChange.Toggle(JblPersonifiMode.KEY, true)).orEmpty()
+            return true
+        }
         val write: JblFrame = if (spec.path == JblEqSpec.Path.P4) JblEq.p4Write(eqCurve, keep = false) else JblEq.write(eqCurve, spec.path == JblEqSpec.Path.A2_Q10)
         eqOut = listOf(write) + extras.kit.personifi?.change(SettingChange.Toggle(JblPersonifiMode.KEY, true)).orEmpty()
         return true

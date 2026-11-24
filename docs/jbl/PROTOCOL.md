@@ -447,10 +447,12 @@ swings about 11 % either way about ten times a second; 3 dB quieter for each sec
 scale: 250 Hz -0.5, 500 -14, 750 -17, 1000 -20, 1500 -19, 2000 -18.5, 3000 -17, 4000 -15.5, 6000 -20, 8000 -11.5, 10000 -7.5, 12000 -2.5. PairFree makes its own tone to that description (`JblWarble`) and ships none of the files.
 Phone volume is set to the top for the test, as PairFree's other hearing tests do (`TonePlayer.begin`); how the app handles volume belongs to the wizard's other pages, listed as open below.
 
-**What PairFree builds** (27 of the 30 models with the card: those whose EQ is A2, A2 with Q in tenths or protocol 4): `JblPersonifiRun` (the order of the tones, the extra ones, the scale), `JblWarble`, the screen
+**What PairFree builds** (28 of the 30 models with the card: those whose EQ is A2, A2 with Q in tenths, protocol 4 or the Club One's 41 transfer): `JblPersonifiRun` (the order of the tones, the extra ones, the scale), `JblWarble`, the screen
 (`JblPersonifiScreen`: hold while the tone is heard, let go when it is gone; the seconds held give the level, `caldB`; a tone that plays out counts as heard to the end; a button back one tone), the write and the switch. Never tried on JBL earbuds.
 
-Open, in `data/completeness.json`: the Club One (its EQ goes as the older 41 transfer, `ClubOneControl.setEQSettings2` maps category 201 to 102), the Live Buds 3 and Tour Pro 3 (Airoha's own flows `SET_PERSONI_FI_EQ` and
+The Club One (`ClubOneControl.setEQSettings2`) picks the user's slot with 40 and sends the curve as the older 41 transfer in category 3 (`EnumEqCategory.PERSONIFY_EQ`; `BesEQControl.setEQSetting`), built too.
+
+Open, in `data/completeness.json`: the Live Buds 3 and Tour Pro 3 (Airoha's own flows `SET_PERSONI_FI_EQ` and
 `SET_PERSONI_FI_STATUS`, not traced to RACE frames), and the wizard's other pages (the sealing and noise checks before the test and the report screen), unread.
 
 ## 5. How each model sends its settings

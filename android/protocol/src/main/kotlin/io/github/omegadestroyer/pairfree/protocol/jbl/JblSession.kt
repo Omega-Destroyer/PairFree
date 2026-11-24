@@ -67,7 +67,10 @@ public class JblSession(initial: JblModel) {
     private var ascOn: Boolean? = null
 
     // The settings beyond noise control, auto power-off and auto play/pause.
-    private var extras = JblExtras(initial)
+    private var extras = JblExtras(initial) { clock() }
+
+    /** The phone's local time, which the case's clock is set to when the channel opens (docs/jbl/PROTOCOL.md section 4.11). */
+    public var clock: () -> JblWallClock? = { null }
 
     /** The EQ the earbuds hold, once they report it (docs/jbl/PROTOCOL.md section 11); a write shows here at once. */
     public var eq: JblEqCurve? = null
@@ -452,6 +455,7 @@ public class JblSession(initial: JblModel) {
                 autoOffMinutes = p.u8(2) or (p.u8(3) shl 8)
             }
             JblStatus.AUTO_PLAY_PAUSE -> autoPlayPause = p.u8(1) != 0
+            JblStatus.SEAL_CHECK -> extras.kit.sealReply(p)
         }
     }
 
@@ -544,7 +548,7 @@ public class JblSession(initial: JblModel) {
         val reread = known.family != model.family || known.noise != model.noise
         val more = known.extras != model.extras || known.smartAudioVideo != model.smartAudioVideo || known.effects != model.effects
         model = known
-        if (more) extras = JblExtras(known)
+        if (more) extras = JblExtras(known) { clock() }
         if (reread) {
             outbox += start()
         } else if (more) {
@@ -582,7 +586,7 @@ public class JblSession(initial: JblModel) {
             group("touch_left", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("left") else extras.touchRows("left")),
             group("touch_right", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("right") else extras.touchRows("right")),
             group("touch_buttons", SettingTab.CONTROLS, p5Rows()),
-        )
+        ) + extras.kit.groups()
 
     private fun noiseRows(): List<Setting> {
         if (!noiseKnown) return emptyList()

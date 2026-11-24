@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import io.github.omegadestroyer.pairfree.brands.GattChannel
 import io.github.omegadestroyer.pairfree.brands.GattSpec
 import io.github.omegadestroyer.pairfree.brands.LeTarget
+import io.github.omegadestroyer.pairfree.brands.LocalTime
 import io.github.omegadestroyer.pairfree.brands.QcyFound
 import io.github.omegadestroyer.pairfree.brands.Transport
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
@@ -78,6 +79,14 @@ class AndroidTransport(private val context: Context?, private val adapter: Bluet
         adapter?.name
     } catch (_: SecurityException) {
         null
+    }
+
+    override fun localTime(): LocalTime {
+        val c = java.util.Calendar.getInstance()
+        return LocalTime(
+            c.get(java.util.Calendar.YEAR), c.get(java.util.Calendar.MONTH) + 1, c.get(java.util.Calendar.DAY_OF_MONTH),
+            c.get(java.util.Calendar.DAY_OF_WEEK) - 1, c.get(java.util.Calendar.HOUR_OF_DAY), c.get(java.util.Calendar.MINUTE), c.get(java.util.Calendar.SECOND),
+        )
     }
 
     override fun at(address: String): LeTarget = Target(remote(address))

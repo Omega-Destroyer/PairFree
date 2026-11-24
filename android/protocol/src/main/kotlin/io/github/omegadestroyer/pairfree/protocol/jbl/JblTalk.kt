@@ -13,8 +13,11 @@ import io.github.omegadestroyer.pairfree.protocol.SettingGroup
  * waits (HandleSend; docs/jbl/PROTOCOL.md section 2). The earbuds also send changes made with their buttons as they
  * happen. Over GATT each notification is one frame ([notifications]); [mtu] is what the LE link agreed on.
  */
-public class JblTalk(model: JblModel, private val notifications: Boolean, mtu: Int? = null) : SessionTalk<JblFrame>() {
-    public val session: JblSession = JblSession(model).also { s -> mtu?.let { s.mtu = it } }
+public class JblTalk(model: JblModel, private val notifications: Boolean, mtu: Int? = null, clock: () -> JblWallClock? = { null }) : SessionTalk<JblFrame>() {
+    public val session: JblSession = JblSession(model).also { s ->
+        mtu?.let { s.mtu = it }
+        s.clock = clock
+    }
     private val parser = JblReader(race = model.family == JblModel.Family.AIROHA, p4 = model.family == JblModel.Family.P4)
     override val state: EarbudState get() = session.state
     override val groups: List<SettingGroup> get() = session.groups

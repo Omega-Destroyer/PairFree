@@ -39,6 +39,17 @@ EXTRAS = {
     "adaptive_anc": "adaptive noise cancelling",
     "auto_compensation": "auto compensation",
     "low_volume_eq": "low volume EQ",
+    "psap": "personal sound amplification",
+    "case_pages": "the smart case's pages",
+    "case_brightness": "the smart case's brightness",
+    "case_notifications": "the smart case's message notifications",
+    "case_screen_saver": "the smart case's screen saver time",
+    "case_language": "the smart case's language",
+    "case_wake": "the smart case's quick wake-up",
+    "case_info": "the smart case's version",
+    "case_clock": "the smart case's clock",
+    "fit_test": "noise check and ear canal test",
+    "ear_tips": "ear tips",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",

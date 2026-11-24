@@ -100,7 +100,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") -> optionName(setting.key, setting.value)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
@@ -245,6 +245,10 @@ private fun groupTitle(key: String): String = stringResource(
         "sound_effects" -> R.string.setting_group_sound_effects
         "noise_adaptive" -> R.string.setting_group_noise_adaptive
         "find" -> R.string.find_earbuds
+        "psap" -> R.string.setting_group_psap
+        "case" -> R.string.setting_group_case
+        "case_pages" -> R.string.setting_group_case_pages
+        "fit" -> R.string.setting_group_fit
         "find_hub" -> R.string.setting_group_find_hub
         "sk_tile" -> R.string.setting_group_sk_tile
         "light" -> R.string.setting_group_light
@@ -602,6 +606,40 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "jbl_smart_audio_video" -> stringResource(R.string.setting_jbl_smart_audio_video)
     "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware)
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound)
+    "jbl_psap" -> stringResource(R.string.setting_jbl_psap)
+    "jbl_psap_balance" -> stringResource(R.string.setting_jbl_psap_balance)
+    "jbl_psap_gain" -> stringResource(R.string.setting_jbl_psap_gain)
+    "jbl_case_brightness" -> stringResource(R.string.setting_jbl_case_brightness)
+    "jbl_case_notifications" -> stringResource(R.string.setting_jbl_case_notifications)
+    "jbl_case_preview" -> stringResource(R.string.setting_jbl_case_preview)
+    "jbl_case_screen_time" -> stringResource(R.string.setting_jbl_case_screen_time)
+    "jbl_case_language" -> stringResource(R.string.setting_jbl_case_language)
+    "jbl_case_wake" -> stringResource(R.string.setting_jbl_case_wake)
+    "jbl_case_wake_tap" -> stringResource(R.string.setting_jbl_case_wake_tap)
+    "jbl_case_version" -> stringResource(R.string.setting_jbl_case_version)
+    "jbl_case_latest" -> stringResource(R.string.setting_jbl_case_latest)
+    "jbl_fit_noise" -> stringResource(R.string.setting_jbl_fit_noise)
+    "jbl_canal_result" -> stringResource(R.string.setting_jbl_canal_result)
+    "jbl_ear_tips" -> stringResource(R.string.setting_jbl_ear_tips)
+    "jbl_seal_left" -> stringResource(R.string.setting_jbl_seal_left)
+    "jbl_seal_right" -> stringResource(R.string.setting_jbl_seal_right)
+    "jbl_case_page_ambient" -> stringResource(R.string.setting_jbl_case_page_ambient)
+    "jbl_case_page_equalizer" -> stringResource(R.string.setting_jbl_case_page_equalizer)
+    "jbl_case_page_speak_to_chat" -> stringResource(R.string.setting_jbl_case_page_speak_to_chat)
+    "jbl_case_page_spatial" -> stringResource(R.string.setting_jbl_case_page_spatial)
+    "jbl_case_page_low_eq" -> stringResource(R.string.setting_jbl_case_page_low_eq)
+    "jbl_case_page_voice_aware" -> stringResource(R.string.setting_jbl_case_page_voice_aware)
+    "jbl_case_page_auto_pause" -> stringResource(R.string.setting_jbl_case_page_auto_pause)
+    "jbl_case_page_silent_now" -> stringResource(R.string.setting_jbl_case_page_silent_now)
+    "jbl_case_page_in_case" -> stringResource(R.string.setting_jbl_case_page_in_case)
+    "jbl_case_page_timer" -> stringResource(R.string.setting_jbl_case_page_timer)
+    "jbl_case_page_wallpaper" -> stringResource(R.string.setting_jbl_case_page_wallpaper)
+    "jbl_case_page_notification" -> stringResource(R.string.setting_jbl_case_page_notification)
+    "jbl_case_page_find" -> stringResource(R.string.setting_jbl_case_page_find)
+    "jbl_case_page_flashlight" -> stringResource(R.string.setting_jbl_case_page_flashlight)
+    "jbl_case_page_music" -> stringResource(R.string.setting_jbl_case_page_music)
+    "jbl_case_page_volume" -> stringResource(R.string.setting_jbl_case_page_volume)
+    "jbl_case_page_brightness" -> stringResource(R.string.setting_jbl_case_page_brightness)
     "jbl_spatial" -> stringResource(R.string.setting_jbl_spatial)
     "jbl_call_effect" -> stringResource(R.string.setting_jbl_call_effect)
     "jbl_audio_limiter" -> stringResource(R.string.setting_jbl_audio_limiter)
@@ -968,6 +1006,9 @@ private fun settingNote(key: String): String? = when (key) {
     "jbl_smart_audio_video" -> stringResource(R.string.setting_jbl_smart_audio_video_note)
     "jbl_voice_aware" -> stringResource(R.string.setting_jbl_voice_aware_note)
     "jbl_safe_sound" -> stringResource(R.string.setting_jbl_safe_sound_note)
+    "jbl_psap" -> stringResource(R.string.setting_jbl_psap_note)
+    "jbl_case_wake" -> stringResource(R.string.setting_jbl_case_wake_note)
+    "jbl_ear_tips" -> stringResource(R.string.setting_jbl_ear_tips_note)
     "jbl_speak_to_chat" -> stringResource(R.string.setting_jbl_speak_to_chat_note)
     "jbl_touch_left", "jbl_touch_right" -> stringResource(R.string.setting_jbl_touch_note)
     "jbl_adaptive_anc" -> stringResource(R.string.setting_jbl_adaptive_anc_note)
@@ -1427,6 +1468,11 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
             else -> R.string.action_off
         },
     )
+    key == "jbl_case_language" -> JBL_CASE_LANGUAGES[option]?.let { getString(it) } ?: option
+    key == "jbl_case_wake_tap" -> getString(when (option) { "single_tap" -> R.string.setting_jbl_tap_single; "double_tap" -> R.string.setting_jbl_tap_double; else -> R.string.setting_jbl_tap_triple })
+    key == "jbl_ear_tips" -> getString(if (option == "open") R.string.setting_jbl_tips_open else R.string.setting_jbl_tips_sealing)
+    key == "jbl_seal_left" || key == "jbl_seal_right" -> getString(if (option == "sealed") R.string.setting_jbl_sealed else R.string.setting_jbl_not_sealed)
+    key == "jbl_canal_result" -> getString(if (option == "done") R.string.setting_jbl_canal_done else R.string.setting_jbl_canal_failed)
     key == "jbl_spatial" -> getString(
         when (option) {
             "music" -> R.string.setting_jbl_music
@@ -1579,9 +1625,35 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     else -> option
 }
 
+/** The smart case's languages, each named in itself. */
+private val JBL_CASE_LANGUAGES = mapOf(
+    "english" to R.string.setting_jbl_lang_english,
+    "dutch" to R.string.setting_jbl_lang_dutch,
+    "french" to R.string.setting_jbl_lang_french,
+    "german" to R.string.setting_jbl_lang_german,
+    "italian" to R.string.setting_jbl_lang_italian,
+    "japanese" to R.string.setting_jbl_lang_japanese,
+    "korean" to R.string.setting_jbl_lang_korean,
+    "portuguese" to R.string.setting_jbl_lang_portuguese,
+    "russian" to R.string.setting_jbl_lang_russian,
+    "chinese_simplified" to R.string.setting_jbl_lang_chinese_simplified,
+    "spanish" to R.string.setting_jbl_lang_spanish,
+    "thai" to R.string.setting_jbl_lang_thai,
+    "vietnamese" to R.string.setting_jbl_lang_vietnamese,
+)
+
 /** A level's value in words where it has some: balance from the middle, the tone from soft to clear. */
 @Composable
 private fun levelName(key: String, value: Int, max: Int): String = when (key) {
+    "jbl_case_screen_time" -> if (value == 0) stringResource(R.string.setting_jbl_case_never) else stringResource(R.string.setting_jbl_case_seconds, value * 5)
+    "jbl_psap_balance" -> {
+        val middle = max / 2
+        when {
+            value < middle -> stringResource(R.string.setting_balance_left, middle - value)
+            value > middle -> stringResource(R.string.setting_balance_right, value - middle)
+            else -> stringResource(R.string.setting_balance_middle)
+        }
+    }
     "balance" -> {
         val middle = max / 2
         when {
@@ -1621,6 +1693,9 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_left" -> R.string.setting_sh_find_left
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
+    "jbl_seal_check" -> R.string.setting_jbl_seal_check
+    "jbl_noise_check" -> R.string.setting_jbl_noise_check
+    "jbl_canal_test" -> R.string.setting_jbl_canal_test
     "sh_auracast_scan" -> R.string.setting_sh_auracast_scan
     "sk_voice_on" -> R.string.setting_sk_voice_on
     "sk_voice_off" -> R.string.setting_sk_voice_off
@@ -1632,5 +1707,6 @@ private fun actionStop(key: String): Int = when (key) {
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
     "sh_fit_test" -> R.string.setting_sh_fit_cancel
+    "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> R.string.setting_jbl_testing
     else -> R.string.setting_action_stop
 }

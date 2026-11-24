@@ -12,7 +12,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
  * commands for the direct and feature families (with feature records for the effect, the limiter and Hi-Res on the
  * feature family), protocol 4's features for the p4 family, Airoha's RACE commands for the Airoha models.
  */
-internal class JblExtras(private val model: JblModel) {
+internal class JblExtras(private val model: JblModel, clock: () -> JblWallClock? = { null }) {
     private val p4 get() = model.family == JblModel.Family.P4
     private val race get() = model.family == JblModel.Family.AIROHA
     private fun has(id: String) = id in model.extras
@@ -43,8 +43,12 @@ internal class JblExtras(private val model: JblModel) {
     private var mutedLeft = false
     private var mutedRight = false
 
+    /** PSAP, the smart case, the clock, the fit test and the ear tips (docs/jbl/PROTOCOL.md section 4.11). */
+    val kit = JblHarmanKit(model, clock)
+
     /** The reads of a direct or feature model, after its own. */
     fun reads(): List<JblFrame> = if (p4 || race) emptyList() else buildList {
+        addAll(kit.reads())
         if (has(SMART_AV)) add(smartRead())
         if (has(VOICE_PROMPTS)) add(JblPacket.of(JblCommand.VOICE_PROMPTS, PROMPT_READ))
         if (has(BALANCE)) add(JblPacket.of(JblCommand.BALANCE, READ))
@@ -146,11 +150,12 @@ internal class JblExtras(private val model: JblModel) {
     }
 
     /** The commands whose answers [aa] reads. */
-    fun reportsAa(command: Int): Boolean = command in AA_COMMANDS
+    fun reportsAa(command: Int): Boolean = command in AA_COMMANDS || kit.reportsAa(command)
 
     /** A Harman reply (02 is the reply's sub-command for each). */
     fun aa(command: Int, p: ByteArray) {
         if (p.isEmpty()) return
+        if (kit.reportsAa(command)) return kit.aa(command, p)
         when (command) {
             JblCommand.SMART_SWITCH -> if (p.u8(0) == RET && p.size >= 9) smartSwitch = (0 until 4).map { p.u16(1 + it * 2) }
             // The BES models' reply holds the four numbers with no sub-command in front.
@@ -338,7 +343,9 @@ internal class JblExtras(private val model: JblModel) {
     }
 
     /** The frames for a change to one of these rows, or null when the change is not one of them. */
-    fun change(change: SettingChange): List<JblFrame>? = when (change) {
+    fun change(change: SettingChange): List<JblFrame>? = kit.change(change) ?: changeOwn(change)
+
+    private fun changeOwn(change: SettingChange): List<JblFrame>? = when (change) {
         is SettingChange.Toggle -> when (change.key) {
             PROMPTS_KEY -> listOf(prompts(change.on))
             SAFE_SOUND_KEY -> listOf(safe(change.on))
@@ -366,6 +373,7 @@ internal class JblExtras(private val model: JblModel) {
 
     /** The read that confirms a change to [key]. */
     fun readBack(key: String): JblFrame? {
+        kit.readBack(key)?.let { return it }
         if (race) {
             return when (key) {
                 SMART_KEY -> RacePacket.of(JblRace.KEY_EVENT, JblRace.KEY_SMART_SWITCH_GET and 0xFF, JblRace.KEY_SMART_SWITCH_GET shr 8)

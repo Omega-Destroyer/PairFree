@@ -6,6 +6,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.brands.GattChannel
 import io.github.omegadestroyer.pairfree.brands.GattSpec
 import io.github.omegadestroyer.pairfree.brands.LeTarget
+import io.github.omegadestroyer.pairfree.brands.LocalTime
 import io.github.omegadestroyer.pairfree.brands.PlatformInfo
 import io.github.omegadestroyer.pairfree.brands.QcyFound
 import io.github.omegadestroyer.pairfree.brands.Transport
@@ -40,6 +41,12 @@ class WindowsTransport : Transport {
     override fun isLeOnly(address: String): Boolean = false
 
     override fun hostName(): String? = computerName()
+
+    override fun localTime(): LocalTime = memScoped {
+        val t = alloc<platform.windows.SYSTEMTIME>()
+        platform.windows.GetLocalTime(t.ptr)
+        LocalTime(t.wYear.toInt(), t.wMonth.toInt(), t.wDay.toInt(), t.wDayOfWeek.toInt(), t.wHour.toInt(), t.wMinute.toInt(), t.wSecond.toInt())
+    }
 
     override fun at(address: String): LeTarget = WinLeTarget(address)
 

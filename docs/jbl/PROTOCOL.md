@@ -447,13 +447,14 @@ swings about 11 % either way about ten times a second; 3 dB quieter for each sec
 scale: 250 Hz -0.5, 500 -14, 750 -17, 1000 -20, 1500 -19, 2000 -18.5, 3000 -17, 4000 -15.5, 6000 -20, 8000 -11.5, 10000 -7.5, 12000 -2.5. PairFree makes its own tone to that description (`JblWarble`) and ships none of the files.
 Phone volume is set to the top for the test, as PairFree's other hearing tests do (`TonePlayer.begin`); how the app handles volume belongs to the wizard's other pages, listed as open below.
 
-**What PairFree builds** (28 of the 30 models with the card: those whose EQ is A2, A2 with Q in tenths, protocol 4 or the Club One's 41 transfer): `JblPersonifiRun` (the order of the tones, the extra ones, the scale), `JblWarble`, the screen
+**What PairFree builds** (all 30 models with the card): `JblPersonifiRun` (the order of the tones, the extra ones, the scale), `JblWarble`, the screen
 (`JblPersonifiScreen`: hold while the tone is heard, let go when it is gone; the seconds held give the level, `caldB`; a tone that plays out counts as heard to the end; a button back one tone), the write and the switch. Never tried on JBL earbuds.
 
 The Club One (`ClubOneControl.setEQSettings2`) picks the user's slot with 40 and sends the curve as the older 41 transfer in category 3 (`EnumEqCategory.PERSONIFY_EQ`; `BesEQControl.setEQSetting`), built too.
 
-Open, in `data/completeness.json`: the Live Buds 3 and Tour Pro 3 (Airoha's own flows `SET_PERSONI_FI_EQ` and
-`SET_PERSONI_FI_STATUS`, not traced to RACE frames), and the wizard's other pages (the sealing and noise checks before the test and the report screen), unread.
+The Airoha models (Live Buds 3, Tour Pro 3) send the same over RACE (`MmiStage_SetPersoniFiStatus` 0063 and its read 0062: the on byte, the test status, the file, the side and the frequency in two bytes, low first, 255 for what is not set; `MmiStage_SetPersoniFiSetupFlow` 0073: the flag; `MmiStage_SetPersoniFiEQ` 0071: the band count, the left gain in hundredths of a dB in four bytes, per band its type and frequency, gain and Q in hundredths, four bytes each, and with 24 bands the right gain), built too. The wizard sets the hearing test mode on in the pages before the tones; PairFree does as it begins.
+
+Open, in `data/completeness.json`: the wizard's pages before the tones (the sealing page with the noise check, the sealing status and the in-ear status, the 75 Hz seal tone per ear with the file side flag, the can't-hear page and the report of the levels in bands), whose device traffic PairFree has in its own noise check and seal check but not as the wizard's sequence.
 
 ## 5. How each model sends its settings
 

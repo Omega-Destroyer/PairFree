@@ -167,7 +167,7 @@ public class JblSession(initial: JblModel) {
 
     /** True when the model has PersoniFi's test and PairFree can put its curve on the earbuds (the A2 and protocol 4 writes). */
     public val personifiTest: Boolean
-        get() = extras.kit.personifi != null && model.eq?.path.let { it == JblEqSpec.Path.A2 || it == JblEqSpec.Path.A2_Q10 || it == JblEqSpec.Path.P4 || it == JblEqSpec.Path.CLUB }
+        get() = extras.kit.personifi != null && model.eq?.path.let { it == JblEqSpec.Path.A2 || it == JblEqSpec.Path.A2_Q10 || it == JblEqSpec.Path.P4 || it == JblEqSpec.Path.CLUB || it == JblEqSpec.Path.AIROHA }
 
     /** True on the open-fit models, whose 250 Hz tone the library does not get. */
     public val personifiOpenFit: Boolean get() = JblHarmanKit.PERSONIFI_OPEN in model.extras
@@ -195,6 +195,11 @@ public class JblSession(initial: JblModel) {
         if (!personifiTest) return false
         val spec = model.eq ?: return false
         val eqCurve = curve.eq()
+        if (spec.path == JblEqSpec.Path.AIROHA) {
+            // MmiStage_SetPersoniFiEQ: the band count, the left gain in hundredths of a dB (four bytes), each band's type, frequency, gain and Q in hundredths, and with 24 bands the right gain.
+            eqOut = listOf(RacePacket(JblRace.PERSONIFI_EQ_SET, JblPersonifiMode.raceEq(eqCurve))) + extras.kit.personifi?.change(SettingChange.Toggle(JblPersonifiMode.KEY, true)).orEmpty()
+            return true
+        }
         if (spec.path == JblEqSpec.Path.CLUB) {
             // ClubOneControl.setEQSettings2: the user's slot is picked (40), then the curve goes as the older 41 transfer in PersoniFi's category.
             val raw = JblEq.write41(eqCurve, graphic = false, personify = true)
@@ -895,6 +900,7 @@ public class JblSession(initial: JblModel) {
     private fun raceAllowed(p: RacePacket): Boolean = when {
         // The case's clock: JBL's own Harman frame A7 through the passthrough, as the app writes it on connecting (section 4.13).
         p.id == JblRace.HM_PASSTHROUGH -> p.payload.size >= 4 && (p.payload[0].toInt() and 0xFF) == 0xAA && (p.payload[1].toInt() and 0xFF) == JblCommand.SYNC_TIME
+        p.id == JblRace.PERSONIFI_EQ_SET || p.id == JblRace.PERSONIFI_FLOW_SET || p.id == JblRace.PERSONIFI_STATUS_SET -> true
         p.id in JblRace.NEVER_SEND -> false
         p.id == JblRace.KEY_EVENT -> p.payload.size >= 2 && ((p.payload[0].toInt() and 0xFF) or ((p.payload[1].toInt() and 0xFF) shl 8)) in JblRace.KEY_EVENTS
         p.id in RACE_FIRMWARE_UPDATE -> p.id == JblRace.FIRMWARE || p.id == JblRace.AE_INFO

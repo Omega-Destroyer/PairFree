@@ -132,7 +132,7 @@ class QcyTest {
         val reads = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.READ }.map { it.short }
         assertEquals(listOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT, QcyWire.EQ_SHORT), reads)
         val asked = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.WRITE }.map { QcyPacket.parse(it.value).single().u8(0) }
-        assertEquals(listOf(QcyItem.TONE_VOLUME, QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.POWER_MANAGER, QcyItem.MULTI_EQ_2), asked)
+        assertEquals(listOf(QcyItem.TONE_VOLUME, QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.POWER_MANAGER, QcyItem.MULTI_EQ_2, QcyItem.MAX_EQ_COUNT), asked)
         val s = n70()
         assertTrue(start.all(s::allowed))
         assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.FACTORY_RESET))))
@@ -358,6 +358,62 @@ class QcyTest {
         val low = (10..100 step 5).sumOf { power(it) }
         val high = (4100..7900 step 100).sumOf { power(it) }
         assertTrue(low > high * 50, "mostly below 100 Hz: $low against $high")
+    }
+
+    @Test
+    fun thePersonalisedListeningTest() {
+        // 2026-11-24, from QCY's app 4.0.7 (CustomEQEdit2Activity, BeepTool2, getMaxGain, setSideEQData); 8 models' panels have it. Built from the code, not recorded.
+        val spec = QcyModels.of(23872)!!.eq!!.personal!!
+        assertEquals(8, spec.bands.size)
+        assertEquals(63, spec.bands.first().hz)
+        assertEquals(-65.3, spec.bands.first().db)
+        assertEquals(8, QcyModels.ALL.count { it.eq?.personal != null })
+        // Two bands: the tone's level and how a band settles.
+        val two = QcyPersonal(listOf(QcyPersonal.Band(63, 0.7, 2, 2.0, -65.3), QcyPersonal.Band(1000, 0.7, 2, 2.0, -86.9)), 4.0, emptyList())
+        val test = QcyPersonalTest(two)
+        assertEquals(-55.3, test.toneDb, 1e-9, "gain 2 is 10 dB above the reference")
+        test.heard()
+        test.heard()
+        assertEquals(0, test.gain)
+        test.heard()
+        assertEquals(-2, test.gain, "two steps at a time below 500 Hz once the gain is 0 or less")
+        assertEquals(-70.3, test.toneDb, 1e-9)
+        test.heard()
+        assertEquals(-4, test.gain)
+        test.heard()
+        assertEquals(0, test.band, "heard once at -4: not settled")
+        test.heard()
+        assertEquals(1, test.band)
+        assertEquals(-4, test.left[0])
+        // Not heard: a step up each time, settled by two failures at 6.
+        repeat(4) { test.notHeard() }
+        assertEquals(6, test.gain)
+        test.notHeard()
+        assertEquals(1, test.band)
+        test.notHeard()
+        assertEquals(0, test.band)
+        assertEquals(1, test.ear)
+        assertEquals(6, test.left[1])
+        assertFalse(test.finished)
+        // The right ear in a hurry: hear it at once at the lowest gain.
+        repeat(2) {
+            repeat(10) { test.notHeard() }
+        }
+        assertTrue(test.finished)
+        // The frames: item 46 then 47 under index 11, eight bands of seven bytes (hertz, gain, Q, type), and a master gain.
+        val frames = QcyModels.of(23872)!!.eq!!.personal!!.let { QcyPersonalTest(it).frames() }
+        assertEquals(2, frames.size)
+        val left = GattEnvelope.out(frames[0])!!.value
+        assertEquals(QcyItem.MULTI_EQ_LEFT, left[2].toInt() and 0xFF)
+        assertEquals(3 + 8 * 7, left[3].toInt() and 0xFF)
+        assertEquals(11, left[4].toInt())
+        assertEquals(QcyItem.MULTI_EQ_RIGHT, GattEnvelope.out(frames[1])!!.value[2].toInt() and 0xFF)
+        assertTrue(frames.all { QcySession(QcyModels.of(23872)).allowed(it) })
+        assertEquals("ff03450101", hex(GattEnvelope.out(QcyPersonal.testMode(true))!!.value))
+        // The master gain: one band raised 8 dB at 63 Hz peaks at 8.5 dB, over the panel's 4, so the master is -10 + (4 - 8.5).
+        val master = two.maxGain(listOf(QcyParamPreset.Band(63, 8.0, 0.7, 2)))
+        assertEquals(-14.5, master, 0.05)
+        assertEquals(-10.0, two.maxGain(listOf(QcyParamPreset.Band(63, 0.0, 0.7, 2))), 1e-9, "flat: the last master gain")
     }
 
     @Test

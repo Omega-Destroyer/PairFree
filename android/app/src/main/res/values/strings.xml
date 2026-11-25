@@ -413,6 +413,14 @@
     <string name="finder_save">Save as %1$s</string>
     <string name="finder_discard">Go back to how it was</string>
     <string name="finder_result">My sound</string>
+    <string name="qcy_personal_intro">Personalised listening: a tone plays in one earbud at a time, and you say whether you hear it. Find a quiet place, put both earbuds in and stop any music or video first. Keep the phone\'s volume where you normally listen: the tones are quiet and the test is worked out for that setting. The result is put on the earbuds as their left and right equalizer, as QCY\'s app does.</string>
+    <string name="qcy_personal_tone">%1$s earbud, %2$d Hz (%3$d of %4$d)</string>
+    <string name="qcy_personal_heard">I hear it</string>
+    <string name="qcy_personal_not_heard">I do not hear it</string>
+    <string name="qcy_personal_done">Done. These are the gains the test found for each band, left and right. Use them to put the two curves on the earbuds, or test again.</string>
+    <string name="qcy_personal_use">Use this result</string>
+    <string name="qcy_personal_again">Test again</string>
+    <string name="qcy_personal_used">The result is on the earbuds.</string>
     <string name="samsung_hearing_intro">Adapt Sound: the earbuds play quiet tones, one earbud and one pitch at a time, and you say whether you hear each one. Find a quiet place, put both earbuds in and stop any music or video first. The result is kept on the earbuds as your Adapt Sound profile.</string>
     <string name="samsung_hearing_tone">Tone in the %1$s earbud</string>
     <string name="samsung_hearing_left">left</string>

@@ -414,6 +414,9 @@ sealed interface OwnHearingTest {
 
     /** JBL's PersoniFi (docs/jbl/PROTOCOL.md section 4.14); [openFit] models leave their lowest tone out of the curve. */
     data class Jbl(val openFit: Boolean) : OwnHearingTest
+
+    /** QCY's personalised listening test (docs/qcy/PROTOCOL.md section 8), on the 8 models whose panel has it. */
+    data class Qcy(val spec: io.github.omegadestroyer.pairfree.protocol.qcy.QcyPersonal) : OwnHearingTest
 }
 
 /**

@@ -49,6 +49,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     private var keys: Map<Int, Int>? = null
     private var graphic: Pair<Int, List<Int>>? = null   // the EQ characteristic: its type, then a gain per band in dB
     private var parametric: QcyParametric? = null
+    private var maxEq: Int? = null                      // item 44: the most bands the earbuds take (QCY's app trims a longer EQ to it)
 
     init {
         advert?.let { battery(byteArrayOf(raw(it.left), raw(it.right), raw(it.case))) }
@@ -67,6 +68,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         if (model?.eq != null) {
             add(GattEnvelope.read(QcyWire.EQ_SHORT))
             add(request(QcyItem.MULTI_EQ_2))
+            if (model?.eq?.paramPresets.orEmpty().isNotEmpty()) add(request(QcyItem.MAX_EQ_COUNT))
         }
     }
 
@@ -179,6 +181,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
             QcyItem.VERSION -> version(e.value)
             QcyItem.KEY_FUNCTION -> keys = (0 until e.value.size / 2).associate { e.u8(it * 2) to e.u8(it * 2 + 1) }
             QcyItem.FIT_TEST -> fitResult(e.value)
+            QcyItem.MAX_EQ_COUNT -> maxEq = e.u8(0).takeIf { it > 0 }
             QcyItem.MULTI_EQ_2 -> QcyParametric.parse(e.value, typed = true)?.let { parametric = it }
             QcyItem.MULTI_EQ -> QcyParametric.parse(e.value, typed = false)?.let { parametric = it }
             else -> values[e.item] = e.value.copyOf()
@@ -217,7 +220,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     override fun eqPreset(name: String): List<ByteArray>? {
         val preset = model?.eq?.paramPresets?.firstOrNull { it.name == name } ?: return null
         val p = parametric ?: return null
-        if (preset.bands.size > maxOf(p.slots, p.bands.size)) return null
+        if (preset.bands.size > maxOf(p.slots, p.bands.size) || preset.bands.size > (maxEq ?: Int.MAX_VALUE)) return null
         val bands = preset.bands.map { QcyParametric.Band(it.hz, hundredths(it.gainDb), hundredths(it.q), if (p.item == QcyItem.MULTI_EQ_2) it.type else null) }
         val master = preset.masterDb?.let(::hundredths) ?: -(preset.bands.maxOf { it.gainDb }.coerceAtLeast(0.0).let(::hundredths))
         val next = p.copy(index = preset.id?.takeIf { it in 1..126 } ?: EQ_CUSTOM, masterHundredths = master, bands = bands)
@@ -654,16 +657,19 @@ public data class QcyEq(val freqs: List<Int>, val gains: List<Int>, val custom: 
 public data class QcyParametric(val item: Int, val index: Int, val masterHundredths: Int, val bands: List<Band>, val slots: Int = 0) {
     public data class Band(val hz: Int, val gainHundredths: Int, val qHundredths: Int, val type: Int?)
 
+    /** Items 22 and the left and right ones (46, 47) carry a filter type after each band. */
+    private fun typedItem(): Boolean = item == QcyItem.MULTI_EQ_2 || item == QcyItem.MULTI_EQ_LEFT || item == QcyItem.MULTI_EQ_RIGHT
+
     public fun bytes(): ByteArray {
         val out = mutableListOf(index, masterHundredths and 0xFF, (masterHundredths shr 8) and 0xFF)
         for (b in bands) {
             out += listOf(b.hz and 0xFF, (b.hz shr 8) and 0xFF, b.gainHundredths and 0xFF, (b.gainHundredths shr 8) and 0xFF, b.qHundredths and 0xFF, (b.qHundredths shr 8) and 0xFF)
-            if (item == QcyItem.MULTI_EQ_2) out += (b.type ?: 0)
+            if (typedItem()) out += (b.type ?: 0)
         }
         // The slots the earbuds reported beyond these hold nothing: QCY's app sends them as empty bands (frequency 0, gain 0, Q 0, type 255).
         repeat(slots - bands.size) {
             repeat(6) { out += 0 }
-            if (item == QcyItem.MULTI_EQ_2) out += 255
+            if (typedItem()) out += 255
         }
         return ByteArray(out.size) { out[it].toByte() }
     }

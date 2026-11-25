@@ -114,6 +114,31 @@ def preset_gains(layout, eq):
     return out
 
 
+def personal_test(layout):
+    """The personalised listening test of a panel (`individuation_eq`, QCY's app: CustomEQEdit2Activity): the bands it tests (frequency, the gain each starts at, Q, filter
+    type), each band's reference level `soundDB`, the panel's `volumelevel`, and the panel's preset with id 1, which QCY's app adds to the sum it works the master gain out
+    from (QCYConnectManager.getMaxGain). Bands are "hertz/gain/Q/type" joined by spaces, as in `preset_params`."""
+    ie = layout.get("individuation_eq")
+    base = [p for p in layout.get("sys_eq", []) if p.get("id") == 1 and p.get("freq") and p.get("q")]
+    if not ie or not base:
+        return None
+    def nums(s, kind=float):
+        return [kind(x) for x in str(s).split(",") if x.strip()]
+    hz = [freq(x) for x in str(ie["freq"]).split(",") if x.strip()]
+    gains, qs, types, db = nums(ie["eqs"]), nums(ie["q"]), nums(ie.get("iitType", ""), int), nums(ie["soundDB"])
+    n = min(len(hz), len(gains), len(qs), len(db))
+    b = base[0]
+    bhz, bg, bq = [freq(x) for x in str(b["freq"]).split(",") if x.strip()], nums(b["eqs"]), nums(b["q"])
+    bt = nums(b.get("iitType", ""), int)
+    m = min(len(bhz), len(bg), len(bq))
+    return {
+        "bands": " ".join("%d/%s/%s/%d" % (hz[i], gains[i], qs[i], types[i] if i < len(types) else 255) for i in range(n)),
+        "db": ",".join(str(x) for x in db[:n]),
+        "volume": float(layout.get("volumelevel") or 0),
+        "base": " ".join("%d/%s/%s/%d" % (bhz[i], bg[i], bq[i], bt[i] if i < len(bt) else 255) for i in range(m)),
+    }
+
+
 def parametric_presets(layout, taken):
     """The presets of a panel whose own bands differ from the model's (each lists its frequencies, Qs, gains and filter types): QCY's app writes one as the parametric EQ
     (QCYConnectManager.setEQWtihQFG / setEQWtihQFG2) with the preset's `id` as the EQ index when it has one, the panel's `mastergain` as the master gain, and each band's
@@ -236,6 +261,9 @@ def features(panel):
             params = parametric_presets(l, [g["name"] for g in gains])
             if params:
                 out["eq"]["preset_params"] = params
+            personal = personal_test(l)
+            if personal:
+                out["eq"]["personal"] = personal
         elif t in (10, 14) and (l.get("music") or {}).get("event"):
             # The button screen of the newer panels (the older type 1 screen is not read, as in the Quicky list).
             events = [(e["name"], e["left"]["list"]) for e in l["music"]["event"]]
@@ -392,7 +420,7 @@ def main():
         for v, d in have.items():
             if d.get("eq") and v in prods and panel(v):
                 made = entry(prods[v], panel(v)).get("eq") or {}
-                for key in ("preset_gains", "preset_params"):
+                for key in ("preset_gains", "preset_params", "personal"):
                     if made.get(key) and d["eq"].get(key) != made[key]:
                         d["eq"][key] = made[key]
                         added += 1

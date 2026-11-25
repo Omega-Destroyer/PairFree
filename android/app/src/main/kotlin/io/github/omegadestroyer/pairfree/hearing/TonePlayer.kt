@@ -112,6 +112,31 @@ class TonePlayer(context: Context) {
         t.play()
     }
 
+    /**
+     * A steady tone of [hz] at [db] dB full scale in one earbud ([LEFT] or [RIGHT]) until [stop], without the fades [playOnSide] puts at the ends of its buffer: one
+     * second of a whole number of cycles repeats without a seam. QCY's listening test (`BeepTool2`) plays its tones the same way, amplitude 10^(dB/20) of full scale.
+     */
+    fun playSteady(hz: Int, db: Double, side: Int) {
+        stop()
+        val amplitude = minOf(10.0.pow(db / 20.0), 1.0)
+        val samples = FloatArray(RATE * 2)
+        for (i in 0 until RATE) {
+            val v = (amplitude * sin(2 * PI * hz * i / RATE)).toFloat()
+            samples[2 * i] = if (side == RIGHT) 0f else v
+            samples[2 * i + 1] = if (side == LEFT) 0f else v
+        }
+        val t = AudioTrack.Builder()
+            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+            .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(RATE).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
+            .build()
+        t.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        t.setLoopPoints(0, RATE, -1)
+        track = t
+        t.play()
+    }
+
     /** Plays [mono] (made at [rate]) in both ears over and over until [stop]: QCY's fit test sound. */
     fun playLoop(mono: FloatArray, rate: Int) {
         stop()

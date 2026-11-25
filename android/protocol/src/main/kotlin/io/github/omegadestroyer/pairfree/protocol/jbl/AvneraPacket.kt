@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.jbl
 
+import io.github.omegadestroyer.pairfree.protocol.toHex2
+
 /**
  * The packets of Avnera's "LightX" protocol, which the Everest Elite range and the Reflect Aware speak over the standard serial port (docs/jbl/PROTOCOL.md section 12; read from
  * JBL Headphones 5.37.10's `a7` package). A frame is `FF 5A 00 00`, its length in two bytes (high first, the whole frame), a 12-byte packet header and a buffer, and a check byte:
@@ -44,7 +46,7 @@ public class AvneraPacket(
         return (0 until 4).sumOf { (b[at + it].toInt() and 0xFF) shl (8 * it) }
     }
 
-    override fun toString(): String = "AvneraPacket(opcode=$opcode key=$key status=$status buffer=${buffer?.joinToString("") { "%02x".format(it) }})"
+    override fun toString(): String = "AvneraPacket(opcode=$opcode key=$key status=$status buffer=${buffer?.joinToString("") { it.toHex2() }})"
 
     public companion object {
         public const val READ: Int = 1

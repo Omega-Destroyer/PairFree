@@ -257,7 +257,7 @@ class EarbudsConnection(
                     note("stopped: ${ConnectionReport.describe(e)}")
                 }
                 log?.invoke("closed")
-                note("closed after ${openedAt.elapsedNow().inWholeSeconds} s")
+                note("closed after ${openedAt.elapsedNow().inWholeSeconds} s" + (opened.traffic?.let { " ($it)" } ?: ""))
                 opened.close()
                 // A channel that keeps closing straight away does not earn fresh retries.
                 if (openedAt.elapsedNow().inWholeMilliseconds >= STABLE_MS) retries = 0

@@ -140,7 +140,17 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             fastPair == true,
             canNotify(app),
             CompanionLink.isAssociated(app, device.address),
+            listOf(statusSettings.button(device.address, 1), statusSettings.button(device.address, 2)),
+            io.github.omegadestroyer.pairfree.widget.WidgetToggles.load(hub.prefs, device.address).map { it.first },
+            connection.state.value.supports(Command.ANC_MODE),
         )
+    }
+
+    override fun chooseStatusButton(n: Int, action: String) {
+        val device = connectedDevice() ?: return
+        statusSettings.chooseButton(device.address, n, action)
+        refreshStatus(device)
+        StatusService.startIfWanted(getApplication(), device.address, fromBackground = false)
     }
 
     /** Starts or ends the notification as the choice says; with [prompt], the first time, asks for what it needs. */

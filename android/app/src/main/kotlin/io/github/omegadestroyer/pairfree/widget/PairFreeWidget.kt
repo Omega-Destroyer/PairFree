@@ -29,6 +29,18 @@ import kotlinx.coroutines.launch
 
 /** The words on a widget button, for the widget and for its setup screen. */
 object WidgetLabels {
+    /**
+     * The name of a switch ([io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys]): the app's own words where the key has them
+     * (`setting_<key>`, or the shared switch's name), else the key made readable without its brand prefix.
+     */
+    fun toggle(context: Context, key: String): String {
+        val command = io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys.commandOf(key)
+        val name = if (command != null) command.name.lowercase() else "setting_$key"
+        val id = context.resources.getIdentifier(name, "string", context.packageName)
+        if (id != 0) return context.getString(id)
+        return humanize(if (command != null) command.name.lowercase() else key.substringAfter('_', key))
+    }
+
     fun noise(context: Context, c: NoiseChoice): String {
         val mode = context.getString(
             when (c.mode) {
@@ -223,6 +235,11 @@ class PairFreeWidget : AppWidgetProvider() {
                     WidgetSlot.UseForSound -> {
                         caption = context.getString(R.string.widget_caption_sound)
                         label = context.getString(R.string.widget_type_use_for_sound)
+                    }
+                    is WidgetSlot.Toggle -> {
+                        caption = context.getString(R.string.widget_caption_toggle)
+                        label = WidgetLabels.toggle(context, slot.key)
+                        active = WidgetToggles.stateOf(context.hub.prefs, address, slot.key) == true
                     }
                     is WidgetSlot.EqCycle -> {
                         caption = context.getString(R.string.widget_caption_eq)

@@ -97,7 +97,7 @@ model it has to be probed.
 | Reset custom keys        |         | `03 AC` | no payload                                                 |
 | Prompt volume            | `03 19` | `03 20` | 0 to 100                                                   |
 | Auto shutdown            | `03 6E` | `03 6F` | minutes: 5, 10, 30, 60, 120, or 0 for never                |
-| Voice prompt language    | `03 21` | `03 22` | 0 en, 1 zh, 2 de, 3 ja, 4 fr, 5 es, 6 it                   |
+| Voice prompt language    | `03 21` | `03 22` | 0 en, 1 zh, 2 de, 3 ja, 4 fr, 5 es, 6 it. Marked deprecated in SOUNDPEATS 2.5.3 (feature code FSN999, which none of the 81 models' feature lists holds); PairFree reads it but offers it only where a model lists it under `confirmed` (none does since 2026-11-24: a T3 Pro, which answers the read, bootlooped after a language change, issue #74) |
 | Dynamic EQ               | `03 31` | `03 32` | 0 off, 1 on                                                |
 | Dynamic bass             | `03 3C` | `03 3D` | 0 off, 1 on                                                |
 | Movie mode               | `03 27` | `03 28` | 0 off, 1 on                                                |

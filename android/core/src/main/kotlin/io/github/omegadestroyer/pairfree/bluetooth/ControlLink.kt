@@ -18,4 +18,7 @@ interface ControlLink {
 
     /** Closes the channel; safe to call more than once, and while [connect] waits. */
     fun close()
+
+    /** How much went over the channel, for the connection report ("12 bytes sent, 0 received"); null where the link does not count. Only counts, never the bytes. */
+    val traffic: String? get() = null
 }

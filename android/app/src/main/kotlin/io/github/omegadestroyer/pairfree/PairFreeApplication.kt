@@ -33,6 +33,10 @@ import kotlinx.coroutines.SupervisorJob
 import io.github.omegadestroyer.pairfree.widget.PairFreeWidget
 import io.github.omegadestroyer.pairfree.widget.WidgetCache
 import io.github.omegadestroyer.pairfree.widget.WidgetNoise
+import io.github.omegadestroyer.pairfree.widget.WidgetToggles
+import io.github.omegadestroyer.pairfree.brands.modelOf
+import io.github.omegadestroyer.pairfree.protocol.offers
+import io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -209,6 +213,8 @@ class Hub(private val app: Application) {
                     val device = status.device
                     WidgetCache.record(prefs, device, state, eq.takeIf { equalizer.openFor == device.address })
                     WidgetNoise.record(prefs, device.address, state, groups)
+                    val model = modelOf(device, state)
+                    WidgetToggles.record(prefs, device.address, ToggleKeys.offered(state, groups) { state.offers(it, model) })
                 }
                 PairFreeWidget.requestRefresh(app, scope)
             }

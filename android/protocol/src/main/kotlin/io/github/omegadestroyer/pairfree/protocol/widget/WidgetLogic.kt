@@ -42,6 +42,33 @@ public sealed interface WidgetSlot {
 
     /** Asks Android to play through the earbuds (issue 48): no channel to the earbuds is needed, so it works while they are only paired. */
     public data object UseForSound : WidgetSlot
+
+    /** A switch the earbuds offer, turned the other way on each tap (issue 72): [key] is a [ToggleKeys] key. */
+    public data class Toggle(val key: String) : WidgetSlot
+}
+
+/**
+ * The switches a button of the widget or of the notification can be set to (issue 72, owner 2026-11-24: almost any toggle a device offers). A key is a
+ * brand's own switch row (its [Setting.Toggle] key) or, with the prefix [COMMAND], one of the shared switches by its [Command] name (`cmd:GAME_MODE`).
+ */
+public object ToggleKeys {
+    public const val COMMAND: String = "cmd:"
+
+    /** The shared switch a key names, or null for a brand's own row. */
+    public fun commandOf(key: String): Command? =
+        if (key.startsWith(COMMAND)) Command.entries.firstOrNull { it.name == key.removePrefix(COMMAND) } else null
+
+    public fun keyOf(command: Command): String = COMMAND + command.name
+
+    /**
+     * Every switch the earbuds offer now with whether it is on: the shared ones ([offers] says whether the model has it) and the brand's rows that
+     * are enabled. The order is the shared ones first, then the rows in the screens' order.
+     */
+    public fun offered(state: EarbudState, groups: List<io.github.omegadestroyer.pairfree.protocol.SettingGroup>, offers: (Command) -> Boolean): List<Pair<String, Boolean>> =
+        buildList {
+            for (c in Command.entries) state.switch(c)?.let { on -> if (offers(c)) add(keyOf(c) to on) }
+            for (g in groups) for (s in g.settings) if (s is Setting.Toggle && s.enabled && none { it.first == s.key }) add(s.key to s.on)
+        }
 }
 
 /** The widget's grid: eight slots, slots 0 to 3 the first row and 4 to 7 the second. */

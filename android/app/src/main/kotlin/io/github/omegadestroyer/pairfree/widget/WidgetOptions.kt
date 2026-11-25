@@ -21,7 +21,7 @@ import io.github.omegadestroyer.pairfree.brands.modelOf
  * What a widget button can be set to for one pair of earbuds. [noise] and [eq] may be empty; [needsConnection] says the
  * earbuds have choices PairFree only learns while connected, and has not yet.
  */
-data class WidgetChoices(val noise: List<NoiseChoice>, val eq: List<Pair<String, String>>, val needsConnection: Boolean)
+data class WidgetChoices(val noise: List<NoiseChoice>, val eq: List<Pair<String, String>>, val needsConnection: Boolean, val toggles: List<String> = emptyList())
 
 /**
  * The widget's choices for a paired pair of earbuds, built from the tables compiled into the app and the user's saved EQ
@@ -49,7 +49,9 @@ object WidgetOptions {
         }
         val noiseUnknown = noise == null && brandMayHaveNoise(device)
         val eqUnknown = eq == null && brandMayHaveEq(device)
-        return WidgetChoices(noise.orEmpty(), shown.orEmpty(), needsConnection = noiseUnknown || eqUnknown)
+        // The switches the earbuds offered while connected (issue 72): only they can tell, so a pair never connected has none yet.
+        val toggles = WidgetToggles.load(hub.prefs, device.address).map { it.first }
+        return WidgetChoices(noise.orEmpty(), shown.orEmpty(), needsConnection = noiseUnknown || eqUnknown || toggles.isEmpty(), toggles = toggles)
     }
 
     /** Off, cancelling and transparency, each with the sub-modes given for it. */

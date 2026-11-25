@@ -359,4 +359,41 @@ class BoseTest {
         assertEquals(null, BoseService.forServices(earbuds + "00001101-0000-1000-8000-00805F9B34FB"))
         assertEquals(null, BoseService.forServices(emptyList()))
     }
+
+    @Test
+    fun theListOfPairedDevicesIsReadNamedAndManaged() {
+        // Issue #71, as Bose's app reads it: a byte with a bit per connected entry, then six bytes per device.
+        val s = BoseSession()
+        val phone = "001122334455"
+        val laptop = "66778899aabb"
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES, "01$phone$laptop"))
+        // each device whose name is not known is asked for
+        assertEquals(
+            listOf(BosePacket(BoseFunction.DEVICE_MANAGEMENT_INFO, BoseOperator.GET, phone.hexBytes()), BosePacket(BoseFunction.DEVICE_MANAGEMENT_INFO, BoseOperator.GET, laptop.hexBytes())),
+            s.takeOutbox(),
+        )
+        // flags: bit 0 connected, bit 1 this phone; two bytes, then the name (not a Bose product)
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_INFO, phone + "03" + "0000" + "50686f6e65"))
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_INFO, laptop + "00" + "0000" + "4c6170746f70"))
+        // the phone's own entry is never offered, the laptop can be connected and forgotten but not disconnected (it is not connected)
+        assertNull(setting(s, BoseSession.KEY_PEER_DISCONNECT))
+        assertEquals(Setting.Choice(BoseSession.KEY_PEER_CONNECT, null, listOf("Laptop")), setting(s, BoseSession.KEY_PEER_CONNECT))
+        assertEquals(Setting.Choice(BoseSession.KEY_PEER_DELETE, null, listOf("Laptop")), setting(s, BoseSession.KEY_PEER_DELETE))
+        // connect is 0 and the address, as Bose's DeviceManagementConnectStartPacket
+        assertEquals(
+            listOf(BosePacket(BoseFunction.DEVICE_MANAGEMENT_CONNECT, BoseOperator.START, ("00" + laptop).hexBytes())),
+            s.change(SettingChange.Choice(BoseSession.KEY_PEER_CONNECT, "Laptop")),
+        )
+        // a finished connection reads the list again
+        s.receive(BosePacket(BoseFunction.DEVICE_MANAGEMENT_CONNECT, BoseOperator.RESULT, laptop.hexBytes()))
+        assertEquals(listOf(BosePacket.get(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES)), s.takeOutbox())
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES, "03$phone$laptop"))
+        assertEquals(Setting.Choice(BoseSession.KEY_PEER_DISCONNECT, null, listOf("Laptop")), setting(s, BoseSession.KEY_PEER_DISCONNECT))
+        assertEquals(
+            listOf(BosePacket(BoseFunction.DEVICE_MANAGEMENT_DISCONNECT, BoseOperator.START, laptop.hexBytes())),
+            s.change(SettingChange.Choice(BoseSession.KEY_PEER_DISCONNECT, "Laptop")),
+        )
+        // the phone's own entry cannot be reached by a change
+        assertNull(s.change(SettingChange.Choice(BoseSession.KEY_PEER_DELETE, "Phone")))
+    }
 }

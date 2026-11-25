@@ -38,6 +38,9 @@ interface EarbudsActions {
     /** Picks the battery notification for the connected earbuds. */
     fun chooseStatus(choice: StatusChoice)
 
+    /** Sets what the notification's button [n] (1 or 2) does for the connected earbuds: [io.github.omegadestroyer.pairfree.status.StatusSettings.NOISE], NONE or a switch's key (issue 72). */
+    fun chooseStatusButton(n: Int, action: String)
+
     /** After the user answered a notification or companion prompt from the Device tab. */
     fun statusChanged()
 
@@ -66,5 +69,6 @@ object NoActions : EarbudsActions {
     override fun resetTouch() = Unit
     override fun changeSetting(change: SettingChange) = Unit
     override fun chooseStatus(choice: StatusChoice) = Unit
+    override fun chooseStatusButton(n: Int, action: String) = Unit
     override fun statusChanged() = Unit
 }

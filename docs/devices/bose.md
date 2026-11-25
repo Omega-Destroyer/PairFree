@@ -23,7 +23,8 @@ What it shows, where the model has it:
   gestures, flip to off, motion auto-off, disabling the touch surface, auto volume, keeping the noise cancelling
   level, alerts, on-head detection, LE Audio, the volume control way, the Teams button, the headphones' own volume,
   the audio delay, the mode they start in and whether they keep the last mode, finding them with a chirp, and on the
-  QC Earbuds II and QC Ultra Earbuds the ear tip fit test.
+  QC Earbuds II and QC Ultra Earbuds the ear tip fit test. Added in 0.18.0 (issue #71, not tried on real headphones): the devices the
+  headphones have paired, to connect, disconnect or forget one, and a button that lets another device pair.
 
 Not yet: changing the modes themselves (a wrong write would overwrite your own modes), hearing assistance (a fitted
 hearing-aid block), and anything

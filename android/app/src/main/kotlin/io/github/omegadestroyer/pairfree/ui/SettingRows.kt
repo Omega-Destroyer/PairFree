@@ -224,7 +224,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
-private val CONFIRM_CHOICES = setOf("sh_peer_delete")
+private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete")
 
 private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove")
 
@@ -610,6 +610,10 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "eq_high_mid" -> stringResource(R.string.setting_eq_high_mid)
     "eq_treble" -> stringResource(R.string.setting_eq_treble)
     "multipoint" -> stringResource(R.string.setting_multipoint)
+    "bose_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
+    "bose_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
+    "bose_peer_delete" -> stringResource(R.string.setting_sh_peer_delete)
+    "bose_pairing_mode" -> stringResource(R.string.setting_bose_pairing_mode)
     "auto_answer" -> stringResource(R.string.setting_auto_answer)
     "voice_prompts" -> stringResource(R.string.setting_voice_prompts)
     "jbl_smart_audio_video" -> stringResource(R.string.setting_jbl_smart_audio_video)

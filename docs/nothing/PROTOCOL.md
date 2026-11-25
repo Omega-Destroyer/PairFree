@@ -64,6 +64,7 @@ Every number of two bytes is low byte first.
   - nadamas follows `C001` with `F001` (protocol activated, no payload).
   - PairFree sends `C001` like Nothing X. It sends `F001` only if a reply comes back with
     response code 2 (not activated), and then reads everything again, once.
+- **Opening the channel:** Nothing X (`BaseSppConnector`) opens the serial service by its record, twice, and when that fails opens RFCOMM channel 15 directly (`createRfcommSocket(15)`); PairFree's third attempt does the same (`SppLink`, issue #77: a CMF Buds Pro 2 on a Nothing phone failed both record lookups after about 5 s each). Whether the phone's own earbud integration holds the channel is not known.
 - **Timing:** Nothing X sends one command at a time and waits for its reply: 5 s for most,
   1 s for the version read. It leaves 40 ms between writes.
   - PairFree waits up to 1 s per command. A read the earbuds lack gets no reply at all on some

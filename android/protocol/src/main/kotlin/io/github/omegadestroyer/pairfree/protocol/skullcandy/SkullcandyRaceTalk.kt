@@ -327,6 +327,8 @@ public class SkullcandyRaceTalk(public val product: SkullcandyProduct) : Session
     override fun set(command: Command, value: Int): List<RacePacket>? {
         if (!primary || command != Command.ANC_MODE || !hasNoise) return null
         val label = Command.ANC_MODE.labels[value] ?: return null
+        // A mode the product does not have is never sent (issue #66: the Dime Evo has Stay Aware but no noise cancelling, and was sent one anyway).
+        if (label == "anc" && !hasAncMode || label == "transparency" && !hasTransparencyMode) return null
         if (!rail && product.usesAirohaSdk) {
             // the models without a configuration: the SDK's own filters for the chip the earbuds named (section 9.7)
             val p = strength.modeFrame(label, chip) ?: return null

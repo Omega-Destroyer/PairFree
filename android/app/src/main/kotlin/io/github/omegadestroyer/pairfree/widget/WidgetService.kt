@@ -22,6 +22,8 @@ import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.widget.Sub
+import io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys
+import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
 import io.github.omegadestroyer.pairfree.protocol.widget.WidgetCycle
 import io.github.omegadestroyer.pairfree.protocol.widget.WidgetSlot
 import io.github.omegadestroyer.pairfree.brands.modelOf
@@ -125,6 +127,7 @@ class WidgetService : Service() {
             }
             is WidgetSlot.Eq -> selectEq(device, slot.profileId, null)
             is WidgetSlot.EqCycle -> selectEq(device, null, slot.profileIds)
+            is WidgetSlot.Toggle -> flip(slot.key, device)
             WidgetSlot.Empty, WidgetSlot.UseForSound -> Unit
         }
         PairFreeWidget.requestRefresh(this)
@@ -218,6 +221,26 @@ class WidgetService : Service() {
                 if (!now) connection.changeSetting(SettingChange.Level(sub.key, sub.value))
             }
         }
+    }
+
+    /**
+     * Turns a switch the other way (issue 72): a shared switch by its command, a brand's by its row. The earbuds say where it is a moment after the channel
+     * opens, so it waits for that; a switch that does not show (its model lacks it, or another setting rules it out) is left alone.
+     */
+    private suspend fun flip(key: String, device: Paired) {
+        val connection = hub.connection
+        val command = ToggleKeys.commandOf(key)
+        if (command != null) {
+            val now = withTimeoutOrNull(STATE_MS) { connection.state.first { it.switch(command) != null } }?.switch(command) ?: return
+            val model = modelOf(device, connection.state.value)
+            // As the Home tab: game mode is not offered with LDAC on on some models, and turning it off stays possible.
+            if (!now && connection.state.value.blockedByLdac(command, model)) return
+            connection.set(command, if (now) 0 else 1)
+            return
+        }
+        val groups = withTimeoutOrNull(STATE_MS) { connection.settings.first { g -> g.any { it.settings.any { s -> s.key == key && s is Setting.Toggle } } } } ?: return
+        val row = groups.flatMap { it.settings }.firstOrNull { it.key == key } as? Setting.Toggle ?: return
+        if (row.enabled) connection.changeSetting(SettingChange.Toggle(key, !row.on))
     }
 
     /** Opens the EQ for [device] without a screen, then selects [profileId] or the profile after the selected one in [ids]. */

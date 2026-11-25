@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.bose
 
 import io.github.omegadestroyer.pairfree.protocol.sortedValues
+import io.github.omegadestroyer.pairfree.protocol.toHex2
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
@@ -75,6 +76,11 @@ public class BoseSession : FitTest {
     private var modesPersist: Boolean? = null    // whether the headphones keep the mode they were in
     private var latency: Triple<Int, Int, Int>? = null   // the audio delay in ms: current, lowest, highest
     private var chirping: Boolean? = null         // the find chirp, null while the headphones have not answered
+    private val peers = linkedMapOf<String, Peer>()   // the devices the headphones have paired (DeviceManagement), by address as hex
+    private var pairingMode: Boolean? = null
+
+    /** One device the headphones have paired: Bose's PairedDevice. The names and the phone's own entry come from the Info reply. */
+    public class Peer(public val mac: ByteArray, public val name: String?, public val connected: Boolean, public val local: Boolean)
 
     /** One EQ band as the device reports it: its id, range and value (Bose's RangeControl). */
     public data class EqBand(val id: Int, val min: Int, val max: Int, val value: Int)
@@ -110,6 +116,9 @@ public class BoseSession : FitTest {
         add(BosePacket.get(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE))
         add(BosePacket.get(BoseFunction.AUDIO_MODES_CURRENT_MODE))
         add(BosePacket.get(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG))
+        // The paired devices (multipoint, issue #71): the list, then each one's name as the list's answer asks.
+        add(BosePacket.get(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES))
+        add(BosePacket.get(BoseFunction.DEVICE_MANAGEMENT_PAIRING_MODE))
         // Every mode's configuration, as STATUS messages (bosectl's mode list).
         add(BosePacket.start(BoseFunction.AUDIO_MODES_GET_ALL))
     }
@@ -176,6 +185,78 @@ public class BoseSession : FitTest {
             BoseFunction.AUDIO_MODES_CURRENT_MODE -> if (p.isNotEmpty()) currentMode = p.u8(0)
             BoseFunction.AUDIO_MODES_SETTINGS_CONFIG -> if (p.size >= SETTINGS_CONFIG_SIZE) settingsConfig = p.copyOf(SETTINGS_CONFIG_SIZE)
             BoseFunction.AUDIO_MODES_MODE_CONFIG -> mode(p)?.let { modes[it.index] = it }
+            BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES -> peerList(p)
+            BoseFunction.DEVICE_MANAGEMENT_INFO -> peerInfo(p)
+            BoseFunction.DEVICE_MANAGEMENT_PAIRING_MODE -> if (p.isNotEmpty()) pairingMode = p.u8(0) and 1 == 1
+            // A connection, disconnection or removal finished: the list as it is now, and the name of any device new to it.
+            BoseFunction.DEVICE_MANAGEMENT_CONNECT, BoseFunction.DEVICE_MANAGEMENT_DISCONNECT, BoseFunction.DEVICE_MANAGEMENT_REMOVE_DEVICE ->
+                outbox += BosePacket.get(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES)
+        }
+    }
+
+    /**
+     * The list of paired devices (Bose's DeviceManagementListDevicesResponse): a byte with a bit for each entry that is connected, then each device's address, six bytes.
+     * A list of one byte is empty. A device whose name is not known is asked for with the Info read.
+     */
+    private fun peerList(p: ByteArray) {
+        val next = linkedMapOf<String, Peer>()
+        if (p.size > 1) {
+            val mask = p.u8(0)
+            for (i in 0 until (p.size - 1) / MAC) {
+                val mac = p.copyOfRange(1 + i * MAC, 1 + (i + 1) * MAC)
+                val key = mac.joinToString("") { it.toHex2() }
+                val known = peers[key]
+                next[key] = Peer(mac, known?.name, mask and (1 shl i) != 0, known?.local ?: false)
+                if (known?.name == null) outbox += BosePacket(BoseFunction.DEVICE_MANAGEMENT_INFO, BoseOperator.GET, mac)
+            }
+        }
+        peers.clear()
+        peers.putAll(next)
+    }
+
+    /**
+     * One device's information (Bose's DeviceManagementInfoProcessingStatusResultResponse): its address, a flags byte (bit 0 connected, bit 1 this phone, bit 2 a Bose product, bit 3 a component),
+     * two bytes, and the name as text: after one more byte for a Bose product, else right after them.
+     */
+    private fun peerInfo(p: ByteArray) {
+        if (p.size < 9) return
+        val mac = p.copyOf(MAC)
+        val key = mac.joinToString("") { it.toHex2() }
+        val flags = p.u8(MAC)
+        val start = if (flags and 4 != 0) 10 else 9
+        val name = if (p.size > start) p.copyOfRange(start, p.size).decodeToString().trim { it <= ' ' || it == '\u0000' }.ifEmpty { null } else null
+        peers[key] = Peer(mac, name, flags and 1 != 0, flags and 2 != 0)
+    }
+
+    /** What the screens name a device: its name, or its address's last two bytes when it has none or another carries the same name. */
+    private fun peerLabel(p: Peer, all: Collection<Peer>): String {
+        val tail = p.mac.takeLast(2).joinToString("") { it.toHex2().uppercase() }
+        val name = p.name ?: return "?? $tail"
+        return if (all.count { it.name == name } > 1) "$name ($tail)" else name
+    }
+
+    private fun peerRows(): List<Setting> {
+        // This phone's own entry is left out of every action: cutting it would cut PairFree's channel.
+        val others = peers.values.filter { !it.local }
+        if (others.isEmpty()) return emptyList()
+        val off = others.filter { !it.connected }.map { peerLabel(it, others) }
+        val on = others.filter { it.connected }.map { peerLabel(it, others) }
+        return buildList {
+            if (off.isNotEmpty()) add(Setting.Choice(KEY_PEER_CONNECT, null, off))
+            if (on.isNotEmpty()) add(Setting.Choice(KEY_PEER_DISCONNECT, null, on))
+            add(Setting.Choice(KEY_PEER_DELETE, null, others.map { peerLabel(it, others) }))
+        }
+    }
+
+    /** The packet that connects, disconnects or forgets the device [label] names (the screens confirm forgetting first), as Bose's app writes each. */
+    private fun peerChange(key: String, label: String): BosePacket? {
+        val others = peers.values.filter { !it.local }
+        val target = others.firstOrNull { peerLabel(it, others) == label } ?: return null
+        return when (key) {
+            // Connect takes a zero byte before the address (DeviceManagementConnectStartPacket), disconnect and remove the address alone.
+            KEY_PEER_CONNECT -> BosePacket(BoseFunction.DEVICE_MANAGEMENT_CONNECT, BoseOperator.START, byteArrayOf(0) + target.mac)
+            KEY_PEER_DISCONNECT -> BosePacket(BoseFunction.DEVICE_MANAGEMENT_DISCONNECT, BoseOperator.START, target.mac)
+            else -> BosePacket(BoseFunction.DEVICE_MANAGEMENT_REMOVE_DEVICE, BoseOperator.START, target.mac).also { peers.remove(target.mac.joinToString("") { it.toHex2() }) }
         }
     }
 
@@ -313,7 +394,7 @@ public class BoseSession : FitTest {
                     alerts?.let { Setting.Toggle(ALERT_HAPTICS, it and 2 != 0) },
                 ) + listOfNotNull(
                     voicePrompts?.takeIf { it and PROMPTS_TOGGLABLE != 0 }?.let { Setting.Toggle("voice_prompts", it and PROMPTS_ENABLED != 0) },
-                ),
+                ) + peerRows() + listOfNotNull(pairingMode?.let { Setting.Action(KEY_PAIRING_MODE, it) }),
             ),
             group(
                 "calls", SettingTab.DEVICE,
@@ -480,6 +561,7 @@ public class BoseSession : FitTest {
                         spatial = v
                         BosePacket.setGet(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE, v)
                     }
+                    KEY_PEER_CONNECT, KEY_PEER_DISCONNECT, KEY_PEER_DELETE -> peerChange(change.key, change.option) ?: return null
                     "sidetone_level" -> {
                         val s = sidetone ?: return null
                         val v = SIDETONE.firstOrNull { it.second == change.option }?.first ?: return null
@@ -504,6 +586,12 @@ public class BoseSession : FitTest {
                     val on = chirping ?: return null
                     chirping = !on
                     BosePacket.start(BoseFunction.CONTROL_CHIRP, if (on) 0 else 1)
+                }
+                // Pairing mode, so another device can pair: on (1) or off (0), as Bose's DeviceManagementPairingModeStartPacket.
+                KEY_PAIRING_MODE -> {
+                    val on = pairingMode ?: return null
+                    pairingMode = !on
+                    BosePacket.start(BoseFunction.DEVICE_MANAGEMENT_PAIRING_MODE, if (on) 0 else 1)
                 }
                 else -> return null
             }
@@ -563,6 +651,11 @@ public class BoseSession : FitTest {
         private const val TEAMS_BUTTON_KEY = "bose_teams_button"
         private val VOLUME_CONTROL = linkedMapOf(0 to "bose_volume_off", 1 to "bose_volume_buttons", 2 to "bose_volume_touch", 3 to "bose_volume_motion")
         private val TEAMS_BUTTON = linkedMapOf(0 to "bose_teams_combination", 1 to "bose_teams_dedicated")
+        public const val KEY_PEER_CONNECT: String = "bose_peer_connect"
+        public const val KEY_PEER_DISCONNECT: String = "bose_peer_disconnect"
+        public const val KEY_PEER_DELETE: String = "bose_peer_delete"
+        public const val KEY_PAIRING_MODE: String = "bose_pairing_mode"
+        private const val MAC = 6
         private const val ALERT_RINGTONE = "bose_alert_ringtone"
         private const val ALERT_HAPTICS = "bose_alert_haptics"
 

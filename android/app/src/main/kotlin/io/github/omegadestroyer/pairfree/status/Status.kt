@@ -21,7 +21,9 @@ import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Model
+import io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys
 import java.util.UUID
 import java.util.concurrent.Executor
 
@@ -44,6 +46,10 @@ data class StatusUi(
     val fastPair: Boolean,
     val canNotify: Boolean,
     val linked: Boolean,
+    /** What the notification's two buttons do for these earbuds ([StatusSettings.button]), and the switches they can be set to (issue 72). */
+    val buttons: List<String> = listOf(StatusSettings.NOISE, ToggleKeys.keyOf(Command.GAME_MODE)),
+    val toggles: List<String> = emptyList(),
+    val hasNoise: Boolean = false,
 )
 
 /** What the notification needs from Android, asked once by itself the first time earbuds connect. */
@@ -77,15 +83,27 @@ class StatusSettings(private val prefs: SharedPreferences) {
     fun options(fastPair: Boolean?): List<StatusChoice> =
         if (fastPair == true) StatusChoice.entries else listOf(StatusChoice.PAIRFREE, StatusChoice.NONE)
 
+    /**
+     * What the notification's button [n] (1 the one on the collapsed notification too, 2 the one shown expanded) does for the earbuds at [address] (issue 72):
+     * [NOISE] steps through the noise modes the model has, [NONE] hides the button, else a switch's key ([ToggleKeys]). By default the first steps the noise mode, the second turns game mode on or off.
+     */
+    fun button(address: String, n: Int): String =
+        prefs.getString(KEY_BUTTON + n + "_" + address, null) ?: if (n == 1) NOISE else ToggleKeys.keyOf(Command.GAME_MODE)
+
+    fun chooseButton(address: String, n: Int, action: String) = prefs.edit { putString(KEY_BUTTON + n + "_" + address, action) }
+
     /** True once PairFree has asked for what the notification needs for these earbuds, so it asks only once by itself. */
     fun asked(address: String): Boolean = prefs.getBoolean(KEY_ASKED + address, false)
 
     fun markAsked(address: String) = prefs.edit { putBoolean(KEY_ASKED + address, true) }
 
-    private companion object {
-        const val KEY_CHOICE = "status_choice_"
-        const val KEY_FAST_PAIR = "fast_pair_"
-        const val KEY_ASKED = "status_asked_"
+    companion object {
+        const val NOISE = "noise"
+        const val NONE = "none"
+        const val KEY_BUTTON = "status_button_"
+        private const val KEY_CHOICE = "status_choice_"
+        private const val KEY_FAST_PAIR = "fast_pair_"
+        private const val KEY_ASKED = "status_asked_"
     }
 }
 

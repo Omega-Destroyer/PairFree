@@ -69,7 +69,7 @@ internal class SettingRows(
     private val call: RowCallbacks,
 ) {
     private val confirmKeys = setOf("restart", "power_off", "sh_personalized_reset")
-    private val confirmChoices = setOf("sh_peer_delete")
+    private val confirmChoices = setOf("sh_peer_delete", "bose_peer_delete")
     private val links = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://www.tile.com/")
 
     fun panels(): List<Widget> {

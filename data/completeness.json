@@ -213,38 +213,9 @@
         "Momentum 5 Wireless",
         "Momentum True Wireless 5"
       ],
-      "status": "needs-report",
-      "what": "Whether the Momentum 5 and Momentum True Wireless 5 answer UserEQ_GetConfiguration as the second-generation equalizer or have the parametric one (issue #47). Smart Control Plus decides at run time: the function that builds a GAIA 3 equalizer variant takes the set of capabilities (parametricEqualizer, graphicalEqualizer, bassBoost) that another function builds from what the headphones report (their audio modes, among others); there is no per-product table to read.",
-      "reported": "issue #47",
-      "needs": "A Momentum 5 device report taken with the version that asks for the equalizer (Device tab, Copy device report), or a recording of the official app's equalizer screen.",
-      "read": [
-        {
-          "path": "E:/Builds/research/sennheiser/scp-lib/libapp.strings.txt",
-          "what": "the strings of the Plus app: the Gaia3 equalizer variants, 'At least one of Graphic or Parametric Equalizer must be supported for Gaia3', Momentum5_SURVEY and M5AEBT"
-        },
-        {
-          "path": "E:/Builds/research/sennheiser/tools/dartx.py",
-          "what": "disassembled 0x105b93c (the factory choosing the graphic or the parametric variant from two flags), 0x105b2a8 (builds the flags from a set of Vca capabilities) and 0x105af94 (builds that set from the device's reported audio modes); none is keyed by product"
-        },
-        {
-          "path": "E:/Builds/research/sennheiser/scp64-blutter/objs.txt",
-          "what": "the product enum (cKd: m5 with its names, colours and article number) holds no capability set; no per-product equalizer table exists"
-        }
-      ],
-      "evidence": [
-        {
-          "root": "E:/Builds/research/sennheiser/scp-lib",
-          "glob": "libapp\\.strings\\.txt$",
-          "pattern": "At least one of Graphic or Parametric Equalizer must be supported for Gaia3",
-          "expect": "some"
-        },
-        {
-          "root": "E:/Builds/research/sennheiser/scp-lib",
-          "glob": "libapp\\.strings\\.txt$",
-          "pattern": "M5AEBT",
-          "expect": "some"
-        }
-      ]
+      "status": "built",
+      "what": "The Momentum 5 answers UserEQ_GetConfiguration as the second-generation equalizer: the owner of a Momentum 5 confirmed on 0.17.2 that the equalizer shows and works (issue #47, 2026-11-23, with the device report mom5-2).",
+      "reported": "issue #47"
     },
     {
       "id": "jbl-harman-command-classes-unbuilt",
@@ -563,6 +534,184 @@
           "expect": "some"
         }
       ]
+    },
+    {
+      "id": "qcy-jieli-equalizer",
+      "brand": "qcy",
+      "models": [
+        "QCY T13 ANC2",
+        "the older JieLi models"
+      ],
+      "status": "needs-report",
+      "what": "The older QCY models on JieLi's chips (the T13 ANC2) keep their equalizer in system information attribute 4, which PairFree reads when the channel opens and, since this version, again with each battery read until it answers; two device reports (issues #35 and #75) show no answer, and the report now records the earbuds' reply status to the EQ read.",
+      "reported": "issue #75 (and #35)",
+      "needs": "A new QCY T13 ANC2 device report from the next version: its 'sys read status' line says how the earbuds answered the EQ read (status and the first bytes).",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/qcy/sources/com/qcymall/earphonesetup/manager/QCYConnectManager.java",
+          "what": "readEQData: a JieLi device whose panel has no multi-EQ reads the EQ with JLDeviceImpl.getEQInfo, otherwise custom items 0x20 and 0x22; the T13 ANC2's panel (server_dump/qcy/panels/18294.json) has sys_eq with ten frequencies and no multi-EQ"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/qcy/sources/com/jieli/jl_rcsp/util/CommandBuilder.java",
+          "what": "buildGetEqValueCmd is the public system information read with mask 16 (attribute 4), as PairFree sends it"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/qcy/sources/com/jieli/jl_rcsp/util",
+          "glob": "CommandBuilder\\.java$",
+          "pattern": "buildGetEqValueCmd",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "qcy-doc-gaps-baseline",
+      "brand": "qcy",
+      "models": [
+        "all"
+      ],
+      "status": "open",
+      "what": "The statements in docs/qcy/PROTOCOL.md that say a feature is not built, sent or read (data/doc_gaps_baseline.json): build each or write its blocker with a checked: line.",
+      "reported": "owner, 2026-11-24, after issue #75"
+    },
+    {
+      "id": "soundcore-liberty-buds-2-not-found",
+      "brand": "soundcore",
+      "models": [
+        "Soundcore Liberty Buds 2"
+      ],
+      "status": "needs-report",
+      "what": "A user's Soundcore Liberty Buds 2 (D1206), which the docs list, are not found among the paired earbuds. PairFree matched the Bluetooth name only exactly; it now also accepts the name with or without Soundcore's or Anker's word and whatever the spacing, which may be the cause (issue #76).",
+      "reported": "issue #76",
+      "needs": "The Bluetooth name of the earbuds as Android's Bluetooth settings show it and, if the earbuds still do not appear, whether they appear under a different brand (a screenshot of the connect screen).",
+      "read": [
+        {
+          "path": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/soundcore/SoundcoreModels.kt",
+          "what": "fromName matched exactly (ignoring case) against the model table's names, which hold the D1206 as 'Liberty Buds 2'; now also by a key without the maker's word and punctuation"
+        },
+        {
+          "path": "data/soundcore/devices.json",
+          "what": "the D1206 entry: names ['Liberty Buds 2'], read from the Soundcore app 5.0.35; no vendor service id is listed for it"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/soundcore",
+          "glob": "SoundcoreModels\\.kt$",
+          "pattern": "nameKey",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "bose-qc-earbuds-product-unknown",
+      "brand": "bose",
+      "models": [
+        "Bose QuietComfort Earbuds"
+      ],
+      "status": "built",
+      "what": "The QuietComfort Earbuds opened on Bose's BMAP service but stayed silent: SppLink now sends a firmware read after opening by the service record and, when nothing answers in 2.5 s, tries RFCOMM channels 8, 2 and 9 as bosectl does (issue #69; unverified on earbuds, so a device report from the next version settles it).",
+      "reported": "issue #69"
+    },
+    {
+      "id": "bose-nc700-paired-devices",
+      "brand": "bose",
+      "models": [
+        "Bose Noise Cancelling Headphones 700"
+      ],
+      "status": "built",
+      "what": "The paired devices (DeviceManagement 4.4 and 4.5): the list with each device's name, connect, disconnect and forget (confirmed), and pairing mode, on every Bose model that answers block 4 (the NC 700 among them); the phone's own entry is never offered (issue #71, branch fix/issues-2026-11-24; not tried on headphones).",
+      "reported": "issue #71"
+    },
+    {
+      "id": "samsung-buds-pro-channel-drops",
+      "brand": "samsung",
+      "models": [
+        "Galaxy Buds Pro (SM-R190)"
+      ],
+      "status": "needs-report",
+      "what": "The serial channel of a user's Galaxy Buds Pro (SM-R190) opens and the earbuds close it within 0 to 4 s, again and again (connection report, Android 17). PairFree's connection report now says how many bytes each side sent and received before each close (issue #73).",
+      "reported": "issue #73",
+      "needs": "A new connection report from the next version (its 'closed after N s' lines now say how many bytes PairFree sent and the earbuds sent) and whether the Galaxy Wearable app or another app is installed on that phone; if the earbuds sent nothing, the Galaxy Buds Pro's own plugin APK (com.samsung.accessory.* for the SM-R190) to read what it sends first.",
+      "read": [
+        {
+          "path": "E:/Builds/research/galaxybudsclient/GalaxyBudsClient/Message/SppMessage.cs",
+          "what": "the legacy header and framing the Buds Pro uses; nothing sent before the earbuds' own status, and the manager info is the reply to it, as PairFree does"
+        },
+        {
+          "path": "docs/samsung/PROTOCOL.md",
+          "what": "section 4: no handshake; PairFree answers the state with the manager info and asks for the version; the reference APK folder holds plugins for the Buds, Buds+, Buds Live, Buds2, Buds2 Pro and later, none for the SM-R190"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/galaxybudsclient/GalaxyBudsClient/Message",
+          "glob": "SppMessage\\.cs$",
+          "pattern": "SppLegacyMessageHeader",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "nothing-cmf-buds-pro-2-open",
+      "brand": "nothing",
+      "models": [
+        "CMF Buds Pro 2"
+      ],
+      "status": "built",
+      "what": "Opening the serial service failed twice on a Nothing phone: SppLink's third attempt is now RFCOMM channel 15 directly, as Nothing X's BaseSppConnector falls back to (issue #77; unverified on the earbuds: if the phone's own earbud integration holds the channel it will still fail).",
+      "reported": "issue #77"
+    },
+    {
+      "id": "soundpeats-t3-pro-language-pack",
+      "brand": "soundpeats",
+      "models": [
+        "SoundPEATS T3 Pro"
+      ],
+      "status": "built",
+      "what": "The voice prompt language (03 21 / 03 22) is no longer offered on any model that has not been confirmed with it: the official app marks the command deprecated (FSN999) and none of the 81 models' feature lists holds it, and a T3 Pro bootlooped after a language change (issue #74). It was offered wherever the earbuds answered the read.",
+      "reported": "issue #74"
+    },
+    {
+      "id": "app-configurable-widget-and-notification",
+      "brand": "all",
+      "models": [
+        "all"
+      ],
+      "status": "built",
+      "what": "The widget's buttons can be any switch the earbuds offer (WidgetSlot.Toggle), and the notification's two buttons are set per pair of earbuds to the noise mode, nothing or any such switch (issue #72, owner 2026-11-24).",
+      "reported": "issue #72, owner 2026-11-24"
+    },
+    {
+      "id": "skullcandy-dime-evo-stay-aware",
+      "brand": "skullcandy",
+      "models": [
+        "Dime Evo"
+      ],
+      "status": "built",
+      "what": "The Dime Evo has Stay Aware and no noise cancelling, and PairFree offered and sent noise cancelling anyway: the notification steps, and the widget offers, only the modes the product's feature list has, and the session never sends a mode the product lacks (issue #66). The battery side is the earbuds' own reply (an inference, section 16).",
+      "reported": "issue #66"
+    },
+    {
+      "id": "qcy-fit-test",
+      "brand": "qcy",
+      "models": [
+        "20 models whose panel has Fit detection (type 110)"
+      ],
+      "status": "open",
+      "what": "The ear tip fit test: start with item 11 (01 01 01), the earbuds answer item 11 with a status and a result for each earbud (3 good, 2 or 1 poor, else failed); the phone plays QCY's sound (res/raw/compactness.m4a, AAC, not analysed) meanwhile. Needs the sound analysed and a tone made like it (as JblWarble was).",
+      "reported": "audit 2026-11-24 (issue #75's follow-up)"
+    },
+    {
+      "id": "qcy-parametric-presets",
+      "brand": "qcy",
+      "models": [
+        "77 models whose presets are parametric"
+      ],
+      "status": "open",
+      "what": "QCY's own presets for the models whose equalizer is parametric (each preset has its own frequencies, Qs and filter types in the panel); PairFree offers none yet.",
+      "reported": "audit 2026-11-24 (docs/qcy/PROTOCOL.md section 7)"
     }
   ]
 }

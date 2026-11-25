@@ -112,6 +112,28 @@ class TonePlayer(context: Context) {
         t.play()
     }
 
+    /** Plays [mono] (made at [rate]) in both ears over and over until [stop]: QCY's fit test sound. */
+    fun playLoop(mono: FloatArray, rate: Int) {
+        stop()
+        val frames = mono.size
+        if (frames == 0) return
+        val samples = FloatArray(frames * 2)
+        for (i in 0 until frames) {
+            samples[2 * i] = mono[i]
+            samples[2 * i + 1] = mono[i]
+        }
+        val t = AudioTrack.Builder()
+            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+            .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(rate).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
+            .build()
+        t.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        t.setLoopPoints(0, frames, -1)
+        track = t
+        t.play()
+    }
+
     fun stop() {
         track?.let {
             track = null

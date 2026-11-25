@@ -9,6 +9,7 @@ import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -121,6 +122,27 @@ class QcyJieliTest {
         assertEquals(JieliWire.ADV_SET, off.opcode)
         assertEquals("090b" + "02" + "06" + "0000" + "0064" + "0032", hex(off.payload))
         assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, off.bytes())))
+    }
+
+    @Test
+    fun theNoiseStrengthOfThePanelsThatListIt() {
+        // The DT10's panel gives ANC on and transparency a strength slider (`progress` 100); QCY's app writes the gain as minimum + (maximum - minimum) * percent / 100
+        // (setNoiseLevelPercent). The T13 ANC2's panel has none. Built from the panel and QCY's code, not recorded.
+        val dt10 = QcyModels.of(18289)!!
+        val s = QcyJieliSession(dt10)
+        s.start()
+        s.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_NOISE_MODE, ("01" + "06" + "0000" + "0064" + "0032").hexBytes())))
+        val row = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Level>().single { it.key == "anc_scene_level" }
+        assertEquals(50, row.value)
+        val write = frame(s.change(SettingChange.Level("anc_scene_level", 80))!!.single())
+        assertEquals("090b" + "01" + "06" + "0000" + "0064" + "0050", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        assertEquals(80, s.groups.flatMap { it.settings }.filterIsInstance<Setting.Level>().single { it.key == "anc_scene_level" }.value)
+        val none = QcyJieliSession(t13)
+        none.start()
+        none.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_NOISE_MODE, ("01" + "06" + "0000" + "0064" + "0032").hexBytes())))
+        assertTrue(none.groups.flatMap { it.settings }.none { it.key == "anc_scene_level" })
+        assertNull(none.change(SettingChange.Level("anc_scene_level", 80)))
     }
 
     @Test

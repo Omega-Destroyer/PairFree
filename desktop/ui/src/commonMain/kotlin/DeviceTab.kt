@@ -71,13 +71,15 @@ internal class DeviceTab(
             parts += Panel(Column(out, 8f))
         }
 
-        // Earbuds without a fit test of their own can still use the tone check (PairFree's version, for every brand).
+        // Earbuds without a fit test of their own can still use the tone check (PairFree's version, for every brand). A test that needs a sound from the phone (QCY's) is left to
+        // Android until the desktop plays it: without the sound the earbuds' result would mean nothing.
+        val ownFit = state.hasFitTest && !state.fitSound
         parts += Panel(
             Column(
                 listOf(
                     label(s.text("ear_tips")),
-                    note(s.text(if (state.hasFitTest) "fit_test_about" else "seal_check_about")),
-                    if (state.hasFitTest) Button(s.text("fit_test_open"), "fit_open") { call.openFit() } else Button(s.text("seal_check_open"), "seal_open") { call.openSeal() },
+                    note(s.text(if (ownFit) "fit_test_about" else "seal_check_about")),
+                    if (ownFit) Button(s.text("fit_test_open"), "fit_open") { call.openFit() } else Button(s.text("seal_check_open"), "seal_open") { call.openSeal() },
                 ),
                 8f,
             ),

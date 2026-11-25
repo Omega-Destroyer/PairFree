@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.eq
 
 import io.github.omegadestroyer.pairfree.protocol.BandEq
 import io.github.omegadestroyer.pairfree.protocol.BandEqReport
+import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeConnectSession
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
 import io.github.omegadestroyer.pairfree.protocol.nothing.NothingFrame
@@ -38,14 +39,18 @@ class QcyBandEq(private val session: QcyControl, eq: QcyEq) : BandEq {
 
     override val eqBandsHz: List<Int> = eq.freqs
     override val eqRangeDb: Int = eq.maxDb
-    override val eqPresetNames: List<String> = curves.keys.toList()
+    /** ... and the ones with bands of their own (QCY's parametric presets), which go as the parametric EQ and are drawn on those bands. */
+    private val own = session.model?.eq?.paramPresets.orEmpty().filter { it.name !in curves }
+
+    override val eqPresetNames: List<String> = curves.keys.toList() + own.map { it.name }
     override val eqPresetGains: Map<String, List<Double>> = curves
+    override val eqPresetBands: Map<String, List<EqBand>> = own.associate { p -> p.name to p.bands.map { EqBand(it.hz, it.q, it.gainDb) } }
     override val eqHasStock: Boolean = true
     override val eqReport: BandEqReport? = null
 
     /** A preset goes to the earbuds as the curve it is, through the same write as the user's own curve (whole dB, within the model's range). */
     override fun eqPresetFrames(name: String): List<ByteArray>? =
-        curves[name]?.let { c -> session.eqCustom(c.map { it.roundToInt().coerceIn(-eqRangeDb, eqRangeDb) }) }
+        curves[name]?.let { c -> session.eqCustom(c.map { it.roundToInt().coerceIn(-eqRangeDb, eqRangeDb) }) } ?: session.eqPreset(name)
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = session.eqCustom(gains)
 
     /** What [eq] says the earbuds hold; null while they hold one of QCY's presets, whose curve is unknown, or another band set. */

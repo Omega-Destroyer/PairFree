@@ -571,8 +571,8 @@
       "models": [
         "all"
       ],
-      "status": "open",
-      "what": "The statements in docs/qcy/PROTOCOL.md that say a feature is not built, sent or read (data/doc_gaps_baseline.json): build each or write its blocker with a checked: line.",
+      "status": "built",
+      "what": "The five statements of docs/qcy/PROTOCOL.md in data/doc_gaps_baseline.json are settled: the JieLi noise strength slider, the parametric presets and the fit test are built, and the never-sent list and the section's heading say what they are (2026-11-24).",
       "reported": "owner, 2026-11-24, after issue #75"
     },
     {
@@ -699,8 +699,8 @@
       "models": [
         "20 models whose panel has Fit detection (type 110)"
       ],
-      "status": "open",
-      "what": "The ear tip fit test: start with item 11 (01 01 01), the earbuds answer item 11 with a status and a result for each earbud (3 good, 2 or 1 poor, else failed); the phone plays QCY's sound (res/raw/compactness.m4a, AAC, not analysed) meanwhile. Needs the sound analysed and a tone made like it (as JblWarble was).",
+      "status": "built",
+      "what": "The ear tip fit test on the 20 models whose panel has Fit detection: item 11 with 01 01 01 starts it, the earbuds answer with a status, then the result for each earbud (3 good, 1 or 2 poor, else failed), and off (00 00 00) goes out once a result is in; the shared fit test screen shows it and plays PairFree's own noise shaped to the spectrum and level of QCY's clip while the test runs (QcyFitSound). Not tried on earbuds: whether the earbuds accept a sound that is not QCY's clip is the thing a report settles (2026-11-24).",
       "reported": "audit 2026-11-24 (issue #75's follow-up)"
     },
     {
@@ -709,9 +709,19 @@
       "models": [
         "77 models whose presets are parametric"
       ],
-      "status": "open",
-      "what": "QCY's own presets for the models whose equalizer is parametric (each preset has its own frequencies, Qs and filter types in the panel); PairFree offers none yet.",
+      "status": "built",
+      "what": "QCY's presets with bands of their own, for the 87 models whose panels list them (540 presets): written as the parametric EQ the way QCY's app writes a preset (the preset's id as the EQ index, its master gain, its bands padded to the earbuds' slots) and drawn on the Sound tab on their own bands (2026-11-24; not tried on earbuds).",
       "reported": "audit 2026-11-24 (docs/qcy/PROTOCOL.md section 7)"
+    },
+    {
+      "id": "qcy-personalised-listening-test",
+      "brand": "qcy",
+      "models": [
+        "8 models whose panel has the personalised listening experience (vendor ids 23872, 23874, 23877, 23879, 23880, 23881, 23883, 23884)"
+      ],
+      "status": "open",
+      "what": "QCY's app has a personalised equalizer made from a listening test per ear (CustomEQEdit2Activity): item 45 on, a tone per band (63 Hz to 8 kHz, each with the panel's reference level soundDB) played to each ear until the user just hears it, and the two curves written as the left and right parametric EQ (items 46 and 47, QCYConnectManager.setSideEQData). PairFree has none; it covers the gap-audit items CUSTOM_EQ_TEST, MAX_EQ_COUNT, MULTI_EQ_LEFT and MULTI_EQ_RIGHT.",
+      "reported": "audit 2026-11-24 (docs/qcy/PROTOCOL.md section 8)"
     }
   ]
 }

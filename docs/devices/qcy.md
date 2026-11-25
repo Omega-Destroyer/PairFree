@@ -17,7 +17,7 @@ What it shows, where the model has it:
   cancelling, transparency), the noise cancelling scene (adaptive, indoor, commuting, noisy or wind)
   and its strength, and the transparency level.
 - **Sound:** the equalizer, as a curve of your own over the bands the earbuds report and, on the models whose control panel lists
-  them, QCY's presets (as curves; the panels are QCY's server data, read once by a script outside the app), the balance between the earbuds,
+  them, QCY's presets (the ones on the model's own bands as curves, the ones with bands of their own as the parametric equalizer; the panels are QCY's server data, read once by a script outside the app), the balance between the earbuds,
   spatial audio, dynamic EQ and adaptive volume.
 - **Controls:** what a tap, double tap, triple tap and hold do on each earbud, from the actions the model's control panel lists (on
   the JieLi models as QCY's app sends them; 0.12.0 added the older panel screens, for example the T13 ANC2, issue #35, and the older JieLi models' equalizer, JieLi's own EQ setting; both not yet tried on real earbuds).
@@ -27,7 +27,9 @@ What it shows, where the model has it:
 
 Added in 0.12.0: the music mode and the touch sensitivity on the models whose panel lists them (not tried on real earbuds).
 
-Not yet: the per-ear personalised equalizer and the ear tip fit test (QCY's fit detection).
+Added in 0.18.0 (not tried on real earbuds): QCY's presets with bands of their own, the ear tip fit test on the 20 models whose app has "Fit detection" (PairFree plays a sound of its own while the earbuds measure, so a report on whether the earbuds accept it is welcome), and the noise strength slider on the DT10 and T13 ANC.
+
+Not yet: the per-ear personalised equalizer (the listening test of eight models, QCY's "Personalized listening experience").
 
 QCY support is written from QCY's own app (QCY 4.0.7), read for its messages, and checked against
 [OpenQCY-Desktop](https://github.com/GiorgioRafael/OpenQCY-Desktop) by GiorgioRafael (MIT), which was

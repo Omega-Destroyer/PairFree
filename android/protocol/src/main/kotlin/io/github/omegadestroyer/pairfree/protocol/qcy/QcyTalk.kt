@@ -3,6 +3,8 @@ package io.github.omegadestroyer.pairfree.protocol.qcy
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Fed
+import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.Pacing
 import io.github.omegadestroyer.pairfree.protocol.SessionTalk
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -17,6 +19,7 @@ public class QcyTalk(public val session: QcyControl) : SessionTalk<ByteArray>() 
     override val state: EarbudState get() = session.state
     override val groups: List<SettingGroup> get() = session.groups
     override val eq: Any? get() = session.eq
+    override val fitTest: FitTest get() = session
     override val pacing: Pacing = Pacing(gapMs = 50, showAtStart = true)
     override fun start(): List<ByteArray> = session.start()
     override fun poll(): List<ByteArray> = session.batteryRequests()

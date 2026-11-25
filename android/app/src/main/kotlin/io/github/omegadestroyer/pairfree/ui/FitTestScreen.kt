@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,7 +37,9 @@ import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.hearing.TonePlayer
 import io.github.omegadestroyer.pairfree.protocol.Models
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyFitSound
 import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
@@ -77,6 +81,19 @@ internal fun FitTestScreen(
     }
     val art = deviceArt(state.firmware?.code, device.name)
     val c = Look.colors
+    // QCY's earbuds measure against a sound the phone plays while the test runs (QcyFitSound); it stops with the test or when the screen closes.
+    val context = LocalContext.current
+    val player = remember { TonePlayer(context) }
+    val playing = testing && state.fitSound
+    DisposableEffect(playing) {
+        if (playing) {
+            val rate = FIT_SOUND_RATE
+            player.playLoop(QcyFitSound.make(rate, FIT_SOUND_SECONDS), rate)
+        } else {
+            player.stop()
+        }
+        onDispose { player.stop() }
+    }
 
     Column(
         Modifier
@@ -153,6 +170,10 @@ private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: F
         Text(text, style = Look.type.heading, color = color, textAlign = TextAlign.Center)
     }
 }
+
+/** The sound QCY's earbuds measure against: 5 seconds, which loop ([QcyFitSound]). */
+private const val FIT_SOUND_RATE = 16_000
+private const val FIT_SOUND_SECONDS = 5
 
 /** The H3 reported about 9 s after Start. */
 private const val TEST_MS = 9_000L

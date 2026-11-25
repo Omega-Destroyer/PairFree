@@ -114,6 +114,41 @@ def preset_gains(layout, eq):
     return out
 
 
+def parametric_presets(layout, taken):
+    """The presets of a panel whose own bands differ from the model's (each lists its frequencies, Qs, gains and filter types): QCY's app writes one as the parametric EQ
+    (QCYConnectManager.setEQWtihQFG / setEQWtihQFG2) with the preset's `id` as the EQ index when it has one, the panel's `mastergain` as the master gain, and each band's
+    `iitType` (255 where the panel gives none). Presets already offered as curves on the model's own bands (`taken`) are left out, as is a second one of the same name."""
+    out = []
+    for p in layout.get("sys_eq", []):
+        name = p.get("name")
+        if name in taken or any(o["name"] == name for o in out) or not p.get("freq") or not p.get("q"):
+            continue
+        if any(c in name for c in ";|="):
+            raise ValueError(name)
+        try:
+            hz = [freq(x) for x in str(p["freq"]).split(",") if x.strip()]
+            gains = [float(x) for x in str(p["eqs"]).split(",") if x.strip()]
+            qs = [float(x) for x in str(p["q"]).split(",") if x.strip()]
+            types = [int(x) for x in str(p.get("iitType", "")).split(",") if x.strip()]
+        except ValueError:
+            continue
+        n = min(len(hz), len(gains), len(qs))
+        if n == 0:
+            continue
+        # One string per preset keeps the file short: each band as hertz, gain in dB, Q and filter type, joined by "/", the bands by spaces.
+        bands = " ".join("%d/%s/%s/%d" % (hz[i], gains[i], qs[i], types[i] if i < len(types) else 255) for i in range(n))
+        entry_ = {"name": name, "bands": bands}
+        if int(p.get("id") or 0) > 0:
+            entry_["id"] = int(p["id"])
+        if p.get("mastergain") is not None:
+            try:
+                entry_["master"] = float(p["mastergain"])
+            except ValueError:
+                pass
+        out.append(entry_)
+    return out
+
+
 CHOICES = {46: "music_mode", 51: "touch_sensitivity"}  # panel rows of type 1000 or 111 that pick one of a few values (cmdid: PairFree's name)
 
 
@@ -178,7 +213,10 @@ def jieli_noise(l):
         if mode_ is None:
             return None
         v = packed(m["ancindex"] << 16)
-        modes.append({"mode": mode_, "from": v, "to": v, "default": v})
+        entry_ = {"mode": mode_, "from": v, "to": v, "default": v}
+        if m.get("progress", 0) > 0:
+            entry_["strength"] = True  # the panel gives the mode a strength slider (`progress` 100): QCY's app writes the gain as minimum + (maximum - minimum) * percent / 100
+        modes.append(entry_)
     return modes
 
 
@@ -195,6 +233,9 @@ def features(panel):
             gains = preset_gains(l, out["eq"])
             if gains:
                 out["eq"]["preset_gains"] = gains
+            params = parametric_presets(l, [g["name"] for g in gains])
+            if params:
+                out["eq"]["preset_params"] = params
         elif t in (10, 14) and (l.get("music") or {}).get("event"):
             # The button screen of the newer panels (the older type 1 screen is not read, as in the Quicky list).
             events = [(e["name"], e["left"]["list"]) for e in l["music"]["event"]]
@@ -205,6 +246,8 @@ def features(panel):
             out["balance"] = True
         elif t == 102:
             out["sleep_timer"] = True
+        elif t == 110 and l.get("cmdid") == 17:
+            out["fit_test"] = True  # "Fit detection": the ear tip fit test, item 11 (CMDID_COMPACTNESS)
         elif t == 4:
             seen = []
             for s_ in l.get("items", []):
@@ -255,7 +298,7 @@ def entry(product, panel):
             names.append(n)
     d = {"vendor_id": v, "name": name(product["title"]), "names": names, "family": family(v), "protocol": protocol(v), "kind": kind(v)}
     f = features(panel)
-    for key in ("anc", "jieli_noise", "eq", "touch", "balance", "sleep_timer", "settings"):
+    for key in ("anc", "jieli_noise", "eq", "touch", "balance", "sleep_timer", "fit_test", "settings"):
         if key in f:
             d[key] = f[key]
     return d
@@ -322,15 +365,37 @@ def main():
                     noised += 1
         DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
         print("buttons added to", touched, "models, noise control to", noised)
+    if "--strength" in sys.argv:
+        # Marks the JieLi noise modes the panel gives a strength slider, leaving every other field as it is.
+        added = 0
+        for v, d in have.items():
+            if v in prods and panel(v) and d.get("jieli_noise"):
+                made = {m["mode"]: m for m in (features(panel(v)).get("anc") or [])}
+                for m in d["anc"]:
+                    if made.get(m["mode"], {}).get("strength") and not m.get("strength"):
+                        m["strength"] = True
+                        added += 1
+        DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
+        print("strength sliders added to", added, "modes")
+    if "--fit" in sys.argv:
+        # Adds the fit test to the models whose panel has "Fit detection", leaving every other field as it is.
+        added = 0
+        for v, d in have.items():
+            if v in prods and panel(v) and features(panel(v)).get("fit_test") and not d.get("fit_test"):
+                d["fit_test"] = True
+                added += 1
+        DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
+        print("fit test added to", added, "models")
     if "--presets" in sys.argv:
         # Adds the preset curves to the models that have them, leaving every other field as it is.
         added = 0
         for v, d in have.items():
             if d.get("eq") and v in prods and panel(v):
-                gains = (entry(prods[v], panel(v)).get("eq") or {}).get("preset_gains")
-                if gains and d["eq"].get("preset_gains") != gains:
-                    d["eq"]["preset_gains"] = gains
-                    added += 1
+                made = entry(prods[v], panel(v)).get("eq") or {}
+                for key in ("preset_gains", "preset_params"):
+                    if made.get(key) and d["eq"].get(key) != made[key]:
+                        d["eq"][key] = made[key]
+                        added += 1
         DEVICES.write_text(json.dumps(data, indent=1, ensure_ascii=False) + chr(10), encoding="utf-8", newline=chr(10))
         print("preset curves added to", added, "models")
     if "--write" in sys.argv and new:

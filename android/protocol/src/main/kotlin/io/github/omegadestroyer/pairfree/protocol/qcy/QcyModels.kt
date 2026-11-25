@@ -19,7 +19,7 @@ public enum class QcyProtocol {
  * One noise mode as QCY packs it: [mode] (cancelling, transparency or off) and its range of packed values,
  * three bytes (mode, scene, value) on most models and one byte on older ones, with its [scenes].
  */
-public data class QcyNoiseMode(val mode: String, val from: Int, val to: Int, val default: Int, val scenes: List<QcyScene>) {
+public data class QcyNoiseMode(val mode: String, val from: Int, val to: Int, val default: Int, val scenes: List<QcyScene>, val strength: Boolean = false) {
     /** True for a model's older one-byte noise values, which go out as item 0C. */
     val legacy: Boolean get() = to <= 0xFF
 
@@ -43,18 +43,41 @@ public data class QcyTouch(val gestures: List<String>, val actions: List<String>
 public data class QcySetting(val item: Int, val setting: String, val options: List<Pair<Int, String>> = emptyList())
 
 /**
- * A model's equalizer as its control panel lays it out: [bands] bands at [freqs] (Hz), each from minus to plus
- * [maxDb] in whole dB, and the names of the panel's presets, whose curves are QCY's server data.
+ * A model's equalizer as its control panel lays it out: [bands] bands at [freqs] (Hz), each from minus to plus [maxDb] in whole dB, and the names of the panel's
+ * presets: [presetGains] holds the ones that are curves on the model's own bands (a gain in dB per band, as the panel lists them) and [paramPresets] the
+ * ones with bands of their own (frequencies, Qs and filter types), which go out as the parametric EQ.
  */
-/**
- * A model's graphic EQ from its control panel: [presets] are all of QCY's preset names; [presetGains] holds the ones that are curves on the model's own bands (a gain in
- * dB per band, as the panel lists them), which PairFree offers. The rest are parametric (their own frequencies and Q) and are not offered.
- */
-public data class QcyEqSpec(val bands: Int, val maxDb: Int, val freqs: List<Int>, val presets: List<String>, private val presetData: String = "") {
+public data class QcyEqSpec(
+    val bands: Int,
+    val maxDb: Int,
+    val freqs: List<Int>,
+    val presets: List<String>,
+    private val presetData: String = "",
+    private val paramData: String = "",
+) {
+    /**
+     * The presets with bands of their own (QCY's parametric ones, `preset_params` in the model table), written as the parametric EQ: the panel's `id` is the EQ index
+     * where it has one, the master gain its `mastergain`.
+     */
+    val paramPresets: List<QcyParamPreset> by lazy {
+        if (paramData.isEmpty()) emptyList() else paramData.split(';').map { part ->
+            val f = part.split('|')
+            QcyParamPreset(
+                f[0], f[1].toIntOrNull(), f[2].toDoubleOrNull(),
+                f[3].split(' ').map { b -> b.split('/').let { QcyParamPreset.Band(it[0].toInt(), it[1].toDouble(), it[2].toDouble(), it[3].toInt()) } },
+            )
+        }
+    }
+
     /** The curves as `name=gain,gain;name=...` in the generated table, read once. */
     val presetGains: Map<String, List<Double>> by lazy {
         if (presetData.isEmpty()) emptyMap() else presetData.split(';').associate { part -> part.substringBefore('=') to part.substringAfter('=').split(',').map(String::toDouble) }
     }
+}
+
+/** One of QCY's parametric presets: its name, the EQ index it is stored under (null: QCY's custom index), the master gain in dB and its bands. */
+public data class QcyParamPreset(val name: String, val id: Int?, val masterDb: Double?, val bands: List<Band>) {
+    public data class Band(val hz: Int, val gainDb: Double, val q: Double, val type: Int)
 }
 
 /** One QCY model from data/qcy/devices.json, by the vendor id it advertises. */
@@ -71,6 +94,8 @@ public data class QcyModel(
     val settings: List<QcySetting>,
     /** The control panel has the timed power off (item 14): the earbuds turn off once the minutes are up. */
     val sleepTimer: Boolean = false,
+    /** The control panel has "Fit detection" (type 110, item 11): the ear tip fit test, which plays a sound on the phone while the earbuds measure. */
+    val fitTest: Boolean = false,
     /** The noise control is JieLi's own noise mode (attribute 11, the control panel's type 11 screen), with one number per mode packed as mode << 16. */
     val jieliNoise: Boolean = false,
     val eq: QcyEqSpec? = null,

@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.protocol.qcy
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.GattEnvelope
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -288,6 +289,75 @@ class QcyTest {
         assertEquals("ff1a2218" + "ffe0fc" + "1f009001640000" + "e803e0fc8d0001" + "803e2003460002", hex(GattEnvelope.out(w)!!.value))
         assertTrue(s.allowed(w))
         assertEquals("ff03fe0122", hex(GattEnvelope.out(s.takeReadBacks().single())!!.value))
+    }
+
+    @Test
+    fun aParametricPresetGoesOutAsQcysAppWritesIt() {
+        // 2026-11-24: the N70's panel lists "Default" with bands of its own (QCY's id 1, master gain -12 dB, six bands); QCY's app writes it as the parametric EQ under that id
+        // and pads the earbuds' ten slots with empty bands (frequency 0, gain 0, Q 0, type 255). Built from the panel and QCY's code, not recorded.
+        val s = QcySession(QcyModels.of(23877))
+        assertNull(s.eqPreset("Default"), "before the earbuds have answered for their parametric EQ")
+        s.receive(settings("ff4b2249" + "080000" + (1..10).joinToString("") { le(100 * it) + le(0) + le(100) + "01" }))
+        assertNull(s.eqPreset("No such preset"))
+        val w = s.eqPreset("Default")!!.single()
+        val bands = "c8007cfc46000284039cff460002f00ac800780002342144fd5e0102581b9cff780003983a38ff900102"
+        val empty = "000000000000" + "ff"
+        assertEquals("ff4b2249" + "01" + "50fb" + bands + empty.repeat(4), hex(GattEnvelope.out(w)!!.value))
+        assertTrue(s.allowed(w))
+        assertEquals("ff03fe0122", hex(GattEnvelope.out(s.takeReadBacks().single())!!.value))
+        assertTrue(QcyModels.of(23877)!!.eq!!.paramPresets.any { it.name == "Default" && it.id == 1 && it.masterDb == -12.0 && it.bands.size == 6 })
+    }
+
+    private fun le(v: Int) = "%02x%02x".format(v and 0xFF, (v shr 8) and 0xFF)
+
+    @Test
+    fun theFitTestIsItem11() {
+        // 2026-11-24, from QCY's app 4.0.7 (CompactnessActivityEarphone, setCompactnessEnable): 01 01 01 starts it, the earbuds answer item 11 with a status (2: a result), then the
+        // left and the right result (3 good, 1 or 2 poor, else failed), and the app turns it off. Not recorded; 20 models' panels have "Fit detection".
+        val s = QcySession(QcyModels.of(23872))
+        assertEquals(20, QcyModels.ALL.count { it.fitTest })
+        assertNull(QcySession(QcyModels.ALL.first { !it.fitTest }).startFitTest(), "a model without the screen")
+        s.receive(settings("ff0511030000" + "00"))
+        assertTrue(s.state.hasFitTest && s.state.fitSound)
+        val w = s.startFitTest()!!.single()
+        assertEquals("ff051103010101", hex(GattEnvelope.out(w)!!.value))
+        assertTrue(s.allowed(w))
+        s.receive(settings("ff051103010203"))
+        assertNull(s.state.fit, "status 1 is the test running, not a result")
+        s.receive(settings("ff051103020302"))
+        assertEquals(FitResult(FitResult.Fit.GOOD, FitResult.Fit.NOT_FIT), s.state.fit)
+        assertEquals("ff051103000000", hex(GattEnvelope.out(s.takeOutbox().single())!!.value))
+        s.receive(settings("ff051103020900"))
+        assertEquals(FitResult(FitResult.Fit.UNKNOWN, FitResult.Fit.UNKNOWN), s.state.fit)
+        // A JieLi model sends the same item inside JieLi's custom command.
+        val jl = QcyJieliSession(QcyModels.of(QcyModels.ALL.first { it.fitTest && it.protocol != QcyProtocol.QCY }.vendorId))
+        assertTrue(jl.startFitTest()!!.isNotEmpty())
+    }
+
+    @Test
+    fun theFitSoundIsPairFreesOwnAndShapedLikeQcys() {
+        val rate = 16000
+        val a = QcyFitSound.make(rate, 5)
+        assertEquals(rate * 5, a.size)
+        assertTrue(a.contentEquals(QcyFitSound.make(rate, 5)), "the same every time")
+        val rms = kotlin.math.sqrt(a.sumOf { (it * it).toDouble() } / a.size)
+        assertEquals(QcyFitSound.RMS, rms, 0.01)
+        assertTrue(a.maxOf { kotlin.math.abs(it) } <= QcyFitSound.PEAK + 1e-6)
+        // Power in a band by a plain DFT over one second at 1 Hz steps (the 50-Hz-and-up bands only need every tenth bin).
+        val one = DoubleArray(rate) { a[it].toDouble() }
+        fun power(hz: Int): Double {
+            var re = 0.0
+            var im = 0.0
+            for (i in one.indices) {
+                val w = 2 * kotlin.math.PI * hz * i / rate
+                re += one[i] * kotlin.math.cos(w)
+                im -= one[i] * kotlin.math.sin(w)
+            }
+            return re * re + im * im
+        }
+        val low = (10..100 step 5).sumOf { power(it) }
+        val high = (4100..7900 step 100).sumOf { power(it) }
+        assertTrue(low > high * 50, "mostly below 100 Hz: $low against $high")
     }
 
     @Test

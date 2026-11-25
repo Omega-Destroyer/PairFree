@@ -1591,7 +1591,7 @@ abstract class GenerateQcyTables : DefaultTask() {
                 val scenes = (m["scenes"] as List<Map<String, Any?>>?).orEmpty().joinToString(", ", "listOf(", ")") { s ->
                     "QcyScene(${str(s["scene"])}, ${hex(s["from"])}, ${hex(s["to"])})"
                 }
-                "QcyNoiseMode(${str(m["mode"])}, ${hex(m["from"])}, ${hex(m["to"])}, ${hex(m["default"])}, $scenes)"
+                "QcyNoiseMode(${str(m["mode"])}, ${hex(m["from"])}, ${hex(m["to"])}, ${hex(m["default"])}, $scenes, strength = ${m["strength"] == true})"
             }
             @Suppress("UNCHECKED_CAST")
             val touch = (d["touch"] as Map<String, Any?>?)?.let { "QcyTouch(${strings(it["gestures"])}, ${strings(it["actions"])}${(it["extra_actions"] as Map<String, String>?)?.entries?.joinToString(", ", ", mapOf(", ")") { e -> "${e.key} to ${str(e.value)}" } ?: ""})" } ?: "null"
@@ -1607,9 +1607,13 @@ abstract class GenerateQcyTables : DefaultTask() {
                 val curves = str((e["preset_gains"] as List<Map<String, Any?>>?).orEmpty().joinToString(";") { p ->
                     "${p["name"]}=${(p["gains"] as List<*>).joinToString(",") { (it as Number).toDouble().toString() }}"
                 })
-                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])}, $curves)"
+                // The parametric presets the same way: "name|id|master|hz/gain/q/type hz/..." joined by ";", the id and master empty where the panel has none.
+                val params = str((e["preset_params"] as List<Map<String, Any?>>?).orEmpty().joinToString(";") { p ->
+                    "${p["name"]}|${p["id"] ?: ""}|${p["master"] ?: ""}|${p["bands"]}"
+                })
+                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])}, $curves, $params)"
             } ?: "null"
-            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true}, jieliNoise = ${d["jieli_noise"] == true},")
+            out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true}, fitTest = ${d["fit_test"] == true}, jieliNoise = ${d["jieli_noise"] == true},")
             out.appendLine("        eq = $eq,")
             out.appendLine("    ),")
         }

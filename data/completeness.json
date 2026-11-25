@@ -729,9 +729,28 @@
       "models": [
         "Soundcore R30 (A3398)"
       ],
-      "status": "open",
-      "what": "The Soundcore app 5.0.35 registers the R30 (A3398: Cmm2 manager, A3398CmdService, button serializer 81, legacy EQ, SPP 0CF12D31-...7B3398) and PairFree has no entry for it: it needs its state layout, EQ and buttons read from the restored app (research branch docs/soundcore/MODEL_PROTOCOL_ROUTES_5_0_35.*, LEGACY_REPLY_LAYOUTS_5_0_35.md) and an entry in data/soundcore/devices.json.",
-      "reported": "owner check of the soundcore-full-protocol branch, 2026-11-25"
+      "status": "blocked",
+      "what": "The Soundcore R30 (A3398) is a party speaker, not earbuds: the app gives it a main screen of DJ, device and game pages (A3398MainActivity: FRAGMENT_DJ_INDEX, FRAGMENT_DEVICE_INDEX, FRAGMENT_GAME_INDEX), a light effects screen and a DJ colour screen, with its own A3398CmdService on the Cmm2 manager. PairFree holds speakers back (owner, 2026-10-30), so it gets no entry in data/soundcore/devices.json; the same holds for the other registry keys that are speakers (Motion, Boom, Rave, Flare, Select, Glow, Mini, Mega, Trance, Infini Pro, Wakey, PowerConf).",
+      "reported": "owner check of the soundcore-full-protocol branch, 2026-11-25",
+      "rule": "decision the owner has reserved",
+      "read": [
+        {
+          "path": "E:/Builds/research/soundcore-full-protocol-2026-11-13/live-jadx/sources/com/oceanwing/soundcore/activity/a3398/A3398MainActivity.java",
+          "what": "fragments DJ (0), device (1) and game (2); imports LightEffects and reads light effect callbacks"
+        },
+        {
+          "path": "E:/Builds/research/soundcore-full-protocol-2026-11-13/live-jadx/sources/com/oceanwing/soundcore/activity/a3398/",
+          "what": "A3398DJActivity, A3398DjColorActivity, A3398LightActivity, A3398EqActivity, A3398OtaActivity: no earbud screens (no touch controls, noise control or fit test)"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/soundcore-full-protocol-2026-11-13/live-jadx/sources/com/oceanwing/soundcore/activity/a3398",
+          "glob": "A3398MainActivity\\.java$",
+          "pattern": "FRAGMENT_DJ_INDEX",
+          "expect": "some"
+        }
+      ]
     }
   ]
 }

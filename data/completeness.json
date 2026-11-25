@@ -722,6 +722,16 @@
       "status": "built",
       "what": "The personalised listening test of the 8 models whose panel has it: tones per band and ear on the Sound tab, the rules of QCY's app (CustomEQEdit2Activity, BeepTool2), item 45 for the test mode, and the left and right curves as items 46 and 47 with the master gain QCY's getMaxGain works out (QcyPersonal, QcyPersonalTest, QcyPersonalScreen; 2026-11-24, not tried on earbuds). Item 44 (MAX_EQ_COUNT) is read and limits the presets sent.",
       "reported": "audit 2026-11-24 (docs/qcy/PROTOCOL.md section 8)"
+    },
+    {
+      "id": "soundcore-a3398-r30",
+      "brand": "soundcore",
+      "models": [
+        "Soundcore R30 (A3398)"
+      ],
+      "status": "open",
+      "what": "The Soundcore app 5.0.35 registers the R30 (A3398: Cmm2 manager, A3398CmdService, button serializer 81, legacy EQ, SPP 0CF12D31-...7B3398) and PairFree has no entry for it: it needs its state layout, EQ and buttons read from the restored app (research branch docs/soundcore/MODEL_PROTOCOL_ROUTES_5_0_35.*, LEGACY_REPLY_LAYOUTS_5_0_35.md) and an entry in data/soundcore/devices.json.",
+      "reported": "owner check of the soundcore-full-protocol branch, 2026-11-25"
     }
   ]
 }

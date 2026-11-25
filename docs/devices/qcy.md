@@ -29,7 +29,7 @@ Added in 0.12.0: the music mode and the touch sensitivity on the models whose pa
 
 Added in 0.18.0 (not tried on real earbuds): QCY's presets with bands of their own, the ear tip fit test on the 20 models whose app has "Fit detection" (PairFree plays a sound of its own while the earbuds measure, so a report on whether the earbuds accept it is welcome), and the noise strength slider on the DT10 and T13 ANC.
 
-Not yet: the per-ear personalised equalizer (the listening test of eight models, QCY's "Personalized listening experience").
+Also added in 0.18.0 (not tried): the personalised listening test of eight models (the MeloBuds N70, N60, N70i, HT18 Lite and HT19), on the Sound tab's hearing test button: tones per band and ear, then the left and right equalizer put on the earbuds, as QCY's "Personalized listening experience" does.
 
 QCY support is written from QCY's own app (QCY 4.0.7), read for its messages, and checked against
 [OpenQCY-Desktop](https://github.com/GiorgioRafael/OpenQCY-Desktop) by GiorgioRafael (MIT), which was

@@ -1611,7 +1611,9 @@ abstract class GenerateQcyTables : DefaultTask() {
                 val params = str((e["preset_params"] as List<Map<String, Any?>>?).orEmpty().joinToString(";") { p ->
                     "${p["name"]}|${p["id"] ?: ""}|${p["master"] ?: ""}|${p["bands"]}"
                 })
-                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])}, $curves, $params)"
+                // The personalised listening test as "bands|db|volume|base" (QcyPersonal.parse), empty where the panel has none.
+                val personal = str((e["personal"] as Map<String, Any?>?)?.let { p -> "${p["bands"]}|${p["db"]}|${p["volume"]}|${p["base"]}" } ?: "")
+                "QcyEqSpec(${int(e["bands"])}, ${int(e["max_db"])}, ${(e["freqs"] as List<*>).joinToString(", ", "listOf(", ")") { int(it).toString() }}, ${strings(e["presets"])}, $curves, $params, $personal)"
             } ?: "null"
             out.appendLine("        touch = $touch, balance = ${d["balance"] == true}, settings = $settings, sleepTimer = ${d["sleep_timer"] == true}, fitTest = ${d["fit_test"] == true}, jieliNoise = ${d["jieli_noise"] == true},")
             out.appendLine("        eq = $eq,")

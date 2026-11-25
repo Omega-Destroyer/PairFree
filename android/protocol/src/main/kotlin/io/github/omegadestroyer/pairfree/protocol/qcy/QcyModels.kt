@@ -54,7 +54,11 @@ public data class QcyEqSpec(
     val presets: List<String>,
     private val presetData: String = "",
     private val paramData: String = "",
+    private val personalData: String = "",
 ) {
+    /** The personalised listening test of the models whose panel has one (`eq.personal`), else null. */
+    val personal: QcyPersonal? by lazy { QcyPersonal.parse(personalData) }
+
     /**
      * The presets with bands of their own (QCY's parametric ones, `preset_params` in the model table), written as the parametric EQ: the panel's `id` is the EQ index
      * where it has one, the master gain its `mastergain`.

@@ -719,8 +719,8 @@
       "models": [
         "8 models whose panel has the personalised listening experience (vendor ids 23872, 23874, 23877, 23879, 23880, 23881, 23883, 23884)"
       ],
-      "status": "open",
-      "what": "QCY's app has a personalised equalizer made from a listening test per ear (CustomEQEdit2Activity): item 45 on, a tone per band (63 Hz to 8 kHz, each with the panel's reference level soundDB) played to each ear until the user just hears it, and the two curves written as the left and right parametric EQ (items 46 and 47, QCYConnectManager.setSideEQData). PairFree has none; it covers the gap-audit items CUSTOM_EQ_TEST, MAX_EQ_COUNT, MULTI_EQ_LEFT and MULTI_EQ_RIGHT.",
+      "status": "built",
+      "what": "The personalised listening test of the 8 models whose panel has it: tones per band and ear on the Sound tab, the rules of QCY's app (CustomEQEdit2Activity, BeepTool2), item 45 for the test mode, and the left and right curves as items 46 and 47 with the master gain QCY's getMaxGain works out (QcyPersonal, QcyPersonalTest, QcyPersonalScreen; 2026-11-24, not tried on earbuds). Item 44 (MAX_EQ_COUNT) is read and limits the presets sent.",
       "reported": "audit 2026-11-24 (docs/qcy/PROTOCOL.md section 8)"
     }
   ]

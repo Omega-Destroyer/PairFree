@@ -152,6 +152,11 @@ internal fun ConnectedScreen(
         JblPersonifiScreen(host, onClose = { hearingTest = false })
         return
     }
+    val qcyHearing = ownHearing as? OwnHearingTest.Qcy
+    if (hearingTest && qcyHearing != null) {
+        QcyPersonalScreen(qcyHearing.spec, actions::sendFrames, onClose = { hearingTest = false })
+        return
+    }
     val samsungHearing = ownHearing is OwnHearingTest.Samsung
     if (hearingTest && ownHearing is OwnHearingTest.Samsung) {
         SamsungHearingTestScreen(ownHearing.legacy, actions::sendFrames, onClose = { hearingTest = false })
@@ -174,7 +179,7 @@ internal fun ConnectedScreen(
                 Tab.SOUND -> SoundScreen(
                     eq, eqActions, if (Brands[device.brand].offersRecording) actions::openCapture else null, settings, actions::changeSetting,
                     unavailableNote = Brands[device.brand].eqNote(device).text,
-                    onHearingTest = if (samsungHearing || jblPersonifi != null || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
+                    onHearingTest = if (samsungHearing || qcyHearing != null || jblPersonifi != null || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
                     onFinder = if (eq != null && eq.target.hasCustom) ({ finder = true }) else null,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)

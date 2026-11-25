@@ -92,6 +92,11 @@ object QcySpec : BrandSpec(Brand.QCY) {
             }
         }
 
+    /** The listening test of the models whose panel has one; the same table for every entry the name matches (the N70 has two vendor ids), else none. */
+    override fun ownHearingTest(device: Paired): OwnHearingTest? =
+        if (device.soldAs == Brand.SOUNDPEATS) null
+        else QcyModels.fromName(device.name).map { it.eq?.personal }.distinct().singleOrNull()?.let { OwnHearingTest.Qcy(it) }
+
     override fun eqOffline(device: Paired): Pair<EqLayout, EqTarget>? =
         if (device.soldAs == Brand.SOUNDPEATS) Models.find(device.model, device.name)?.eq?.let { BandEqTarget(CapsuleBandEq(it)) }?.let { it.layout to it } else null
 

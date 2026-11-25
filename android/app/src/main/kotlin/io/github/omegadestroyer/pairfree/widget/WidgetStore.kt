@@ -57,6 +57,7 @@ object WidgetStore {
         is WidgetSlot.Eq -> JSONObject().put("type", "eq").put("profile", slot.profileId)
         is WidgetSlot.EqCycle -> JSONObject().put("type", "eq_cycle").put("profiles", JSONArray(slot.profileIds))
         WidgetSlot.UseForSound -> JSONObject().put("type", "use_for_sound")
+        is WidgetSlot.Toggle -> JSONObject().put("type", "toggle").put("key", slot.key)
     }
 
     private fun choiceJson(c: NoiseChoice): JSONObject {
@@ -104,6 +105,7 @@ object WidgetStore {
                 if (ids.size >= 2) WidgetSlot.EqCycle(ids) else WidgetSlot.Empty
             }
             "use_for_sound" -> WidgetSlot.UseForSound
+            "toggle" -> o.optString("key").takeIf { it.isNotEmpty() }?.let { WidgetSlot.Toggle(it) } ?: WidgetSlot.Empty
             else -> WidgetSlot.Empty
         }
     } catch (_: JSONException) {
@@ -184,6 +186,35 @@ data class WidgetNoise(
             prefs.edit { putString(KEY + address, o.toString()) }
         }
     }
+}
+
+/**
+ * The switches the earbuds offered while connected (issue 72): their keys ([io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys]) and whether each was on, kept so a button can be set up
+ * and show its state while the channel is closed. A key the earbuds report now replaces its old state; one they do not show keeps it.
+ */
+object WidgetToggles {
+    private const val KEY = "widget_toggles_"
+
+    fun load(prefs: SharedPreferences, address: String): List<Pair<String, Boolean>> = try {
+        prefs.getString(KEY + address, null)?.let { text ->
+            val a = JSONArray(text)
+            List(a.length()) { a.getJSONArray(it).let { p -> p.getString(0) to p.getBoolean(1) } }
+        }.orEmpty()
+    } catch (_: JSONException) {
+        emptyList()
+    }
+
+    fun record(prefs: SharedPreferences, address: String, offered: List<Pair<String, Boolean>>) {
+        if (offered.isEmpty()) return
+        val old = load(prefs, address)
+        val seen = offered.map { it.first }.toSet()
+        val merged = old.map { (k, v) -> k to (offered.firstOrNull { it.first == k }?.second ?: v) } + offered.filter { (k, _) -> old.none { it.first == k } }
+        if (merged == old || seen.isEmpty()) return
+        prefs.edit { putString(KEY + address, JSONArray(merged.map { (k, v) -> JSONArray().put(k).put(v) }).toString()) }
+    }
+
+    /** The state one switch was last seen in; null when the earbuds never showed it. */
+    fun stateOf(prefs: SharedPreferences, address: String, key: String): Boolean? = load(prefs, address).firstOrNull { it.first == key }?.second
 }
 
 /**

@@ -929,6 +929,10 @@ class SoundcoreModelsTest {
         // Models whose service OpenSCQ30 fixes.
         assertEquals(SoundcoreModels.Match("A3930", spp), SoundcoreModels.identify("Soundcore Liberty 2 Pro+", listOf(other)))
         assertEquals(SoundcoreModels.Match("A3116", "0cf12d31-fac3-4553-bd80-d6832e7b3116"), SoundcoreModels.identify("Soundcore Motion+", emptyList()))
+        // Issue #76: the app lists the Liberty Buds 2 without the maker's word, the earbuds may carry it.
+        for (name in listOf("Liberty Buds 2", "Soundcore Liberty Buds 2", "soundcore Liberty Buds 2", "Anker Liberty Buds 2", "Soundcore-Liberty Buds 2")) {
+            assertEquals("D1206", SoundcoreModels.identify(name, listOf(spp))?.model, name)
+        }
         assertNull(SoundcoreModels.identify("SOUNDPEATS H3", listOf(spp)))
         assertNull(SoundcoreModels.identify("", emptyList()))
     }

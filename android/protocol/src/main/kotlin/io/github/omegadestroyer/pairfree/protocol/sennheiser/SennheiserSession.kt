@@ -398,7 +398,7 @@ public class SennheiserSession(public val model: SennheiserModel?, private val b
                 ancState(ANTI_WIND)?.let { add(Setting.Toggle(KEY_ANTI_WIND, it, enabled = on(SennheiserCommands.ANC_STATUS) != false)) }
                 ancState(ADAPTIVE)?.let { add(Setting.Toggle(KEY_ADAPTIVE, it, enabled = on(SennheiserCommands.ANC_STATUS) != false)) }
                 on(SennheiserCommands.TRANSPARENCY_PAUSE)?.let { add(Setting.Toggle(KEY_PAUSE_TRANSPARENT, it)) }
-                // The transparency level: the Momentum 4 and Accentum Plus have the app's slider between transparency (0) and noise cancelling (100); the earbuds with
+                // The transparency level: the Momentum 4 and Accentum Plus have the app's slider between full noise cancelling (0) and full transparency (100; a Momentum 5 owner's report, issue #47); the earbuds with
                 // transparent hearing take three levels (what the app writes: 1, 50 and 100).
                 if (model?.transparency == "slider") values[SennheiserCommands.ANC_LEVEL]?.firstOrNull()?.let { add(Setting.Level(KEY_TRANSPARENCY_SLIDER, (it.toInt() and 0xFF).coerceAtMost(100), 0, 100)) }
                 if (model?.transparency == "levels") u8(SennheiserCommands.TRANSPARENCY_LEVEL)?.let { v ->

@@ -105,7 +105,7 @@ Each product's class in the app's JavaScript (`createProductFeatures`) says whic
 | sidetone (your own voice on calls) | `SidetoneState` (`0806`/`0805`, one byte): 0 is off | the highest level is `phoneCallsMaxValue`: 4 on the Accentum Plus and Momentum 4, 2 on the others; the CX models name 0, 1, 2 off, min, max |
 | automatic power off | `Config_GetTimer` (`0601`, timer 0) / `Config_SetTimer` (`0600`, timer 0 and seconds) | the app's choices are never, 15, 30 and 60 minutes (`defaultAutoPowerOff`) |
 | Bluetooth compatibility mode | `BluetoothCompatibilityMode` (`0406`/`0405`): 1 better compatibility, 0 better audio | Momentum 4, Momentum Sport, Momentum True Wireless 3 and 4 |
-| transparency level, Accentum Plus and Momentum 4 | `ANC_Transparency` (`1A03`/`1A02`, 0 to 100): the app's `slider` | between transparency (0) and noise cancelling (100); shown beside the three-way noise control (section 7) |
+| transparency level, Accentum Plus and Momentum 4 | `ANC_Transparency` (`1A03`/`1A02`, 0 to 100): the app's `slider` | between full noise cancelling (0) and full transparency (100), as a Momentum 5 owner described it and his report shows (`ANC_Status` 1 with level 0, issue #47; the Momentum 4 and Accentum Plus use the same property and are assumed the same); shown beside the three-way noise control (section 7) |
 | transparency level, the earbuds | `TransparentHearing` (`1803`/`1802`) | the app writes 1, 50 or 100 (`transparent_hearing_slider_low`, `mid`, `high`) |
 | tap sensitivity | `TapDetection` (`2601`/`2600`): low 2, mid 1, high 0 | Momentum Sport |
 | open ear tip support, hold to disable the touch area | `Sound_OpenEartip` (`0811`/`0810`), `Touch_Locked` (`1609`/`1608`) | CX Sport, Momentum Sport |

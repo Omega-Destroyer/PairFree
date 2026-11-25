@@ -36,7 +36,11 @@ class QcyJieliTest {
     @Test
     fun framesAsJieLisSdkPacksThem() {
         // Ask for the battery attribute: command with an answer wanted, opcode C1, length 5, sn 0, mask 1.
-        val battery = QcyJieliSession(t13).batteryRequests().single()
+        // While no EQ has been reported, the EQ read goes with each battery read (issue #75).
+        val polled = QcyJieliSession(t13).batteryRequests()
+        assertEquals(2, polled.size)
+        val battery = polled.first()
+        assertEquals(JieliWire.GET_SYS_INFO, RcspParser().feed(GattEnvelope.out(polled.last())!!.value).single().opcode)
         assertEquals("fedcbac0c1000500" + "00000001" + "ef", hex(GattEnvelope.out(battery)!!.value))
         // An answer: status, then sn, then the payload; split across notifications and after stray bytes.
         val bytes = RcspFrame(command = false, wantsAnswer = false, opcode = JieliWire.ADV_GET, sn = 7, payload = "0400bc602b".hexBytes()).bytes()

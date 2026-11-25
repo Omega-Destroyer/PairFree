@@ -274,6 +274,7 @@ None of this has been tried with PairFree; the N70's parametric EQ is OpenQCY's.
 
 - **EQ:** QCY's presets (**corrected 2026-11-12: the saved panels hold them, 186 panels with `eqs` gain lists per preset name**; the unit is still to confirm), (the older JieLi models' EQ was built 2026-11-15, section 7).
 - **Fit test (`11`):** Quicky's dump gives no command, but **QCY's own panels do (corrected 2026-11-12): 20 of the saved panels in `server_dump/qcy/panels` carry "Fit detection" as type 110 with cmdid 17** (`CMDID_COMPACTNESS`); the reply layout is not read yet.
+- **Fit test (`11`), what QCY's app does (read 2026-11-24, `CompactnessActivityEarphone`, `QCYConnectManager.setCompactnessEnable`, `CompactnessDataBean`):** it turns the test on with item `11` and the value `01 01 01` (off is `00 00 00`), as the custom command on JieLi models and as `FF 05 11 03 ...` on the settings characteristic otherwise, and plays its own sound (`res/raw/compactness.m4a`, an AAC file of 62 kB, not analysed yet) through the phone while the earbuds measure; the earbuds answer item `11` with a status (2 is a result), then the left and right result: 3 good fit, 2 or 1 poor fit, anything else the test failed.
 - **Voice language (`19`):** named in QCY's tables, but QCY's app never writes it.
 
 **Prompt volume (`1D`, since the 2026-11-03 audit):** read on every model, since which have it is on QCY's

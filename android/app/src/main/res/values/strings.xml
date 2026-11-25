@@ -987,6 +987,14 @@
     <string name="status_noise_button">Noise: %1$s</string>
     <string name="status_noise_description">Noise control: %1$s. Tap for the next mode.</string>
     <string name="status_game_is_on">Game mode: on</string>
+    <string name="status_toggle_on">%1$s: on</string>
+    <string name="status_toggle_off">%1$s: off</string>
+    <string name="status_buttons_title">Notification buttons</string>
+    <string name="status_button_1">First button</string>
+    <string name="status_button_2">Second button (shown when the notification is expanded)</string>
+    <string name="status_button_noise">Noise control</string>
+    <string name="status_button_none">No button</string>
+    <string name="status_buttons_note">What each button does is set for these earbuds alone. Any setting that turns on or off can be a button; the list holds the ones these earbuds have offered while connected.</string>
     <string name="status_game_is_off">Game mode: off</string>
     <string name="status_game_needs_ldac_off">Game mode: LDAC is on</string>
     <string name="status_battery_left">L %1$s</string>
@@ -1316,6 +1324,7 @@
     <string name="widget_caption_noise">Noise</string>
     <string name="widget_caption_eq">EQ</string>
     <string name="widget_caption_sound">Sound</string>
+    <string name="widget_caption_toggle">Setting</string>
     <string name="widget_profile_missing">Removed</string>
     <string name="widget_channel">Widget actions</string>
     <string name="widget_working">Changing %1$s…</string>
@@ -1337,6 +1346,7 @@
     <string name="widget_type_eq">Equalizer</string>
     <string name="widget_type_eq_cycle">Equalizer toggle</string>
     <string name="widget_type_use_for_sound">Use for sound</string>
+    <string name="widget_type_toggle">Turn a setting on or off</string>
     <string name="widget_cycle_hint">Tick the choices to step through, in the order you tick them. Pick at least two.</string>
     <string name="widget_slot_description">%1$s: %2$s. Double tap to change.</string>
     <string name="widget_save">Save</string>
@@ -1480,7 +1490,7 @@
     <string name="setting_sh_touch_area">Hold to disable the touch area</string>
     <string name="setting_sh_auto_off">Automatic power off</string>
     <string name="setting_sh_bt_compat">Bluetooth compatibility mode</string>
-    <string name="setting_sh_transparency_slider">Transparency and noise cancelling</string>
+    <string name="setting_sh_transparency_slider">Transparency (0 full noise cancelling, 100 full transparency)</string>
     <string name="setting_sh_transparency_level">Transparency level</string>
     <string name="setting_sh_tap_sensitivity">Tap sensitivity</string>
     <string name="setting_sh_open_eartip">Open ear tip support</string>
@@ -1539,8 +1549,11 @@
     <string name="setting_sh_fit_not_ready">Not ready: wear both earbuds</string>
     <string name="setting_sh_fit_note">Wear both earbuds and start. PairFree plays a steady low tone from the phone while the earbuds measure for about 25 seconds; keep the phone volume at a comfortable medium level and stay quiet.</string>
     <string name="setting_sh_peer_connect">Connect a paired device</string>
+    <string name="setting_bose_peer_connect">Connect a paired device</string>
+    <string name="setting_bose_peer_disconnect">Disconnect a device</string>
+    <string name="setting_bose_pairing_mode">Let another device pair</string>
     <string name="setting_sh_peer_delete">Forget a paired device</string>
-    <string name="setting_sh_peer_delete_body">%1$s is removed from the list of paired devices that the earbuds keep. Pair it again to use it.</string>
+    <string name="setting_sh_peer_delete_body">%1$s is removed from the list of paired devices that the earbuds or headphones keep. Pair it again to use it.</string>
     <string name="setting_sh_peer_delete_confirm">Forget</string>
     <string name="setting_sh_auracast_code_title">Broadcast code</string>
     <string name="setting_sh_auracast_code_send">Send the code</string>

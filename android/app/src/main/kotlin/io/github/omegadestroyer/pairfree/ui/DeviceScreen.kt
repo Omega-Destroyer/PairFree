@@ -144,7 +144,7 @@ internal fun DeviceScreen(
         }
 
         val volume = state.supports(Command.PROMPT_VOLUME)
-        val language = state.number(Command.VOICE_LANGUAGE)
+        val language = if (state.offers(Command.VOICE_LANGUAGE, model)) state.number(Command.VOICE_LANGUAGE) else null
         val shutdown = state.number(Command.AUTO_SHUTDOWN)
         if (volume || language != null || shutdown != null) {
             Panel {

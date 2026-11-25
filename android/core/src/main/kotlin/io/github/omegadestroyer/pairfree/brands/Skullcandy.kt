@@ -10,6 +10,7 @@ import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Conversation
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Model
+import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.TalkWire
 import io.github.omegadestroyer.pairfree.protocol.jbl.RacePacket
@@ -101,6 +102,19 @@ object SkullcandySpec : BrandSpec(Brand.SKULLCANDY) {
     }
 
     override val mayHaveNoise: Boolean get() = true
+
+    /**
+     * The hearing modes a Rail or Airoha product has, from its feature list in Skullcandy's app (issue #66: the Dime Evo has Stay Aware and no noise cancelling, and the
+     * notification stepped through noise cancelling anyway). Null for the others, whose modes only the earbuds' replies tell.
+     */
+    override fun noiseOffline(device: Paired): List<NoiseChoice>? {
+        val p = SkullcandyModels.fromName(device.model ?: device.name) ?: return null
+        if (!(p.usesRail || p.usesAirohaSdk)) return null
+        val anc = "adjustableNoiseCancellation" in p.features || "activeNoiseCancellation" in p.features
+        val transparency = "adjustableStayAwareMode" in p.features || "stayAwareMode" in p.features || (p.usesAirohaSdk && "ambientMode" in p.features)
+        if (!anc && !transparency) return emptyList()
+        return listOf(OFF) + listOfNotNull(NoiseChoice("anc").takeIf { anc }, NoiseChoice("transparency").takeIf { transparency })
+    }
 
     /** The six older Qualcomm models are Bluetooth LE only: a scan may be needed to find their LE side (owner, 2026-11-15: LE for any vendor whose app needs it). */
     override fun needsScan(device: Paired): Boolean = SkullcandyModels.leFromName(device.model ?: device.name) != null

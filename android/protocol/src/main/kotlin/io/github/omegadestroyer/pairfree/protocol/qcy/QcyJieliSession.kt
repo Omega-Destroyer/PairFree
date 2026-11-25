@@ -66,7 +66,11 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
     /** On opening: what QCY's session asks for, its reads of the attributes in one. */
     override fun start(): List<ByteArray> = translate(inner.start(), opening = true)
 
-    override fun batteryRequests(): List<ByteArray> = translate(inner.batteryRequests())
+    /**
+     * The battery read, to send again now and then; on the older models, while no EQ has been reported, the EQ read goes with it: QCY's app reads it again when its EQ screen opens, and
+     * the first read at opening, among the others, may have been dropped (issue #75: a T13 ANC2 never showed an equalizer).
+     */
+    override fun batteryRequests(): List<ByteArray> = translate(inner.batteryRequests()) + if (!customOnly && inner.eq == null && model?.eq != null) listOf(sysGetEq()) else emptyList()
 
     override fun takeReadBacks(): List<ByteArray> = translate(inner.takeReadBacks())
 
@@ -219,6 +223,10 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
                 if (f.opcode == JieliWire.SYS_INFO_AUTO_UPDATE) changed = systemInfo(f.payload) || changed
                 if (f.opcode == JieliWire.ADV_REQUEST_OPERATION && !customOnly && tracked != 0) outbox += advGet(tracked)
                 continue
+            }
+            // What the earbuds said to the read or write of the EQ setting, kept for the device report whatever it was: older QCY models' EQ has not been seen answering yet (issue #75).
+            if (f.opcode == JieliWire.GET_SYS_INFO || f.opcode == JieliWire.SET_SYS_INFO) {
+                _replies["sys ${if (f.opcode == JieliWire.GET_SYS_INFO) "read" else "write"} status ${f.status}"] = f.payload.copyOf(minOf(f.payload.size, 16))
             }
             if (f.status != 0) continue
             when (f.opcode) {

@@ -32,7 +32,16 @@ public object SoundcoreModels {
     public fun fromName(name: String): String? {
         val n = name.trim()
         if (n.isEmpty()) return null
-        return SOUNDCORE_MODEL_TABLE.firstOrNull { m -> m.names.any { it.equals(n, ignoreCase = true) } }?.code
+        SOUNDCORE_MODEL_TABLE.firstOrNull { m -> m.names.any { it.equals(n, ignoreCase = true) } }?.code?.let { return it }
+        // A name the app's list holds without the maker's word (Liberty Buds 2) or with it (Soundcore Liberty Buds 2, Anker Liberty Buds 2), whatever the spacing (issue #76).
+        val key = nameKey(n)
+        return SOUNDCORE_MODEL_TABLE.firstOrNull { m -> m.names.any { nameKey(it) == key } }?.code
+    }
+
+    private fun nameKey(name: String): String {
+        var s = name.trim().lowercase()
+        for (word in listOf("soundcore", "anker")) if (s.startsWith(word)) s = s.removePrefix(word)
+        return s.filter { it.isLetterOrDigit() }
     }
 
     /** True for a Soundcore vendor service UUID, whatever model it names. */

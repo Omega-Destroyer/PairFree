@@ -505,7 +505,10 @@ first guess. `names` in `data/identify.json` is the test corpus, and every detec
   does not keep trying to open the channel to earbuds that are not connected (owner's report,
   2026-10-23: it stayed on Connecting after the earbuds went into their case).
 - Buttons, each only on earbuds that have it: the noise mode, which steps to the next (off,
-  cancelling, transparency, round again), and game mode. They are real buttons in the
+  cancelling, transparency, round again; only the modes the model has, issue #66), and game mode. **Configurable** (issue #72, owner 2026-11-24):
+  on the Device tab, under Status notification, each of the two buttons is set per pair of earbuds to the noise mode, nothing, or any
+  switch the earbuds offered while connected (`WidgetToggles`: the shared switches by command, and each brand's own rows); the
+  second is game mode by default. They are real buttons in the
   notification's own layout, so the noise mode works even while the notification is
   collapsed, where Android hides ordinary action buttons (owner's test on One UI 8,
   2026-10-14); expanded, game mode joins it. On models that offer game mode only with LDAC off
@@ -552,7 +555,9 @@ first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2:
   cancelling, transparency) with an optional fixed sub-mode, such as Cancelling in its Adaptive scene: a tap sets the mode and
   then that sub-mode and nothing else. A toggle steps only through the choices the user ticked, in the order ticked (Off then
   Cancelling in Adaptive, for example); with none of its choices on, it starts at the first. An EQ profile is a preset, Stock or
-  one of the user's saved curves. **Use for sound** (issue #48, owner 2026-11-18) asks Android to play through these earbuds, the same request as the Sound card's button on Home; it needs no channel to the
+  one of the user's saved curves. **A setting** (issue #72, owner 2026-11-24) is any switch the earbuds offered while connected (the shared switches
+  by command and each brand's own switch rows: `WidgetSlot.Toggle`, `ToggleKeys`): a tap turns it the other way, and the button is filled while it is on. The setup
+  lists them once the earbuds have connected. **Use for sound** (issue #48, owner 2026-11-18) asks Android to play through these earbuds, the same request as the Sound card's button on Home; it needs no channel to the
   earbuds and no sound link, so it works while they are only paired, and its button is never dimmed.
 - **Several earbuds:** one widget keeps a layout of buttons for each pair of paired earbuds and shows the layout of whichever is
   connected: the pair the channel is open to, else one the phone has connected for sound, else the last one shown, dimmed.

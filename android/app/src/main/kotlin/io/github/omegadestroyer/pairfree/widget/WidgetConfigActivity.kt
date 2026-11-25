@@ -189,6 +189,7 @@ class WidgetConfigActivity : ComponentActivity() {
         is WidgetSlot.Eq -> R.string.widget_type_eq
         is WidgetSlot.EqCycle -> R.string.widget_type_eq_cycle
         WidgetSlot.UseForSound -> R.string.widget_type_use_for_sound
+        is WidgetSlot.Toggle -> R.string.widget_type_toggle
     }
 
     private fun describe(context: Context, slot: WidgetSlot, options: WidgetChoices): String {
@@ -201,6 +202,7 @@ class WidgetConfigActivity : ComponentActivity() {
             is WidgetSlot.Eq -> profile(slot.profileId)
             is WidgetSlot.EqCycle -> slot.profileIds.joinToString(" → ") { profile(it) }
             WidgetSlot.UseForSound -> context.getString(R.string.widget_type_use_for_sound)
+            is WidgetSlot.Toggle -> WidgetLabels.toggle(context, slot.key)
         }
     }
 
@@ -211,6 +213,7 @@ class WidgetConfigActivity : ComponentActivity() {
         EQ(R.string.widget_type_eq),
         EQ_CYCLE(R.string.widget_type_eq_cycle),
         USE_FOR_SOUND(R.string.widget_type_use_for_sound),
+        TOGGLE(R.string.widget_type_toggle),
     }
 
     /** Edits one button: its kind, then the choice, or for a toggle the choices to step through in the order ticked. */
@@ -221,6 +224,7 @@ class WidgetConfigActivity : ComponentActivity() {
                 Kind.EMPTY, Kind.USE_FOR_SOUND -> true
                 Kind.NOISE, Kind.NOISE_CYCLE -> options.noise.isNotEmpty()
                 Kind.EQ, Kind.EQ_CYCLE -> options.eq.isNotEmpty()
+                Kind.TOGGLE -> options.toggles.isNotEmpty()
             }
         }
         var kind by remember {
@@ -232,6 +236,7 @@ class WidgetConfigActivity : ComponentActivity() {
                     is WidgetSlot.Eq -> Kind.EQ
                     is WidgetSlot.EqCycle -> Kind.EQ_CYCLE
                     WidgetSlot.UseForSound -> Kind.USE_FOR_SOUND
+                    is WidgetSlot.Toggle -> Kind.TOGGLE
                 },
             )
         }
@@ -245,6 +250,7 @@ class WidgetConfigActivity : ComponentActivity() {
                     is WidgetSlot.NoiseCycle -> slot.choices.mapNotNull { c -> options.noise.indexOf(c).takeIf { it >= 0 } }
                     is WidgetSlot.Eq -> listOfNotNull(options.eq.indexOfFirst { it.first == slot.profileId }.takeIf { it >= 0 })
                     is WidgetSlot.EqCycle -> slot.profileIds.mapNotNull { id -> options.eq.indexOfFirst { it.first == id }.takeIf { it >= 0 } }
+                    is WidgetSlot.Toggle -> listOfNotNull(options.toggles.indexOf(slot.key).takeIf { it >= 0 })
                     WidgetSlot.Empty, WidgetSlot.UseForSound -> emptyList()
                 },
             )
@@ -253,11 +259,12 @@ class WidgetConfigActivity : ComponentActivity() {
         val labels = when (kind) {
             Kind.NOISE, Kind.NOISE_CYCLE -> noiseLabels
             Kind.EQ, Kind.EQ_CYCLE -> eqLabels
+            Kind.TOGGLE -> options.toggles.map { WidgetLabels.toggle(context, it) }
             Kind.EMPTY, Kind.USE_FOR_SOUND -> emptyList()
         }
         val valid = when (kind) {
             Kind.EMPTY, Kind.USE_FOR_SOUND -> true
-            Kind.NOISE, Kind.EQ -> ticked.size == 1
+            Kind.NOISE, Kind.EQ, Kind.TOGGLE -> ticked.size == 1
             else -> ticked.size >= 2
         }
         AppDialog(stringResource(R.string.widget_title), onDismiss) {
@@ -300,6 +307,7 @@ class WidgetConfigActivity : ComponentActivity() {
                                 Kind.NOISE_CYCLE -> WidgetSlot.NoiseCycle(ticked.map { options.noise[it] })
                                 Kind.EQ -> WidgetSlot.Eq(options.eq[ticked.single()].first)
                                 Kind.EQ_CYCLE -> WidgetSlot.EqCycle(ticked.map { options.eq[it].first })
+                                Kind.TOGGLE -> WidgetSlot.Toggle(options.toggles[ticked.single()])
                             },
                         )
                     },

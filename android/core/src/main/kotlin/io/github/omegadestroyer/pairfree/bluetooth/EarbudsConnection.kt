@@ -58,6 +58,8 @@ data class Paired(
     val modelId: Int? = null,
     /** The brand the earbuds are sold as, when another brand's protocol runs them (SOUNDPEATS' QCY-built Capsule3 Pro). */
     val soldAs: Brand? = null,
+    /** The control channel is on a USB cable. [address] is then an opaque local device key. */
+    val wired: Boolean = false,
 )
 
 sealed interface LinkStatus {

@@ -23,9 +23,18 @@ object BoseSpec : BrandSpec(Brand.BOSE) {
 
     /** By the product the device reports, which names the firmware line; before then, its name. */
     override fun model(device: Paired, state: EarbudState): Model? =
-        BoseModels.model(state.firmware?.code ?: device.name, if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES)
+        BoseModels.model(
+            state.firmware?.code ?: BoseModels.of(device.model?.toIntOrNull(16))?.name ?: device.name,
+            if (state.supports(Command.BATTERY_RIGHT)) Form.EARBUDS else Form.HEADPHONES,
+        )
 
     override fun driver(device: Paired, host: DriverHost): BrandDriver = BoseDriver(host)
+
+    override suspend fun open(env: OpenEnv, device: Paired, driver: BrandDriver): ControlLink {
+        if (!device.wired) return super.open(env, device, driver)
+        env.note("USB HID control channel")
+        return env.hold(env.transport.usb(device.address)).apply { connect() }
+    }
 }
 
 /** Bose headphones and earbuds ([BoseTalk]). */

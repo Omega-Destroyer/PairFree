@@ -2,7 +2,9 @@
 
 package io.github.omegadestroyer.pairfree.windows
 
+import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
+import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.brands.GattChannel
 import io.github.omegadestroyer.pairfree.brands.GattSpec
 import io.github.omegadestroyer.pairfree.brands.LeTarget
@@ -32,7 +34,8 @@ class WindowsTransport : Transport {
 
     override fun hiddenBySystem(failure: Throwable): Boolean = false
 
-    override fun deviceFacts(address: String): List<Pair<String, String>> = emptyList()
+    override fun deviceFacts(address: String): List<Pair<String, String>> =
+        if (address.startsWith("usb:")) listOf("Transport" to "USB HID") else emptyList()
 
     override val hasLe: Boolean get() = true
 
@@ -53,6 +56,17 @@ class WindowsTransport : Transport {
     override fun at(address: String): LeTarget = WinLeTarget(address)
 
     override fun serial(address: String, uuid: String, log: (String) -> Unit): ControlLink = WinsockLink(address, uuid, log)
+
+    /** Connected USB headsets are available even if the Windows Bluetooth radio is off. */
+    fun devices(): List<Paired> = BoseUsbHid.interfaces().map { path ->
+        Paired(BoseUsbHid.key(path), "Bose QC Ultra 2 HP (USB)", Brand.BOSE, model = "4082", wired = true)
+    } + PairedDevices.earbuds()
+
+    override fun usb(address: String): ControlLink {
+        val path = BoseUsbHid.interfaces().firstOrNull { BoseUsbHid.key(it) == address }
+            ?: throw IOException("the Bose USB headset is no longer connected")
+        return BoseUsbLink(path)
+    }
 
     override fun gatt(target: LeTarget, spec: GattSpec, log: (String) -> Unit): GattChannel = WinRtGattChannel(target.address, spec, log)
 

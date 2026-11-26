@@ -364,7 +364,9 @@ public class BoseSession : FitTest {
                     listOfNotNull(
                         volume?.let { (max, now) -> Setting.Level("bose_volume", now, 0, max) },
                         latency?.takeIf { it.third > it.second }?.let { (now, low, high) -> Setting.Level("bose_latency", now.coerceIn(low, high), low, high) },
-                        spatial?.let { v -> SPATIAL.firstOrNull { it.first == v }?.let { Setting.Choice(SPATIAL_KEY, it.second, SPATIAL.map { s -> s.second }) } },
+                        (ultra2Config()?.u8(2) ?: spatial)?.let { v ->
+                            SPATIAL.firstOrNull { it.first == v }?.let { Setting.Choice(SPATIAL_KEY, it.second, SPATIAL.map { s -> s.second }) }
+                        },
                     ),
             ),
             group("find", SettingTab.DEVICE, listOfNotNull(chirping?.let { Setting.Action("find", it) })),
@@ -418,9 +420,14 @@ public class BoseSession : FitTest {
             defaultMode?.let { d -> add(Setting.Choice("bose_default_mode", listed.firstOrNull { it.index == d }?.let(::optionOf), listed.map(::optionOf))) }
         }
         anr?.let { v -> add(Setting.Choice("anr", ANR.firstOrNull { it.first == v }?.second, ANR.map { it.second })) }
+        ultra2Config()?.let { config ->
+            if (config.u8(4) in 0..1) add(Setting.Toggle(ANC_KEY, config.u8(4) == 1))
+            if (config.u8(3) in 0..1) add(Setting.Toggle(WIND_BLOCK_KEY, config.u8(3) == 1))
+        }
         cnc?.let { c ->
             val max = c.u8(0) - 1
-            if (max > 0) add(Setting.Level("noise_level", c.u8(1).coerceIn(0, max), 0, max))
+            val step = ultra2Config()?.u8(0) ?: c.u8(1)
+            if (max > 0) add(Setting.Level("noise_level", step.coerceIn(0, max), 0, max))
         }
     }
 
@@ -467,6 +474,8 @@ public class BoseSession : FitTest {
                     }
                     "pause_taken_off" -> BosePacket.setGet(BoseFunction.SETTINGS_AUTO_PLAY_PAUSE, b).also { autoPlayPause = on }
                     "auto_answer" -> BosePacket.setGet(BoseFunction.SETTINGS_AUTO_ANSWER, b).also { autoAnswer = on }
+                    ANC_KEY -> changeAudioConfig(4, b) ?: return null
+                    WIND_BLOCK_KEY -> changeAudioConfig(3, b) ?: return null
                     ALERT_RINGTONE, ALERT_HAPTICS -> {
                         // Bose's SettingsAlertsSetGetPacket: bit 0 the ringtone, bit 1 the haptics, in one byte.
                         val held = alerts ?: return null
@@ -558,8 +567,8 @@ public class BoseSession : FitTest {
                     }
                     SPATIAL_KEY -> {
                         val v = SPATIAL.firstOrNull { it.second == change.option }?.first ?: return null
-                        spatial = v
-                        BosePacket.setGet(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE, v)
+                        if (ultra2Config() != null) changeAudioConfig(2, v) ?: return null
+                        else BosePacket.setGet(BoseFunction.AUDIO_MANAGEMENT_SPATIAL_AUDIO_MODE, v).also { spatial = v }
                     }
                     KEY_PEER_CONNECT, KEY_PEER_DISCONNECT, KEY_PEER_DELETE -> peerChange(change.key, change.option) ?: return null
                     "sidetone_level" -> {
@@ -607,12 +616,17 @@ public class BoseSession : FitTest {
     private fun noiseLevel(v: Int): BosePacket? {
         val c = cnc ?: return null
         cnc = c.copyOf().also { it[1] = v.toByte() }
-        val config = settingsConfig
-        if (config != null) {
-            settingsConfig = config.copyOf().also { it[0] = v.toByte() }
-            return BosePacket(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, BoseOperator.SETGET, settingsConfig!!.copyOf())
-        }
-        return BosePacket.setGet(BoseFunction.SETTINGS_CNC, v, c.u8(2) and CNC_ENABLED)
+        return changeAudioConfig(0, v) ?: BosePacket.setGet(BoseFunction.SETTINGS_CNC, v, c.u8(2) and CNC_ENABLED)
+    }
+
+    private fun ultra2Config(): ByteArray? = settingsConfig.takeIf { productId == QC_ULTRA_2_HEADPHONES }
+
+    /** Change one field of the five-byte live configuration while preserving the others. */
+    private fun changeAudioConfig(offset: Int, value: Int): BosePacket? {
+        val next = settingsConfig?.copyOf() ?: return null
+        next[offset] = value.toByte()
+        settingsConfig = next
+        return BosePacket(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, BoseOperator.SETGET, next.copyOf())
     }
 
     /** False for what PairFree never sends: firmware update, factory default, ship mode, reset, authentication. Power off passes: it comes only from an action the user confirms. */
@@ -687,6 +701,9 @@ public class BoseSession : FitTest {
         private const val MODE_NAME_START = 6
         private const val MODE_NAME_END = 38
         private const val SETTINGS_CONFIG_SIZE = 5
+        private const val QC_ULTRA_2_HEADPHONES = 0x4082
+        private const val ANC_KEY = "bose_anc"
+        private const val WIND_BLOCK_KEY = "bose_wind_block"
 
         // Bose's SettingsMultipointResponse: bit 0 on, bit 1 supported, bit 2 can be turned off.
         private const val MULTIPOINT_ENABLED = 1

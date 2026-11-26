@@ -10,7 +10,6 @@ import io.github.omegadestroyer.pairfree.eq.Equalizer
 import io.github.omegadestroyer.pairfree.shell.DesktopSettings
 import io.github.omegadestroyer.pairfree.shell.DesktopStrings
 import io.github.omegadestroyer.pairfree.ui.DesktopApp
-import io.github.omegadestroyer.pairfree.windows.PairedDevices
 import io.github.omegadestroyer.pairfree.windows.WindowsTransport
 import io.github.omegadestroyer.pairfree.windows.runAppWindow
 import io.github.omegadestroyer.pairfree.windows.windowsColors
@@ -59,7 +58,8 @@ fun main(args: Array<String>) {
     runAppWindow(settings, settingsPath.toString()) { host, invalidate ->
         // One thread for the connection, as on Android where it is the main thread's: EarbudsConnection and Equalizer are not thread safe.
         val scope = CoroutineScope(newSingleThreadContext("pairfree") + SupervisorJob())
-        val connection = EarbudsConnection(scope, WindowsTransport(), WindowsTransport.platform)
+        val transport = WindowsTransport()
+        val connection = EarbudsConnection(scope, transport, WindowsTransport.platform)
         val equalizer = Equalizer(settings, scope, { frames -> connection.sendEq(frames) }, { DesktopStrings(settings.language).text("eq_imported_name") })
         val opener = EqOpener(connection, equalizer, scope)
         val app = DesktopApp(connection, equalizer, settings, host, ::windowsColors, invalidate) { block -> scope.launch { block() } }
@@ -73,10 +73,10 @@ fun main(args: Array<String>) {
         }
         scope.launch { connection.status.collect { if (it is LinkStatus.Connected) equalizer.channelOpened(it.device.address) } }
         scope.launch { equalizer.state.collect { invalidate() } }
-        // The earbuds Windows has paired, now and every few seconds, so earbuds paired or removed while PairFree runs show up.
+        // Refresh Bluetooth pairings and connected USB headsets while PairFree runs.
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             while (true) {
-                app.setDevices(PairedDevices.earbuds())
+                app.setDevices(transport.devices())
                 delay(10_000)
             }
         }

@@ -585,6 +585,8 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "bose_disable_touch" -> stringResource(R.string.setting_bose_disable_touch)
     "bose_auto_volume" -> stringResource(R.string.setting_bose_auto_volume)
     "bose_cnc_persistence" -> stringResource(R.string.setting_bose_cnc_persistence)
+    "bose_anc" -> stringResource(R.string.setting_bose_anc)
+    "bose_wind_block" -> stringResource(R.string.setting_bose_wind_block)
     "bose_alert_ringtone" -> stringResource(R.string.setting_bose_alert_ringtone)
     "bose_alert_haptics" -> stringResource(R.string.setting_bose_alert_haptics)
     "voice_guidance" -> stringResource(R.string.setting_voice_guidance)

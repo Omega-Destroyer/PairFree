@@ -132,6 +132,23 @@ class BoseTest {
     }
 
     @Test
+    fun ultra2LiveAudioChangesPreserveTheOtherSettings() {
+        val s = ultra2()
+        val function = BoseFunction.AUDIO_MODES_SETTINGS_CONFIG
+        s.receive(status(function, "0000020001"))
+        assertEquals(Setting.Toggle("bose_anc", true), setting(s, "bose_anc"))
+        assertEquals(Setting.Toggle("bose_wind_block", false), setting(s, "bose_wind_block"))
+        assertEquals(listOf(setGet(function, 0, 0, 2, 1, 1)), s.change(SettingChange.Toggle("bose_wind_block", true)))
+        assertEquals(listOf(setGet(function, 0, 0, 2, 1, 0)), s.change(SettingChange.Toggle("bose_anc", false)))
+        assertEquals(listOf(setGet(function, 0, 0, 1, 1, 0)), s.change(SettingChange.Choice("spatial_audio_mode", "room")))
+
+        val otherModel = BoseSession()
+        otherModel.receive(status(function, "0000020001"))
+        assertNull(setting(otherModel, "bose_anc"))
+        assertNull(setting(otherModel, "bose_wind_block"))
+    }
+
+    @Test
     fun theOtherSwitchesOfBosesAppAreRowsOnceTheirReadAnswers() {
         val s = BoseSession()
         assertNull(setting(s, "bose_conversation_mode"))

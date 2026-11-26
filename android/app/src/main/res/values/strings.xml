@@ -1469,6 +1469,8 @@
     <string name="setting_bose_disable_touch">Disable touch controls</string>
     <string name="setting_bose_auto_volume">Automatic volume</string>
     <string name="setting_bose_cnc_persistence">Keep the noise cancellation level</string>
+    <string name="setting_bose_anc">Noise cancellation</string>
+    <string name="setting_bose_wind_block">Wind Block</string>
     <string name="setting_bose_alert_ringtone">Alert tones</string>
     <string name="setting_bose_alert_haptics">Alert vibration</string>
     <string name="setting_ca_cantonese">Cantonese</string>

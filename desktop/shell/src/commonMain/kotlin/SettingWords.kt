@@ -360,6 +360,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "bose_flip_to_off" -> t("setting_bose_flip_to_off")
         "bose_motion_auto_off" -> t("setting_bose_motion_auto_off")
         "bose_disable_touch" -> t("setting_bose_disable_touch")
+        "bose_touch_controls" -> t("touch_controls")
         "bose_auto_volume" -> t("setting_bose_auto_volume")
         "bose_cnc_persistence" -> t("setting_bose_cnc_persistence")
         "bose_alert_ringtone" -> t("setting_bose_alert_ringtone")

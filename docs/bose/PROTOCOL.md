@@ -97,6 +97,7 @@ new value.
 | 1.11 sidetone | kept (bit 0), level (0 off, 1 high, 2 medium, 3 low), the levels it has (a bit each) | kept, level | how much of your own voice you hear in calls |
 | 1.24 auto play/pause | 1 on, 0 off | the same | pause when taken off |
 | 1.27 auto answer | 1 on, 0 off | the same | |
+| 1.34 touch controls | 1 enabled, 0 disabled on QC Ultra Headphones (2nd Gen) | the same | Verified against the Bose Android app on firmware 10.12.14. The touch-and-hold shortcut is a separate setting (1.9). |
 
 Spatial audio is AudioManagement 5.15 (Bose's `SpatialAudioModeTypes`): GET answers one byte,
 0 off, 1 fixed to the room ("still" in Bose's app), 2 fixed to the head ("motion"); SETGET writes it.

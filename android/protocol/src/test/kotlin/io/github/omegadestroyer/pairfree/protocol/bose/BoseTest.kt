@@ -119,7 +119,7 @@ class BoseTest {
         assertNull(s.state.batteryRight)
         // Voice prompts 41: off, default, and not switchable (bit 7), as Bose's app reads it.
         assertNull(setting(s, "voice_prompts"))
-        assertEquals(Setting.Level("noise_level", 0, 0, 10), setting(s, "noise_level"))
+        assertEquals(Setting.Level("bose_anc_level", 10, 0, 10), setting(s, "bose_anc_level"))
         assertEquals(listOf(0, -2, -6), listOf("eq_bass", "eq_mid", "eq_treble").map { (setting(s, it) as Setting.Level).value })
         assertEquals(-10, (setting(s, "eq_bass") as Setting.Level).min)
         // Multipoint 07: on, supported, can be turned off (Bose's bits; bosectl reads bit 1).
@@ -262,10 +262,27 @@ class BoseTest {
         // Sidetone: kept (bit 0 of the reply), then the level; low is 3.
         assertEquals(listOf(setGet(BoseFunction.SETTINGS_SIDETONE, 1, 3)), s.change(SettingChange.Choice("sidetone_level", "low")))
         // Without AudioModes' settings, the level goes through Settings' CNC: the step and whether it is on.
-        assertEquals(listOf(setGet(BoseFunction.SETTINGS_CNC, 7, 1)), s.change(SettingChange.Level("noise_level", 7)))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_CNC, 3, 1)), s.change(SettingChange.Level("bose_anc_level", 7)))
         // With them (31.10), there, the rest as the device reported.
         s.receive(status(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, "0000000001"))
-        assertEquals(listOf(setGet(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, 3, 0, 0, 0, 1)), s.change(SettingChange.Level("noise_level", 3)))
+        assertEquals(listOf(setGet(BoseFunction.AUDIO_MODES_SETTINGS_CONFIG, 7, 0, 0, 0, 1)), s.change(SettingChange.Level("bose_anc_level", 3)))
+    }
+
+    @Test
+    fun ultra2ShowsCancellationStrengthAndWritesTheOppositeWireStep() {
+        val s = ultra2()
+        val config = BoseFunction.AUDIO_MODES_SETTINGS_CONFIG
+        s.receive(status(config, "0a00020101"))
+        assertEquals(Setting.Level("bose_anc_level", 0, 0, 10), setting(s, "bose_anc_level"))
+        assertEquals(listOf(setGet(config, 0, 0, 2, 1, 1)), s.change(SettingChange.Level("bose_anc_level", 10)))
+        s.receive(status(config, "0000020101"))
+        assertEquals(Setting.Level("bose_anc_level", 10, 0, 10), setting(s, "bose_anc_level"))
+        assertEquals(listOf(setGet(config, 10, 0, 2, 1, 1)), s.change(SettingChange.Level("bose_anc_level", 0)))
+
+        val other = BoseSession()
+        other.receive(status(BoseFunction.SETTINGS_CNC, "0b0703"))
+        assertEquals(Setting.Level("noise_level", 7, 0, 10), setting(other, "noise_level"))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_CNC, 3, 1)), other.change(SettingChange.Level("noise_level", 3)))
     }
 
     @Test

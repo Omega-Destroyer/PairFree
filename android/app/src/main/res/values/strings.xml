@@ -547,6 +547,7 @@
     <string name="setting_level_high">High</string>
     <string name="setting_noise_level">Noise cancelling level</string>
     <string name="setting_noise_level_note">Bose\'s steps, as its own app counts them.</string>
+    <string name="setting_bose_anc_level_note">Higher levels provide more noise cancellation.</string>
     <string name="setting_eq_bass">Bass</string>
     <string name="setting_eq_low_mid">Low mid</string>
     <string name="setting_eq_mid">Mid</string>

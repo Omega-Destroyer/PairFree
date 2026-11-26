@@ -427,7 +427,10 @@ public class BoseSession : FitTest {
         cnc?.let { c ->
             val max = c.u8(0) - 1
             val step = ultra2Config()?.u8(0) ?: c.u8(1)
-            if (max > 0) add(Setting.Level("noise_level", step.coerceIn(0, max), 0, max))
+            if (max > 0) {
+                val key = if (productId == QC_ULTRA_2_HEADPHONES) ANC_LEVEL_KEY else "noise_level"
+                add(Setting.Level(key, convertNoiseLevel(step.coerceIn(0, max), max), 0, max))
+            }
         }
     }
 
@@ -513,7 +516,7 @@ public class BoseSession : FitTest {
                 if (setting !is Setting.Level) return null
                 val v = change.value.coerceIn(setting.min, setting.max)
                 when (change.key) {
-                    "noise_level" -> noiseLevel(v) ?: return null
+                    "noise_level", ANC_LEVEL_KEY -> noiseLevel(convertNoiseLevel(v, setting.max)) ?: return null
                     "bose_latency" -> {
                         latency = latency?.copy(first = v) ?: return null
                         BosePacket.setGet(BoseFunction.AUDIO_MANAGEMENT_LATENCY, v shr 8, v and 0xFF)
@@ -621,6 +624,10 @@ public class BoseSession : FitTest {
 
     private fun ultra2Config(): ByteArray? = settingsConfig.takeIf { productId == QC_ULTRA_2_HEADPHONES }
 
+    /** Convert between the QC Ultra 2's ambient step and the displayed cancellation strength. */
+    private fun convertNoiseLevel(level: Int, max: Int): Int =
+        if (productId == QC_ULTRA_2_HEADPHONES) max - level else level
+
     /** Change one field of the five-byte live configuration while preserving the others. */
     private fun changeAudioConfig(offset: Int, value: Int): BosePacket? {
         val next = settingsConfig?.copyOf() ?: return null
@@ -703,6 +710,7 @@ public class BoseSession : FitTest {
         private const val SETTINGS_CONFIG_SIZE = 5
         private const val QC_ULTRA_2_HEADPHONES = 0x4082
         private const val ANC_KEY = "bose_anc"
+        private const val ANC_LEVEL_KEY = "bose_anc_level"
         private const val WIND_BLOCK_KEY = "bose_wind_block"
 
         // Bose's SettingsMultipointResponse: bit 0 on, bit 1 supported, bit 2 can be turned off.

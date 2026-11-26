@@ -115,6 +115,8 @@ Spatial audio is AudioManagement 5.15 (Bose's `SpatialAudioModeTypes`): GET answ
 The noise cancelling level: on models with AudioModes' settings (31.10, section 7) PairFree
 writes it there, as bosectl does, and the CNC step and that value count the same way in
 bosectl. Elsewhere it writes 1.5.
+On the QC Ultra Headphones (2nd Gen), the wire step runs from 0 (strongest cancellation)
+to 10 (most ambient sound). PairFree shows cancellation strength, with 10 as the strongest.
 
 ## 7. Listening modes (AudioModes, block 31)
 

@@ -339,6 +339,7 @@ public class BoseSession : FitTest {
     }
 
     private val hasFitTest: Boolean get() = model?.name in FIT_MODELS
+    private val isUltra2Headphones: Boolean get() = productId == 0x4082
 
     override fun startFitTest(): List<ByteArray>? {
         if (!hasFitTest) return null
@@ -368,7 +369,13 @@ public class BoseSession : FitTest {
                     ),
             ),
             group("find", SettingTab.DEVICE, listOfNotNull(chirping?.let { Setting.Action("find", it) })),
-            group("touch", SettingTab.CONTROLS, listOfNotNull(button?.let(::buttonRow))),
+            group(
+                "touch", SettingTab.CONTROLS,
+                listOfNotNull(
+                    flags[DISABLE_TOUCH_KEY]?.takeIf { isUltra2Headphones }?.let { Setting.Toggle(TOUCH_CONTROLS_KEY, it) },
+                    button?.let(::buttonRow),
+                ),
+            ),
             group(
                 "connection", SettingTab.DEVICE,
                 listOfNotNull(
@@ -383,7 +390,8 @@ public class BoseSession : FitTest {
                     },
                     autoPlayPause?.let { Setting.Toggle("pause_taken_off", it) },
                     autoAnswer?.let { Setting.Toggle("auto_answer", it) },
-                ) + FLAGS.keys.mapNotNull { key -> flags[key]?.let { Setting.Toggle(flagSettingKey(key), it) } } + onHeadRows() + listOfNotNull(
+                ) + FLAGS.keys.filterNot { it == DISABLE_TOUCH_KEY && isUltra2Headphones }
+                    .mapNotNull { key -> flags[key]?.let { Setting.Toggle(key, it) } } + onHeadRows() + listOfNotNull(
                     leAudio?.let { Setting.Toggle("bose_le_audio", it) },
                     modesPersist?.let { Setting.Toggle("bose_modes_persist", it) },
                     volumeControl?.takeIf { it.second != 0 }?.let { (value, bits) ->
@@ -449,10 +457,6 @@ public class BoseSession : FitTest {
     private fun optionOf(m: Mode): String = if (modes.sortedValues().count { it.listed && it.name == m.name } > 1) "${m.name} (${m.index})" else m.name
 
     private fun group(key: String, tab: SettingTab, settings: List<Setting>) = settings.takeIf { it.isNotEmpty() }?.let { SettingGroup(key, tab, it) }
-
-    /** The QC Ultra 2 reports whether touch is enabled in the DisableCaptouch field. */
-    private fun flagSettingKey(key: String): String =
-        if (key == DISABLE_TOUCH_KEY && productId == 0x4082) TOUCH_CONTROLS_KEY else key
 
     /**
      * The packets for a change from the screens, or null when the device does not have the setting.

@@ -184,7 +184,9 @@ class BoseTest {
         assertEquals("disabled", shortcut.value)
 
         s.receive(status(function, "00"))
-        assertEquals(Setting.Toggle("bose_touch_controls", false), setting(s, "bose_touch_controls"))
+        val off = Setting.Toggle("bose_touch_controls", false)
+        assertEquals(listOf(off, shortcut), s.groups.single { it.tab == SettingTab.CONTROLS && it.key == "touch" }.settings)
+        assertTrue(s.groups.none { group -> group.tab == SettingTab.DEVICE && group.settings.any { it.key == off.key } })
         assertNull(setting(s, "bose_disable_touch"))
         assertEquals(listOf(setGet(function, 1)), s.change(SettingChange.Toggle("bose_touch_controls", true)))
         s.receive(status(function, "01"))
@@ -197,6 +199,7 @@ class BoseTest {
         other.receive(status(function, "01"))
         assertNull(setting(other, "bose_touch_controls"))
         assertEquals(Setting.Toggle("bose_disable_touch", true), setting(other, "bose_disable_touch"))
+        assertEquals(SettingTab.DEVICE, other.groups.single { group -> group.settings.any { it.key == "bose_disable_touch" } }.tab)
         assertEquals(listOf(setGet(function, 0)), other.change(SettingChange.Toggle("bose_disable_touch", false)))
     }
 

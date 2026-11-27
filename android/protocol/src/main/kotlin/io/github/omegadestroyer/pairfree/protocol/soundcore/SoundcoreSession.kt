@@ -870,6 +870,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             Switch("sc_manual_shutdown", "manual_shutdown", SoundcoreCommand.MANUAL_SHUTDOWN),
             Switch("sc_sedentary", "sedentary_reminder", SoundcoreCommand.SEDENTARY_REMINDER),
             Switch("sc_sitting_posture", "sitting_posture", SoundcoreCommand.SITTING_POSTURE_REMINDER),
+            Switch("sc_voice_wake", "audio_wakeup", SoundcoreCommand.VOICE_WAKE),
             Switch("sc_power_off_tone", "power_off_tone", SoundcoreCommand.SET_AUTO_POWER_OFF_PROMPT),
             Switch("sc_connect_tone", "connect_tone", SoundcoreCommand.CONNECT_TONE),
             Switch("sc_easy_chat", "easy_chat", SoundcoreCommand.FUNCTION_SWITCH, 14),

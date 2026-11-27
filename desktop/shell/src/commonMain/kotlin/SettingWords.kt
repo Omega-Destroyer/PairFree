@@ -192,6 +192,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_voice_wake" -> t("setting_sc_voice_wake")
         "sc_a10_volume" -> t("setting_sc_a10_volume")
         "sc_a10_play_time" -> t("setting_sc_a10_play_time")
         "sc_a10_countdown" -> t("setting_sc_a10_countdown")
@@ -803,6 +804,7 @@ class SettingWords(private val strings: DesktopStrings) {
 
     fun settingNote(key: String): String? = when (key) {
         "sc_easy_chat" -> t("setting_sc_easy_chat_note")
+        "sc_voice_wake" -> t("setting_sc_voice_wake_note")
         "sc_call_noise" -> t("setting_sc_call_noise_note")
         "bose_default_mode" -> t("setting_bose_default_mode_note")
         "bose_modes_persist" -> t("setting_bose_modes_persist_note")

@@ -5040,6 +5040,10 @@
         [
           "volume_balance",
           1
+        ],
+        [
+          "audio_wakeup",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the game mode (its command is not read), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): low_battery_prompt, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
@@ -5190,6 +5194,11 @@
           60,
           0,
           1
+        ],
+        [
+          54,
+          0,
+          "opt"
         ]
       ],
       "tlv_private": [
@@ -6538,7 +6547,10 @@
         ["ldac", 1],
         ["dual_connections_enabled", 1],
         ["auto_power_off", 2],
-        ["limit_high_volume", 3]
+        ["limit_high_volume", 3],
+        ["optional:skip", 3],
+        ["optional:wearing_detection", 1],
+        ["optional:audio_wakeup", 1]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1402AnalysisService.e1 and D1402CmdService), not from OpenSCQ30 and not tried on the headphones. Its head is the Space One Pro's (A3062) up to the HearID block; its button block (five bytes) and the tail are its own: after the six noise mode bytes come the colour, a 3D mode, easy chat (switch and time), the ambient sound notice, the power-on battery notice, LDAC, dual connections, the auto power off switch and index, and the hearing protection (switch, limit, third byte). Shown: the noise mode (its six-byte write is the Space One Pro's), LDAC, dual connections, auto power off and the high volume limit. Not offered: the equalizer (its command service has no HearID write), the one-button controls (single, double and long press as raw bytes) and the records after the hearing protection. No battery scale is shown: the parser does not give one.",
       "kind": "headphones"
@@ -6644,6 +6656,10 @@
         [
           "mfb_long_press",
           1
+        ],
+        [
+          "audio_wakeup",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
@@ -6756,6 +6772,11 @@
         ],
         [
           73,
+          0,
+          "opt"
+        ],
+        [
+          54,
           0,
           "opt"
         ]
@@ -6852,6 +6873,10 @@
         [
           "mfb_long_press",
           1
+        ],
+        [
+          "audio_wakeup",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
@@ -6970,6 +6995,11 @@
         ],
         [
           73,
+          0,
+          "opt"
+        ],
+        [
+          54,
           0,
           "opt"
         ]

@@ -136,6 +136,13 @@ class SoundcoreIndexedSwitchTest {
         assertNull(session("D1302", record(27, 0, 0, 0)).rows()["sc_voice_language"])
     }
 
+    @Test
+    fun theVoiceWake() {
+        val s = session("D1406", record(54, 1, 0))
+        assertEquals("18 83 00", s.write(SettingChange.Toggle("sc_voice_wake", false)))
+        assertNull(session("D1406", record(27, 0)).rows()["sc_voice_wake"])
+    }
+
     /** The older models keep their own commands. */
     @Test
     fun otherModelsAreUntouched() {

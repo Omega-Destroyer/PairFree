@@ -443,6 +443,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake)
     "sc_a10_volume" -> stringResource(R.string.setting_sc_a10_volume)
     "sc_a10_play_time" -> stringResource(R.string.setting_sc_a10_play_time)
     "sc_a10_countdown" -> stringResource(R.string.setting_sc_a10_countdown)
@@ -1058,6 +1059,7 @@ private fun buttonTitle(key: String): String? {
 @Composable
 private fun settingNote(key: String): String? = when (key) {
     "sc_easy_chat" -> stringResource(R.string.setting_sc_easy_chat_note)
+    "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake_note)
     "sc_call_noise" -> stringResource(R.string.setting_sc_call_noise_note)
     "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode_note)
     "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist_note)

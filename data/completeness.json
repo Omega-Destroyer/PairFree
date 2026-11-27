@@ -856,11 +856,21 @@
       "id": "soundcore-space2-ai-chat",
       "brand": "soundcore",
       "models": [
-        "Space 2 Pro and Space 2 Pro Max (D1406, D1407)"
+        "Space 2, Space 2 Pro pair, AeroClip 2 (D1402, D1406, D1407, D1105)"
+      ],
+      "status": "built",
+      "what": "Built 2026-11-27: the voice wake switch (18 83) from state record 54 or its byte. The chat itself streams to Anker's servers, which PairFree does not call. The AeroFit 2 pair's state past its head is not read yet (soundcore-aerofit-2-state).",
+      "reported": "read of the D1406 and D1407 settings screens, 2026-11-27"
+    },
+    {
+      "id": "soundcore-aerofit-2-state",
+      "brand": "soundcore",
+      "models": [
+        "AeroFit 2, AeroFit 2 Pro (A3874, A3875)"
       ],
       "status": "open",
-      "what": "The AI chat settings page (a Flutter page, aiChatSettingPage; state record 54: wake by voice and its language) is not built or explained.",
-      "reported": "read of the D1406 and D1407 settings screens, 2026-11-27"
+      "what": "PairFree reads only the head of their state; the rest (their settings, voice wake among them) has a parser that is not ported.",
+      "reported": "the AI chat page worked through, 2026-11-27"
     },
     {
       "id": "soundcore-case-channels",

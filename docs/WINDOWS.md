@@ -32,7 +32,7 @@ The looks are the Android app's. The one that follows Android's wallpaper colour
 
 Every brand the Android app has, except **AirPods and the Beats on Apple's chips**, which Windows cannot reach: their settings channel is a kind of Bluetooth
 connection Windows gives programs no way to open, short of a driver of its own, and PairFree does not install drivers. Earbuds that speak Bluetooth LE
-(JBL's, QCY's and some of Sennheiser's) use Windows' Bluetooth LE support. Each brand's page under `docs/devices/` describes device support.
+(JBL's, QCY's and some of Sennheiser's) use Windows' Bluetooth LE support. Each brand's page under `docs/devices/` says which models people have tried; apart from the project's owner (SOUNDPEATS H3), one contributor has tried a model on Windows (the Bose QC Ultra Headphones (2nd Gen), over USB-C).
 
 ## Updates
 

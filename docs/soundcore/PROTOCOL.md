@@ -699,3 +699,9 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
 - **Not recoverable from the app.** The online product catalogue (HTTP 401 without an account) and the screens' view models (native code in the 5.0.35
   restoration). The Sleep A30's audio upload is in the research branch's `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md`; PairFree builds none of it
   (section 13).
+
+## Issues 76 and 79 (2026-11-27)
+
+- **Liberty Buds 2 (D1206).** A user's report: LDAC is record 27 bit 2 (`D1206AnalysisService`), written with `01 FF`; the button actions include 4 (the app's `CUSTOM_BTN_TRANS_INDEX`, transparency) and 8 (`CUSTOM_BTN_ANC_SWITCH_INDEX`, the ambient sound switch); record 46 holds the modes it cycles (noise cancelling 1, transparency 2, normal 4, adaptive 8; high four bits with one earbud), written with `06 82`. PairFree shows an LDAC or game mode switch only where the state holds the field, never from the `01 7F` or `01 11` notice alone.
+- **Find Earbuds.** `10 89`, three bytes: left, right, case (1 beeps, 0 stops; `CmmBtCmdService.r0`, `finddevice/CmmFindDeviceHandler`); the earbuds report the same three under `01 09`. Models by the app's per-model screens (`FindDeviceType`): `find_device` (the earbuds beep) and `find_device_phone` (A3871, A3936, A3944, A3947, A3948: the phone plays the sound, `finddevice/AppFindDeviceHandler`; PairFree plays its own tone, not the app's clip).
+- **The restored method bodies.** The 2026-11-19 unpacker run restored method bodies that earlier notes in this document call empty stubs (`D1206MoreDataProvider` among them). Those notes are to be re-read; open in `data/completeness.json` (`soundcore-stub-blockers-stale`).

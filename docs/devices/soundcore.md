@@ -9,7 +9,7 @@ model's writes are confirmed. The Space A40 has been tried with PairFree by the 
 the AeroClip and the Sleep A20 by users, the Sleep A20 with a recording of the Soundcore app; the
 other settings come next.
 
-On the Space A40, Liberty Air 2 Pro, Liberty 2 Pro+, Liberty 3 Pro, Space One, Liberty 4 NC, P40i and Sport X20 the Sound tab also runs Soundcore's HearID hearing test and puts the result on the
+On the Space A40, Liberty Air 2 Pro, Liberty 2 Pro+, Liberty 3 Pro, Space One, Space Q45, Space One Pro, Liberty 4 NC, P40i and Sport X20 the Sound tab also runs Soundcore's HearID hearing test and puts the result on the
 earbuds, with a switch for it and a way to delete it. It has not been tried on earbuds.
 
 The charging cases of the Liberty 5 Pro, Liberty 5 Pro Max and Sleep Earbuds 4 Pro are reached over their own Bluetooth link: PairFree sets their clock, and

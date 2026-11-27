@@ -41,7 +41,7 @@ class SoundcoreHearingTest {
             assertEquals(16, run.done)
             assertNotNull(run.result())
         }
-        assertNull(SoundcoreHearingSpec.of("A3040"))
+        assertNull(SoundcoreHearingSpec.of("A3953"))
         // The A40's first tone: 3.2 kHz at -75 dB plus 6.
         assertEquals(-69.0, SoundcoreHearingRun(SoundcoreHearingSpec.of("A3936")!!).level)
         assertTrue(SoundcoreHearingRun(SoundcoreHearingSpec.of("A3936")!!).left)
@@ -49,11 +49,11 @@ class SoundcoreHearingTest {
 
     @Test
     fun hearId3() {
-        for (model in listOf("A3035", "A3947", "A3955", "A3968")) {
+        for (model in listOf("A3035", "A3040", "A3062", "A3947", "A3955", "A3968")) {
             val run = SoundcoreHearingRun(SoundcoreHearingSpec.of(model)!!)
             assertEquals(8, run.total)
-            // 3.2 kHz: the recording at 0 dB, played at -38 dB.
-            assertEquals(-87.8, run.level, 0.001)
+            // 3.2 kHz: the recording at 0 dB, played at the model's starting level.
+            assertEquals(if (model == "A3062") -81.8 else -87.8, run.level, 0.001)
             repeat(9) { run.louder(true) }
             assertEquals(4, run.steps)
             run.keep()
@@ -73,7 +73,10 @@ class SoundcoreHearingTest {
             val body = SoundcoreHearingId.save(model, state, run.result()!!, 5)!!.body
             val curves = spec.hearId!!.channels
             // Preset, genre, the EQ, gender, age, the switch, the curves, time, type, the curves again, what plays, and the noise byte.
-            assertEquals(4 + spec.channels * 10 + 3 + curves * 10 + 4 + 1 + curves * 10 + spec.channels * 10 + 1, body.size, model)
+            val playing = if (model == "A3040") 2 else spec.channels
+            assertEquals(4 + playing * 10 + 3 + curves * 10 + 4 + 1 + curves * 10 + playing * 10 + 1, body.size, model)
+            // What plays: smoothed, but as it is on the Space One Pro.
+            if (model == "A3062") assertEquals(180.toByte(), body[body.size - 11 + 5])
             assertEquals(0, body.last().toInt())
         }
     }
@@ -140,7 +143,7 @@ class SoundcoreHearingTest {
         assertArrayEquals(body.copyOfRange(27, 47), body.copyOfRange(52, 72))
         // A flat right ear plays flat, with the ninth band at -1.2 dB and the tenth at -12 dB.
         assertArrayEquals(byteArrayOf(120, 120, 120, 120, 120, 120, 120, 120, 108, 0), body.copyOfRange(82, 92))
-        assertNull(SoundcoreHearingId.save("A3040", state, result, 0))
+        assertNull(SoundcoreHearingId.save("A3953", state, result, 0))
         assertNull(SoundcoreHearingId.save("A3936", null, result, 0))
     }
 

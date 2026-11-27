@@ -83,7 +83,9 @@ public class SoundcoreHearingSpec private constructor(
                 listOf(-75, -64, -72, -71, -69, -59, -54, -72), listOf(6, 0, 6, 0, 3, 6, 6, 6),
             )
             "A3952" -> spec(model, Style.BEEPS, 10, listOf(-27, -19, -25, -22, -22, -17, -14, -25))
-            "A3035", "A3947", "A3955", "A3968" -> spec(model, Style.CHOSEN, 10, listOf(-38, -39, -39, -34, -25, -25, -44, -39))
+            "A3035", "A3040", "A3947", "A3955", "A3968" -> spec(model, Style.CHOSEN, 10, listOf(-38, -39, -39, -34, -25, -25, -44, -39))
+            // The Space One Pro's own levels (`A3062ProductModel.getHearIdVolumeCurve`; its half dB is rounded to the louder).
+            "A3062" -> spec(model, Style.CHOSEN, 10, listOf(-32, -32, -20, -36, -30, -28, -30, -24))
             else -> null
         }
     }
@@ -381,13 +383,16 @@ public object SoundcoreHearingId {
     }
 
     /** The curve the earbuds play for an ordinary EQ: [SoundcoreEq.drc] of it. */
-    private fun flat(eq: SoundcoreEqSpec, curve: IntArray?): IntArray? = curve?.let { SoundcoreEq.drc(it, eq.digits, eq.min, eq.max) }
+    private fun flat(eq: SoundcoreEqSpec, curve: IntArray?): IntArray? =
+        curve?.let { if (eq.write == AS_IS) it else SoundcoreEq.drc(it, eq.digits, eq.min, eq.max) }
 
     /**
      * The curve the earbuds play for HearID. As [flat], except that the ninth of ten bands comes out as -1.2 dB: the app
      * leaves that band at its lowest in a HearID curve and still divides it (`HearId2Utils.l`).
      */
     private fun applied(eq: SoundcoreEqSpec, curve: IntArray): IntArray {
+        // The Space One Pro's app sends the curve as it is, with the bands it has none for at their lowest.
+        if (eq.write == AS_IS) return IntArray(eq.bands) { curve.getOrElse(it) { LOWEST } }
         val eight = IntArray(maxOf(eq.bands, 8)) { curve.getOrElse(it) { 0 } }
         val out = SoundcoreEq.drc(eight, 1, eq.min, eq.max)
         if (out.size >= 10) out[8] = -12
@@ -432,7 +437,9 @@ public object SoundcoreHearingId {
         }
         u16le(h.config.preset)
         u16le(genre)
-        h.config.channels.forEach(::playing)
+        // The Space Q45 has one curve, sent as both earbuds' (`CmmBtCmdService.p6`).
+        fun both(curves: List<IntArray?>) = if (h.eq.write == TWICE && curves.size == 1) curves + curves else curves
+        both(h.config.channels).forEach(::playing)
         byte(gender)
         byte(age)
         byte(if (on) 1 else 0)
@@ -440,11 +447,15 @@ public object SoundcoreHearingId {
         for (shift in 24 downTo 0 step 8) byte((time shr shift and 0xFF).toInt())
         byte(type)
         stored(custom)
-        real.forEach(::playing)
+        both(real).forEach(::playing)
         if (SoundcoreHearingSpec.of(h.eq.model)?.noiseByte == true) byte(0)
         return SoundcorePacket(SoundcoreCommand.EQUALIZER_HEAR_ID, out.toByteArray())
     }
 
     private const val LOWEST = -120
     private const val HIGHEST = 134
+
+    /** The EQ write formats (data/soundcore/devices.json) that differ here. */
+    private const val AS_IS = "a3062"
+    private const val TWICE = "a3040"
 }

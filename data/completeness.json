@@ -975,20 +975,22 @@
         "Space One (A3035)",
         "Liberty 4 NC (A3947)",
         "P40i (A3955)",
-        "Sport X20 (A3968)"
+        "Sport X20 (A3968)",
+        "Space Q45 (A3040)",
+        "Space One Pro (A3062)"
       ],
       "status": "built",
-      "what": "HearID on eight models: the older test on four and HearID 3 on four (03 83, the app's tones and correction), writing the result, switching it and deleting it (03 87). Not tried on earbuds. The rest is soundcore-hearid-other.",
+      "what": "HearID on ten models: the older test on four and HearID 3 on six (03 83, the app's tones and correction), writing the result, switching it and deleting it (03 87). Not tried on earbuds. The rest is soundcore-hearid-other.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {
       "id": "soundcore-hearid-other",
       "brand": "soundcore",
       "models": [
-        "Liberty 4 (A3953), Space 2 (D1402), Liberty 5 Pro, Liberty 4 Pro family and Liberty 5, A3909 family, A3040, A3062, A3937"
+        "Liberty 4 (A3953), Space 2 (D1402), Liberty 5 Pro, Liberty 4 Pro family and Liberty 5, A3909 family, P41i (A3937)"
       ],
       "status": "open",
-      "what": "Left of HearID: the music preference step after HearID 3 (A3953HearIdPreferenceActivity; whether it needs the app's own music is not settled); HearID 3 on the A3953 (needs its equalizer first) and D1402; HearID 5 (A3875, libhid_app.so); the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones); the A3909's test (BaseHearIdActivity); A3040, A3062, A3937 (which screen they launch was not traced).",
+      "what": "Left of HearID: the music preference step after HearID 3 (A3953HearIdPreferenceActivity; whether it needs the app's own music is not settled); HearID 3 on the A3953 (needs its equalizer first) and D1402; HearID 5 (A3875, libhid_app.so); the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones); the A3909's test (BaseHearIdActivity); the P41i (which screen it launches was not traced).",
       "reported": "HearID worked through, 2026-11-27"
     },
     {

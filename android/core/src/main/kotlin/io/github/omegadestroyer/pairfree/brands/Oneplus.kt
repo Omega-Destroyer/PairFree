@@ -18,8 +18,17 @@ object OneplusSpec : BrandSpec(Brand.ONEPLUS) {
 
     override fun eqNote(device: Paired): EqNote = EqNote.ONEPLUS
 
-    override fun paired(address: String, name: String, uuids: List<String>): Paired? =
-        OneplusModels.fromName(name)?.let { Paired(address, name, Brand.ONEPLUS, OneplusWire.SPP_UUID, it.id) }
+    /**
+     * HeyMelody's app allows two services (`WhitelistRepositoryServerImpl`): the protocol's `079A`, else `00001107`, which is all some earbuds list (the Enco Buds2 Pro,
+     * issue #78).
+     */
+    override fun paired(address: String, name: String, uuids: List<String>): Paired? = OneplusModels.fromName(name)?.let { model ->
+        val listed = uuids.map { it.uppercase() }
+        val service = if (OneplusWire.SPP_UUID.uppercase() !in listed && SECOND_SERVICE in listed) SECOND_SERVICE else OneplusWire.SPP_UUID
+        Paired(address, name, Brand.ONEPLUS, service, model.id)
+    }
+
+    private const val SECOND_SERVICE = "00001107-D102-11E1-9B23-00025B00A5A5"
 
     override fun model(device: Paired, state: EarbudState): Model? = OneplusModels.model(device.name)
 

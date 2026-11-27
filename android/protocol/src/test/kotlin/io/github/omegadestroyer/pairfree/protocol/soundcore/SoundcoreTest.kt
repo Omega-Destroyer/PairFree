@@ -1348,7 +1348,7 @@ class SoundcoreSleepA20Test {
     fun theSleepTimerIsABrandRow() {
         val session = SoundcoreSession("A6611")
         session.receive(SoundcorePacket(SoundcoreCommand.STATE, rec.str("state").hexBytes()))
-        val row = session.groups.single().settings.single() as Setting.Choice
+        val row = session.groups.single { it.key == "sleep" }.settings.single() as Setting.Choice
         assertEquals("sleep_timer", row.key)
         assertEquals("off", row.value, "02 78 00 01: off, 120 minutes kept")
         assertEquals("30", row.options[1])
@@ -1357,7 +1357,7 @@ class SoundcoreSleepA20Test {
             val packets = session.change(SettingChange.Choice("sleep_timer", step.str("option")))!!
             assertEquals(step.frames(), packets.map { SoundcorePacket.build(it.command, it.body).hex() }, step.toString())
         }
-        assertEquals("off", (session.groups.single().settings.single() as Setting.Choice).value)
+        assertEquals("off", (session.groups.single { it.key == "sleep" }.settings.single() as Setting.Choice).value)
         assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.firstOrNull { it.key == "sleep" }, "the A40 has no sleep timer")
     }
 

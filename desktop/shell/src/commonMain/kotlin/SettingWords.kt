@@ -73,6 +73,7 @@ class SettingWords(private val strings: DesktopStrings) {
     fun groupNote(key: String): String? = when (key) {
         "ef_cycle" -> t("setting_group_ef_cycle_note")
         "find" -> t("setting_find_note")
+        "find_phone" -> t("setting_find_phone_note")
         "sh_fit" -> t("setting_sh_fit_note")
         "sh_auracast" -> t("setting_sh_auracast_note")
         "find_hub" -> t("setting_find_hub_note")
@@ -1531,7 +1532,7 @@ class SettingWords(private val strings: DesktopStrings) {
 
     fun actionStart(key: String): String = when (key) {
         "op_eq_new" -> "setting_op_eq_new"
-        "find" -> "setting_find_start"
+        "find", "find_phone" -> "setting_find_start"
         "find_hub" -> "setting_find_hub_open"
         "sk_tile" -> "setting_sk_tile_open"
         "nc_optimizer" -> "setting_nc_optimizer_start"
@@ -1555,7 +1556,7 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun actionStop(key: String): String = when (key) {
-        "find" -> "setting_find_stop"
+        "find", "find_phone" -> "setting_find_stop"
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"
         "sh_fit_test" -> "setting_sh_fit_cancel"

@@ -73,6 +73,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                     }
                     is Setting.Action -> {
                     if (setting.key == "sh_fit_test") FitTone(setting.active)
+                    if (setting.key == "find_phone") FindTone(setting.active, group)
                     AppButton(
                         stringResource(if (setting.active) actionStop(setting.key) else actionStart(setting.key)),
                         {
@@ -165,6 +166,33 @@ private fun FitTone(active: Boolean) {
         onDispose { player.stop() }
     }
 }
+
+/** Find my earbuds where the phone makes the sound (Soundcore's Space A40 and others): a loud tone through the earbuds at full media volume, in the ears not muted. */
+@Composable
+private fun FindTone(active: Boolean, group: SettingGroup) {
+    val context = LocalContext.current
+    val player = remember { io.github.omegadestroyer.pairfree.hearing.TonePlayer(context) }
+    fun muted(key: String) = group.settings.filterIsInstance<Setting.Toggle>().any { it.key == key && it.on }
+    val left = !muted("find_mute_left")
+    val right = !muted("find_mute_right")
+    DisposableEffect(active) {
+        if (active) player.begin()
+        onDispose { player.end() }
+    }
+    DisposableEffect(active, left, right) {
+        val side = when {
+            left && right -> io.github.omegadestroyer.pairfree.hearing.TonePlayer.BOTH
+            left -> io.github.omegadestroyer.pairfree.hearing.TonePlayer.LEFT
+            right -> io.github.omegadestroyer.pairfree.hearing.TonePlayer.RIGHT
+            else -> null
+        }
+        if (active && side != null) player.playOnSide(FIND_TONE_HZ, FIND_TONE_DB, 1, side, loop = true) else player.stop()
+        onDispose { }
+    }
+}
+
+private const val FIND_TONE_HZ = 2700f
+private const val FIND_TONE_DB = -3f
 
 private const val FIT_TONE_HZ = 120f
 private const val FIT_TONE_DB = -24f
@@ -293,6 +321,7 @@ private fun groupTitle(key: String): String = stringResource(
 private fun groupNote(key: String): String? = when (key) {
     "ef_cycle" -> stringResource(R.string.setting_group_ef_cycle_note)
     "find" -> stringResource(R.string.setting_find_note)
+    "find_phone" -> stringResource(R.string.setting_find_phone_note)
     "sh_fit" -> stringResource(R.string.setting_sh_fit_note)
     "sh_auracast" -> stringResource(R.string.setting_sh_auracast_note)
     "find_hub" -> stringResource(R.string.setting_find_hub_note)
@@ -1762,7 +1791,7 @@ private fun eqBandTitle(key: String): String? {
 
 private fun actionStart(key: String): Int = when (key) {
     "op_eq_new" -> R.string.setting_op_eq_new
-    "find" -> R.string.setting_find_start
+    "find", "find_phone" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open
     "sk_tile" -> R.string.setting_sk_tile_open
     "nc_optimizer" -> R.string.setting_nc_optimizer_start
@@ -1786,7 +1815,7 @@ private fun actionStart(key: String): Int = when (key) {
 }
 
 private fun actionStop(key: String): Int = when (key) {
-    "find" -> R.string.setting_find_stop
+    "find", "find_phone" -> R.string.setting_find_stop
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
     "sh_fit_test" -> R.string.setting_sh_fit_cancel

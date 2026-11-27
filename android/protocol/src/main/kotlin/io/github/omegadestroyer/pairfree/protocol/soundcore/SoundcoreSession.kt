@@ -65,6 +65,13 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 }
                 state = state.copy(values = state.values + values)
             }
+            // Whether the earbuds are beeping (left, right, case), also when the Soundcore app or a touch stopped them.
+            SoundcoreCommand.DEVICE_INFO -> if (beeps && body.size >= 2) {
+                finding = body.u8(0) == 1 || body.u8(1) == 1
+                mutedLeft = finding && body.u8(0) != 1
+                mutedRight = finding && body.u8(1) != 1
+                return true
+            }
             SoundcoreCommand.BATTERY -> {
                 // One level per earbud. OpenSCQ30 reads two more bytes it does not name; on the
                 // A40 the third is the case (docs/soundcore/PROTOCOL.md), so only the A40 reads it.
@@ -173,6 +180,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
     public val groups: List<SettingGroup>
         get() {
             val s = lastState ?: return emptyList()
+            val find = findRows()
             val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s))
             val rows = listOfNotNull(sleepTimerRow(s)) + A30_FLAGS.filter { it.home.not() }.mapNotNull { flagRow(s, it) } +
                 listOfNotNull(listeningRow(s, A30_LISTENING_MODE), listeningRow(s, A30_DEFAULT_LISTENING_MODE))
@@ -184,8 +192,44 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 (a3954SoundRows(s) ?: a3959SoundRows(s))?.takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
                 a3959FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
+                if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
         }
+
+    // Find my earbuds: whether it is on, and the earbud left out of it. The earbuds beep on 10 89, or on some models the phone plays a sound through them.
+    private var finding = false
+    private var mutedLeft = false
+    private var mutedRight = false
+    private val beeps: Boolean get() = layout?.features?.contains("find_device") == true
+    private val phoneBeeps: Boolean get() = layout?.features?.contains("find_device_phone") == true
+
+    private fun findRows(): List<Setting> {
+        if (!beeps && !phoneBeeps) return emptyList()
+        val start = Setting.Action(if (beeps) FIND else FIND_PHONE, finding)
+        return listOf(start) + if (finding) listOf(Setting.Toggle(MUTE_LEFT, mutedLeft), Setting.Toggle(MUTE_RIGHT, mutedRight)) else emptyList()
+    }
+
+    /** The write for what the earbuds should be doing now, `10 89`: left, right, case (0 0 0 stops). Nothing to send where the phone makes the sound. */
+    private fun findPackets(): List<SoundcorePacket> =
+        if (!beeps) emptyList()
+        else listOf(SoundcorePacket(SoundcoreCommand.FIND_DEVICE, byteArrayOf(if (finding && !mutedLeft) 1 else 0, if (finding && !mutedRight) 1 else 0, 0)))
+
+    private fun findChange(change: SettingChange): List<SoundcorePacket>? {
+        if ((!beeps && !phoneBeeps) || lastState == null) return null
+        when {
+            change is SettingChange.Press && change.key == (if (beeps) FIND else FIND_PHONE) -> {
+                finding = !finding
+                if (!finding) {
+                    mutedLeft = false
+                    mutedRight = false
+                }
+            }
+            change is SettingChange.Toggle && change.key == MUTE_LEFT -> mutedLeft = change.on
+            change is SettingChange.Toggle && change.key == MUTE_RIGHT -> mutedRight = change.on
+            else -> return null
+        }
+        return findPackets()
+    }
 
     /**
      * The Liberty 4 Pro's noise control (OpenSCQ30's a3954 module, checked against the 5.0.35 app's reply parser and its sound modes write, which
@@ -372,6 +416,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
      * the next state the earbuds send confirms it.
      */
     public fun change(change: SettingChange): List<SoundcorePacket>? {
+        if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
         if (change is SettingChange.Toggle) {
@@ -594,6 +639,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private val A30_MODES = listOf("bluetooth", "local")
         private val SPATIAL_MODES = listOf("fixed", "head_tracking", "podcast", "movie", "gaming")
 
+        public const val FIND: String = "find"
+        public const val FIND_PHONE: String = "find_phone"
+        private const val MUTE_LEFT = "find_mute_left"
+        private const val MUTE_RIGHT = "find_mute_right"
         private val EARBUD_BATTERIES = listOf("dual_battery", "dual_battery_level", "single_battery", "single_battery_charging_first", "battery_level")
 
         // The noise modes by their names in data/soundpeats/commands.json, so no number is retyped.

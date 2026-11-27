@@ -778,8 +778,8 @@
       "models": [
         "OPPO Enco Buds2 Pro (068010)"
       ],
-      "status": "open",
-      "what": "The channel on service 0000079A-D102-11E1-9B23-00025B00A5A5 did not open (two socket attempts, read ret -1) on a Pixel 10 Pro XL, Android 17: to be settled from the OPPO and OnePlus apps' own connection code (which channel or service they open) and the report's service list, which holds only 00001107-d102-11e1-9b23-00025b00a5a5 beside the standard ones.",
+      "status": "built",
+      "what": "Earbuds that list 00001107 and not 079A (the Enco Buds2 Pro) are opened on 00001107, the second service HeyMelody's code allows (issue #78, 2026-11-27; not confirmed on the earbuds: a connection or device report from 0.18.1 settles it).",
       "reported": "issue #78"
     },
     {

@@ -1407,7 +1407,9 @@
     },
     {
       "model": "A3874",
-      "extra_features": ["find_device"],
+      "extra_features": ["find_device",
+"touch_tone",
+"auto_power_off_durations"],
       "names": [
         "soundcore AeroFit 2",
         "AeroFit 2 AI Assistant"
@@ -1428,13 +1430,30 @@
         ["dual_firmware", 10],
         ["serial", 16],
         ["skip", 5],
-        ["case_battery", 1]
+        ["case_battery", 1],
+        ["skip", 22],
+        ["block", 0],
+        ["skip", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["skip", 1],
+        ["volume_balance", 1],
+        ["skip", 2],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["skip", 1],
+        ["gaming_mode", 1],
+        ["optional:skip", 3],
+        ["optional:audio_wakeup", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3871AnalysisService.e1, one class for the A3871, A3872 and A3873; A3874AnalysisService), not from OpenSCQ30 and not tried on the earbuds. Its head is the V20i's (A3876); the rest has firmware-gated fields and a command service of its own (A3874CmdService), so only the battery, firmware and serial are read. The battery's scale is not in the parser (it clamps 0 to 9), so no battery is shown until a report settles it."
+      "notes": "Read from the Soundcore app 5.0.35 (A3874AnalysisService), not from OpenSCQ30 and not tried on the earbuds: the head, the equalizer block skipped, the length-prefixed button block skipped, then LDAC, two devices, auto power off, the balance, the tones, game mode and the voice wake. No battery scale is in the parser (it clamps 0 to 9), so no battery is shown until a report settles it."
     },
     {
       "model": "A3875",
-      "extra_features": ["find_device"],
+      "extra_features": ["find_device",
+"auto_power_off_durations",
+"sound_modes"],
       "names": [
         "soundcore AeroFit 2 Pro"
       ],
@@ -1454,9 +1473,26 @@
         ["dual_firmware", 10],
         ["serial", 16],
         ["skip", 5],
-        ["case_battery", 1]
+        ["case_battery", 1],
+        ["skip", 22],
+        ["block", 0],
+        ["sound_modes", 2],
+        ["skip", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["skip", 2],
+        ["skip", 1],
+        ["low_battery_prompt", 1],
+        ["gaming_mode", 1],
+        ["skip", 7],
+        ["audio_wakeup", 1],
+        ["skip", 2],
+        ["in_ear_tone", 1],
+        ["optional:skip", 2],
+        ["optional:anc_sensor", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3875AnalysisService.e1), not tried on the earbuds: the head of the reply (TWS status, both levels, both firmware versions, the serial, the case's firmware and level). The rest holds length-prefixed blocks and the app's own EQ structure, which are not read yet. The battery's scale is not in the parser (it clamps 0 to 9), so none is shown."
+      "notes": "Read from the Soundcore app 5.0.35 (A3875AnalysisService.e1 and A3875CmdService), not tried on the earbuds: the head, the equalizer and button blocks skipped, the noise mode (two bytes, written with 06 81), LDAC, two devices, auto power off, the tones, game mode, the voice wake and the noise sensor enhancement. Its balance is stored in a way the app does not read back (clamped to 0 to 9), so it is not offered. No battery scale is in the parser."
     },
     {
       "model": "A3876",

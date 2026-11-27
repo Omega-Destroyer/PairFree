@@ -751,9 +751,16 @@ Renaming (`0F 81`) is left out. Not tried.
 
 `0D 82` starts and stops heart rate measurement; the earbuds then send `0D 01` (heart rate at byte 2, blood oxygen at 24, steps from 26). `0D 84` is the
 sedentary and `0D 83` the sitting posture reminder (state, after the spatial audio bytes). 5.0.35 reads the device colour and press sensitivity one byte later
-than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. Neck posture is open. Not tried.
+than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. `0D 88` calibrates (1, 2 in-ear or 3 neck; reply: a byte,
+the kind, 0 on success), `0D 87` switches the neck report, `0D 04` answers 72 two byte counts (five degree bands from 90 to -90, front to back then
+sideways, the halves read from the field order of the app's upload), `0D 89` clears them and `0D 03` is the live angle. The app uploads the counts to
+Anker's server; PairFree shows them and sends them nowhere. Not tried.
 
 ## The Sleep A10's player (2026-11-27)
 
 State: play time (byte 69, 255 no limit), whether a sound is on the earbuds, its volume (0 to 65) and the countdown (two bytes, high first, 0 off, FFFF keep
-playing). `01 AB` sets the play time, `01 B1` (0, volume), `01 B2` plays or pauses, `01 B3` the countdown. Alarms and sound transfer are open. Not tried.
+playing). `01 AB` sets the play time, `01 B1` (0, volume), `01 B2` plays or pauses, `01 B3` the countdown. An alarm: `01 A6` with the time now (seconds since 1970, high
+byte first), then `01 A7` with up to three ring times (PairFree sends one; four zero bytes clear). Sleep records: blocked: the earbuds give only time stamps
+and type codes (`01 10`) and the report comes from Anker's server; checked: `A6610AnalysisService.G2`, `A6610SleepVM`, `netbean/a6610/StatisticsSleep`.
+Putting a sound on the earbuds: blocked: it travels by the firmware updater, which PairFree does not send; checked:
+`A6610OtaActivity` (`A6610WqOtaUpgrade`, then `01 A4`), `A6610WhiteNoiseApi`. Not tried.

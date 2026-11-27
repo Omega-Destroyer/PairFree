@@ -32,12 +32,15 @@ public class SoundcoreHearingSpec private constructor(
 
         /** HearID 3: beeps in both ears, which the user makes louder or quieter until just heard (`A3968HearidVM`). */
         CHOSEN,
+
+        /** The oldest test (`BaseHearIdVM`): seven steady tones in each ear, from 6.4 kHz down. */
+        FIRST,
     }
 
     private class Tone(val hz: Int, val base: Int, val step: Int)
 
     /** True when the tones are beeps rather than steady. */
-    public val pulsed: Boolean get() = style != Style.STEADY
+    public val pulsed: Boolean get() = style == Style.BEEPS || style == Style.CHOSEN
 
     /** True when each ear is tested by itself. */
     public val perEar: Boolean get() = style != Style.CHOSEN
@@ -77,7 +80,13 @@ public class SoundcoreHearingSpec private constructor(
         private fun spec(model: String, style: Style, bands: Int, base: List<Int>, step: List<Int> = List(8) { 0 }) =
             SoundcoreHearingSpec(model, style, ORDER.indices.map { Tone(ORDER[it], base[it], step[it]) }, bands)
 
+        private fun first(model: String, base: List<Int>): SoundcoreHearingSpec =
+            SoundcoreHearingSpec(model, Style.FIRST, listOf(6400, 3200, 1600, 800, 400, 200, 100).mapIndexed { i, hz -> Tone(hz, base[i], 6) }, 8)
+
         public fun of(model: String?): SoundcoreHearingSpec? = when (model) {
+            "A3909" -> first(model, listOf(-75, -75, -70, -75, -70, -60, -55))
+            "A3910" -> first(model, listOf(-73, -80, -70, -70, -63, -55, -52))
+            "A3913" -> first(model, listOf(-75, -75, -70, -72, -67, -55, -55))
             "A3936", "A3930", "A3951" -> spec(
                 model, Style.STEADY, if (model == "A3936") 10 else 8,
                 listOf(-75, -64, -72, -71, -69, -59, -54, -72), listOf(6, 0, 6, 0, 3, 6, 6, 6),
@@ -261,7 +270,11 @@ public class SoundcoreHearingRun(public val spec: SoundcoreHearingSpec) {
             val both = halved(raw)
             return SoundcoreHearingResult(both, both.copyOf())
         }
-        val values = if (spec.style == SoundcoreHearingSpec.Style.BEEPS) unify(raw) else correct(raw)
+        val values = when (spec.style) {
+            SoundcoreHearingSpec.Style.BEEPS -> unify(raw)
+            SoundcoreHearingSpec.Style.FIRST -> againstEach(raw)
+            else -> correct(raw)
+        }
         val tenths = IntArray(values.size) { (values[it] - FLAT) * 10 }
         return SoundcoreHearingResult(tenths.copyOfRange(0, spec.count), tenths.copyOfRange(spec.count, total))
     }
@@ -277,6 +290,20 @@ public class SoundcoreHearingRun(public val spec: SoundcoreHearingSpec) {
             val reference = minOf(raw[4], raw[n + 4])
             return IntArray(raw.size) { i ->
                 val moved = raw[i] - reference + 12
+                when (i % n) {
+                    0, 1 -> moved.coerceIn(12, 15)
+                    2 -> moved.coerceIn(12, 18)
+                    4 -> 12
+                    else -> moved.coerceIn(6, 18)
+                }
+            }
+        }
+
+        /** `BaseHearIdVM.changeDataByAlgorithm`: each ear moved against its own 1.6 kHz result, then kept in range. */
+        fun againstEach(raw: IntArray): IntArray {
+            val n = raw.size / 2
+            return IntArray(raw.size) { i ->
+                val moved = raw[i] - raw[i / n * n + 4] + 12
                 when (i % n) {
                     0, 1 -> moved.coerceIn(12, 15)
                     2 -> moved.coerceIn(12, 18)
@@ -319,6 +346,27 @@ public object SoundcoreHearingId {
 
     private class Held(val eq: SoundcoreEqSpec, val layout: SoundcoreHearIdLayout, val config: SoundcoreEqConfig, val data: SoundcoreHearId, val on: Boolean)
 
+    private fun isFirst(model: String) = SoundcoreHearingSpec.of(model)?.style == SoundcoreHearingSpec.Style.FIRST
+
+    /** The oldest models' block: the switch, eight values for each ear and the time. */
+    private fun firstBlock(state: SoundcoreState?): ByteArray? = state?.field("hear_id")?.takeIf { it.size >= 21 }
+
+    private fun firstHasResult(block: ByteArray) = (1..16).any { block[it] != 0.toByte() && block[it] != 0xFF.toByte() }
+
+    /** The oldest models' result (`03 82`, `A3909DeviceManager.S0`): gender, age, the two ears in the app's scale, the time. */
+    private fun firstSave(state: SoundcoreState?, result: SoundcoreHearingResult, time: Long): SoundcorePacket? {
+        if (firstBlock(state) == null) return null
+        val body = ByteArray(22)
+        body[0] = state?.field("gender")?.get(0)?.takeIf { it != 0xFF.toByte() } ?: 0
+        body[1] = state?.field("age_range")?.get(0)?.takeIf { it != 0xFF.toByte() } ?: 0
+        for ((ear, values) in listOf(result.left, result.right).withIndex()) {
+            // The eighth band has no tone and is sent flat.
+            repeat(8) { band -> body[2 + ear * 8 + band] = (FLAT + values.getOrElse(band) { 0 } / 10).toByte() }
+        }
+        for (i in 0 until 4) body[18 + i] = (time shr (24 - 8 * i)).toByte()
+        return SoundcorePacket(SoundcoreCommand.HEARING_RESULT, body)
+    }
+
     private fun held(model: String, state: SoundcoreState?): Held? {
         if (state == null || SoundcoreHearingSpec.of(model) == null) return null
         val eq = SoundcoreEqSpec.of(model) ?: return null
@@ -333,12 +381,24 @@ public object SoundcoreHearingId {
 
     /** The switch and the delete action, when the earbuds hold a test's result. */
     public fun rows(model: String, state: SoundcoreState?): List<Setting> {
+        if (isFirst(model)) {
+            val block = firstBlock(state)?.takeIf(::firstHasResult) ?: return emptyList()
+            return listOf(Setting.Toggle(SWITCH, block[0] == 1.toByte()), Setting.Action(DELETE))
+        }
         val h = held(model, state) ?: return emptyList()
         if (!hasResult(h.data)) return emptyList()
         return listOf(Setting.Toggle(SWITCH, h.on), Setting.Action(DELETE))
     }
 
     public fun change(model: String, state: SoundcoreState?, change: SettingChange): SoundcorePacket? {
+        if (isFirst(model)) {
+            if (firstBlock(state)?.let(::firstHasResult) != true) return null
+            return when {
+                change is SettingChange.Toggle && change.key == SWITCH -> SoundcorePacket(SoundcoreCommand.HEARING_SWITCH, byteArrayOf(if (change.on) 1 else 0))
+                change is SettingChange.Press && change.key == DELETE -> SoundcorePacket(SoundcoreCommand.HEARING_DELETE, ByteArray(0))
+                else -> null
+            }
+        }
         val h = held(model, state) ?: return null
         if (!hasResult(h.data)) return null
         return when {
@@ -350,6 +410,7 @@ public object SoundcoreHearingId {
 
     /** Stores [result], made at [time] (seconds since 1970), and turns HearID on. */
     public fun save(model: String, state: SoundcoreState?, result: SoundcoreHearingResult, time: Long): SoundcorePacket? {
+        if (isFirst(model)) return firstSave(state, result, time)
         val h = held(model, state) ?: return null
         val ears = listOf(result.left, result.right)
         val curves: List<IntArray?> = List(h.layout.channels) { c -> IntArray(h.layout.bands) { band -> ears[c].getOrElse(band) { LOWEST } } }
@@ -453,6 +514,7 @@ public object SoundcoreHearingId {
     }
 
     private const val LOWEST = -120
+    private const val FLAT = 12
     private const val HIGHEST = 134
 
     /** The EQ write formats (data/soundcore/devices.json) that differ here. */

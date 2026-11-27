@@ -88,6 +88,39 @@ class SoundcoreHearingTest {
     }
 
     @Test
+    fun theOldestTest() {
+        val spec = SoundcoreHearingSpec.of("A3909")!!
+        val run = SoundcoreHearingRun(spec)
+        assertEquals(14, run.total)
+        assertEquals(6400, run.hz)
+        assertEquals(-69.0, run.level)
+        answers(run) { false }
+        // Nothing heard: every tone 24, so each ear reads flat against its own 1.6 kHz.
+        assertArrayEquals(IntArray(7), run.result()!!.left)
+        val raw = IntArray(14) { 12 }
+        raw[4] = 6
+        raw[6] = 24
+        val out = SoundcoreHearingRun.againstEach(raw)
+        assertArrayEquals(intArrayOf(15, 15, 18, 18, 12, 18, 18), out.copyOfRange(0, 7))
+        assertArrayEquals(IntArray(7) { 12 }, out.copyOfRange(7, 14))
+
+        val layout = SoundcoreLayout.of("A3909")!!
+        val state = SoundcoreState.parse(layout, ByteArray(512))!!
+        val result = SoundcoreHearingResult(intArrayOf(30, 30, 0, 0, 0, 0, -60), IntArray(7))
+        val packet = SoundcoreHearingId.save("A3909", state, result, 0x01020304L)!!
+        assertEquals(0x0382, packet.command)
+        assertArrayEquals(byteArrayOf(0, 0, 15, 15, 12, 12, 12, 12, 6, 12, 12, 12, 12, 12, 12, 12, 12, 12, 1, 2, 3, 4), packet.body)
+        assertEquals(0, SoundcoreHearingId.rows("A3909", state).size)
+        val field = state.field("hear_id")!!
+        field[0] = 1
+        packet.body.copyInto(field, 1, 2, 22)
+        val held = state.with("hear_id", field)
+        assertEquals(2, SoundcoreHearingId.rows("A3909", held).size)
+        assertEquals(0x0381, SoundcoreHearingId.change("A3909", held, SettingChange.Toggle(SoundcoreHearingId.SWITCH, false))!!.command)
+        assertEquals(0x0384, SoundcoreHearingId.change("A3909", held, SettingChange.Press(SoundcoreHearingId.DELETE))!!.command)
+    }
+
+    @Test
     fun theStaircase() {
         // Never heard: louder three times, then given up as 24.
         val never = SoundcoreStaircase(-70, 6)

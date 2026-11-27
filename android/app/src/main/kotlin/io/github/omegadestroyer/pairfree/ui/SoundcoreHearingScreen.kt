@@ -33,7 +33,8 @@ import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
 /**
- * Soundcore's HearID hearing test (docs/soundcore/PROTOCOL.md, HearID), run as its app runs it. On the older models a tone sounds in one earbud, the user says whether
+ * Soundcore's HearID hearing test (docs/soundcore/PROTOCOL.md, HearID), run as its app runs it (the oldest app times each answer by a held button; here it is the same
+ * two buttons as the others). On the older models a tone sounds in one earbud, the user says whether
  * they hear it, and the next one is louder or quieter until the threshold is found, eight tones for each ear. In HearID 3 beeps sound in both ears and the user sets
  * each of eight tones to where it can just be heard. The earbuds are told the test runs, and the tones start 1.5 s later.
  * Leaving the screen, or the app, ends the test and puts the media volume back.

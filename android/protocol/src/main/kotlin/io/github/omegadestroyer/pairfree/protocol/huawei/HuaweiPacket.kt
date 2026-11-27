@@ -10,9 +10,16 @@ public data class HuaweiTlv(val tag: Int, val value: ByteArray = byteArrayOf()) 
 
 /** Control-zero MBB frame. No global status byte is removed from its TLV body. */
 public data class HuaweiPacket(val service: Int, val command: Int, val fields: List<HuaweiTlv>) {
-    public fun bytes(): ByteArray {
+    public fun bytes(): ByteArray = bytes(false)
+
+    /** An exceptional request can declare one byte for its last, empty TLV. Replies remain strict. */
+    internal fun bytes(emptyLastTlvDeclaresValue: Boolean): ByteArray {
         require(service in 0..255 && command in 0..255)
         val payload = fields.fold(byteArrayOf()) { bytes, field -> bytes + field.bytes() }
+        if (emptyLastTlvDeclaresValue) {
+            require(fields.last().value.isEmpty())
+            payload[payload.lastIndex] = 1
+        }
         val length = payload.size + 3
         require(length <= MAX_BODY)
         val frame = byteArrayOf(HuaweiWire.START.toByte(), (length shr 8).toByte(), length.toByte(), HuaweiWire.CONTROL.toByte(),

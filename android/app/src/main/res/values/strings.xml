@@ -2169,4 +2169,5 @@
     <string name="setting_hw_shake">Shake head</string>
     <string name="setting_hw_awareness_level">Awareness level</string>
     <string name="setting_hw_adaptive_awareness">Adaptive awareness</string>
+    <string name="setting_hw_touch_enabled">Touch controls enabled</string>
 </resources>

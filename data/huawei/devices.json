@@ -212,7 +212,8 @@
         "hold_right",
         "language",
         "multipoint",
-        "modern_battery"
+        "modern_battery",
+        "hold_assistant"
       ],
       "aliases": [
         "MermaidTWS",
@@ -388,7 +389,8 @@
         "voice",
         "wear",
         "eq_write_only",
-        "modern_battery"
+        "modern_battery",
+        "studio_touch"
       ],
       "presets": {
         "1": "Default",

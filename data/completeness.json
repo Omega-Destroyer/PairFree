@@ -36,7 +36,7 @@
         "HUAWEI Eyewear II"
       ],
       "status": "open",
-      "what": "Trace the remaining vendor controls and device-backed alternatives to the Huawei phone wear and recording APIs. Audit Studio touch lock, actions, quality modes, Pro gestures and FreeGO speaker-specific settings.",
+      "what": "Trace the remaining vendor controls and device-backed alternatives to the Huawei phone wear and recording APIs. Check portable equivalents for Studio's phone-side codec setting and trace Pro legacy noise variants and FreeGO speaker-specific settings.",
       "reported": "AI Life APK and capture audit, 2026-11-27"
     },
     {

@@ -12,8 +12,8 @@ The supplied AI Life 11.0.2.305 APK lists eight audio products in its bundled ca
 | ZA01 | FreeGO Speaker / CM530 | Battery | Speaker settings and host integration |
 | ZC01 | HUAWEI Eyewear / Perrier (CMG0-PER) | Glasses and case battery, voice language | Gesture guide and firmware workflow |
 | ZC02 | HUAWEI Eyewear II / Fiji (FIJ-CG020) | Glasses battery, language, double tap, swipe, hold, greetings, wear, power saving and intelligent volume | Phone-specific recording and execution of gestures assigned to translation or voice memo |
-| ZA06 | FreeBuds Studio / Roc (M0001) | Battery, ANC, wear, preset EQ | APK gesture, touch lock and sound-quality variants |
-| ZA07 | FreeBuds Pro / Mermaid (T0003 / T0003C) | Battery, ANC, swipe, hold, language and multipoint | APK gesture and noise variants, recording and other phone integrations |
+| ZA06 | FreeBuds Studio / Roc (M0001) | Battery, ANC, wear, touch lock, preset EQ | Gesture panels guide the built-in actions. Sound quality uses the phone codec API |
+| ZA07 | FreeBuds Pro / Mermaid (T0003 / T0003C) | Battery, ANC, swipe, hold, language and multipoint | Legacy noise tuning, recording and other phone integrations |
 
 The eight catalogue rows came from the union of main_help.json, main_help_global.json, main_help_oversea_cloud.json and localProfile. Studio and Pro are linked by ModelPbiMap and the product identities Huawei publishes. The Walrus fallback token ZA0*undefine* maps to offering OFFE00113769 but the archive supplies no catalogue record connecting it to a shipping Bluetooth name. [Huawei model identifiers](https://consumer.huawei.com/jp/support/content/ja-jp15938700/) · [Legacy model names](https://consumer.huawei.com/cn/support/content/zh-cn15984866/)
 

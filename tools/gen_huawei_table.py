@@ -26,6 +26,8 @@ def coverage(product):
         rows.append("Noise control")
     if features & {"pinch", "double", "shark_tap", "walrus_tap", "hold", "power_tap", "fiji"}:
         rows.append("Gestures")
+    if "studio_touch" in features:
+        rows.append("Touch lock")
     if product.get("presets"):
         rows.append("EQ presets")
     if features & {"custom_save", "custom_preview"}:

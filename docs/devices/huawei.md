@@ -25,7 +25,7 @@ PairFree uses the Huawei MBB settings protocol over Bluetooth Classic. The earbu
 <tr><td>FreeBuds SE</td><td>Battery, Gestures</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds SE 2</td><td>Battery, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds SE 4 ANC</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeBuds Studio</td><td>Battery, Noise control, EQ presets, Device settings</td><td>Bundled APK and public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds Studio</td><td>Battery, Noise control, Touch lock, EQ presets, Device settings</td><td>Bundled APK and public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeClip 2</td><td>Battery, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeLace Pro 2</td><td>Battery, Noise control, Gestures, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 4</td><td>Battery, Noise control, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>

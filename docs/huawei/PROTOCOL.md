@@ -118,7 +118,7 @@ All command numbers here are hex and are paired with their service byte.
 | Voice ANC | `2B 13` / `2B 12` | tag 1 |
 | Long press | `2B 17` / `2B 16` | model-dependent side/action structure; follow packageLongPressSettingCmd |
 | Long-press noise cycle | `2B 19` / `2B 18` | separate from choosing the current ANC mode |
-| Touch enable | `01 2D` / `01 2C` | follow getTouchState / setTouchBoardState |
+| Touch enable | `01 2D` / `01 2C` | Studio's read body is 01 01 with no value byte. Read reply and write carry tag 1 with one byte, 0 locked and 1 enabled |
 | Language | service `0C`, commands `02` / `01` | language-list, unit and supported-language TLVs; not a universal one-byte language code |
 | Model info | `2B 0A` | vendor requests tags 1 through 5 |
 
@@ -204,6 +204,8 @@ performed and no source-derived example is represented as a capture.
 | Head gestures | 2B B4 | For key 11, tags 3 and 4 hold nod and shake actions. Values 0 none, 1 answer and 2 reject. |
 | Sound quality | 2B A3 / 2B A2 | Request tag 1. Read tag 1 capability and tag 2 state. Write tag 1, 0 connectivity or 1 quality. |
 | Ring earbuds | 2B 5E / 2B 5D | The read carries side 0 or 1 in tag 1 and the reply carries side and state in tag 2. Write side and 0 ring or 1 stop in tag 1. |
+
+Studio's double-tap, hold and slide cards animate the built-in controls. Its quality screen reads and sets the phone's Bluetooth A2DP codec preference. In the FreeBuds Pro plugin, the light-press and swipe cards are tutorials, while the hold card writes 10 for noise control or 0 for voice assistant to the selected side. Modern firmware can expose additional controls.
 
 The outer APK's Eyewear builders and parsers are in com/huawei/perrier/ota/spp. See ProtocolAPI,
 C1484 and AppParseDataHandleHelper for battery, language and settings, and fiji/touchsettings

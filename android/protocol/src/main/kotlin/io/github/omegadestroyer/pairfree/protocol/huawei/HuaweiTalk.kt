@@ -113,7 +113,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
 
     override fun start(): List<HuaweiPacket> = opening
     override fun poll(): List<HuaweiPacket> = listOf(batteryRead)
-    override fun bytes(message: HuaweiPacket): ByteArray = message.bytes()
+    override fun bytes(message: HuaweiPacket): ByteArray =
+        message.bytes(emptyLastTlvDeclaresValue = message.op == STUDIO_TOUCH_READ && isRead(message))
     override fun answers(sent: HuaweiPacket, got: Any): Boolean {
         if (got !is HuaweiPacket) return false
         if (sent.op == BATTERY && got.op == BATTERY_NOTIFY) return true
@@ -444,6 +445,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
 
     private companion object {
         const val VERSION = 0x0107
+        const val STUDIO_TOUCH_READ = 0x012d
         const val BATTERY = 0x0108
         const val BATTERY_NOTIFY = 0x0127
         const val ANC_EVENT = 0x2b03

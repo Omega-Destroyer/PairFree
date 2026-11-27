@@ -101,6 +101,7 @@ internal fun HuaweiProduct.controls(): List<HuaweiControl> = buildList {
         add(HuaweiControl("hw_saving", SettingTab.DEVICE, 0x2b1d, 0x2b1c))
         add(HuaweiControl("hw_adaptive_volume", SettingTab.SOUND, 0x2b23, 0x2b22))
     }
+    if (has("studio_touch")) add(HuaweiControl("hw_touch_enabled", SettingTab.CONTROLS, 0x012d, 0x012c))
     if (has("quality")) add(HuaweiControl("hw_quality", SettingTab.SOUND, 0x2ba3, 0x2ba2, tag = 2,
         writeTags = listOf(1), capabilityTag = 1, readTags = listOf(1)))
     if (has("multipoint")) add(HuaweiControl("multipoint", SettingTab.DEVICE, 0x2b2f, 0x2b2e))

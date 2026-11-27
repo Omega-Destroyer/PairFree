@@ -174,6 +174,22 @@ class HuaweiTest {
         assertTrue("0107" in glasses.readsAnswered)
     }
 
+    @Test fun studioTouchUsesItsExactQueryAndWaitsForState() {
+        val studio = talk("FreeBuds Studio")
+        val query = studio.start().single { it.op == 0x012d }
+        assertArrayEquals("5a000500012d0101882a".hexBytes(), studio.bytes(query))
+        assertTrue(HuaweiParser().feed(studio.bytes(query)).isEmpty())
+        assertNull(studio.change(SettingChange.Toggle("hw_touch_enabled", false)))
+        studio.receive(huaweiWrite(0x012d, 1 to 1))
+        val lock = studio.change(SettingChange.Toggle("hw_touch_enabled", false))!!.single()
+        assertEquals(0x012c, lock.op)
+        assertEquals(0, lock.scalar(1))
+        assertTrue(studio.allowed(lock))
+        val mermaid = talk("FreeBuds Pro")
+        assertFalse(mermaid.allowed(query))
+        assertFalse(mermaid.allowed(lock))
+    }
+
     private fun talk(name: String): HuaweiTalk = HuaweiTalk(checkNotNull(HuaweiModels.fromName(name)))
     private fun HuaweiTalk.receive(packet: HuaweiPacket) { assertTrue(feed(packet.bytes()).changed) }
 }

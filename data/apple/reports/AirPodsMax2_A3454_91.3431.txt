@@ -1,0 +1,27 @@
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Brand:           Apple (AirPods or Beats)
+Model:           not in PairFree's table (model number A3454)
+Firmware:        91.3431046004000000.29
+App:             PairFree 0.18.0
+OS:              Android 17 (API 37, Google, build CP4A.261105.040.A1)
+Captured:        2026-11-26 09:38 UTC
+
+Battery (count, then component, 01, level, status, 01 each), as hex:
+  01 01 01 64 02 01
+Settings the AirPods reported (control command id: value, as hex):
+  0d: 02
+  18: 00
+  17: 00
+  1f: 50 50
+  24: 00 03
+  28: 02
+  26: 02
+  2e: 32
+  1b: 02
+  35: 02
+  3e: 02
+  34: 01

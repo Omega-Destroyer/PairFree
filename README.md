@@ -104,7 +104,7 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Sony](docs/devices/sony.md) | 24 | WF-1000XM5, WF-1000XM6 |
 | [Bose](docs/devices/bose.md) | 22 | — |
 | [JBL](docs/devices/jbl.md) | 112 | Live Buds 3 |
-| [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Pro 3 |
+| [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Max 2, AirPods Pro 3 |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | Nothing Ear |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 | [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY MeloBuds Pro, QCY T13 ANC2 |
@@ -115,7 +115,7 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | Momentum 5 Wireless |
 | [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
-| **Total: 17 brands** | **846** | **22 tried** |
+| **Total: 17 brands** | **846** | **23 tried** |
 <!-- devices-summary:end -->
 
 ## Help add your model

@@ -768,8 +768,8 @@
       "models": [
         "AirPods Max 2 (model number A3454)"
       ],
-      "status": "open",
-      "what": "The AirPods Max 2 connect (the report lists battery and ten settings) but are not in PairFree's model table (model number A3454, firmware 91.3431046004000000.29), so their settings are not named or checked against the model.",
+      "status": "built",
+      "what": "The AirPods Max 2 are recognised by their model number A3454 (a user's report, saved), as the table's product id 202D already was (issue #81, 2026-11-27).",
       "reported": "issue #81"
     },
     {

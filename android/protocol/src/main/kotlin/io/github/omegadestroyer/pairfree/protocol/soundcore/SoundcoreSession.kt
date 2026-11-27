@@ -329,10 +329,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
 
     /** The P30i family's power-off durations (10, 20, 30 or 60 minutes, as the recording of the official app shows). */
     private fun a3959FeatureRows(s: SoundcoreState): List<Setting>? {
-        if (A3959_MODES !in s.layout.features && AUTO_OFF_DURATIONS !in s.layout.features) return null
+        if (A3959_MODES !in s.layout.features && AUTO_OFF_DURATIONS !in s.layout.features && AUTO_OFF_LONG !in s.layout.features) return null
         return listOfNotNull(
             s.field("auto_power_off")?.takeIf { it.size >= 2 }?.let {
-                val options = listOf("off", "10", "20", "30", "60")
+                val options = autoOffOptions(s.layout)
                 Setting.Choice("a3954_auto_power_off_duration", if (it.u8(0) == 0) "off" else options.getOrNull(it.u8(1) + 1), options)
             },
         )
@@ -377,7 +377,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
      */
     private fun switchRow(s: SoundcoreState, w: Switch): Setting? =
         // The P30i family shows its power-off durations instead of the bare switch.
-        if (w.key == "sc_auto_power_off" && (A3959_MODES in s.layout.features || AUTO_OFF_DURATIONS in s.layout.features)) null
+        if (w.key == "sc_auto_power_off" && listOf(A3959_MODES, AUTO_OFF_DURATIONS, AUTO_OFF_LONG).any { it in s.layout.features }) null
         else if (s.layout.has(w.field) && s.flag(w.field) != null) Setting.Toggle(w.key, s.flag(w.field) == true) else null
 
     /** The A3953's press sensitivity: five levels from softest (0) to firmest (4), set with both earbuds connected (its screen). */
@@ -501,7 +501,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             }
             if (change.key == "a3954_auto_power_off_duration") {
                 val bytes = s.field("auto_power_off") ?: return null
-                val options = listOf("off", "10", "20", "30", "60")
+                val options = autoOffOptions(s.layout)
                 val selected = options.indexOf(change.option).takeIf { it >= 0 } ?: return null
                 if (selected == 0) bytes[0] = 0 else {
                     bytes[0] = 1
@@ -645,6 +645,11 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private const val MUTE_RIGHT = "find_mute_right"
         /** The model's power off offers the durations of the P30i family (the Liberty Buds 2). */
         private const val AUTO_OFF_DURATIONS = "auto_power_off_durations"
+        /** ... or the longer ones of the AeroClip 2 and Space 2 Pro: 30 minutes, 1, 3 and 5 hours, by their index. */
+        private const val AUTO_OFF_LONG = "auto_power_off_long"
+
+        private fun autoOffOptions(layout: SoundcoreLayout): List<String> =
+            listOf("off") + if (AUTO_OFF_LONG in layout.features) listOf("30", "60", "180", "300") else listOf("10", "20", "30", "60")
         private val EARBUD_BATTERIES = listOf("dual_battery", "dual_battery_level", "single_battery", "single_battery_charging_first", "battery_level")
 
         // The noise modes by their names in data/soundpeats/commands.json, so no number is retyped.

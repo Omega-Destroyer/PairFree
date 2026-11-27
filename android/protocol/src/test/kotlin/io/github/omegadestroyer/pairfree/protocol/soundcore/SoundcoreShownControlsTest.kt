@@ -58,6 +58,32 @@ class SoundcoreShownControlsTest {
         assertEquals(SoundcoreCommand.WEARING_DETECTION, write.command)
     }
 
+    /** The tag-length-value models from records 25 to 27 (and the others they need, empty): every control shown writes. */
+    @Test
+    fun everyControlOfATagLengthValueModelWrites() {
+        fun record(tag: Int, size: Int) = byteArrayOf(tag.toByte(), size.toByte()) + ByteArray(size) { 1 }
+        val body = (1..60).fold(ByteArray(0)) { all, tag -> all + record(tag, if (tag in 5..7) 16 else 6) }
+        val dead = mutableListOf<String>()
+        var shown = 0
+        for (layout in SoundcoreLayout.ALL.filter { it.tlv.isNotEmpty() }) {
+            fun fresh() = SoundcoreSession(layout.model).also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, body)) }
+            val s = fresh()
+            if (s.lastState == null) continue
+            for (group in s.groups) for (row in group.settings) {
+                val change = when (row) {
+                    is Setting.Toggle -> SettingChange.Toggle(row.key, !row.on)
+                    is Setting.Choice -> row.options.firstOrNull { it != row.value }?.let { SettingChange.Choice(row.key, it) }
+                    is Setting.Action -> if (row.key == SoundcoreSession.FIND_PHONE) null else SettingChange.Press(row.key)
+                    else -> null
+                } ?: continue
+                shown++
+                if (fresh().change(change).isNullOrEmpty()) dead += "${layout.model} ${row.key}"
+            }
+        }
+        assertTrue(shown > 20, "rows shown: $shown")
+        assertTrue(dead.isEmpty(), "shown but writes nothing: ${dead.distinct()}")
+    }
+
     @Test
     fun everyShownControlWrites() {
         val recorded = (vectors.getValue("openscq30_states").jsonArray + vectors.getValue("report_states").jsonArray).map { it.jsonObject }

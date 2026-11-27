@@ -77,7 +77,7 @@ phone's language again. On Android 13 and later the choice also shows under the 
 <!-- BEGIN LANGUAGES -->
 | Language | File | PairFree's text | Vendor wording |
 |---|---|---|---|
-| English | `values/strings.xml` | 1943 entries | 137 entries |
+| English | `values/strings.xml` | 1960 entries | 137 entries |
 | `fa` | `values-fa/strings.xml` | 68% (1333) | 93% (128) |
 <!-- END LANGUAGES -->
 

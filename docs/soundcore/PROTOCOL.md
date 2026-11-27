@@ -732,3 +732,11 @@ Traced in Soundcore 5.0.35 from each command's constant to the screens that send
 - **The rest of the table** is in `data/soundcore/cmm2_unused.json`: commands no code of the app sends, its diagnostics and beta screens, its live decibel
   meter and speaker equalizers, each with its reason; and the open ones (HearID, personal noise cancelling, wear calibration, daily care, the Sleep A10's
   playback and alarms, the VR P10's dongle), listed in `data/completeness.json`.
+
+## Tests the earbuds run (2026-11-27)
+
+- **Wear detection calibration** (Space One, Space Q45, Space 2, Space 2 Pro pair): `20 84 00` with the headphones on a table, then `20 84 01` worn; the
+  reply's second and third bytes read 1 when the step passed (the app waits 15 s).
+- **Personal noise cancelling** (Liberty 3 Pro, Liberty 4 NC): `03 88` with 1 (start) or 0 (cancel), the time in seconds high byte first, and the room's noise
+  in dB. The app measures the noise with the phone's microphone; PairFree has no microphone permission and sends 255, the app's value for none. The reply's
+  first byte is the result's index, 255 none. `03 89` removes it. Neither has been tried on earbuds.

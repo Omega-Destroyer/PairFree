@@ -908,8 +908,8 @@
       "models": [
         "Liberty 3 Pro, Liberty 4 and the others whose app has personal noise cancelling"
       ],
-      "status": "open",
-      "what": "The personal noise cancelling ear canal test (03 88 start, 03 89 reset, 06 83) is not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: start, cancel and remove (03 88, 03 89) on the Liberty 3 Pro and Liberty 4 NC, with 255 for the room noise PairFree does not measure. 06 83 is the Liberty 4's engineering screen titled ANC TEST, left out.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {
@@ -918,8 +918,8 @@
       "models": [
         "Space One, Space Q45, Space 2, Space 2 Pro and Liberty 3 Pro"
       ],
-      "status": "open",
-      "what": "The wear detection calibration (20 84, in two steps) and the Liberty 3 Pro wear test (FF 83) are not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: the calibration (20 84, on a table, then worn) on the Space One, Space Q45, Space 2 and Space 2 Pro pair. The Liberty 3 Pro's \"wear test\" (FF 83) switches its infrared sensor in a beta test screen and is left out as diagnostics.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {

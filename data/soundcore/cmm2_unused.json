@@ -22,12 +22,10 @@
   "0383": "gap-audit 2026-11-27: open, data/completeness.json soundcore-hearid",
   "0384": "gap-audit 2026-11-27: open, data/completeness.json soundcore-hearid",
   "0385": "gap-audit 2026-11-27: open, data/completeness.json soundcore-hearid",
-  "0388": "gap-audit 2026-11-27: open, data/completeness.json soundcore-personal-anc",
-  "0389": "gap-audit 2026-11-27: open, data/completeness.json soundcore-personal-anc",
   "0502": "diagnostics, not a user setting: the app's device log upload; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0582": "diagnostics, not a user setting: the app's device log upload switch (A3952MainActivity); checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0602": "a read of the noise modes the button cycles, which the state reply holds; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
-  "0683": "gap-audit 2026-11-27: open, data/completeness.json soundcore-personal-anc",
+  "0683": "an engineering screen titled 'ANC TEST' that sends raw filter codes (the Liberty 4, A3953AncTestActivity), not a user setting; checked: the screen and its command, 2026-11-27",
   "0702": "read by the firmware update screens (whether both earbuds are in the case); firmware update is not built (hard rule); checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0902": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0d01": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
@@ -55,7 +53,6 @@
   "1087": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "2003": "the app's live decibel meter on its hearing protection screens (its reading, interval and start), not a setting of the earbuds; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "2081": "the app's live decibel meter on its hearing protection screens (its reading, interval and start), not a setting of the earbuds; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
-  "2084": "gap-audit 2026-11-27: open, data/completeness.json soundcore-wear-calibration",
   "2086": "the app's live decibel meter on its hearing protection screens (its reading, interval and start), not a setting of the earbuds; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "ff01": "diagnostics, not a user setting: the beta testers' data collection; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "ff03": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
@@ -63,7 +60,7 @@
   "ff05": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "ff06": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "ff81": "diagnostics, not a user setting: the beta testers' data collection switch; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
-  "ff83": "gap-audit 2026-11-27: open, data/completeness.json soundcore-wear-calibration",
+  "ff83": "diagnostics: switches the infrared sensor for the beta testers' and wear test screens (A3600BetaTestVM, A3952WearTestVM); checked: its callers, 2026-11-27",
   "ff84": "diagnostics, not a user setting: the beta testers' screens; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27"
  }
 }

@@ -101,7 +101,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key.startsWith("sc_calibrate_") || setting.key == "sc_personal_anc_result" || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
@@ -308,6 +308,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
         "sc_device" -> R.string.setting_sc_device
+        "sc_tests" -> R.string.setting_sc_tests
         "sc_limit" -> R.string.setting_hearing_protection
         "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
@@ -439,6 +440,9 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_calibrate_table_result" -> stringResource(R.string.setting_sc_calibrate_table_result)
+    "sc_calibrate_worn_result" -> stringResource(R.string.setting_sc_calibrate_worn_result)
+    "sc_personal_anc_result" -> stringResource(R.string.setting_sc_personal_anc_result)
     "sc_voice_language" -> stringResource(R.string.setting_sc_voice_language)
     "sc_open_surround" -> stringResource(R.string.setting_sc_open_surround)
     "sc_open_surround_level" -> stringResource(R.string.setting_sc_open_surround_level)
@@ -1283,6 +1287,7 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "assistant" -> R.string.setting_ca_assistant
         else -> R.string.action_none
     })
+    key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> getString(if (option == "passed") R.string.setting_sc_passed else R.string.setting_sc_failed)
     key == "sc_voice_language" -> getString(if (option == "chinese") R.string.setting_sc_language_chinese else R.string.setting_sc_language_english)
     key == "sc_light_mode" -> getString(when (option) {
         "breathing" -> R.string.setting_sc_light_breathing
@@ -1855,6 +1860,10 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_left" -> R.string.setting_sh_find_left
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
+    "sc_calibrate_table" -> R.string.setting_sc_calibrate_table
+    "sc_calibrate_worn" -> R.string.setting_sc_calibrate_worn
+    "sc_personal_anc" -> R.string.setting_sc_personal_anc
+    "sc_personal_anc_reset" -> R.string.setting_sc_personal_anc_reset
     "jbl_seal_check" -> R.string.setting_jbl_seal_check
     "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove
     "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scan
@@ -1872,6 +1881,8 @@ private fun actionStop(key: String): Int = when (key) {
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
     "sh_fit_test" -> R.string.setting_sh_fit_cancel
+    "sc_calibrate_table", "sc_calibrate_worn" -> R.string.setting_sc_calibrating
+    "sc_personal_anc" -> R.string.setting_sc_personal_anc_cancel
     "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> R.string.setting_jbl_testing
     "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scanning
     else -> R.string.setting_action_stop

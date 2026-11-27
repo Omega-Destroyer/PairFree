@@ -504,6 +504,9 @@
     },
     {
       "model": "A3035",
+      "extra_features": [
+        "wear_calibration"
+      ],
       "names": [
         "Soundcore Space One",
         "soundcore CS 30Q"
@@ -597,6 +600,9 @@
     },
     {
       "model": "A3040",
+      "extra_features": [
+        "wear_calibration"
+      ],
       "names": [
         "Soundcore Space Q45"
       ],
@@ -2737,7 +2743,8 @@
     },
     {
       "model": "A3947",
-      "extra_features": ["find_device_phone"],
+      "extra_features": ["find_device_phone",
+"personal_anc"],
       "names": [
         "Soundcore Liberty 4 NC"
       ],
@@ -3067,6 +3074,9 @@
     },
     {
       "model": "A3952",
+      "extra_features": [
+        "personal_anc"
+      ],
       "names": [
         "Soundcore Liberty 3 Pro"
       ],
@@ -6476,6 +6486,9 @@
     },
     {
       "model": "D1402",
+      "extra_features": [
+        "wear_calibration"
+      ],
       "names": [
         "Space 2"
       ],
@@ -6740,7 +6753,8 @@
       },
       "extra_features": [
         "auto_power_off_long",
-        "indexed_switches"
+        "indexed_switches",
+        "wear_calibration"
       ]
     },
     {
@@ -6953,7 +6967,8 @@
       },
       "extra_features": [
         "auto_power_off_long",
-        "indexed_switches"
+        "indexed_switches",
+        "wear_calibration"
       ]
     }
   ]

@@ -36,6 +36,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
     private var soundModes: ByteArray? = null
 
     private val peers = SoundcorePeers()
+    private val tests = SoundcoreTests(layout?.features ?: emptySet())
 
     /** Whether the earbuds' list of paired devices is worth asking for: their last state shows two devices at once, switched on. */
     public val listsPeers: Boolean get() = lastState?.flag("dual_connections_enabled") == true
@@ -55,6 +56,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val command = if (packet.command == SoundcoreCommand.DEVICE_INFO && layout?.stateCommand == SoundcoreCommand.DEVICE_INFO) SoundcoreCommand.STATE else packet.command
         when (command) {
             SoundcoreCommand.DUAL_CONNECTIONS_DEVICES -> return peers.receive(body)
+            SoundcoreCommand.WEAR_CALIBRATION, SoundcoreCommand.PERSONAL_ANC_TEST -> return tests.receive(command, body)
             SoundcoreCommand.STATE -> {
                 val l = layout ?: return false
                 val s = SoundcoreState.parse(l, body) ?: return false
@@ -215,6 +217,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
                 peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
+                tests.rows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_tests", SettingTab.DEVICE, it) },
                 if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
         }
@@ -577,6 +580,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
+        tests.change(change)?.let { return it }
         if (change.key in EXTRA_KEYS) return extraChange(s, change)
         if (change.key.startsWith("sc_peer_") || change.key == SoundcorePeers.PAIRING) return peerChange(change)
         if (change.key == LIMIT || change.key == LIMIT_DB) return limitChange(s, change)

@@ -61,6 +61,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_tests" -> "setting_sc_tests"
             "sc_limit" -> "setting_hearing_protection"
             "ca_touch" -> "setting_ca_touch_actions"
             "ca_connection" -> "connection"
@@ -188,6 +189,9 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_calibrate_table_result" -> t("setting_sc_calibrate_table_result")
+        "sc_calibrate_worn_result" -> t("setting_sc_calibrate_worn_result")
+        "sc_personal_anc_result" -> t("setting_sc_personal_anc_result")
         "sc_voice_language" -> t("setting_sc_voice_language")
         "sc_open_surround" -> t("setting_sc_open_surround")
         "sc_open_surround_level" -> t("setting_sc_open_surround_level")
@@ -1025,6 +1029,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "assistant" -> "setting_ca_assistant"
             else -> "action_none"
         })
+        key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> t(if (option == "passed") "setting_sc_passed" else "setting_sc_failed")
         key == "sc_voice_language" -> t(if (option == "chinese") "setting_sc_language_chinese" else "setting_sc_language_english")
         key == "sc_light_mode" -> t(when (option) {
             "breathing" -> "setting_sc_light_breathing"
@@ -1596,6 +1601,10 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_left" -> "setting_sh_find_left"
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
+        "sc_calibrate_table" -> "setting_sc_calibrate_table"
+        "sc_calibrate_worn" -> "setting_sc_calibrate_worn"
+        "sc_personal_anc" -> "setting_sc_personal_anc"
+        "sc_personal_anc_reset" -> "setting_sc_personal_anc_reset"
         "jbl_seal_check" -> "setting_jbl_seal_check"
         "jbl_case_saver_remove" -> "setting_jbl_case_saver_remove"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scan"
@@ -1613,6 +1622,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"
         "sh_fit_test" -> "setting_sh_fit_cancel"
+        "sc_calibrate_table", "sc_calibrate_worn" -> "setting_sc_calibrating"
+        "sc_personal_anc" -> "setting_sc_personal_anc_cancel"
         "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> "setting_jbl_testing"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scanning"
         else -> "setting_action_stop"

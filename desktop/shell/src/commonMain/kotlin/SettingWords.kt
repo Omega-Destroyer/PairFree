@@ -68,6 +68,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "sc_tests" -> "setting_sc_tests"
             "sc_limit" -> "setting_hearing_protection"
             "sc_hear_id" -> "setting_sc_hear_id"
+            "sc_case" -> "setting_sc_case"
             "ca_touch" -> "setting_ca_touch_actions"
             "ca_connection" -> "connection"
             "oneplus_sound_switches" -> "setting_group_sound"
@@ -195,6 +196,16 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
         "sc_hear_id" -> t("setting_sc_hear_id")
+        "sc_case_firmware" -> t("setting_sc_case_firmware")
+        "sc_case_notifications" -> t("setting_sc_case_notifications")
+        "sc_case_low_battery" -> t("setting_sc_case_low_battery")
+        "sc_case_charging_reminder" -> t("setting_sc_case_charging_reminder")
+        "sc_case_data_sync" -> t("setting_sc_case_data_sync")
+        "sc_case_sleep_report" -> t("setting_sc_case_sleep_report")
+        "sc_case_noise_alert" -> t("setting_sc_case_noise_alert")
+        "sc_case_biosync" -> t("setting_sc_case_biosync")
+        "sc_case_sleep_check" -> t("setting_sc_case_sleep_check")
+        "sc_case_sound" -> t("setting_sc_case_sound")
         "sc_a10_alarm" -> t("setting_sc_a10_alarm")
         "sc_calibrate_in_ear_result" -> t("setting_sc_calibrate_in_ear_result")
         "sc_calibrate_neck_result" -> t("setting_sc_calibrate_neck_result")

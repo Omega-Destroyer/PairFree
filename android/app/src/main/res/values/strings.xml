@@ -1480,6 +1480,17 @@
     <string name="sc_hearing_apply">Put it on the earbuds</string>
     <string name="sc_hearing_applied">Sent to the earbuds. HearID is on.</string>
     <string name="sc_hearing_failed">It could not be sent. Check that the earbuds are still connected.</string>
+    <string name="setting_sc_case">Charging case</string>
+    <string name="setting_sc_case_firmware">Case software</string>
+    <string name="setting_sc_case_notifications">Case notifications</string>
+    <string name="setting_sc_case_low_battery">Case battery low</string>
+    <string name="setting_sc_case_charging_reminder">Charging reminder</string>
+    <string name="setting_sc_case_data_sync">Data synchronised</string>
+    <string name="setting_sc_case_sleep_report">Sleep report ready</string>
+    <string name="setting_sc_case_noise_alert">Noise alert</string>
+    <string name="setting_sc_case_biosync">BioSync</string>
+    <string name="setting_sc_case_sleep_check">Sleep detection</string>
+    <string name="setting_sc_case_sound">Play the case\'s sound</string>
     <string name="setting_sc_a10_alarm">Alarm (hours:minutes)</string>
     <string name="setting_sc_a10_alarm_note">Rings once, the next time the clock shows it. The earbuds do not report their alarms, so only one set here since connecting is shown.</string>
     <string name="setting_sc_a10_alarm_clear">Remove the alarm</string>

@@ -807,3 +807,34 @@ override them; none of the four models above uses them.
 HearID 5 (Liberty 5 Pro), the Flutter test (Liberty 4 Pro family and Liberty 5), the A3909's older test, and the models whose screen was not traced
 (open: data/completeness.json, `soundcore-hearid-other`). The app also measures the room's noise with the microphone before the test; PairFree asks no
 microphone permission.
+
+## Charging cases (2026-11-27)
+
+From the Soundcore app 5.0.35. Three cases are Bluetooth devices of their own; the earbuds report each case's address (state record 41) and PairFree opens
+it beside the earbuds' channel (`SoundcoreCase.kt`). Not tried on a case.
+
+| Case | Link |
+|---|---|
+| Liberty 5 Pro (`D1203-Box`) | Bluetooth LE, service `0205F5DA-…`, notify `…8888`, write `…7777`, MTU 512 |
+| Liberty 5 Pro Max (`D1204-Box`) | serial, `0CF12D31-FAC3-4553-BD80-D6832E7B395D` |
+| Sleep Earbuds 4 Pro (`D1302-Box`) | Bluetooth LE, service `021CF5DA-…`, as above |
+
+Frames are the earbuds'. On connecting PairFree sets the case's clock (`01 A6`) and asks for its state (`01 01`, tag-length-value records).
+
+- **Clock.** Liberty 5 Pro cases: time (4 bytes, low first), zone ((hours from UTC + 12) × 2), time of the next change of the clocks and its zone (PairFree sends
+  `FF FF FF FF` and the same zone, as the app does where there is none). Sleep case (`D1302CmdService.E6`): record 70 with those ten bytes and a 12-hour flag,
+  record 71 with the app's type, region and version (PairFree sends zeros and no version).
+- **Records.** 7 serial, 8 charging and battery (scale not known, not shown), 9 version, 27 switch bits, 28 and 41 addresses (private), 98 the sound: playing,
+  id (8 bytes), kind.
+- **Sleep case switches** (`41 88 [id][on]`, bit `id` of record 27): 33 notifications, 34 case battery low, 35 charging reminder, 36 data synchronised, 37 sleep
+  report, 38 noise alert, 39 BioSync, 40 sleep detection. 39 and 40 are shown only when bit 50 or 51 says Anker's agreement was accepted in its app; PairFree
+  never sets 50 or 51.
+- **Sound.** `13 08` [playing][id][kind] pauses and resumes the sound the case reports.
+
+Putting a picture of your own on the Liberty 5 Pro's case screen: blocked: it goes through the case's firmware updater, which PairFree never sends; checked:
+`BleWallpaperOtaUploader` (BES `OTATask`), `A3956UploadService`. Choosing another sleep sound: blocked: the list of sounds comes from Anker's server, which no
+code here calls; checked: `D1302AmbienceManager`, `A6610WhiteNoiseApi`. The file commands `18 70` to `18 77` have no caller in the app (`BoxSppDeviceManager`
+`R0` to `Y0`).
+
+**Not built:** the case screen's picture order (`FA 02`) and voice language on the Liberty 5 Pro, and the Sleep case's breathing exercise (open:
+data/completeness.json, `soundcore-case-rest`).

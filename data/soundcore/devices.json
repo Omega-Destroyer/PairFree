@@ -5638,7 +5638,8 @@
         ["touch_tone", 1],
         ["low_battery_prompt", 1],
         ["in_ear_tone", 1],
-        ["auto_power_off", 2]
+        ["auto_power_off", 2],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5683,7 +5684,8 @@
         [26, 0, "bit", 0],
         [26, 0, "bit", 1],
         [26, 0, "bit", 3],
-        [25, 0, 2]
+        [25, 0, 2],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5760,7 +5762,8 @@
         ["touch_tone", 1],
         ["low_battery_prompt", 1],
         ["in_ear_tone", 1],
-        ["auto_power_off", 2]
+        ["auto_power_off", 2],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro Max and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5805,7 +5808,8 @@
         [26, 0, "bit", 0],
         [26, 0, "bit", 1],
         [26, 0, "bit", 3],
-        [25, 0, 2]
+        [25, 0, 2],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -6422,7 +6426,8 @@
         ["listening_mode_prompt", 1],
         ["auto_power_off_prompt", 1],
         ["incoming_calls_during_bluetooth", 1],
-        ["prompt_language", 1]
+        ["prompt_language", 1],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1302AnalysisService.e1 and D1302CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -6440,15 +6445,14 @@
         [16, 0, "pack"],
         [17, 0, "pack"],
         [18, 0, "pack"],
-        [26, 0, "bit",
-          0],
-        [26, 0, "bit",
-          1],
+        [26, 0, "bit", 0],
+        [26, 0, "bit", 1],
         [26, 0, "bit", 6],
         [26, 0, "bit", 5],
         [26, 0, "bit", 2],
         [27, 2, "bit", 7],
-        [64, 0, "opt"]
+        [64, 0, "opt"],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {

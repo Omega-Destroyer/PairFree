@@ -315,6 +315,7 @@ private fun groupTitle(key: String): String = stringResource(
         "sc_tests" -> R.string.setting_sc_tests
         "sc_limit" -> R.string.setting_hearing_protection
         "sc_hear_id" -> R.string.setting_sc_hear_id
+        "sc_case" -> R.string.setting_sc_case
         "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
@@ -446,6 +447,16 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
     "sc_hear_id" -> stringResource(R.string.setting_sc_hear_id)
+    "sc_case_firmware" -> stringResource(R.string.setting_sc_case_firmware)
+    "sc_case_notifications" -> stringResource(R.string.setting_sc_case_notifications)
+    "sc_case_low_battery" -> stringResource(R.string.setting_sc_case_low_battery)
+    "sc_case_charging_reminder" -> stringResource(R.string.setting_sc_case_charging_reminder)
+    "sc_case_data_sync" -> stringResource(R.string.setting_sc_case_data_sync)
+    "sc_case_sleep_report" -> stringResource(R.string.setting_sc_case_sleep_report)
+    "sc_case_noise_alert" -> stringResource(R.string.setting_sc_case_noise_alert)
+    "sc_case_biosync" -> stringResource(R.string.setting_sc_case_biosync)
+    "sc_case_sleep_check" -> stringResource(R.string.setting_sc_case_sleep_check)
+    "sc_case_sound" -> stringResource(R.string.setting_sc_case_sound)
     "sc_a10_alarm" -> stringResource(R.string.setting_sc_a10_alarm)
     "sc_calibrate_in_ear_result" -> stringResource(R.string.setting_sc_calibrate_in_ear_result)
     "sc_calibrate_neck_result" -> stringResource(R.string.setting_sc_calibrate_neck_result)

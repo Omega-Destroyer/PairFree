@@ -968,9 +968,48 @@
       "models": [
         "Sleep A10 (A6610)"
       ],
-      "status": "open",
-      "what": "Alarms (01 A7, next ring times the app reschedules each day; it needs a time picker) and the sleep records (01 10) are not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: an alarm at a typed time (01 A6 sets the clock, 01 A7 the ring time; once, as the app rings it) and removing it. The sleep records are soundcore-sleep-a10-records.",
       "reported": "the Sleep A10 worked through, 2026-11-27"
+    },
+    {
+      "id": "soundcore-sleep-a10-records",
+      "brand": "soundcore",
+      "models": [
+        "Sleep A10 (A6610)"
+      ],
+      "status": "blocked",
+      "what": "The sleep report. The earbuds give only time stamps with a type code (01 10); the app uploads them and Anker's server returns the deep, light and awake times it shows.",
+      "reported": "the Sleep A10 worked through, 2026-11-27",
+      "rule": "no code calls any brand's servers",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/devicecmd/manager/product/a6610/A6610AnalysisService.java",
+          "what": "G2: a package number, a count, then a time stamp and a type each"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/viewmodel/a6610/A6610SleepVM.java",
+          "what": "the records are saved and uploaded (uploadUserSleepData); the charts are built from StatisticsSleep"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/netbean/a6610/StatisticsSleep.java",
+          "what": "the server's reply: deep, light and wake times"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/viewmodel/a6610",
+          "glob": "A6610SleepVM\\.java$",
+          "pattern": "uploadUserSleepData",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/netbean/a6610",
+          "glob": "StatisticsSleep\\.java$",
+          "pattern": "deepTime",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "soundcore-sleep-a10-sounds",

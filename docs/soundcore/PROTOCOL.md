@@ -759,4 +759,7 @@ Anker's server; PairFree shows them and sends them nowhere. Not tried.
 ## The Sleep A10's player (2026-11-27)
 
 State: play time (byte 69, 255 no limit), whether a sound is on the earbuds, its volume (0 to 65) and the countdown (two bytes, high first, 0 off, FFFF keep
-playing). `01 AB` sets the play time, `01 B1` (0, volume), `01 B2` plays or pauses, `01 B3` the countdown. Alarms and sound transfer are open. Not tried.
+playing). `01 AB` sets the play time, `01 B1` (0, volume), `01 B2` plays or pauses, `01 B3` the countdown. An alarm: `01 A6` with the time now (seconds since 1970, high
+byte first), then `01 A7` with up to three ring times (PairFree sends one; four zero bytes clear). Sleep records: blocked: the earbuds give only time stamps
+and type codes (`01 10`) and the report comes from Anker's server; checked: `A6610AnalysisService.G2`, `A6610SleepVM`, `netbean/a6610/StatisticsSleep`.
+Sound transfer is open. Not tried.

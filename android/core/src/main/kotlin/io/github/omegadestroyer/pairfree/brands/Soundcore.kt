@@ -66,7 +66,9 @@ class SoundcoreDriver(host: DriverHost, private val device: Paired) : TalkDriver
 
     private val lastState: SoundcoreState? get() = host.extra.value as? SoundcoreState
 
-    override fun talk(opened: ControlLink): SoundcoreTalk = SoundcoreTalk(device.model.orEmpty())
+    override fun talk(opened: ControlLink): SoundcoreTalk = SoundcoreTalk(device.model.orEmpty()).also { talk ->
+        talk.session.secondOfDay = { host.localTime()?.let { it.hour * 3600 + it.minute * 60 + it.second } }
+    }
 
     override fun fed(talk: SoundcoreTalk) {
         if (talk.session.lastState !== host.extra.value) shown(talk.session)

@@ -225,6 +225,8 @@
      "note": "Calibration: 1, then 2 for in-ear detection or 3 for the neck (`CmmBtCmdService.C`, `XPopupCalibratingPage` CalibrateType). The reply: a byte, the kind, 0 on success."},
     {"id": "posture_history_clear", "command": "0D89", "source": "soundcore_app",
      "note": "No body: clears the posture counts (`CmmBtCmdService.d5`). PairFree asks first."},
+    {"id": "sleep_alarm_times", "command": "01A7", "source": "soundcore_app",
+     "note": "The Sleep A10's alarms: up to three ring times in seconds since 1970, four bytes each, high first; four zero bytes clear them (`CmmBtCmdService.b5`, `A6610AlarmClockUtil`). `01 A6` with the time now the same way sets the clock first."},
     {"id": "press_sensitivity", "command": "0485", "source": "soundcore_app",
      "note": "Body: one byte, the level. Soundcore 3.3.0 04 85 (`setCustomPressSensitivityCallback`; the A3953's press sensitivity screen)."},
     {"id": "smart_play", "command": "01AA", "source": "soundcore_app",

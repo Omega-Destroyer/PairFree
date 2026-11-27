@@ -444,6 +444,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_a10_alarm" -> stringResource(R.string.setting_sc_a10_alarm)
     "sc_calibrate_in_ear_result" -> stringResource(R.string.setting_sc_calibrate_in_ear_result)
     "sc_calibrate_neck_result" -> stringResource(R.string.setting_sc_calibrate_neck_result)
     "sc_neck_report" -> stringResource(R.string.setting_sc_neck_report)
@@ -1068,6 +1069,7 @@ private fun buttonTitle(key: String): String? {
 private fun settingNote(key: String): String? = when (key) {
     "sc_easy_chat" -> stringResource(R.string.setting_sc_easy_chat_note)
     "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake_note)
+    "sc_a10_alarm" -> stringResource(R.string.setting_sc_a10_alarm_note)
     "sc_call_noise" -> stringResource(R.string.setting_sc_call_noise_note)
     "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode_note)
     "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist_note)
@@ -1906,6 +1908,7 @@ private fun actionStart(key: String): Int = when (key) {
     "sc_neck_clear" -> R.string.setting_sc_neck_clear
     "sc_a10_play" -> R.string.setting_sc_a10_play
     "sc_a10_pause" -> R.string.setting_sc_a10_pause
+    "sc_a10_alarm_clear" -> R.string.setting_sc_a10_alarm_clear
     "sc_dongle_disconnect" -> R.string.setting_sc_dongle_disconnect
     "jbl_seal_check" -> R.string.setting_jbl_seal_check
     "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove

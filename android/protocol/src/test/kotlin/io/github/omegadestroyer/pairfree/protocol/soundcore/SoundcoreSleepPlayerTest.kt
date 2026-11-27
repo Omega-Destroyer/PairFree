@@ -8,6 +8,18 @@ import org.junit.jupiter.api.Test
 /** The Sleep A10's player, by the Soundcore app 5.0.35's parser and writes; not tried. */
 class SoundcoreSleepPlayerTest {
     @Test
+    fun theAlarm() {
+        // It is 23:00:00 and 7:30 is asked for: eight and a half hours from now.
+        val (clock, ring) = SoundcoreSleepPlayer.alarm("7:30", 0x01000000L, 23 * 3600)!!
+        assertArrayEquals(byteArrayOf(1, 0, 0, 0), clock.body)
+        val wait = 8 * 3600 + 30 * 60
+        assertArrayEquals(byteArrayOf(1, 0, (wait shr 8).toByte(), wait.toByte()), ring.body)
+        assertEquals(null, SoundcoreSleepPlayer.alarm("24:00", 0, 0))
+        assertEquals(null, SoundcoreSleepPlayer.alarm("7:5", 0, 0))
+        assertArrayEquals(ByteArray(4), SoundcoreSleepPlayer.clearAlarm().body)
+    }
+
+    @Test
     fun theStateAndTheWrites() {
         val layout = SoundcoreLayout.of("A6610")!!
         val body = ByteArray(255)

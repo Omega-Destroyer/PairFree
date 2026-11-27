@@ -10,6 +10,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Value
+import kotlin.time.Clock
 
 /**
  * One connection to Soundcore earbuds, shown on PairFree's screens. The screens work in the
@@ -36,6 +37,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
     private var soundModes: ByteArray? = null
 
     private val peers = SoundcorePeers()
+
+    /** What the phone's clock reads, in seconds since midnight, for the Sleep A10's alarm; set by the app, which knows the time zone. */
+    public var secondOfDay: () -> Int? = { null }
+    private var alarmSet: String? = null
     private val neck: SoundcoreNeck? = if (layout?.features?.contains(SoundcoreHealth.FEATURE) == true) SoundcoreNeck() else null
     private val health: SoundcoreHealth? = if (layout?.features?.contains(SoundcoreHealth.FEATURE) == true) SoundcoreHealth() else null
     private val dongle: SoundcoreDongle? = if (layout?.features?.contains(SoundcoreDongle.FEATURE) == true) SoundcoreDongle() else null
@@ -229,7 +234,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
                 dongle?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_dongle", SettingTab.DEVICE, it) },
                 if (lastState != null) health?.rows()?.let { SettingGroup("sc_health", SettingTab.DEVICE, it) } else null,
-                SoundcoreSleepPlayer.rows(s).takeIf { model == "A6610" && it.isNotEmpty() }?.let { SettingGroup("sc_player", SettingTab.DEVICE, it) },
+                if (model != "A6610") null else SettingGroup("sc_player", SettingTab.DEVICE, SoundcoreSleepPlayer.rows(s) +
+                    if (secondOfDay() == null) emptyList() else SoundcoreSleepPlayer.alarmRows(alarmSet)),
                 if (lastState != null) neck?.rows()?.let { SettingGroup("sc_neck", SettingTab.DEVICE, it) } else null,
                 tests.rows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_tests", SettingTab.DEVICE, it) },
                 if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
@@ -608,6 +614,15 @@ public class SoundcoreSession(public val model: String) : FitTest {
             return listOf(SoundcorePacket(SoundcoreCommand.ANC_SENSOR, body))
         }
         tests.change(change)?.let { return it }
+        if (change.key == SoundcoreSleepPlayer.ALARM && change is SettingChange.Choice) {
+            val packets = secondOfDay()?.let { SoundcoreSleepPlayer.alarm(change.option, Clock.System.now().epochSeconds, it) } ?: return null
+            alarmSet = change.option.trim()
+            return packets.takeIf { model == "A6610" }
+        }
+        if (change.key == SoundcoreSleepPlayer.ALARM_CLEAR) {
+            alarmSet = null
+            return listOf(SoundcoreSleepPlayer.clearAlarm()).takeIf { model == "A6610" }
+        }
         if (change.key.startsWith("sc_a10_")) {
             val (packet, next) = lastState?.let { SoundcoreSleepPlayer.change(it, change) } ?: return null
             lastState = next

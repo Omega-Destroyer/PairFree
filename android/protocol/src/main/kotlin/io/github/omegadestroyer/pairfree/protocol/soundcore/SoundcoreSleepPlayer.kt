@@ -43,6 +43,36 @@ public object SoundcoreSleepPlayer {
         }
     }
 
+    public const val ALARM: String = "sc_a10_alarm"
+    public const val ALARM_CLEAR: String = "sc_a10_alarm_clear"
+
+    /**
+     * The alarm's rows: the time typed, and removing it. The earbuds do not report their alarms, so [set] holds only what PairFree sent since it connected.
+     * The alarm rings once, as the app's do.
+     */
+    public fun alarmRows(set: String?): List<Setting> = listOf(Setting.Text(ALARM, set ?: "", ALARM_LENGTH), Setting.Action(ALARM_CLEAR))
+
+    /**
+     * The packets that set an alarm at [time] ("7:30"), the next time the clock reads it: the earbuds' clock first (`01 A6`), then the ring time (`01 A7`).
+     * [now] is in seconds since 1970 and [secondOfDay] is what the local clock reads. Null when [time] is not a time.
+     */
+    public fun alarm(time: String, now: Long, secondOfDay: Int): List<SoundcorePacket>? {
+        val parts = time.trim().split(':', '.')
+        if (parts.size != 2) return null
+        val hour = parts[0].toIntOrNull()?.takeIf { it in 0..23 } ?: return null
+        val minute = parts[1].takeIf { it.length == 2 }?.toIntOrNull()?.takeIf { it in 0..59 } ?: return null
+        val wait = (hour * 3600 + minute * 60 - secondOfDay + DAY) % DAY
+        val ring = now + if (wait == 0) DAY else wait
+        return listOf(SoundcorePacket(SoundcoreCommand.SLEEP_CLOCK, fourBytes(now)), SoundcorePacket(SoundcoreCommand.SLEEP_ALARM_TIMES, fourBytes(ring)))
+    }
+
+    public fun clearAlarm(): SoundcorePacket = SoundcorePacket(SoundcoreCommand.SLEEP_ALARM_TIMES, ByteArray(4))
+
+    private fun fourBytes(v: Long) = ByteArray(4) { (v shr (24 - 8 * it)).toByte() }
+
+    private const val DAY = 86_400
+    private const val ALARM_LENGTH = 5
+
     /** The packet for a change to one of [rows] and the state as it should then read, or null. */
     public fun change(s: SoundcoreState, change: SettingChange): Pair<SoundcorePacket, SoundcoreState>? {
         val shown = rows(s).map { it.key }

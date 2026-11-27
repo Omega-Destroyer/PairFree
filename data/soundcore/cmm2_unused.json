@@ -12,8 +12,6 @@
   "01a7": "gap-audit 2026-11-27: in the app's table (setAlarmClockCallback), not in PairFree's",
   "01ab": "gap-audit 2026-11-27: in the app's table (setCustomPlayTimeCallback), not in PairFree's",
   "01ad": "gap-audit 2026-11-27: in the app's table (setAbnormalSoundRemindCallback), not in PairFree's",
-  "01ae": "gap-audit 2026-11-27: in the app's table (setAmbientSoundNoticeSwitchCallback), not in PairFree's",
-  "01af": "gap-audit 2026-11-27: in the app's table (setPowerOnBatteryNoticeSwitchCallback), not in PairFree's",
   "01b0": "gap-audit 2026-11-27: in the app's table (resetSleepTimeCallback), not in PairFree's",
   "01b1": "gap-audit 2026-11-27: in the app's table (setVolumeCallback), not in PairFree's",
   "01b2": "gap-audit 2026-11-27: in the app's table (setPlayPauseCallback), not in PairFree's",

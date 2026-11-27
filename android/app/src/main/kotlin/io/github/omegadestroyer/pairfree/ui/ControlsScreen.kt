@@ -209,7 +209,7 @@ private fun SoundcoreControls(device: Paired, state: EarbudState, touch: Soundco
                     }
                 }
             }
-            touch.noiseCycle?.let { cycle -> NoiseCycle(cycle, actions) }
+            touch.noiseCycle?.let { cycle -> NoiseCycle(cycle, touch.noiseCycleModes, actions) }
             if (touch.canReset) {
                 AppButton(stringResource(R.string.reset_gestures), { confirmReset = true }, Modifier.fillMaxWidth())
             }
@@ -240,12 +240,15 @@ private fun SoundcoreControls(device: Paired, state: EarbudState, touch: Soundco
 
 /** Which noise modes the noise-control touch action cycles through. At least one stays on. */
 @Composable
-private fun NoiseCycle(cycle: Set<AmbientMode>, actions: EarbudsActions) {
-    val modes = listOf(
-        AmbientMode.NOISE_CANCELLING to R.string.anc_cancelling,
-        AmbientMode.TRANSPARENCY to R.string.anc_transparency,
-        AmbientMode.NORMAL to R.string.anc_off,
-    )
+private fun NoiseCycle(cycle: Set<AmbientMode>, offered: List<AmbientMode>, actions: EarbudsActions) {
+    val modes = offered.map { mode ->
+        mode to when (mode) {
+            AmbientMode.NOISE_CANCELLING -> R.string.anc_cancelling
+            AmbientMode.TRANSPARENCY -> R.string.anc_transparency
+            AmbientMode.NORMAL -> R.string.anc_off
+            AmbientMode.ADAPTIVE -> R.string.scene_adaptive
+        }
+    }
     Panel {
         Label(stringResource(R.string.noise_cycle))
         modes.forEachIndexed { i, (mode, title) ->

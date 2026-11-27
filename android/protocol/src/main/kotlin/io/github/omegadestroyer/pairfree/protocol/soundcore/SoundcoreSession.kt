@@ -94,8 +94,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 fun fit(code: Int) = if (code <= 1) FitResult.Fit.GOOD else FitResult.Fit.NOT_FIT
                 state = state.copy(fit = FitResult(fit(body.u8(0)), fit(body.u8(1))))
             }
-            SoundcoreCommand.GAMING_MODE_UPDATE -> put(Command.GAME_MODE, Value.Switch(body.u8(0) != 0))
-            SoundcoreCommand.LDAC_STATE -> put(Command.LDAC, Value.Switch(body.u8(0) != 0))
+            // Only where the state holds the field: a switch shown from a notice alone cannot be written (the Liberty Buds 2's LDAC did nothing, issue #76).
+            SoundcoreCommand.GAMING_MODE_UPDATE -> if (lastState?.flag("gaming_mode") != null) put(Command.GAME_MODE, Value.Switch(body.u8(0) != 0))
+            SoundcoreCommand.LDAC_STATE -> if (lastState?.flag("ldac") != null) put(Command.LDAC, Value.Switch(body.u8(0) != 0))
             // Whether both earbuds are in decides which touch actions apply (SoundcoreButtons).
             SoundcoreCommand.TWS_STATUS -> lastState?.let { s -> lastState = s.with("tws_status", body) }
         }
@@ -602,7 +603,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             AmbientMode.NORMAL -> ancNumber("off")
             AmbientMode.NOISE_CANCELLING -> ancNumber("anc")
             AmbientMode.TRANSPARENCY -> ancNumber("transparency")
-            null -> null
+            AmbientMode.ADAPTIVE, null -> null
         }
 
         private fun ambientFor(value: Int): AmbientMode? = when (value) {

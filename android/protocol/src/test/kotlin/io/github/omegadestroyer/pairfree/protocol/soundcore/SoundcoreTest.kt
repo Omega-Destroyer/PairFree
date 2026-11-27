@@ -1229,9 +1229,11 @@ class SoundcoreButtonsTest {
     @Test
     fun noiseCycleAndReset() {
         val touch = SoundcoreTouch.of(a40)
+        // The A40's button takes three modes; Adaptive is only on models that list it (issue #76).
+        val three = setOf(AmbientMode.NOISE_CANCELLING, AmbientMode.TRANSPARENCY, AmbientMode.NORMAL)
         val all = touch.setNoiseCycle(AmbientMode.entries.toSet())!!
         assertEquals(listOf("0682" to "07"), packets(all.packets))
-        assertEquals(AmbientMode.entries.toSet(), SoundcoreTouch.of(all.state).noiseCycle)
+        assertEquals(three, SoundcoreTouch.of(all.state).noiseCycle)
         assertNull(touch.setNoiseCycle(emptySet()), "the cycle needs a mode")
         assertEquals("0482" to "", packets(listOf(touch.reset()!!)).single())
     }
@@ -1457,4 +1459,29 @@ class SoundcoreVirtualQ30Test {
     }
 
     private fun JsonObjectOf(frame: String): JsonObject = Json.parseToJsonElement("""{"frame":"$frame"}""").jsonObject
+
+    /**
+     * Issue #76: a switch the screens show must be one [SoundcoreSession.set] can write. The earbuds' LDAC and game mode notices (`01 7F`, `01 11`) must not add a switch to a
+     * model whose state holds no such field, and the Liberty Buds 2 holds LDAC in record 27 bit 2.
+     */
+    @Test
+    fun aNoticeNeverShowsASwitchThatCannotBeWritten() {
+        for (m in SoundcoreModels.ALL) {
+            val s = SoundcoreSession(m.code)
+            s.receive(SoundcorePacket(SoundcoreCommand.LDAC_STATE, byteArrayOf(1)))
+            s.receive(SoundcorePacket(SoundcoreCommand.GAMING_MODE_UPDATE, byteArrayOf(1)))
+            assertTrue(!s.state.supports(Command.LDAC) && !s.state.supports(Command.GAME_MODE), "${m.code}: a switch before any state")
+        }
+        assertTrue(SoundcoreLayout.of("D1206")!!.fields.any { it.name == "ldac" }, "the Liberty Buds 2 writes LDAC from record 27")
+    }
+
+    /** Issue #76: the Liberty Buds 2's button offers the app's ambient sound action with its four modes, and the transparency action. */
+    @Test
+    fun theLibertyBuds2sButtonActionsAndCycle() {
+        val layout = SoundcoreLayout.of("D1206")!!
+        assertTrue("ambient_sound_mode_cycle_tws" in layout.features && "ambient_sound_mode_cycle_adaptive" in layout.features)
+        val set = SoundcoreButtonSpec.of("D1206")!!.groups.single().presses.values.first { it.actions.any { a -> a.name == "ambient_sound_mode" } }.actions
+        assertEquals("transparency", set.single { it.id == 4 }.name)
+        assertEquals("ambient_sound_mode", set.single { it.id == 8 }.name)
+    }
 }

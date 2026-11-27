@@ -172,7 +172,14 @@ internal class ControlsTab(
             parts += Panel(Column(out, 8f))
         }
         touch.noiseCycle?.let { cycle ->
-            val modes = listOf(AmbientMode.NOISE_CANCELLING to "anc_cancelling", AmbientMode.TRANSPARENCY to "anc_transparency", AmbientMode.NORMAL to "anc_off")
+            val modes = touch.noiseCycleModes.map { mode ->
+                mode to when (mode) {
+                    AmbientMode.NOISE_CANCELLING -> "anc_cancelling"
+                    AmbientMode.TRANSPARENCY -> "anc_transparency"
+                    AmbientMode.NORMAL -> "anc_off"
+                    AmbientMode.ADAPTIVE -> "scene_adaptive"
+                }
+            }
             val out = mutableListOf<Widget>(label(s.text("noise_cycle")))
             modes.forEachIndexed { i, (mode, key) ->
                 if (i > 0) out += Divider()

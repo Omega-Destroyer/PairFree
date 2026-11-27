@@ -439,6 +439,14 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_voice_language" -> stringResource(R.string.setting_sc_voice_language)
+    "sc_open_surround" -> stringResource(R.string.setting_sc_open_surround)
+    "sc_open_surround_level" -> stringResource(R.string.setting_sc_open_surround_level)
+    "sc_voice_commands" -> stringResource(R.string.setting_sc_voice_commands)
+    "sc_super_volume" -> stringResource(R.string.setting_sc_super_volume)
+    "sc_manual_shutdown" -> stringResource(R.string.setting_sc_manual_shutdown)
+    "sc_light_mode" -> stringResource(R.string.setting_sc_light_mode)
+    "sc_light_colour" -> stringResource(R.string.setting_sc_light_colour)
     "sc_volume_limit" -> stringResource(R.string.setting_sc_volume_limit)
     "sc_volume_limit_db" -> stringResource(R.string.setting_sc_volume_limit_db)
     "sc_mode_voice_prompt", "sc_voice_prompt" -> stringResource(R.string.setting_sc_mode_voice_prompt)
@@ -1274,6 +1282,19 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "anc_mode" -> R.string.setting_ca_ambient_modes_control
         "assistant" -> R.string.setting_ca_assistant
         else -> R.string.action_none
+    })
+    key == "sc_voice_language" -> getString(if (option == "chinese") R.string.setting_sc_language_chinese else R.string.setting_sc_language_english)
+    key == "sc_light_mode" -> getString(when (option) {
+        "breathing" -> R.string.setting_sc_light_breathing
+        "on" -> R.string.setting_sc_light_on
+        else -> R.string.setting_sc_light_saving
+    })
+    key == "sc_light_colour" -> getString(when (option) {
+        "violet" -> R.string.setting_sc_colour_violet
+        "coral" -> R.string.setting_sc_colour_coral
+        "pink" -> R.string.setting_sc_colour_pink
+        "blue" -> R.string.setting_sc_colour_blue
+        else -> R.string.setting_sc_colour_purple
     })
     key == "sc_nc_double_press" || key == "sc_mfb_hold" -> getString(when (option) {
         "bass" -> R.string.setting_sc_action_bass

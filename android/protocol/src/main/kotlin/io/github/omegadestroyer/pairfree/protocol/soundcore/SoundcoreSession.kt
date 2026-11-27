@@ -202,7 +202,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         get() {
             val s = lastState ?: return emptyList()
             val find = findRows()
-            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s), balanceRow(s), doublePressRow(s), holdRow(s))
+            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s), balanceRow(s), doublePressRow(s), holdRow(s), languageRow(s), surroundRow(s)) + lightRows(s)
             val rows = listOfNotNull(sleepTimerRow(s)) + A30_FLAGS.filter { it.home.not() }.mapNotNull { flagRow(s, it) } +
                 listOfNotNull(listeningRow(s, A30_LISTENING_MODE), listeningRow(s, A30_DEFAULT_LISTENING_MODE))
             val home = A30_FLAGS.filter { it.home }.mapNotNull { flagRow(s, it) } + listOfNotNull(listeningRow(s, A30_LISTENING_MODE))
@@ -465,6 +465,52 @@ public class SoundcoreSession(public val model: String) : FitTest {
         return listOf(Setting.Toggle(LIMIT, b.u8(0) == 1), Setting.Level(LIMIT_DB, b.u8(1).coerceIn(75, 100) / 5 * 5, 75, 100, enabled = b.u8(0) == 1))
     }
 
+    /** The Space Q45's and Liberty 3 Pro's voice prompt language. */
+    private fun languageRow(s: SoundcoreState): Setting? {
+        val v = s.field(LANGUAGE_FIELD)?.firstOrNull()?.toInt()?.takeIf { it in LANGUAGES.indices } ?: return null
+        return Setting.Choice(LANGUAGE, LANGUAGES[v], LANGUAGES)
+    }
+
+    /** The level of the Frames' OpenSurround, 0 to 4; the switch is one of [SWITCHES]. */
+    private fun surroundRow(s: SoundcoreState): Setting? {
+        val b = s.field(SURROUND_FIELD)?.takeIf { it.size == 2 && it.u8(1) <= 4 } ?: return null
+        return Setting.Level(SURROUND_LEVEL, b.u8(1), 0, 4, enabled = b.u8(0) == 1)
+    }
+
+    /** The VR P10's light: its mode and colour, the two bytes the earbuds report as colour then mode. */
+    private fun lightRows(s: SoundcoreState): List<Setting> {
+        val b = s.field(LIGHT_FIELD)?.takeIf { it.size == 2 && it.u8(0) in LIGHT_COLOURS.indices && it.u8(1) in LIGHT_MODES.indices } ?: return emptyList()
+        return listOf(Setting.Choice(LIGHT_MODE, LIGHT_MODES[b.u8(1)], LIGHT_MODES), Setting.Choice(LIGHT_COLOUR, LIGHT_COLOURS[b.u8(0)], LIGHT_COLOURS))
+    }
+
+    private fun extraChange(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
+        fun write(field: String, command: Int, body: ByteArray): List<SoundcorePacket> {
+            lastState = s.with(field, body)
+            return listOf(SoundcorePacket(command, body))
+        }
+        if (change is SettingChange.Level && change.key == SURROUND_LEVEL) {
+            if (surroundRow(s) == null) return null
+            val b = s.field(SURROUND_FIELD) ?: return null
+            b[1] = change.value.coerceIn(0, 4).toByte()
+            return write(SURROUND_FIELD, SoundcoreCommand.OPEN_SURROUND, b)
+        }
+        if (change !is SettingChange.Choice) return null
+        return when (change.key) {
+            LANGUAGE -> LANGUAGES.indexOf(change.option).takeIf { it >= 0 && languageRow(s) != null }
+                ?.let { write(LANGUAGE_FIELD, SoundcoreCommand.VOICE_LANGUAGE, byteArrayOf(it.toByte())) }
+            LIGHT_MODE, LIGHT_COLOUR -> {
+                val options = if (change.key == LIGHT_MODE) LIGHT_MODES else LIGHT_COLOURS
+                val v = options.indexOf(change.option)
+                val b = s.field(LIGHT_FIELD)
+                if (v < 0 || b == null || lightRows(s).isEmpty()) null else {
+                    b[if (change.key == LIGHT_MODE) 1 else 0] = v.toByte()
+                    write(LIGHT_FIELD, SoundcoreCommand.LIGHT_EFFECT, b)
+                }
+            }
+            else -> null
+        }
+    }
+
     private fun peerRows(): List<Setting> =
         if (!listsPeers) emptyList() else peers.rows() + Setting.Action(SoundcorePeers.PAIRING)
 
@@ -531,6 +577,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
+        if (change.key in EXTRA_KEYS) return extraChange(s, change)
         if (change.key.startsWith("sc_peer_") || change.key == SoundcorePeers.PAIRING) return peerChange(change)
         if (change.key == LIMIT || change.key == LIMIT_DB) return limitChange(s, change)
         if (change is SettingChange.Choice && (change.key == DOUBLE_PRESS || change.key == HOLD)) return buttonChange(s, change)
@@ -734,6 +781,17 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private const val HOLD = "sc_mfb_hold"
         private class Hold(val option: String, val state: Int, val write: Int)
         private val HOLD_ACTIONS = listOf(Hold("assistant", 0, 5), Hold("nap", 3, 13), Hold("none", 5, 15))
+        private const val LANGUAGE_FIELD = "prompt_language"
+        private const val LANGUAGE = "sc_voice_language"
+        private val LANGUAGES = listOf("english", "chinese")
+        private const val SURROUND_FIELD = "stereo_expansion"
+        private const val SURROUND_LEVEL = "sc_open_surround_level"
+        private const val LIGHT_FIELD = "light"
+        private const val LIGHT_MODE = "sc_light_mode"
+        private const val LIGHT_COLOUR = "sc_light_colour"
+        private val LIGHT_MODES = listOf("breathing", "on", "saving")
+        private val LIGHT_COLOURS = listOf("violet", "coral", "pink", "blue", "purple")
+        private val EXTRA_KEYS = setOf(LANGUAGE, SURROUND_LEVEL, LIGHT_MODE, LIGHT_COLOUR)
         private const val LIMIT_FIELD = "limit_high_volume"
         private const val LIMIT = "sc_volume_limit"
         private const val LIMIT_DB = "sc_volume_limit_db"
@@ -780,6 +838,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
             Switch("sc_voice_prompt", "voice_prompt", SoundcoreCommand.AMBIENT_SOUND_NOTICE),
             Switch("sc_voice_tone", "voice_tone", SoundcoreCommand.TOUCH_TONE),
             Switch("sc_battery_alert", "battery_alert", SoundcoreCommand.POWER_ON_BATTERY_NOTICE),
+            Switch("sc_open_surround", "stereo_expansion", SoundcoreCommand.OPEN_SURROUND),
+            Switch("sc_voice_commands", "voice_control", SoundcoreCommand.VOICE_COMMANDS),
+            Switch("sc_super_volume", "super_volume", SoundcoreCommand.SUPER_VOLUME),
+            Switch("sc_manual_shutdown", "manual_shutdown", SoundcoreCommand.MANUAL_SHUTDOWN),
             Switch("sc_power_off_tone", "power_off_tone", SoundcoreCommand.SET_AUTO_POWER_OFF_PROMPT),
             Switch("sc_connect_tone", "connect_tone", SoundcoreCommand.CONNECT_TONE),
             Switch("sc_easy_chat", "easy_chat", SoundcoreCommand.FUNCTION_SWITCH, 14),

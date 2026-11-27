@@ -637,7 +637,8 @@
         ["skip", 6],
         ["ldac", 1],
         ["dual_connections_enabled", 1],
-        ["skip", 2],
+        ["skip", 1],
+        ["prompt_language", 1],
         ["auto_power_off", 2],
         ["limit_high_volume", 3],
         ["voice_prompt", 1],
@@ -1168,7 +1169,13 @@
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
-        ["serial", 16]
+        ["serial", 16],
+        ["optional:skip", 35],
+        ["optional:wearing_detection", 1],
+        ["optional:voice_control", 2],
+        ["optional:stereo_expansion", 2],
+        ["optional:super_volume", 1],
+        ["optional:manual_shutdown", 1]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3600AnalysisService.e1), not tried: the head of the reply (TWS status, both levels, charging, both firmware versions, the serial). The rest and the command service are not read yet. No battery scale is shown: the parser does not give one."
     },
@@ -1196,7 +1203,7 @@
         ["skip", 22],
         ["skip", 12],
         ["skip", 1],
-        ["skip", 2],
+        ["light", 2],
         ["super_hearing", 1],
         ["call_mix", 1],
         ["microphone", 1]
@@ -3113,7 +3120,7 @@
         ["ldac", 1],
         ["skip", 2],
         ["wearing_tone", 1],
-        ["skip", 1],
+        ["prompt_language", 1],
         ["auto_power_off", 2]
       ],
       "eq": {

@@ -339,6 +339,7 @@
     <string name="setting_seamless_connection_note">Switch between your Samsung devices without pairing again.</string>
     <string name="setting_voice_wakeup">Wake the voice assistant by voice</string>
     <string name="setting_find_note">The earbuds beep loudly: take them out of your ears first. Mute one to hear the other.</string>
+    <string name="setting_find_phone_note">Your phone plays a loud sound through the earbuds: take them out of your ears first. Mute one to hear the other.</string>
     <string name="setting_find_start">Make the earbuds beep</string>
     <string name="setting_find_hub_open">Open Find Hub</string>
     <string name="setting_find_hub_note">Google\'s Find Hub rings and finds Pixel Buds. It uses a key the earbuds share with your Google account, which only Google Play services holds, so PairFree opens Find Hub, as the Pixel Buds app leaves it to Play services.</string>

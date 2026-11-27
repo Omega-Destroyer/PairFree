@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -18,6 +19,21 @@ import org.junit.jupiter.api.Test
  */
 class SoundcoreShownControlsTest {
     private val vectors = Json.parseToJsonElement(repoFile("data/soundcore/test_vectors.json").readText()).jsonObject
+
+    /** Issue #79: Find Earbuds on the Liberty Buds 2 (the earbuds beep, 10 89 left, right, case) and on the Space A40 (the phone makes the sound). */
+    @Test
+    fun findEarbuds() {
+        fun session(model: String) = SoundcoreSession(model).also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, ByteArray(255))) }
+        val a40 = session("A3936")
+        assertTrue(a40.groups.any { g -> g.settings.any { it.key == SoundcoreSession.FIND_PHONE } })
+        assertEquals(emptyList<SoundcorePacket>(), a40.change(SettingChange.Press(SoundcoreSession.FIND_PHONE)))
+        val q30i = session("A3955")
+        fun bytes(change: SettingChange) = q30i.change(change)!!.single().let { it.command to it.body.joinToString("") { b -> b.toString() } }
+        assertEquals(SoundcoreCommand.FIND_DEVICE to "110", bytes(SettingChange.Press(SoundcoreSession.FIND)))
+        assertEquals(SoundcoreCommand.FIND_DEVICE to "010", bytes(SettingChange.Toggle("find_mute_left", true)))
+        assertEquals(SoundcoreCommand.FIND_DEVICE to "000", bytes(SettingChange.Press(SoundcoreSession.FIND)))
+        assertTrue(SoundcoreLayout.of("D1206")!!.features.contains("find_device"))
+    }
 
     @Test
     fun everyShownControlWrites() {
@@ -47,7 +63,8 @@ class SoundcoreShownControlsTest {
                     is Setting.Toggle -> if (row.enabled) SettingChange.Toggle(row.key, !row.on) else null
                     is Setting.Choice -> row.options.firstOrNull { it != row.value }?.let { SettingChange.Choice(row.key, it) }
                     is Setting.Level -> if (row.enabled) SettingChange.Level(row.key, if (row.value == row.max) row.min else row.value + 1) else null
-                    is Setting.Action -> SettingChange.Press(row.key)
+                    // Where the phone makes the sound, there is nothing to write: the screen plays it.
+                    is Setting.Action -> if (row.key == SoundcoreSession.FIND_PHONE) null else SettingChange.Press(row.key)
                     else -> null
                 } ?: continue
                 if (fresh().change(change).isNullOrEmpty()) dead += "$model ${row.key}"

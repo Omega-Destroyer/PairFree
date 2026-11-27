@@ -758,8 +758,8 @@
       "models": [
         "Soundcore earbuds whose app has Find Earbuds (reported on the R60i)"
       ],
-      "status": "open",
-      "what": "The Soundcore app's Find Earbuds (play a loud sound from the left, the right or both earbuds until stopped) is not in PairFree for any Soundcore model; which models have it and the command are to be read from the Soundcore app (2.9.9 and the restored 5.0.35).",
+      "status": "built",
+      "what": "Find Earbuds on 30 Soundcore models: the earbuds beep on 10 89 (left, right, case) or, on the A3871, A3936, A3944, A3947 and A3948, the phone plays a loud sound through them, with Mute left/right and stop (issue #79, 2026-11-27; Android only for the phone's sound; not tried on earbuds). Left out: the charging case's own beep.",
       "reported": "issue #79"
     },
     {
@@ -832,6 +832,16 @@
       "status": "open",
       "what": "docs/soundcore/PROTOCOL.md blocks settings on method bodies being empty stubs in the restored app. The 2026-11-19 unpacker run (SOUNDCORE-unpacker-2026-11-19/fresh-run) restored the bodies (D1206MoreDataProvider is 231 lines of code) and none of those statements was re-read.",
       "reported": "issue #76 (a user's Liberty Buds 2 on 0.18.0, 2026-11-25), triaged 2026-11-27"
+    },
+    {
+      "id": "soundcore-app-table-commands-unbuilt",
+      "brand": "soundcore",
+      "models": [
+        "the models whose app screens use them"
+      ],
+      "status": "open",
+      "what": "77 commands of the Soundcore app's own table are in neither PairFree's table nor any explanation (data/soundcore/cmm2_unused.json): HearID, personal noise control, hearing protection, wear check, stereo expansion and others. Build each or write its blocker with what was read.",
+      "reported": "the audit added for issue #79, 2026-11-27"
     }
   ]
 }

@@ -146,6 +146,8 @@
     {"id": "call_mix", "command": "01A2", "source": "soundcore_app",
      "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 A2 (`setCallMixCallback`; the VR P10)."},
     {"id": "microphone", "command": "01A3", "source": "soundcore_app",
-     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 A3 (`setMicrophoneCallback`; the VR P10)."}
+     "note": "Body: 1 on, 0 off. Soundcore 3.3.0 01 A3 (`setMicrophoneCallback`; the VR P10)."},
+    {"id": "find_device", "command": "1089", "source": "soundcore_app",
+     "note": "Find earbuds: three bytes, left, right and the case (1 beeps, 0 stops). Soundcore 5.0.35 `CmmBtCmdService.r0`; the app sends 0 0 0 when its screen closes. The earbuds report the same three under 01 09."}
   ]
 }

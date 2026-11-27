@@ -205,8 +205,7 @@ write. Google's presets (gol, and its EQ function's own description):
 | Vocal boost | -1 | 0 | 4 | 2 | 0 |
 | Clarity | -2 | 0 | 2 | 3 | 5 |
 
-Field 18 is the curve the user saved, Google's "Last saved". PairFree's EQ screen moves in whole dB, so a half-step
-curve from Google's app shows rounded until it is changed in PairFree; presets go out exactly. The app names the bands,
+Field 18 is the curve the user saved, Google's "Last saved". PairFree's EQ screen moves in half dB (0.12.0), the app's own step, so a curve from Google's app shows as it is; presets go out exactly. The app names the bands,
 not their frequencies.
 
 ## 7. Models and features
@@ -237,7 +236,7 @@ and the automatic test. `PixelSession.allowed` checks every message.
 ## 9. Left out, and why
 
 - **Finding the earbuds** goes through Fast Pair's message stream, a second channel PairFree does not open.
-- **The ear tip seal test** (Allegro 14, and the EartipFitTest service): how its result comes back was not traced.
+- **The ear tip seal test** is built (2026-11-10, read from the app's `gxc`, `gxb` and the flag defaults): the RPC service `maestro_pw.EartipFitTest` on each earbud's own channel (the working channel's source to `left_bt_core`, then `right_bt_core`: channels 19 and 21 when 18 answered). `SubscribeToResults` (server stream) then `StartTest` (empty), result `{1: fit float, 2: noise float}`, `EndTest` (empty). Verdict as the app's `gxc.l`: the fit is good when 80 < fit <= 200 and the noise is 0 to the limit (20; 40 on device types 6, 9 and 12); 255 or more in either is a failed run. Allegro field 14 (`seal_test`) is a different, settings-side flag and stays never-sent. Only invented replies test it; `data/pixel/commands.json` `maestro.fit_test` holds the numbers.
 - **Find my device** is Google Play services': the app's `FmdWorker` binds Play services' Find My Device proxy
   (`com.google.android.gms.nearby.discovery.fastpair.ACTION_BIND_FMD_PROXY`, open only to Google's apps) to pass on
   the user's consent, and ringing goes over the Fast Pair message stream with the account key Play services holds. No

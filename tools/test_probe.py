@@ -131,7 +131,7 @@ class DeviceArt(unittest.TestCase):
                 value = art[part]
                 self.assertTrue(value is None or value == "generic" or isinstance(value, dict), f.name)
             if isinstance(art["bud"], dict):
-                self.assertIn(art["bud"].get("kind", "bud"), ("bud", "hook", "clip", "headphones"), f.name)
+                self.assertIn(art["bud"].get("kind", "bud"), ("bud", "hook", "clip", "headphones", "neckband"), f.name)
 
     def test_firmware_codes_keep_soundpeats_art(self):
         """Another brand's model code can equal a SoundPEATS firmware code (1MORE's S32); the table keeps SoundPEATS'."""

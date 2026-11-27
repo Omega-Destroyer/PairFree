@@ -1,0 +1,34 @@
+{
+  "_about": "Original Bose 13.3.4 startup requests observed through RFCOMM to a synthetic QC Ultra 2 HP peer. Instrumented connection selection and audio-profile state; no settings or real hardware validated. See docs/bose/VIRTUAL_TESTING.md.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "com.bose.bosemusic",
+    "version": "13.3.4",
+    "apk_modified": false,
+    "hardware_tested": false,
+    "replies_synthetic": true,
+    "installed_apk_sha256": {
+      "base.apk": "e1e2649c1738035659be23ceb1c32622cd6387e5df596acf522c16422a35444e",
+      "split_config.arm64_v8a.apk": "875ec356dc87d468ec6cf1efa66a7b861ea5c5f7fa38a93cad4c67ea2bdcbda1",
+      "split_asset_pack.apk": "bf0197d4ebd017793fd8b8cbb35b4ba3ccbdad2451f3d8fb502a42c830aff2e6",
+      "split_config.xxhdpi.apk": "a5c22e80b0a0997a535e37b47cd388c83584b4a1db008d539e85167298b11210"
+    }
+  },
+  "cases": [
+    {
+      "command": "00.01.1",
+      "payload": "",
+      "frame": "00010100"
+    },
+    {
+      "command": "00.02.1",
+      "payload": "",
+      "frame": "00020100"
+    },
+    {
+      "command": "00.03.1",
+      "payload": "",
+      "frame": "00030100"
+    }
+  ]
+}

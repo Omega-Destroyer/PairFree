@@ -1,0 +1,21 @@
+{
+ "name": "Push 720 Open / Push 180 Open",
+ "names": [
+  "Push 180 Open",
+  "Push 720 Open"
+ ],
+ "codes": [
+  "Push 180 Open",
+  "Push 720 Open"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_push_720_open; the Push 180 Open, which the app shows no render of, shares it), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "226,336 248,339 266,355 317,350 340,354 349,365 367,410 374,432 371,444 353,459 322,475 315,483 314,490 318,512 318,529 314,546 306,560 291,575 273,584 252,589 231,590 209,583 194,573 182,559 168,533 113,543 75,542 65,537 57,528 46,509 30,465 30,446 42,428 71,399 104,379 151,363 188,345",
+  "axis": [
+   202.1,
+   463.0
+  ]
+ },
+ "case": "generic"
+}

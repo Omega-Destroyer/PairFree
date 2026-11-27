@@ -15,6 +15,8 @@ public data class EarbudState(
     val fit: FitResult? = null,
     /** The earbuds have a fit test by their model, not by a GAIA feature (Galaxy Buds). */
     val fitTest: Boolean = false,
+    /** The fit test needs a sound from the phone while the earbuds measure (QCY's): the screen plays it for as long as the test runs. */
+    val fitSound: Boolean = false,
 ) {
     /** Applies one received frame. Frames that are not replies the app understands are ignored. */
     public fun update(frame: Frame): EarbudState {

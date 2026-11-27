@@ -1,0 +1,265 @@
+{
+ "_about": "Statements in docs/*/PROTOCOL.md that say a feature is not built, not sent or not read, with no 'checked:' line (tools/doc_gaps.py). A worklist: build the feature, or rewrite the statement as 'blocked: <reason>; checked: <what was opened and what it showed>', and delete its entry. New statements are not added here; test_doc_gaps.py fails on them.",
+ "statements": [
+  {
+   "file": "docs/1more/PROTOCOL.md",
+   "line": "(`DataKt.aIDeviceList`, `HeadsetListActivity.connectTuYa`), not this protocol. PairFree does not list them."
+  },
+  {
+   "file": "docs/1more/PROTOCOL.md",
+   "line": "## 6. Not yet"
+  },
+  {
+   "file": "docs/apple/PROTOCOL.md",
+   "line": "LibrePods sends them 200 ms apart, and again 5 s later; PairFree does the same. It does not send"
+  },
+  {
+   "file": "docs/apple/PROTOCOL.md",
+   "line": "Not offered: `12` \"Hey Siri\", `16` the press-and-hold action per AirPod (noise control or Siri), and"
+  },
+  {
+   "file": "docs/bose/PROTOCOL.md",
+   "line": "Ultra Headphones; multipoint not yet tried)."
+  },
+  {
+   "file": "docs/cambridge/PROTOCOL.md",
+   "line": "What the rows read and write (payloads as `PacketDecode` reads them): API level (major, minor; gates the toggle options at 1.9, loudness at 1.14, the device list at 1.15, side tone at 1.17); battery (upgrades allowed; charging left, right, case; percent left, right, case; left and right in the case); two 3-byte firmware versions; ambient noise mode (one byte, `ANCMode`: off 0, ANC high 1, transparency low 2, ANC medium 3, transparency high 4, ANC low 5, voice focus 6, and 7 to 9 for the *_OFF variants, which PairFree does not offer); the toggle options (three flags: normal, noise cancelling, transparency); language; automatic power off (hours, minutes, seconds; the app offers 30 minutes, 60 minutes and never); gaming, proximity (wear detection), mono and sleep modes, loudness, side tone and find-headphones alert (one flag); spatial audio (flag and virtualizer mode 1 or 2, which the app takes from the phone's Dolby detector, so PairFree keeps the mode the earbuds report); enabled, available and current codecs (a list of codec ids); supported and enabled gestures (16-bit little-endian masks; bit i is gesture i; one gesture is switched with `SET_GESTURE_CONTROL_ON_OFF (id, flag)`)."
+  },
+  {
+   "file": "docs/cambridge/PROTOCOL.md",
+   "line": "Gestures: the earbuds list what they support in a 16-bit mask and PairFree switches those on or off, pairing mode and wear detection included (bits 12 and 13; an earlier version of this section left them out wrongly). Switching a gesture is a setting, not the action: PairFree never triggers a power-off, a reset or pairing. Three gestures lie outside the mask (power on/off 240, case pairing 241, case factory reset 242): the app lists them as switches in its user guide and cannot read their state, so PairFree shows them as on/off choices with no current value and sends exactly the app's `SET_GESTURE_CONTROL_ON_OFF (id, flag)`."
+  },
+  {
+   "file": "docs/earfun/PROTOCOL.md",
+   "line": "powering off (\"Shutdown\") and privacy mode included; two actions that need a firmware version PairFree does not"
+  },
+  {
+   "file": "docs/earfun/PROTOCOL.md",
+   "line": "like a firmware update, which PairFree does not do. The voice prompt volume offers the model's steps"
+  },
+  {
+   "file": "docs/earfun/PROTOCOL.md",
+   "line": "EarFun's app only by AI features PairFree does not offer."
+  },
+  {
+   "file": "docs/earfun/PROTOCOL.md",
+   "line": "- **Not covered yet** (section 9): Air (Airoha), Air 2, Air Pro 2 and ATVEL Tune S5 Pro (WUQI), Air Pro SV,"
+  },
+  {
+   "file": "docs/earfun/PROTOCOL.md",
+   "line": "Free 1S (ZhongKe), Wave Pro and ATVEL Tune Pro Q7 (BES). PairFree does not list them among the paired"
+  },
+  {
+   "file": "docs/earfun/PROTOCOL.md",
+   "line": "## 8. Not yet"
+  },
+  {
+   "file": "docs/earfun/PROTOCOL.md",
+   "line": "(`getNormalData(src)` instead of the payload), a slip that does not matter to PairFree, which does not read it."
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "a packet count after a one-byte length; PairFree does not send it."
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "sub-modes `00` to `02` other modes; PairFree does not use them yet."
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "playback set holds for that assistant instead. PairFree does not read that choice and always writes"
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "noise set at `0D` as headphones do. Not covered yet: `HeadTourOneGestureCard` (the Tour One's class reads gestures but"
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "Types: `01` adaptive noise cancelling, `08` auto compensation (and, not offered by PairFree, `04`"
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "written in the older variant of the gesture command, are not covered."
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "up. It never bonds itself, so this reflects the ordinary Bluetooth pairing. PairFree does not"
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "did not yet read the model name (NV `1003`); whether it answers is still to see."
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "off (`0900` module `0001`), so PairFree does not either. The sound effect has no off on these models. The"
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "**Touch controls** (section 10.1) are covered on the models whose page JBL's app has. **Not covered yet:** the noise cancelling and Ambient Aware level"
+  },
+  {
+   "file": "docs/jbl/PROTOCOL.md",
+   "line": "its manager never queues it, and PairFree does not send it. PairFree does not read the curve back yet (the SDK reads"
+  },
+  {
+   "file": "docs/nothing/PROTOCOL.md",
+   "line": "- Models whose feature table sets `eq` to 0 use Dirac Opteo presets, which PairFree does not"
+  },
+  {
+   "file": "docs/nothing/PROTOCOL.md",
+   "line": "Nothing X reads that table in its Dart code, which PairFree cannot read. Two fields are decoded"
+  },
+  {
+   "file": "docs/nothing/PROTOCOL.md",
+   "line": "and tried its features. A product id PairFree does not know gets every setting its earbuds answer"
+  },
+  {
+   "file": "docs/nothing/PROTOCOL.md",
+   "line": "## 7. Not yet"
+  },
+  {
+   "file": "docs/nothing/PROTOCOL.md",
+   "line": "Not built: the super mic and walkie-talkie modes of the Ear (3) (`F05F`/`F061`: phone recording features), and the advanced equalizer's curve (the eight bands are edited by Nothing X's"
+  },
+  {
+   "file": "docs/nothing/PROTOCOL.md",
+   "line": "- **Ear tip fit test:** started with `F014` (`SET_LEAK_DETECT`) and the byte 1; the result arrives as `E00D`, one byte per earbud (left, right). The start and the layout are from the open-source web client ear-web and desktop client attune (AGPL-3.0: facts only), which send them on the Ear (2), Ear (a), Ear, Ear (3) and the CMF Buds models; Nothing X's own start sits in its Dart code (`libapp.so`, not yet read, `isSupportEarTipFitTest` gates the screen). Which value means what (0 good, 1 poor, 2 not in the ear) is attune's reading, not Nothing X's: inferred, to be settled by a recording or the Dart code. PairFree offers the test on the models whose feature table says `fit_test` (`NothingTest.fitTestOnTheModelsThatHaveItAndNoOther`)."
+  },
+  {
+   "file": "docs/oneplus/PROTOCOL.md",
+   "line": "| `0411` (1041) | restore data: a count, then `type, length (2 bytes), data`; type 1 holds a byte for which of 20 wordings the app showed; PairFree does not send it |"
+  },
+  {
+   "file": "docs/oneplus/PROTOCOL.md",
+   "line": "| `0415` (1045) | the ear scan: mode, then for modes 1 and 3 a little-endian length, the scan data and an int; not built |"
+  },
+  {
+   "file": "docs/oneplus/PROTOCOL.md",
+   "line": "| `0116` (278) | request of the filter data: count, points, id; the reply is the curves the app draws; not built |"
+  },
+  {
+   "file": "docs/oneplus/PROTOCOL.md",
+   "line": "not read."
+  },
+  {
+   "file": "docs/pixel/PROTOCOL.md",
+   "line": "Live Translate, 42 the digital assistant, 24 cleaning reminders), the rest not. PairFree does not need them: the"
+  },
+  {
+   "file": "docs/pixel/PROTOCOL.md",
+   "line": "- **Finding the earbuds** goes through Fast Pair's message stream, a second channel PairFree does not open."
+  },
+  {
+   "file": "docs/samsung/PROTOCOL.md",
+   "line": "PairFree does not offer adaptive noise control. The state has no adaptive bit that"
+  },
+  {
+   "file": "docs/samsung/PROTOCOL.md",
+   "line": "has a timer byte too, but its feature list has no timer, so PairFree does not offer it. Head"
+  },
+  {
+   "file": "docs/samsung/PROTOCOL.md",
+   "line": "game running. PairFree does not send it."
+  },
+  {
+   "file": "docs/samsung/PROTOCOL.md",
+   "line": "Not traced: the earbuds' reply to 204 (PairFree does not wait for one) and how the Galaxy Wearable app then keeps the profile on the phone"
+  },
+  {
+   "file": "docs/samsung/PROTOCOL.md",
+   "line": "- **Buds2 Pro (R510):** the plugin's table adds voice boost and volume normalization from revision 14 (read now), and at revision 1 only an ear adaptation status and fitting and sound detect modes (bytes 41 to 44; not read: revision 1 is the first firmware), and at revision 6 only a skipped byte (amplify ambient sound). Auto adjust sound from revision 3, head tracking from 8, charging from 11 and extra clear call sound and extra high ambient from 13 match GalaxyBudsClient."
+  },
+  {
+   "file": "docs/skullcandy/PROTOCOL.md",
+   "line": "The app's `assets/flutter_assets/assets/secrets/secrets.json` was not read."
+  },
+  {
+   "file": "docs/skullcandy/PROTOCOL.md",
+   "line": "vendor device-config path is independently pinned for each product. Do not send PPP to a RACE service"
+  },
+  {
+   "file": "docs/sony/PROTOCOL.md",
+   "line": "Not read: set 2's types `01`, `11`, `12`, `14`, `21` and `30`, whose on/off bytes PairFree does"
+  },
+  {
+   "file": "docs/sony/PROTOCOL.md",
+   "line": "| `59` CUSTOMIZABLE_SOUND_EFFECT | `33` to `36` | **not built: the capability (`51 33 bands steps count effects...`) and the setting (`57/59 33 effect exclusive-count ids... custom-count (length steps...)...`) are read, but the set's layout and what the reset (`34`), custom (`35`) and external update (`36`) types send is not clear from the parsers; needs a recording.** |"
+  },
+  {
+   "file": "docs/sony/PROTOCOL.md",
+   "line": "volume, which PairFree does not offer. Gadgetbridge writes type 1 the same way."
+  },
+  {
+   "file": "docs/sony/PROTOCOL.md",
+   "line": "- Set 2's noise control types PairFree does not read (section 5)."
+  },
+  {
+   "file": "docs/sony/PROTOCOL.md",
+   "line": "(`E7 00 00`), and listed the speaker functions PairFree does not read: sound effect (`54`), custom EQ"
+  },
+  {
+   "file": "docs/sony/PROTOCOL.md",
+   "line": "A user's recording of Sony's app with a WF-1000XM6 (firmware 2.0.5, Android 17, PairFree 0.7.2's recorder) shows the earbuds on table set 2 (service 956C7B26) with 53 functions listed, including the 10-band EQ (functions 56 and 57, `eqebb` messages: command 58 set, 59 notify, 5A extended info, whose reply lists the ten bands from 31 Hz to 16 kHz as `0A 01 00 1F ...`), LE Audio (40, 42, 66 with a 16-byte value), head gestures (ff), smart talking mode (fc), SAR and head tracker (b0, b6, b7) and safe listening (table 2, 56 to 59). **Difference to check:** Sony's app wrote its custom EQ as preset `A1` (User setting 1: `58 04 A1 0A` and ten bytes, 6 being 0 dB, one step per dB), selecting `A1`/`A2` with a zero band count to switch user slots. PairFree (0.11.1) now writes into the user setting the earbuds hold and keeps `A0` (Custom, as Gadgetbridge does) otherwise. PairFree 0.11.1 showed the WF-1000XM6 no equalizer (issue #33): it lists function 57, PRESET_EQ_AND_ERRORCODE (EQEBB type 4), which PairFree did not know. From 0.11.2 type 4 is read like the plain preset EQ (status, extended info and param; no capability request, which Sony's app does not send for it), ten values flat at 6 (13 steps, assumed +-6 dB from the flat value in the recording), the presets taken as the earbuds' user settings only. Not tried on a real XM6. The recording's table 2 peripheral parameter reply (`2.37`) held other devices' Bluetooth addresses and names as text; the recorder now leaves those messages out (table 2, commands 34 to 3D)."
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "PairFree does not use; `optional:` marks fields only some firmware sends. Each model also has"
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "Sleep A30. A reset to the defaults (`04 82`) was not recorded, so PairFree does not offer one."
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "Not yet confirmed, so not offered: the alarm (58-61), sleep mode (65), touch tone (75), the low"
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Not built yet for the model: the equalizer (the app writes `03 87` or `02 81`; the HearID part is 49 bytes here, not the 48 of the A3947's), the touch controls (the 24-byte button block), and the HearID and ANC tests. Nothing has been tried on a Liberty 4."
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the"
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "(HearID). The A3909 and A3913 carry a transparency switch byte after the buttons that PairFree does not read."
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "16-bit mono PCM are not built; Android's `MediaCodec` does the decoding in the app."
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "not send it again unless asked (\"send anyway\"). It does not read the earbuds' inventory (`13 01`), so a slot changed by the Soundcore app since is not"
+  },
+  {
+   "file": "docs/soundcore/PROTOCOL.md",
+   "line": "restoration). The Sleep A30's audio upload is in the research branch's `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md`; PairFree builds none of it"
+  },
+  {
+   "file": "docs/soundpeats/PROTOCOL.md",
+   "line": "| Dolby support hint | | `03 62` | 0 if the phone supports Dolby, 1 if not. PeatsAudio 1.9.45 sends it only to `S7` (Clip1); SOUNDPEATS 2.5.3 was seen sending `03 62 00` to an H3 (`S5`) in an emulator run (`VIRTUAL_TESTING.md`), so the restriction does not hold for 2.5.3. PairFree does not send it. |"
+  },
+  {
+   "file": "docs/soundpeats/PROTOCOL.md",
+   "line": "| Factory reset | | `03 05` | no payload. Do not send casually. |"
+  },
+  {
+   "file": "docs/soundpeats/PROTOCOL.md",
+   "line": "| Smartlink, Airoha | none | | The app throws \"not implemented\". |"
+  },
+  {
+   "file": "docs/soundpeats/PROTOCOL.md",
+   "line": "| `03` | Factory reset | empty. Do not send casually. |"
+  },
+  {
+   "file": "docs/soundpeats/PROTOCOL.md",
+   "line": "Not offered: the prompt language (`19`). None of this has been tried on the earbuds."
+  },
+  {
+   "file": "docs/soundpeats/PROTOCOL.md",
+   "line": "4 LDAC, 9 Opus, 0 other (the app accepts 0 to 9 and names only these). Not yet tried on the"
+  }
+ ]
+}

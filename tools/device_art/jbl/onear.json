@@ -1,9 +1,11 @@
 {
  "name": "JBL Tune 520BT",
  "names": [
+  "JBL CLUB700BT",
   "JBL Junior 320BT",
   "JBL Junior 470NC",
   "JBL Junior Free",
+  "JBL LIVE400BT",
   "JBL LIVE460NC",
   "JBL Live 670NC",
   "JBL Live 675NC",
@@ -14,6 +16,7 @@
   "JBL Tune 527BT",
   "JBL Tune 530BT",
   "JBL Tune 535BT",
+  "JBL Tune 670NC",
   "JBL Tune 680NC"
  ],
  "source": "Traced from JBL's own product render (Tune 520BT, front), not in the repo.",

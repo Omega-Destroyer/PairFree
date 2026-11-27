@@ -1,0 +1,22 @@
+{
+ "name": "CX 400BT True Wireless",
+ "names": [
+  "CX 400BT TW",
+  "CX 400BT True Wireless",
+  "CX TW"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control bundles for its older products (unsupported/cx400, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "186,191 213,192 245,202 267,217 285,239 295,261 300,295 298,335 291,369 282,391 272,405 258,418 241,427 208,435 171,435 149,447 131,452 121,453 103,450 84,441 65,421 58,399 59,371 71,347 95,326 100,269 107,249 117,231 130,217 147,205 164,197",
+  "axis": [
+   178.8,
+   322.2
+  ],
+  "accent": [
+   "241,315 238,327 229,338 215,345 200,348 184,345 170,338 161,327 158,315 161,302 170,292 184,285 200,282 215,285 229,292 238,302"
+  ]
+ },
+ "case": "generic"
+}

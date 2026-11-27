@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The widget's panel. White: PairFreeWidget tints it with the look's colour (widget/WidgetLook.kt). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="20dp" />
+    <solid android:color="#FFFFFFFF" />
+</shape>

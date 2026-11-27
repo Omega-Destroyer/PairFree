@@ -38,7 +38,13 @@ class TonePlayer(context: Context) {
     }
 
     /** Plays [hz] at [levelDb] below full scale for [seconds]; [onEnd] runs on the main thread once it has played out. */
-    fun play(hz: Float, levelDb: Float, seconds: Int, onEnd: () -> Unit) {
+    fun play(hz: Float, levelDb: Float, seconds: Int, onEnd: () -> Unit) = playOnSide(hz, levelDb, seconds, BOTH, loop = false, onEnd = onEnd)
+
+    /**
+     * Like [play] in one earbud only ([LEFT] or [RIGHT]; [BOTH] is the hearing test's), and with [loop] the tone repeats until [stop], which the seal
+     * check uses so a low tone is not missed in one burst.
+     */
+    fun playOnSide(hz: Float, levelDb: Float, seconds: Int, side: Int, loop: Boolean, onEnd: () -> Unit = {}) {
         stop()
         val frames = RATE * seconds
         val amplitude = 10.0.pow(levelDb / 20.0)
@@ -48,12 +54,45 @@ class TonePlayer(context: Context) {
             // A short fade at each end keeps the start and stop from clicking.
             val edge = min(1.0, min(i, frames - 1 - i).toDouble() / fade)
             val v = (amplitude * edge * sin(2 * PI * hz * i / RATE)).toFloat()
-            samples[2 * i] = v
-            samples[2 * i + 1] = v
+            samples[2 * i] = if (side == RIGHT) 0f else v
+            samples[2 * i + 1] = if (side == LEFT) 0f else v
         }
         val t = AudioTrack.Builder()
             .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
             .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(RATE).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
+            .build()
+        t.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        if (loop) t.setLoopPoints(0, frames, -1)
+        t.notificationMarkerPosition = frames - 1
+        t.setPlaybackPositionUpdateListener(
+            object : AudioTrack.OnPlaybackPositionUpdateListener {
+                override fun onMarkerReached(track: AudioTrack) {
+                    if (track === this@TonePlayer.track) onEnd()
+                }
+
+                override fun onPeriodicNotification(track: AudioTrack) = Unit
+            },
+            main,
+        )
+        track = t
+        t.play()
+    }
+
+    /**
+     * Plays [mono] (JBL's warble, made at [WARBLE_RATE]) in the left or the right earbud only, from the start and once through; [onEnd] runs on the main thread when it
+     * has played out.
+     */
+    fun playWarble(mono: FloatArray, left: Boolean, onEnd: () -> Unit) {
+        stop()
+        val frames = mono.size
+        if (frames == 0) return
+        val samples = FloatArray(frames * 2)
+        for (i in 0 until frames) samples[2 * i + if (left) 0 else 1] = mono[i]
+        val t = AudioTrack.Builder()
+            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+            .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(WARBLE_RATE).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
             .setTransferMode(AudioTrack.MODE_STATIC)
             .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
             .build()
@@ -73,6 +112,53 @@ class TonePlayer(context: Context) {
         t.play()
     }
 
+    /**
+     * A steady tone of [hz] at [db] dB full scale in one earbud ([LEFT] or [RIGHT]) until [stop], without the fades [playOnSide] puts at the ends of its buffer: one
+     * second of a whole number of cycles repeats without a seam. QCY's listening test (`BeepTool2`) plays its tones the same way, amplitude 10^(dB/20) of full scale.
+     */
+    fun playSteady(hz: Int, db: Double, side: Int) {
+        stop()
+        val amplitude = minOf(10.0.pow(db / 20.0), 1.0)
+        val samples = FloatArray(RATE * 2)
+        for (i in 0 until RATE) {
+            val v = (amplitude * sin(2 * PI * hz * i / RATE)).toFloat()
+            samples[2 * i] = if (side == RIGHT) 0f else v
+            samples[2 * i + 1] = if (side == LEFT) 0f else v
+        }
+        val t = AudioTrack.Builder()
+            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+            .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(RATE).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
+            .build()
+        t.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        t.setLoopPoints(0, RATE, -1)
+        track = t
+        t.play()
+    }
+
+    /** Plays [mono] (made at [rate]) in both ears over and over until [stop]: QCY's fit test sound. */
+    fun playLoop(mono: FloatArray, rate: Int) {
+        stop()
+        val frames = mono.size
+        if (frames == 0) return
+        val samples = FloatArray(frames * 2)
+        for (i in 0 until frames) {
+            samples[2 * i] = mono[i]
+            samples[2 * i + 1] = mono[i]
+        }
+        val t = AudioTrack.Builder()
+            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+            .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(rate).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
+            .build()
+        t.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        t.setLoopPoints(0, frames, -1)
+        track = t
+        t.play()
+    }
+
     fun stop() {
         track?.let {
             track = null
@@ -80,8 +166,14 @@ class TonePlayer(context: Context) {
         }
     }
 
-    private companion object {
-        const val RATE = 48000
-        const val FADE_FRAMES = 480
+    companion object {
+        const val BOTH = 0
+        const val LEFT = 1
+        const val RIGHT = 2
+        private const val RATE = 48000
+
+        /** The rate of the warble tones the hearing test of JBL's PersoniFi plays. */
+        const val WARBLE_RATE = 48000
+        private const val FADE_FRAMES = 480
     }
 }

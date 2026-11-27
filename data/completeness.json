@@ -1,0 +1,796 @@
+{
+  "_about": "The registry the release gate (tools/release_gate.py) reads. What gates is what CAN be solved: `open` (reading the vendor's app, another source or PairFree's own code, or building, can settle it) refuses a release that touches the brand, unless the owner waived it in data/release_waivers.json. What cannot be solved by reading is noted and does not gate, but must carry its proof (owner, 2026-11-21): `needs-report` (only a user's report or other outside information settles it: `needs` says what to ask for), `blocked` (a hard rule: `rule`), `not-applicable` (the vendor's app has no such control); each lists `read` (paths read, with what they showed) and `evidence` (searches over the app's files that the gate runs again; a needs-report item needs one with `expect: some` that finds the code in question). `built` is done. Add an item as soon as a post, a report or an audit shows a gap, set it to built in the change that builds it, and never settle an item as impossible without having read the code.",
+  "items": [
+    {
+      "id": "sennheiser-momentum5-equalizer",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless"
+      ],
+      "status": "built",
+      "what": "Asked for as the second-generation equalizer (UserEQ_GetConfiguration) and shown when the Momentum 5 and Momentum True Wireless 5 answer, without presets (branch fix/sennheiser-momentum5).",
+      "reported": "issue #47"
+    },
+    {
+      "id": "sennheiser-momentum5-transparency-percent",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless"
+      ],
+      "status": "built",
+      "what": "The 0 to 100 transparency slider (ANC_Transparency, answered in the report) for the Momentum 5 (branch fix/sennheiser-momentum5).",
+      "reported": "issue #47"
+    },
+    {
+      "id": "1more-q30-two-devices",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "built",
+      "what": "The two-device switch for EH902, ES903, EC305, HC905, HC306, EF906, S51 and S70, as Life's Lab page shows it (branch fix/1more-lab-features).",
+      "reported": "issues #58 and #63"
+    },
+    {
+      "id": "1more-lab-features-audit",
+      "brand": "1more",
+      "models": [
+        "all"
+      ],
+      "status": "built",
+      "what": "Life 5.0.3's Lab features page read in full (ExperimentActivity): two devices (done), the wake word for EH902 and ES903 (already on) and sleep monitoring for ES603 (already on); the pairing popup is the app's own setting.",
+      "reported": "audit after issue #63"
+    },
+    {
+      "id": "1more-q30-home-quick-settings",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "built",
+      "what": "Spatial audio and the connection mode on the Home tab (branch fix/1more-lab-features).",
+      "reported": "issue #58"
+    },
+    {
+      "id": "1more-q30-touch-extras",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "not-applicable",
+      "what": "A four-tap gesture and a hold action per earbud: Life 5.0.3's strings offer only double and triple tap (operation_double_click, operation_triple_click) and no setting for the hold.",
+      "reported": "issue #58",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values",
+          "glob": "^strings\\.xml$",
+          "pattern": "(four|quadruple|fourth)[ _-]*(tap|click|press)|click[_ -]*(four|quad)",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values",
+          "glob": "^strings\\.xml$",
+          "pattern": "operation_triple_click",
+          "expect": "some"
+        }
+      ],
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/1more-life-5.0.3/res/resources/res/values/strings.xml",
+          "what": "Life 5.0.3's strings offer double and triple tap (operation_double_click, operation_triple_click) and no fourth tap or hold setting for these earbuds"
+        }
+      ]
+    },
+    {
+      "id": "1more-q30-connection-mode-on-connect",
+      "brand": "1more",
+      "models": [
+        "1MORE PistonBuds PRO Q30"
+      ],
+      "status": "needs-report",
+      "what": "Issue #58: after a disconnect the earbuds are in the standard connection mode while PairFree shows the last choice. Read: Life sets the mode only from two screens and never on connecting; PairFree opens a new session for every channel and reads the mode (006C) first, and keeps the last state on screen only while the channel is being reopened. So either the earbuds answer 01 while they play in standard mode, or the read did not arrive; the code cannot tell which.",
+      "reported": "issue #58",
+      "needs": "A device report copied while the earbuds are audibly in standard mode after a reconnect: its last-answer list shows what they answered to 006C.",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/1more-life-5.0.3/out/sources/com/bitaxon/n2/activity/BtModeSetting.java",
+          "what": "Life sends the connection mode (command 006B) only when the user picks it on this screen (line 218) or in OneMoreFunctionActivity; nothing sends it on connecting"
+        },
+        {
+          "path": "android/core/src/main/kotlin/io/github/omegadestroyer/pairfree/bluetooth/EarbudsConnection.kt",
+          "what": "the reconnect loop (RECONNECT_DELAYS_MS, a new driver.serve per channel): the state kept on screen is replaced by the next session's reads"
+        },
+        {
+          "path": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/onemore/OneMoreSession.kt",
+          "what": "start() asks GET_CONNECTION_MODE for every model that has connection modes, and the answer sets the row; the session is made anew with each channel"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/onemore",
+          "glob": "OneMoreSession\\.kt$",
+          "pattern": "GET_CONNECTION_MODE",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/decompiled/1more-life-5.0.3/out/sources/com/bitaxon/n2/activity",
+          "glob": "\\.java$",
+          "pattern": "onServiceConnected[\\s\\S]{0,400}f\\.e\\(",
+          "expect": "none"
+        }
+      ]
+    },
+    {
+      "id": "bose-qc-earbuds-service",
+      "brand": "bose",
+      "models": [
+        "Bose QuietComfort Earbuds"
+      ],
+      "status": "built",
+      "what": "BMAP's own service (00000000-deca-fade-deca-deafdecacaff) is opened for a device that lists it and no standard serial port (branch fix/bose-bmap-service); not tried on earbuds.",
+      "reported": "issue #69"
+    },
+    {
+      "id": "skullcandy-crusher-dial",
+      "brand": "skullcandy",
+      "models": [
+        "Crusher 900 ANC"
+      ],
+      "status": "not-applicable",
+      "what": "Crusher technology's dial and profiles are Bragi's, not Airoha RACE commands: no race command class names them.",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/utils/race_commands",
+          "glob": "\\.dart$",
+          "pattern": "crusherTechnologyDial|crusherTechnologyProfiles|CrusherTechnologyDial",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
+          "glob": "bragiservice\\.dart$",
+          "pattern": "Obj!SKDYFeature@a012c1",
+          "expect": "some"
+        }
+      ],
+      "read": [
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/utils/race_commands",
+          "what": "every race command class: none names the crusher dial or its profiles; the feature objects are used by Bragi's service (bragiservice.dart), not by an Airoha command"
+        },
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services/bragiservice.dart",
+          "what": "references the crusherTechnologyDial and crusherTechnologyProfiles feature objects and sends them over Bragi's own protocol"
+        }
+      ]
+    },
+    {
+      "id": "skullcandy-clear-voice-smart-mic",
+      "brand": "skullcandy",
+      "models": [
+        "Dime Evo and others"
+      ],
+      "status": "not-applicable",
+      "what": "Clear Voice smart mic is a feature guide screen with no control: the app's API layer never names it.",
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api",
+          "glob": "\\.dart$",
+          "pattern": "clearVoiceSmartMic",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/ui/features/guides",
+          "glob": "clearvoicesmartmic",
+          "pattern": "Guide",
+          "expect": "some"
+        }
+      ],
+      "read": [
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/ui/features/guides/skdyclearvoicesmartmicfeatureguide.dart",
+          "what": "the only screen that names clearVoiceSmartMic is an information guide with no switch, slider or command"
+        },
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api",
+          "what": "the whole API layer (services, providers, commands): none refers to clearVoiceSmartMic"
+        }
+      ]
+    },
+    {
+      "id": "1more-life-home-model-gates",
+      "brand": "1more",
+      "models": [
+        "all"
+      ],
+      "status": "built",
+      "what": "Life 5.0.3's home page read: list products show rows by the list's own flags; the model predicates decide only the Lab page, a no-action row, the Major EQ page (Sound ID is cloud data) and the sleep songs (blocked, data/unused_ids.json). Written in docs/1more/PROTOCOL.md (branch fix/1more-lab-features).",
+      "reported": "audit after issue #63"
+    },
+    {
+      "id": "sennheiser-momentum5-eq-confirmation",
+      "brand": "sennheiser",
+      "models": [
+        "Momentum 5 Wireless",
+        "Momentum True Wireless 5"
+      ],
+      "status": "built",
+      "what": "The Momentum 5 answers UserEQ_GetConfiguration as the second-generation equalizer: the owner of a Momentum 5 confirmed on 0.17.2 that the equalizer shows and works (issue #47, 2026-11-23, with the device report mom5-2).",
+      "reported": "issue #47"
+    },
+    {
+      "id": "jbl-harman-command-classes-unbuilt",
+      "brand": "jbl",
+      "models": [
+        "Tour Pro 3, Tour One M3, Tour One 2, Tour Pro 2 and others on the Harman command layer"
+      ],
+      "status": "built",
+      "what": "The Harman command classes of JBL Headphones 5.37.10's com/harman/bluetooth/imp/cmd were read themselves (2026-11-23) and built for the BES models whose dashboard card and control class both have them: PSAP (A0), the smart case's screen (A3) and pages (A4), the clock (A7), the noise check (99), the ear canal test (9A), the seal check (status 42), the ear tips (9C) and the Auracast receiver (B0); docs/jbl/PROTOCOL.md section 4.11, JblHarmanKit and JblAuracast. The protocol 4 (section 4.12) and Airoha (section 4.13) versions are built; PersoniFi (A1), the LE Audio switch, the Airoha fit checks and the case's screen saver pictures are the items below.",
+      "reported": "issue #1 (a posted archive of third-party notes, not used)"
+    },
+    {
+      "id": "skullcandy-personal-sound-controls",
+      "brand": "skullcandy",
+      "models": [
+        "the Airoha models with personalSoundMimi"
+      ],
+      "status": "built",
+      "what": "Personal sound's switch and intensity (device commands 0100 and 0101, relayed to the other earbud) for the 12 Airoha models that have personalSoundMimi; docs/skullcandy/PROTOCOL.md section 9.10. Making a profile stays blocked (Mimi's cloud).",
+      "reported": "audit 2026-11-21 (the owner's challenge to 'blocked' claims)"
+    },
+    {
+      "id": "skullcandy-mimi-profile",
+      "brand": "skullcandy",
+      "models": [
+        "the Airoha models with personalSoundMimi"
+      ],
+      "status": "blocked",
+      "rule": "server authentication",
+      "what": "Making the personal sound profile (the hearing test and its result) goes through Mimi's cloud (authenticateMimiUser, getLatestMimiTestResult, MimiApplicator): PairFree never signs in to a vendor's servers.",
+      "read": [
+        {
+          "path": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services/skdymimiservice.dart",
+          "what": "authenticateMimiUser, getLatestMimiTestResult, initMimi and the anonymous user id: the profile comes from Mimi's service after a sign-in"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/skullcandy/sources/app/skullcandy/s2.java",
+          "what": "the onRead handlers of the custom commands (enabled, intensity, tech level, preset, reset) are separate from the profile, which io.mimi.sdk's MimiApplicator writes"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/skullcandy-blutter/out/asm/skullcandy_app/api/services",
+          "glob": "skdymimiservice\\.dart$",
+          "pattern": "authenticateMimiUser",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "jbl-harman-commands-protocol4",
+      "brand": "jbl",
+      "models": [
+        "Tour One M3, Live 680NC, Live 780NC, Live Beam 4, Live Buds 4, Live Flex 4, Tune Beam 3, Tune Buds 3, Smart Tx and the other protocol 4 models whose dashboard has the cards"
+      ],
+      "status": "built",
+      "what": "PSAP (3200 to 3204), the ear tips (4101), the noise and seal checks (4100, 4099), the clock (49, 7953) and the case's screen and pages (7937 to 7950, 8064 to 8081) on the protocol 4 models whose dashboard has the cards, as General4Control writes them; JblHarmanKit4, docs/jbl/PROTOCOL.md section 4.12. Find my case, the screen saver pictures and the unlock indicator stay in jbl-case-screen-saver-and-find-case.",
+      "reported": "audit 2026-11-23 (reading the cards against the control classes while building JblHarmanKit)"
+    },
+    {
+      "id": "jbl-harman-commands-airoha",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3"
+      ],
+      "status": "built",
+      "what": "PSAP (RACE 0077, 0078), the smart case's screen (0079, 0080) and pages (0081, 0082) and the clock (Harman frame A7 through 0093) on the Live Buds 3 and Tour Pro 3, as JBL's Airoha adapter sends them; JblHarmanKitRace, docs/jbl/PROTOCOL.md section 4.13. The fit checks are in jbl-airoha-fit-checks.",
+      "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-personifi-test",
+      "brand": "jbl",
+      "models": [
+        "the 30 models whose dashboard has PersoniFiCard"
+      ],
+      "status": "built",
+      "what": "PersoniFi's hearing test as JBL Headphones 5.37.10 runs it (2026-11-24, docs/jbl/PROTOCOL.md section 4.14): the curve (JblPersonifi, a port of libpersonifiAlgorithm.so checked against the library in an emulator), JblPersonifiRun (nine tones for each ear, the extra 750 Hz, 1.5 kHz and 3 kHz tones, the scale), the A1 and protocol 4 messages around each tone (JblPersonifiMode: setup flow, side and frequency, the earbuds' answer the app waits for, the end), the warble tones PairFree makes (JblWarble, levels and shape measured from the decoded resource files), the hold-to-hear screen (JblPersonifiScreen), the curve written as category 201 with its 24 bands and PersoniFi switched on, and the PersoniFi switch itself as a row. Never tried on JBL earbuds. The Airoha models (Live Buds 3, Tour Pro 3) send it as RACE: status 0062/0063, setup flow 0073 and the curve 0071 (MmiStage_SetPersoniFiStatus, _SetupFlow, _SetPersoniFiEQ); the Club One through the 41 transfer in category 3.",
+      "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-personifi",
+      "brand": "jbl",
+      "models": [
+        "the 30 models whose dashboard has PersoniFiCard"
+      ],
+      "status": "built",
+      "what": "The wizard's pages before the tones (2026-11-24, read: tk/l, tk/w, tk/k0, tk/w0, rk/e, rk/j, rk/o, pk/e, qk/b, rk/v). Their device traffic is the noise check (environmentNoiseChecking), the sealing status (getSealingStatus), the in-ear status (getInEarStatus), the hearing test mode and setup flow flags (A1 ids 2 and 3), PersoniFi off/on (id 1) and, on tk/w0's \"can you hear it\" page, the hearing test file side (id 5, 1 or 2) with a 75 Hz tone the phone plays (check_seal_75hz_bong_left / _right); the report screen (rk/v) only shows the heard levels in low/mid/high bands. PairFree has the noise check, the seal check and the flags, but not the wizard's sequence of those pages (the fit checks, the 75 Hz seal tone per ear, the can't-hear page and the report) before the tones. Owner, 2026-11-24: PairFree's own noise check, seal check and fit tests already walk the user through these, so the wizard's pages are not replicated; the traffic they hold (the mode and flow flags, the checks' reads) is built.",
+      "reported": "issue #1 notes; audit 2026-11-23"
+    },
+    {
+      "id": "jbl-le-audio-switch",
+      "brand": "jbl",
+      "models": [
+        "the 31 models whose dashboard has LeAudioCard"
+      ],
+      "status": "built",
+      "what": "The LE Audio switch (LeAudioCard.showLeOpenDialog/showLeCloseDialog: BaseControl.setFeatures({1: on})) built for the 27 models whose control class implements setFeatures (2026-11-24, docs/jbl/PROTOCOL.md section 4.15): command B1 key 1 (GetSetFeatureCmd) on the Harman models, protocol 4 feature 2976 (LEAudioUniCastStatus), the same B1 frame through the 0093 passthrough on the Airoha models (Tune 770NC family, Tour Pro 3). The row shows once the earbuds answer the read. The Tune 670NC has the card but its control class inherits the default setFeatures that does nothing, so it has no switch to build. The app's firmware gate (qm.c LE_AUDIO_UNICAST, a per-model capability table) is replaced by showing the row only when the earbuds answer.",
+      "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-case-screen-saver-and-find-case",
+      "brand": "jbl",
+      "models": [
+        "the models whose dashboard has ScreenSaverCard, LockScreenCard or FindMyCaseCard"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.11): the built-in screen saver pictures by number (A3 id 3, protocol 4 7942, the Airoha display array's byte 3; five pictures, from every dashboard's defaultScreenSaver), the custom picture's removal behind a confirmation (A3 03 06 C1, protocol 4 7955 with 193, RACE 0089), the unlock indicator (A3 id 9, 7947, byte 11) and find my case (A3 id 13: 1 plays, 2 stops; 7951; byte 19), each shown once the case answers. The custom picture's upload is the next item.",
+      "reported": "audit 2026-11-23"
+    },
+    {
+      "id": "jbl-case-custom-screen-saver-upload",
+      "brand": "jbl",
+      "models": [
+        "the models whose dashboard has ScreenSaverCard or LockScreenCard"
+      ],
+      "status": "blocked",
+      "rule": "firmware",
+      "what": "Putting a picture of the user's own on the case (and the lock screen's pictures, features 7954 to 7960 with their opacity and colour theme) is not a display setting: JBL's LockScreenOtaViewModel builds image_ota.bin, checks its CRC32 and sends it through the case's firmware updater (HmOtaMgr's startOta with UpgradeInfo, OTADfuInfo.IS_CASE_OTA and SCREEN_SAVER_IMAGE_FILE_SIZE, the same upgrading, reboot and failure statuses as a firmware update). PairFree never sends firmware-update traffic (CLAUDE.md, Hard rules: only Qualcomm, behind an opt-in flag, with a user's image); the CRC32 write (A3 id 7, feature 7955's neighbour) is part of that transfer. Owner, 2026-11-24: not wanted; it stays unbuilt.",
+      "reported": "audit 2026-11-23",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/fr/m.java",
+          "what": "LockScreenOtaViewModel: image_ota.bin created and mixed, ImgBinCRC32 checks, startOtaProcess builds UpgradeInfo with OTADfuInfo.IS_CASE_OTA and the screen saver image sizes and calls startOta; the statuses are the firmware updater's (STATUS_REBOOT, TRANSFER_DONE)"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/jbl/stc/com/ui3/fragment/dashboard/card/ScreenSaverCard.java",
+          "what": "the card picks the built-in pictures by index and shows the custom one as index 193; adding one goes through the lock screen OTA page"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/jbl/sources/fr",
+          "glob": "m\\.java$",
+          "pattern": "IS_CASE_OTA",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "jbl-airoha-fit-checks",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3, Live Free 2, Reflect Aero, Quantum TWS"
+      ],
+      "status": "built",
+      "what": "The noise check (RACE 0E17 status read, then 0E15 or, on the AB1562, 0E18; the level by the per-model line of getEnvironmentNoise) and the seal check (0E13 leakage detection, answered by an indication) on the five Airoha models whose dashboard has the fit card; JblHarmanKitRace, docs/jbl/PROTOCOL.md section 4.13. The ear canal test is in jbl-airoha-ear-canal-test.",
+      "reported": "audit 2026-11-24 (building JblHarmanKitRace)"
+    },
+    {
+      "id": "jbl-airoha-ear-canal-test",
+      "brand": "jbl",
+      "models": [
+        "Live Free 2, Reflect Aero, Quantum TWS (the models whose folder EarCanalTesting.zip holds)"
+      ],
+      "status": "blocked",
+      "what": "The ear canal test of the Airoha models is not a read: AirohaDeviceStatusControl's EAR_CANAL_TESTING flow unzips the asset EarCanalTesting.zip and runs Airoha's ANC user trigger (AncStageStartAncUserTrigger, RACE 0901 with module 5, AirohaAncUserTriggerStateMachine) which measures the ear canal, works out new feedback ANC filter coefficients in Java (AncUserTriggerUtils) from per-model tuning tables, and writes them to both earbuds (AncStageUpdateAncUserTriggerCoef and its relay to the partner). The tables are the zip's folders 2067 (Live Free 2), 207B (Reflect Aero) and 207D (Quantum TWS): about 3 MB each (Pzp.txt, Pzp2.txt, sz_fb.txt of about 970 KB each, with ut_para.txt, wz_*_filter.txt and loss_*.txt). They are the vendor's own tuning data, so including them (or numbers derived from them) in PairFree needs the owner's agreement (CLAUDE.md, Hard rules: derived facts go into data/ only after the owner has agreed), and the test rewrites the earbuds' noise cancelling filters. The Live Buds 3 and Tour Pro 3 have no folder in the zip, so the flow cannot run for them; their fit checks (the seal check and noise check) are built. Owner, 2026-11-24: PairFree does not carry the tables and does not build the test.",
+      "reported": "audit 2026-11-24 (building JblHarmanKitRace)",
+      "rule": "decision the owner has reserved",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman/AirohaDeviceStatusControl.java",
+          "what": "case 38 of execFlow (EAR_CANAL_TESTING): picks the folder by model name, unzips assets/EarCanalTesting/EarCanalTesting.zip and calls startAncUserTrigger with that folder; asks for the partner earbud"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/libanc/model/AncUserTriggerUtils.java",
+          "what": "the calculation reads ut_para.txt, loss_*.txt, sz_fb.txt, Pzp2.txt and wz_*_filter.txt from the input folder"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/libanc/stage/AncStageStartAncUserTrigger.java",
+          "what": "RACE 0901 with module 5 starts the trigger and feeds every response (and the partner's relay) to AirohaAncUserTriggerStateMachine"
+        },
+        {
+          "path": "E:/Builds/research/jbl-resdec/resources/assets/EarCanalTesting/EarCanalTesting.zip",
+          "what": "folders 2067, 207B and 207D only, each with about 3 MB of tuning tables"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/jbl/sources/com/airoha/libanc/model",
+          "glob": "AncUserTriggerUtils\\.java$",
+          "pattern": "ut_para\\.txt",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "jbl-noise-levels",
+      "brand": "jbl",
+      "models": [
+        "the models whose dashboard has a level slider on the noise card or the customize page"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.17): the noise cancelling and Ambient Aware levels, eight steps, each live in its own mode as in JBL's app: command 91's pairs 04 and A1 on the Harman models, the mode feature's level on protocol 4 (with the ambient sound control's status on the asc models), RACE 0E06 1E and the step on the Airoha models (read from module 5 and 7); leakage and ear canal compensation (91 types 05 and 06) on the Harman models of the customize page. Never tried on earbuds.",
+      "reported": "docs/devices/jbl.md Not yet, audit 2026-11-24"
+    },
+    {
+      "id": "jbl-airoha-adaptive-anc",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3 (auto compensation); the AdaptiveAncCard's other Airoha models"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.19): adaptive noise cancelling on the Live Buds 3 and Tour Pro 3 (RACE 0E17 type 3) and auto compensation (setFullAdaptiveAncStatus: RACE 0E06 with 15 bytes and mode 10 on, a read of 0E26 type 13; off as a plain noise cancelling write on the Live Buds 3 and RACE 0095 on the Tour Pro 3), built in JblHarmanKitRace from the SDK's stages and AirohaDeviceStatusControl. Never tried on earbuds.",
+      "reported": "docs/jbl/PROTOCOL.md section 10 (Not covered yet), audit 2026-11-24"
+    },
+    {
+      "id": "jbl-touch-quantum-tour-one",
+      "brand": "jbl",
+      "models": [
+        "Tour One, Quantum 360, 360X, 360P, Quantum 910 (app refuses), the Tune 3 and Vibe/Wave 3 touch sensitivity"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 4.18): the Tour One's touch panel and function button are commands 79 and 78 (FuncTouchCategory 1 voice assistant, 2 ambient sound control, 3 TalkThru; FuncButtonCategory 1 voice assistant, 2 ambient sound control, 3 active mode control; a write 00, 01 and the category), built for the 24 direct models whose control class sets them; the Quantum 360, 360X and 360P's dials and button are command 77 with the gestures 55, 56 and 64 (wire bytes 10, 11 and 13 hex) set to volume (AA), game and chat balance (A9), microphone mute (AB) or the light (AC); the touch sensitivity (protocol 4 features 4033 and 4034, two or three steps) of the nine models whose dashboard supports it. The Quantum 910 family's dial page cannot write: AirohaDeviceStatusControl.IsGestureIdValid refuses every gesture id except 1 to 8, 49 and 50, so JBL's own app cancels the 910's dial writes (ids 55, 56, 64); checked: AirohaDeviceStatusControl execFlow SET_GESTURE_STATUS, IsGestureIdValid.",
+      "reported": "docs/devices/jbl.md Not yet, audit 2026-11-24",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/harman/bluetooth/reqimp/CmdGen.java",
+          "what": "generateSetFunctionControlCmd and generateSetTouchPanelControlCmd: the headers AA 78 and AA 79, 00, 01 and the category"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/wp/f.java",
+          "what": "the Quantum dial page's sendCommand: gesture ids 55, 56 and 64, actions 169 to 172"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman/AirohaDeviceStatusControl.java",
+          "what": "IsGestureIdValid accepts 1 to 8, 49 and 50 only, and execFlow cancels the Airoha gesture write otherwise: the 910's dials cannot be written by JBL's app"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman",
+          "glob": "AirohaDeviceStatusControl\\.java$",
+          "pattern": "gestureId != 49 && gestureId != 50",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "jbl-touch-older-models",
+      "brand": "jbl",
+      "models": [
+        "Live 220BT, 300TWS, 400BT, 500BT, 650BTNC, Club 700BT and 950NC, Live Pro+, Tour Pro+, UA Project Rock"
+      ],
+      "status": "built",
+      "what": "The older models (Live 220BT, 300TWS, 400BT, 500BT, 650BTNC, Club 700BT and 950NC, Live Pro+, Tour Pro+, UA Project Rock) set their touch panel (79) and function button (78) through the same BesBasicControl commands, which are now built for every direct model whose control class sets them (docs/jbl/PROTOCOL.md section 4.18); the rows show once the earbuds answer the read, since JBL's app has no description of these models' cards.",
+      "reported": "docs/devices/jbl.md, audit 2026-11-24"
+    },
+    {
+      "id": "jbl-models-without-controls",
+      "brand": "jbl",
+      "models": [
+        "Tour Pro 4, Tour One M4, the newer Smart Tx"
+      ],
+      "status": "not-applicable",
+      "what": "JBL Headphones 5.37.10 lists these three with support false and no control class: product_list.json gives each a dash configuration but marks it unsupported and names no cmdCtrlList, and the control factory (gn.n.y0) builds a control only from a listed class. The app opens no settings for them. The Everest Elite range and Reflect Aware are another matter and are in jbl-avnera-models.",
+      "reported": "docs/devices/jbl.md, audit 2026-11-24",
+      "read": [
+        {
+          "path": "E:/Builds/research/jbl-res/assets/product_list.json",
+          "what": "JBL Tour Pro 4 (21AE), JBL Tour One M4 (2193) and JBL Smart Tx with dash4Config jbl_smart_tx_gen2.json: support false, no cmdCtrlList"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/gn/n.java",
+          "what": "y0 picks EverestControl for old devices, else the control class its product lists"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/jbl-res/assets",
+          "glob": "product_list\\.json$",
+          "pattern": "\"name\": \"JBL Tour Pro 4\",\\s*\"serialName\": \"TOUR\",\\s*\"support\": \"false\"",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "jbl-avnera-models",
+      "brand": "jbl",
+      "models": [
+        "Everest Elite 100, 150NC, 300, 700, 750NC and Reflect Aware"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 12): Avnera's LightX protocol over the standard serial port, read from the a7 package of JBL Headphones 5.37.10 (EverestControl, gn.v, gn.d): the frame, the keys and their values, built as AvneraPacket, AvneraReader and AvneraTalk with the battery, noise cancelling on and off, the ambient level, the equalizer's presets and the user's ten bands, auto power-off, voice prompts and the smart button. The boot, configuration and firmware keys never go out. Never tried on headphones. The Everest Elite 150NC is in jbl-avnera-150nc.",
+      "reported": "audit 2026-11-24"
+    },
+    {
+      "id": "jbl-avnera-150nc",
+      "brand": "jbl",
+      "models": [
+        "Everest Elite 150NC"
+      ],
+      "status": "built",
+      "what": "2026-11-24 (docs/jbl/PROTOCOL.md section 12.4): the 150NC's accessory manager (z6) runs over the same serial port and the same frame as LightX, with the same keys behind module 0x43 and a class byte per id (F085 is key 0x85, class 0xF0); AvneraTalk serves it with `accessory` set: battery, noise cancelling, ambient level, each ear's outside sound, equalizer presets and bands, auto off, voice prompts and the smart button. Never tried on headphones. The earlier note that it was a Bluetooth LE accessory was wrong: z6.l opens RFCOMM 00001101.",
+      "reported": "audit 2026-11-24"
+    },
+    {
+      "id": "jbl-airoha-compensation-switches",
+      "brand": "jbl",
+      "models": [
+        "Live Buds 3, Tour Pro 3"
+      ],
+      "status": "not-applicable",
+      "what": "Leakage and ear canal compensation on the Airoha models: the customize page puts KEY_LEAKAGE_COMPENSATION_ONOFF and KEY_EAR_CANAL_COMPENSATION_ONOFF in setAdvanceAnc's flow, but the two flows that carry it (SET_ADVANCE_ANC_1 and _2) read only the adaptive, auto compensation, manual level and Ambient Aware level entries; nothing sends the other two.",
+      "reported": "audit 2026-11-24",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman/AirohaDeviceStatusControl.java",
+          "what": "setAdvanceAnc puts the four keys; execFlow cases 34 and 35 take KEY_ADAPTIVE_ANC_ONOFF, KEY_AUTO_COMPENSATION_ONOFF, KEY_MANUAL_ANC_LEVEL and KEY_AA_LEVEL only"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/jbl/sources/com/airoha/adapter/harman",
+          "glob": "AirohaDeviceStatusControl\\.java$",
+          "pattern": "KEY_LEAKAGE_COMPENSATION_ONOFF",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "qcy-jieli-equalizer",
+      "brand": "qcy",
+      "models": [
+        "QCY T13 ANC2",
+        "the older JieLi models"
+      ],
+      "status": "needs-report",
+      "what": "The older QCY models on JieLi's chips (the T13 ANC2) keep their equalizer in system information attribute 4, which PairFree reads when the channel opens and, since this version, again with each battery read until it answers; two device reports (issues #35 and #75) show no answer, and the report now records the earbuds' reply status to the EQ read.",
+      "reported": "issue #75 (and #35)",
+      "needs": "A new QCY T13 ANC2 device report from the next version: its 'sys read status' line says how the earbuds answered the EQ read (status and the first bytes).",
+      "read": [
+        {
+          "path": "E:/Builds/research/decompiled/qcy/sources/com/qcymall/earphonesetup/manager/QCYConnectManager.java",
+          "what": "readEQData: a JieLi device whose panel has no multi-EQ reads the EQ with JLDeviceImpl.getEQInfo, otherwise custom items 0x20 and 0x22; the T13 ANC2's panel (server_dump/qcy/panels/18294.json) has sys_eq with ten frequencies and no multi-EQ"
+        },
+        {
+          "path": "E:/Builds/research/decompiled/qcy/sources/com/jieli/jl_rcsp/util/CommandBuilder.java",
+          "what": "buildGetEqValueCmd is the public system information read with mask 16 (attribute 4), as PairFree sends it"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/decompiled/qcy/sources/com/jieli/jl_rcsp/util",
+          "glob": "CommandBuilder\\.java$",
+          "pattern": "buildGetEqValueCmd",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "qcy-doc-gaps-baseline",
+      "brand": "qcy",
+      "models": [
+        "all"
+      ],
+      "status": "built",
+      "what": "The five statements of docs/qcy/PROTOCOL.md in data/doc_gaps_baseline.json are settled: the JieLi noise strength slider, the parametric presets and the fit test are built, and the never-sent list and the section's heading say what they are (2026-11-24).",
+      "reported": "owner, 2026-11-24, after issue #75"
+    },
+    {
+      "id": "soundcore-liberty-buds-2-not-found",
+      "brand": "soundcore",
+      "models": [
+        "Soundcore Liberty Buds 2"
+      ],
+      "status": "needs-report",
+      "what": "A user's Soundcore Liberty Buds 2 (D1206), which the docs list, are not found among the paired earbuds. PairFree matched the Bluetooth name only exactly; it now also accepts the name with or without Soundcore's or Anker's word and whatever the spacing, which may be the cause (issue #76).",
+      "reported": "issue #76",
+      "needs": "The Bluetooth name of the earbuds as Android's Bluetooth settings show it and, if the earbuds still do not appear, whether they appear under a different brand (a screenshot of the connect screen).",
+      "read": [
+        {
+          "path": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/soundcore/SoundcoreModels.kt",
+          "what": "fromName matched exactly (ignoring case) against the model table's names, which hold the D1206 as 'Liberty Buds 2'; now also by a key without the maker's word and punctuation"
+        },
+        {
+          "path": "data/soundcore/devices.json",
+          "what": "the D1206 entry: names ['Liberty Buds 2'], read from the Soundcore app 5.0.35; no vendor service id is listed for it"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/soundcore",
+          "glob": "SoundcoreModels\\.kt$",
+          "pattern": "nameKey",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "bose-qc-earbuds-product-unknown",
+      "brand": "bose",
+      "models": [
+        "Bose QuietComfort Earbuds"
+      ],
+      "status": "built",
+      "what": "The QuietComfort Earbuds opened on Bose's BMAP service but stayed silent: SppLink now sends a firmware read after opening by the service record and, when nothing answers in 2.5 s, tries RFCOMM channels 8, 2 and 9 as bosectl does (issue #69; unverified on earbuds, so a device report from the next version settles it).",
+      "reported": "issue #69"
+    },
+    {
+      "id": "bose-nc700-paired-devices",
+      "brand": "bose",
+      "models": [
+        "Bose Noise Cancelling Headphones 700"
+      ],
+      "status": "built",
+      "what": "The paired devices (DeviceManagement 4.4 and 4.5): the list with each device's name, connect, disconnect and forget (confirmed), and pairing mode, on every Bose model that answers block 4 (the NC 700 among them); the phone's own entry is never offered (issue #71, branch fix/issues-2026-11-24; not tried on headphones).",
+      "reported": "issue #71"
+    },
+    {
+      "id": "samsung-buds-pro-channel-drops",
+      "brand": "samsung",
+      "models": [
+        "Galaxy Buds Pro (SM-R190)"
+      ],
+      "status": "needs-report",
+      "what": "The serial channel of a user's Galaxy Buds Pro (SM-R190) opens and the earbuds close it within 0 to 4 s, again and again (connection report, Android 17). PairFree's connection report now says how many bytes each side sent and received before each close (issue #73).",
+      "reported": "issue #73",
+      "needs": "A new connection report from the next version (its 'closed after N s' lines now say how many bytes PairFree sent and the earbuds sent) and whether the Galaxy Wearable app or another app is installed on that phone; if the earbuds sent nothing, the Galaxy Buds Pro's own plugin APK (com.samsung.accessory.* for the SM-R190) to read what it sends first.",
+      "read": [
+        {
+          "path": "E:/Builds/research/galaxybudsclient/GalaxyBudsClient/Message/SppMessage.cs",
+          "what": "the legacy header and framing the Buds Pro uses; nothing sent before the earbuds' own status, and the manager info is the reply to it, as PairFree does"
+        },
+        {
+          "path": "docs/samsung/PROTOCOL.md",
+          "what": "section 4: no handshake; PairFree answers the state with the manager info and asks for the version; the reference APK folder holds plugins for the Buds, Buds+, Buds Live, Buds2, Buds2 Pro and later, none for the SM-R190"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/galaxybudsclient/GalaxyBudsClient/Message",
+          "glob": "SppMessage\\.cs$",
+          "pattern": "SppLegacyMessageHeader",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "nothing-cmf-buds-pro-2-open",
+      "brand": "nothing",
+      "models": [
+        "CMF Buds Pro 2"
+      ],
+      "status": "built",
+      "what": "Opening the serial service failed twice on a Nothing phone: SppLink's third attempt is now RFCOMM channel 15 directly, as Nothing X's BaseSppConnector falls back to (issue #77; unverified on the earbuds: if the phone's own earbud integration holds the channel it will still fail).",
+      "reported": "issue #77"
+    },
+    {
+      "id": "soundpeats-t3-pro-language-pack",
+      "brand": "soundpeats",
+      "models": [
+        "SoundPEATS T3 Pro"
+      ],
+      "status": "built",
+      "what": "The voice prompt language (03 21 / 03 22) is no longer offered on any model that has not been confirmed with it: the official app marks the command deprecated (FSN999) and none of the 81 models' feature lists holds it, and a T3 Pro bootlooped after a language change (issue #74). It was offered wherever the earbuds answered the read.",
+      "reported": "issue #74"
+    },
+    {
+      "id": "app-configurable-widget-and-notification",
+      "brand": "all",
+      "models": [
+        "all"
+      ],
+      "status": "built",
+      "what": "The widget's buttons can be any switch the earbuds offer (WidgetSlot.Toggle), and the notification's two buttons are set per pair of earbuds to the noise mode, nothing or any such switch (issue #72, owner 2026-11-24).",
+      "reported": "issue #72, owner 2026-11-24"
+    },
+    {
+      "id": "skullcandy-dime-evo-stay-aware",
+      "brand": "skullcandy",
+      "models": [
+        "Dime Evo"
+      ],
+      "status": "built",
+      "what": "The Dime Evo has Stay Aware and no noise cancelling, and PairFree offered and sent noise cancelling anyway: the notification steps, and the widget offers, only the modes the product's feature list has, and the session never sends a mode the product lacks (issue #66). The battery side is the earbuds' own reply (an inference, section 16).",
+      "reported": "issue #66"
+    },
+    {
+      "id": "qcy-fit-test",
+      "brand": "qcy",
+      "models": [
+        "20 models whose panel has Fit detection (type 110)"
+      ],
+      "status": "built",
+      "what": "The ear tip fit test on the 20 models whose panel has Fit detection: item 11 with 01 01 01 starts it, the earbuds answer with a status, then the result for each earbud (3 good, 1 or 2 poor, else failed), and off (00 00 00) goes out once a result is in; the shared fit test screen shows it and plays PairFree's own noise shaped to the spectrum and level of QCY's clip while the test runs (QcyFitSound). Not tried on earbuds: whether the earbuds accept a sound that is not QCY's clip is the thing a report settles (2026-11-24).",
+      "reported": "audit 2026-11-24 (issue #75's follow-up)"
+    },
+    {
+      "id": "qcy-parametric-presets",
+      "brand": "qcy",
+      "models": [
+        "77 models whose presets are parametric"
+      ],
+      "status": "built",
+      "what": "QCY's presets with bands of their own, for the 87 models whose panels list them (540 presets): written as the parametric EQ the way QCY's app writes a preset (the preset's id as the EQ index, its master gain, its bands padded to the earbuds' slots) and drawn on the Sound tab on their own bands (2026-11-24; not tried on earbuds).",
+      "reported": "audit 2026-11-24 (docs/qcy/PROTOCOL.md section 7)"
+    },
+    {
+      "id": "qcy-personalised-listening-test",
+      "brand": "qcy",
+      "models": [
+        "8 models whose panel has the personalised listening experience (vendor ids 23872, 23874, 23877, 23879, 23880, 23881, 23883, 23884)"
+      ],
+      "status": "built",
+      "what": "The personalised listening test of the 8 models whose panel has it: tones per band and ear on the Sound tab, the rules of QCY's app (CustomEQEdit2Activity, BeepTool2), item 45 for the test mode, and the left and right curves as items 46 and 47 with the master gain QCY's getMaxGain works out (QcyPersonal, QcyPersonalTest, QcyPersonalScreen; 2026-11-24, not tried on earbuds). Item 44 (MAX_EQ_COUNT) is read and limits the presets sent.",
+      "reported": "audit 2026-11-24 (docs/qcy/PROTOCOL.md section 8)"
+    },
+    {
+      "id": "soundcore-a3398-r30",
+      "brand": "soundcore",
+      "models": [
+        "Soundcore R30 (A3398)"
+      ],
+      "status": "blocked",
+      "what": "The Soundcore R30 (A3398) is a party speaker, not earbuds: the app gives it a main screen of DJ, device and game pages (A3398MainActivity: FRAGMENT_DJ_INDEX, FRAGMENT_DEVICE_INDEX, FRAGMENT_GAME_INDEX), a light effects screen and a DJ colour screen, with its own A3398CmdService on the Cmm2 manager. PairFree holds speakers back (owner, 2026-10-30), so it gets no entry in data/soundcore/devices.json; the same holds for the other registry keys that are speakers (Motion, Boom, Rave, Flare, Select, Glow, Mini, Mega, Trance, Infini Pro, Wakey, PowerConf).",
+      "reported": "owner check of the soundcore-full-protocol branch, 2026-11-25",
+      "rule": "decision the owner has reserved",
+      "read": [
+        {
+          "path": "E:/Builds/research/soundcore-full-protocol-2026-11-13/live-jadx/sources/com/oceanwing/soundcore/activity/a3398/A3398MainActivity.java",
+          "what": "fragments DJ (0), device (1) and game (2); imports LightEffects and reads light effect callbacks"
+        },
+        {
+          "path": "E:/Builds/research/soundcore-full-protocol-2026-11-13/live-jadx/sources/com/oceanwing/soundcore/activity/a3398/",
+          "what": "A3398DJActivity, A3398DjColorActivity, A3398LightActivity, A3398EqActivity, A3398OtaActivity: no earbud screens (no touch controls, noise control or fit test)"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/soundcore-full-protocol-2026-11-13/live-jadx/sources/com/oceanwing/soundcore/activity/a3398",
+          "glob": "A3398MainActivity\\.java$",
+          "pattern": "FRAGMENT_DJ_INDEX",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-find-earbuds",
+      "brand": "soundcore",
+      "models": [
+        "Soundcore earbuds whose app has Find Earbuds (reported on the R60i)"
+      ],
+      "status": "open",
+      "what": "The Soundcore app's Find Earbuds (play a loud sound from the left, the right or both earbuds until stopped) is not in PairFree for any Soundcore model; which models have it and the command are to be read from the Soundcore app (2.9.9 and the restored 5.0.35).",
+      "reported": "issue #79"
+    },
+    {
+      "id": "apple-airpods-max-2-a3454",
+      "brand": "apple",
+      "models": [
+        "AirPods Max 2 (model number A3454)"
+      ],
+      "status": "open",
+      "what": "The AirPods Max 2 connect (the report lists battery and ten settings) but are not in PairFree's model table (model number A3454, firmware 91.3431046004000000.29), so their settings are not named or checked against the model.",
+      "reported": "issue #81"
+    },
+    {
+      "id": "oneplus-oppo-enco-buds2-pro-open",
+      "brand": "oneplus",
+      "models": [
+        "OPPO Enco Buds2 Pro (068010)"
+      ],
+      "status": "open",
+      "what": "The channel on service 0000079A-D102-11E1-9B23-00025B00A5A5 did not open (two socket attempts, read ret -1) on a Pixel 10 Pro XL, Android 17: to be settled from the OPPO and OnePlus apps' own connection code (which channel or service they open) and the report's service list, which holds only 00001107-d102-11e1-9b23-00025b00a5a5 beside the standard ones.",
+      "reported": "issue #78"
+    },
+    {
+      "id": "jbl-tour-pro-3-screens",
+      "brand": "jbl",
+      "models": [
+        "JBL Tour Pro 3 (20F2, serial channel, Airoha AB1585)"
+      ],
+      "status": "open",
+      "what": "On a Tour Pro 3 the firmware reads 255.255.255 for a moment after a setting changes, and after some change the screens showed only the Speak to chat switch even after restarting the app; the cause is to be found in JblSession and JblHarmanKitRace (a read-back or reload that replaces the state with an empty one).",
+      "reported": "issue #1 (comments of 2026-11-26, device report from 0.18.0)"
+    }
+  ]
+}

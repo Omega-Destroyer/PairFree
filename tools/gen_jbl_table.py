@@ -39,6 +39,31 @@ EXTRAS = {
     "adaptive_anc": "adaptive noise cancelling",
     "auto_compensation": "auto compensation",
     "low_volume_eq": "low volume EQ",
+    "psap": "personal sound amplification",
+    "case_pages": "the smart case's pages",
+    "case_brightness": "the smart case's brightness",
+    "case_notifications": "the smart case's message notifications",
+    "case_screen_saver": "the smart case's screen saver (time and picture)",
+    "case_language": "the smart case's language",
+    "case_wake": "the smart case's quick wake-up",
+    "case_info": "the smart case's version",
+    "case_clock": "the smart case's clock",
+    "fit_test": "noise check and ear canal test",
+    "ear_tips": "ear tips",
+    "auracast": "Auracast listening",
+    "personifi": "PersoniFi (the hearing test and its switch)",
+    "personifi_open": "",
+    "le_audio": "LE Audio switch",
+    "anc_level": "noise cancelling level",
+    "function_button": "function button",
+    "touch_panel": "touch panel tap and hold",
+    "touch_sensitivity": "touch sensitivity",
+    "quantum_dials": "dials and microphone button",
+    "leakage_comp": "leakage compensation",
+    "ear_canal_comp": "ear canal compensation",
+    "aa_level": "Ambient Aware level",
+    "case_find": "find my case",
+    "case_unlock": "the smart case's unlock indicator",
 }
 TRIED = {
     "JblTray": "https://github.com/emperorbug46/JblTray",
@@ -65,7 +90,7 @@ def settings(m):
         out.append("auto power-off")
     if m.get("auto_play_pause"):
         out.append("pause when taken off")
-    out += [EXTRAS[x] for x in m.get("settings", [])]
+    out += [EXTRAS[x] for x in m.get("settings", []) if EXTRAS[x]]
     # Airoha models' key map (docs/jbl/PROTOCOL.md section 10.1).
     if (m.get("airoha_gestures") or m.get("p5_gestures")) and "touch controls" not in out:
         out.append("touch controls")
@@ -114,6 +139,7 @@ def table():
         *rows(devices),
         "</table>",
         "",
+        *avnera(load().get("avnera", [])),
         *not_covered(load().get("not_covered", [])),
         END,
     ])
@@ -139,6 +165,18 @@ def not_covered(models):
         if names:
             out += ["", f"{text}: {', '.join(names)}."]
     return out
+
+
+def avnera(models):
+    """The Everest Elite and Reflect Aware models, which speak Avnera's own protocol (docs/jbl/PROTOCOL.md section 12)."""
+    if not models:
+        return []
+    names = ", ".join(escape(m["name"]) for m in models)
+    return [
+        f"<b>Avnera platform</b> ({len(models)}, not tested): {names}. They speak Avnera's own protocol over the standard serial port, and PairFree shows what the "
+        "headphones answer: the battery, noise cancelling, the ambient level and each ear's outside sound, the equalizer's presets and your own ten bands, power off when taken off, voice prompts and the smart button.",
+        "",
+    ]
 
 
 def summary():

@@ -15,7 +15,7 @@
   {"code": "003C", "name": "GET_EQ_MODE"},
   {"code": "0049", "name": "DELETE_MUSIC", "never_send": true},
   {"code": "004C", "name": "SET_VOLUME"},
-  {"code": "004D", "name": "HANDSHAKE", "never_send": true},
+  {"code": "004D", "name": "HANDSHAKE", "note": "sent with 01 as soon as the serial channel is up; the answer's 01 is success, and 1MORE's app starts its reads on it (HeadsetActivity, DispatcherKt). The first review took it for something the app never sends; the app sends it from five places and a virtual Aero run saw it."},
   {"code": "004E", "name": "GET_BINAURAL_INFO", "note": "left is master (0), left version (3), left battery, right version (3), right battery, case battery"},
   {"code": "004F", "name": "GET_AI_LICENSE", "never_send": true},
   {"code": "0053", "name": "SET_EQ_PARAMETERS"},
@@ -35,11 +35,15 @@
   {"code": "006A", "name": "GET_PRESET_SOUND"},
   {"code": "006B", "name": "SET_CONNECTION_MODE"},
   {"code": "006C", "name": "GET_CONNECTION_MODE"},
+  {"code": "006D", "name": "SET_LONG_TOUCH", "note": "left, right: the noise mode a touch and hold switches to, 1 strong, 2 mild, 4 wind (1MORE Life 5.0.3, ES901OperationCustomActivity: f.a(left, right))"},
+  {"code": "006E", "name": "GET_LONG_TOUCH"},
   {"code": "006F", "name": "SET_SLEEP_DETECTION"},
   {"code": "0070", "name": "GET_SLEEP_DETECTION"},
   {"code": "0071", "name": "TRANSFER_START", "never_send": true},
   {"code": "0072", "name": "TRANSFER_DATA", "never_send": true},
   {"code": "0073", "name": "TRANSFER_END", "never_send": true},
+  {"code": "0074", "name": "SET_TOUCH_DISABLE", "note": "1 turns the touch controls off, 0 on (1MORE Life 5.0.3, OperationCustomActivity: the switch is shown on the ComfoBuds Mini above firmware 1048)"},
+  {"code": "0075", "name": "GET_TOUCH_DISABLE"},
   {"code": "0076", "name": "SET_DUAL_DEVICE"},
   {"code": "0077", "name": "GET_DUAL_DEVICE"},
   {"code": "0080", "name": "SET_HOT_WORD"},
@@ -72,6 +76,7 @@
   "click_each": {"0": "none", "1": "next", "2": "previous", "3": "volume_down", "4": "volume_up", "5": "play_pause", "6": "voice_assistant"},
   "custom_gesture": {"1": "double_left", "2": "double_right", "3": "triple_left", "4": "triple_right"},
   "level": {"0": "off", "1": "low", "2": "medium", "3": "high"},
-  "preset_sound": {"0": "studio", "1": "bass_reducer", "2": "bass_booster", "3": "acoustic", "4": "classical", "5": "podcast", "6": "deep", "7": "electronic", "8": "hiphop", "9": "lounge", "10": "pop", "11": "loud", "12": "custom", "13": "thx"}
+  "preset_sound": {"0": "studio", "1": "bass_reducer", "2": "bass_booster", "3": "acoustic", "4": "classical", "5": "podcast", "6": "deep", "7": "electronic", "8": "hiphop", "9": "lounge", "10": "pop", "11": "loud", "12": "custom", "13": "thx"},
+  "preset_sound_classic": {"0": "default", "1": "bass_reducer_1", "2": "bass_reducer_2", "3": "bass_booster_1", "4": "bass_booster_2", "5": "acoustic_1", "6": "acoustic_2", "7": "classical_1", "8": "classical_2", "9": "podcast", "10": "vocal_booster", "11": "deep_1", "12": "deep_2", "13": "electronic_1", "14": "electronic_2", "15": "hiphop_1", "16": "hiphop_2", "17": "lounge_1", "18": "lounge_2", "19": "pop_1", "20": "pop_2", "21": "loud"}
  }
 }

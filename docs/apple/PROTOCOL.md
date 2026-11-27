@@ -27,9 +27,13 @@ them; PairFree does the same, and takes "AirPods" in the name too. Beats are kno
 service alone, since the ones on Beats' own chips (Studio Buds, Studio Buds +, Solo Buds) speak
 another protocol with Beats' app, though MagicPodsCore lists them.
 
-Android has no public way to open a classic L2CAP channel. LibrePods makes the socket through
-`BluetoothSocket`'s hidden constructors, trying each Android version's signature, newest first;
-PairFree does the same (`AppleLink`). Android's Bluetooth stack then refuses the AirPods' channel
+Android has no public way to open this classic L2CAP channel: Android 16's `BluetoothDevice.createUsingSocketSettings`
+(`BluetoothSocketSettings`, API 36) takes a PSM of 0 to 255 only (lint's `@IntRange` on `setL2capPsm`), and the AirPods'
+is 0x1001. LibrePods makes the socket through `BluetoothSocket`'s hidden constructors, trying each Android version's
+signature, newest first; PairFree does the same (`AppleLink`). A user's AirPods Pro 3 on a Pixel 8 with Android 17 (issue
+#3, 0.7.2; build CP3A.261005.005) found none of the five: the last one's signature (int, boolean, boolean, device, int,
+uuid) was not there. When every signature fails, the connection report now lists the constructors the phone has, so the
+next report shows the one Android 17 uses. Android's Bluetooth stack then refuses the AirPods' channel
 (Google issue 371713238) except where it is fixed: Android 17 and later, Pixels on Android 16
 QPR3 (build ids starting `CP1A`), and OnePlus, OPPO and realme phones on Android 16
 (`AppleSupport`, LibrePods' `isSupported`). Elsewhere LibrePods needs root and Xposed; PairFree
@@ -121,7 +125,12 @@ in it, and switching it off goes back to the mode before.
 **Custom EQ (opcode `63`, LibrePods' `CustomEq`):** a two-byte length (5), `01`, the state (`02` on, `01` off),
 then low, mid and high from 0 to 100 (50 is flat). LibrePods found it on AirPods' newest beta firmware, which an
 Apple device on OS 27 installs; the AirPods send it when PairFree asks for notifications, and PairFree shows it
-only then. A change writes the whole packet again, as LibrePods does. Not tried with PairFree.
+only then. A change writes the whole packet again, as LibrePods does. Tried once: a user's AirPods Pro 3 (A3064, firmware 90.3431) on a Pixel 8 with Android 17 connected through the hidden-constructor route and showed these settings (issue #3, `data/apple/reports/`).
+
+Off and `34` (2026-11-11, issue #3): a user's AirPods Pro 3 (Android 17, PairFree 0.9.1) answered the Off listening mode (`0D` 01) with an error beep, and
+its 21 reported controls did not include `34`. So AirPods apply Off only while "Allow Off" is on, and may never report it. PairFree's Off therefore writes
+`34` 01 first when `34` is not known to be on, then the mode (`AppleSession.set`); until a user confirms it, this is inferred from the beep and from the
+switch's name (the iOS Noise Control setting), not recorded.
 
 ## 5. Models
 
@@ -137,9 +146,65 @@ other devices), `14` (sends a device's address), `17` (head tracking), `1A` (ren
 (the AirPods' keys); control commands `06` (owning the connection), `20` and `36` (automatic
 connection) and `3A` (temporary pairing).
 
-## 7. Open questions
+### 6.1 Taking the sound over (issue #48, 2026-11-16)
+
+A user's AirPods Pro 3, shared with other devices, show in Android as connected but not active, while
+PairFree's channel works. LibrePods' answer is its takeover (`AirPodsService.takeOver`, read at commit
+4589176), which has two halves:
+
+- **To the AirPods**: control command `06` (owns connection) set to 1, then three opcode `10` messages
+  (media information, show the hand-over notice, the hijack request). LibrePods sends these only with
+  its Xposed hook that gives the phone Apple's Bluetooth vendor id, and skips them when the AirPods
+  report owning as 0 ("vendorid is probably not set to apple"): without that id the AirPods do not
+  treat the phone as one of the devices they hand over between. blocked: the owner ruled out posing as
+  an Apple device (section 7); checked: `takeOver`, `sendHijackRequest`, `sendMediaInformataion` and
+  `sendSmartRoutingShowUI` in LibrePods, and its `vendor_id_hook` guard. So `06` and `10` stay never sent.
+- **To Android**: `connectAudio`, which calls `BluetoothA2dp.connect(device)` (and, with a permission
+  only system apps have, the connection policy). PairFree does this half, for every brand
+  (`AudioLinks.useForSound`): `connect` where the earbuds are not connected for sound, then
+  `setActiveDevice`, on A2DP and hands-free. Android's Bluetooth service takes both from an app with
+  the Bluetooth permission (AOSP's `A2dpService` binder checks `BLUETOOTH_CONNECT` alone for them, on
+  Android 14, 16 and main); they are outside the public SDK, so they are called by name. The Home tab
+  offers it when the phone is not playing through the connected earbuds, with Bluetooth settings as
+  the way out where a phone refuses. Not tried on AirPods or any real earbuds.
+
+## 7. Why AirPods need a particular Android (2026-11-10)
+
+Checked against LibrePods' issues, its current source and the Beats app:
+
+- The channel is classic L2CAP (PSM 0x1001). Android's public API has none for classic: `createL2capChannel` is LE only, and
+  `BluetoothSocketSettings` (API 36) takes an LE PSM of 128 to 255. The only way is `BluetoothSocket`'s hidden constructors
+  (the signature changed in Android 16 QPR3: adapter first).
+- Two separate obstacles. (a) A Bluetooth stack bug (Google issue 371713238: Apple's L2CAP configuration does not follow the
+  standard) refused the channel; LibrePods says it is fixed in Android 17 for all devices, and reports it working on a Pixel
+  with Android 17 beta 3. (b) The hidden constructors: LibrePods' rootless build checks `SDK_INT >= 37 || (Pixel on 16 QPR3) ||
+  (OnePlus/OPPO/realme on 16)` (`RootlessSupport.kt`) and, in a native library, calls `VMRuntime.setHiddenApiExemptions` for
+  `BluetoothSocket` and `BluetoothDevice` with obfuscated strings (`bluetooth_socket.cpp`). That is a hidden-API bypass.
+- GitHub issue #3's Pixel 8 on Android 17 (build CP3A.261005.005): `declaredConstructors` of `BluetoothSocket` comes back
+  empty, which fits the hidden-API protection hiding them. Owner, 2026-11-10: PairFree applies the same exemption as LibrePods,
+  without root, for `Landroid/bluetooth/BluetoothSocket;` only (`HiddenApiBypass.addHiddenApiExemptions`, LSPosed's
+  hiddenapibypass 4.3, Apache-2.0), only after the constructors came back hidden and only on the AirPods path; the connection
+  report says what the exemption did. Untested until a user with such a phone tries it; if Android refuses it, the app says
+  so (`failed_hidden_by_android`).
+- LibrePods' Xposed route is a fix for (a) only and needs root; not an option.
+
+**Beats are different.** Apple's Beats app (`com.apple.bnd` 2.12) has no L2CAP code at all. `wm0` opens
+`createInsecureRfcommSocketToServiceRecord(00001101-0000-1000-8000-00805f9b34fb)` (up to 4 attempts) and runs one of three
+protocols over the stream, chosen by the product's `protocol_id` in `assets/products_offline.json`: 2 BTP (Beats Pill+),
+3 BCD (Powerbeats3, Solo3, Beatsx, Flex, Studio3), 4 **B2P** (Powerbeats Pro and Pro 2, Powerbeats, Powerbeats Fit, Solo Pro,
+Solo 4, Solo Buds, Studio Buds and Buds+, Fit Pro, Studio Pro, Pill, Beats 360; the MediaTek ones carry a `Mediatek` feature).
+`assets/products_descriptor.json` lists each product's features (ANC, Transparency, InEarDetection, ButtonMode*, SealTest,
+InCaseTones, ...). The protocols are in native libraries (`libB2pAdapter.so` 187 kB, `libBcdAdapter.so`, `libBtpAdapter.so`;
+exported functions such as `b2pGetBattery`, `bcdSetListeningMode`). The GATT service `4715650b-5e9d-4ac2-b898-a4fc0aa5df78`
+in the same app is Apple's firmware-update (UARP) transfer: never used. So Beats need no particular Android version once the
+B2P/BCD/BTP protocols are ported from those libraries (to do; the earlier virtual run never reached a control channel because
+the app waits for the Beats' identity first).
+
+## 8. Open questions
 
 - Every Beats model: which settings it reports, and whether it opens the channel at all.
 - Whether the feature flags packet differs by model (LibrePods sends `D7` to all; MagicPodsCore
   sends `0E` to Adaptive models only).
-- Which phones besides LibrePods' list open the channel before Android 17.
+- Which phones besides LibrePods' list open the channel before Android 17, and whether any Android 17 build exposes the
+  constructors without a hidden-API exemption (the Pixel 8 report says not).
+- The B2P, BCD and BTP frame formats and commands (section 7): read `libB2pAdapter.so` and the others.

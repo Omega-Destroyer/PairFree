@@ -67,6 +67,10 @@ public class SoundcoreParser(
     public var rejected: Int = 0
         private set
 
+    /** True while a header has been found and the rest of that packet has not arrived yet. */
+    public val pendingPacket: Boolean
+        get() = buffer.size >= header.size && header.indices.all { buffer[it] == header[it] }
+
     public fun feed(bytes: ByteArray): List<SoundcorePacket> {
         var buf = buffer + bytes
         val packets = ArrayList<SoundcorePacket>()

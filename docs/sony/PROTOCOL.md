@@ -166,8 +166,29 @@ Custom, `A1` to `A5` the user settings, and others. PairFree offers the presets 
 list, except Custom and the user settings, which stand for the user's own curve. The earbuds
 do not report a preset's curve, so none is drawn. Clear Bass is a setting of its own.
 
-Not read: the EBB level (function `52` in set 1, `51` in set 2), the ULT mode and the other
-sound effects.
+The earbuds send every change of the equalizer as a notification (`EQEBB_NTFY_PARAM`), whoever made it,
+and Sony's app updates its equalizer on each one (13.3.0, its EQ state holder, read 2026-11-11). PairFree's
+Sound tab does the same while it is open (`SonyDriver.followsEqReports`); a report within 2 s of PairFree's
+own write is left out, as for every brand that reports its EQ.
+
+**The six equalizer variants (read 2026-11-12 from Sony's app 13.3.0: `EqEbbInquiredType`, `DeviceCapabilityTableset2Builder`, the `jn0` message classes).** Which one the earbuds have follows from the function they list; the type is the one the app asks with:
+
+| Function (set 2) | Type | What PairFree does |
+|---|---|---|
+| `50` PRESET_EQ | `00` | read and written (customizable: presets and the user's curve) |
+| `52` PRESET_EQ_NON_CUSTOMIZABLE | `02` | presets only |
+| `57` PRESET_EQ_AND_ERRORCODE | `04` | as `00`, no capability request (a WF-1000XM6 recording, issue #33); the status carries an error code (calling, demo mode, listening mode) |
+| `53` PRESET_EQ_AND_ULT_MODE | `03` | as `00` with the ULT mode beside the preset: capability `51 03 bands steps ultSteps count presets`, param `57/59 03 preset ult count values`, set `58 03 preset ult count values`; the ULT mode (off, ULT 1, ULT 2) is a Sound row. **From the app's parsers only, no earbuds or recording** |
+| `55` CUSTOM_EQ | `31` | read and written as an equalizer with no preset (the ULT FIELD speakers list it): capability `51 31 bands steps`, setting `57/59 31 count steps`, set `58 31 count steps`; from the app's parsers only |
+| `54` SOUND_EFFECT | `30` | a Sound row: off, ULT, ULT 1, ULT 2, custom, flat or live, of those the capability lists (`51 30 count effects... exclusive-count ids...`); setting `57/59 30 effect`, set `58 30 effect`. From the app's parsers only |
+| `58` ULT_SOUND_EFFECT_ASSIGN | `40` | Controls rows: which effects the ULT button cycles through, each enabled (0) or disabled (1), within the capability's least and most (`51 40 min max`); setting `57/59 40 count (effect status)...`, set `58 40` with the same list. From the app's parsers only |
+| `51` EBB (set 2), `52` EBB (set 1) | `01` (set 2), `02` (set 1) | a Sound row, the extra bass level: capability `51 type min max` and setting `57/59 type level`, signed bytes; set `58 type level`. From the app's parsers only |
+| `56` TURN_KEY_EQ | `32` | **not built, blocked on data: the app sends the earbuds a block of bytes it takes from a base64 string (`jn0.a1.i`, called from `x50.b`), and the earbuds answer with a result (success, not supported, judgement failed) in a notification. The string is a creator-tuned equalizer the app adds ("Add special equalizer tuned by creators"); its source is Sony's creator content, not the earbuds, so PairFree has nothing to send. Checked: `jn0.a1`/`p`, `x50.b`, `V2TurnKeyEqManagementRepository` (it keeps the deletable presets and the limit status), `MdrRemoteBaseActivity.T3`.** |
+| `59` CUSTOMIZABLE_SOUND_EFFECT | `33` to `36` | **not built: the capability (`51 33 bands steps count effects...`) and the setting (`57/59 33 effect exclusive-count ids... custom-count (length steps...)...`) are read, but the set's layout and what the reset (`34`), custom (`35`) and external update (`36`) types send is not clear from the parsers; needs a recording.** |
+
+The equalizer's gain unit (2026-11-12): Sony's app shows the steps, not decibels. Its slider panel (`EqSliderPanelView`) labels the top as `+n`, the middle `0` and the bottom `-n` with n = (steps - 1) / 2, with no unit, and its 10-band constants (`EqBandSteps10band`) add 6 to each band's step, so the 10-band flat value is 6 and its steps run 0 to 12. The earbuds give the step count in the capability (the XM6's was never recorded). PairFree labels one step as 1 dB, as Gadgetbridge does; **the app never says a step is a decibel**, so the label is an assumption. PairFree 0.11.2 asks type 4's capability so the earbuds' own step count and preset names replace the 13-step default.
+
+A model that lists only the unread ones shows no equalizer; the Sound tab says why and its device report lists the functions.
 
 ## 7. Other settings
 
@@ -231,6 +252,35 @@ Read from Sony's app, each shown only where the earbuds list its function:
 - **Power off**: set 1 `COMMON_SET_POWER_OFF` 00 01, set 2 `POWER_SET_STATUS` 03 01, where the earbuds list
   power off; offered behind a confirmation (owner, 2026-11-03).
 
+### 7.2 Gap audit 2026-11-13 (read from Sony | Sound Connect 13.3.0)
+
+Built as switches (type byte, then on 0 or off 1; `S2_SWITCHES`): standby when idle and caring charge's switch (table 2 power types 0 and 1), the
+auto volume optimizer and the limited auto volume (table 2 system types 3 and 4), caring charge (table 1 power type 12), stamina (14), the touch panel
+backlight's automatic turn-off (15) and auto play (SAR/auto play type 1). The maximum volume limit is a step 0 to 4 (table 2 safe listening type 5,
+`SAFE_LISTENING_SET_PARAM`), shown as 1 to 5; the app's own status byte for it is read-only there (no set-status class in `to0`).
+
+Not built, with what was checked:
+- Adaptive Sound Control (`AUTO_NCASM`, `ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION`): the phone works out places and activity and sends `SENSE_SET_PARAM`
+  with a list of applicable functions per context; the app's own builder (`ao0.p`) refuses an empty list. It needs location and activity-recognition
+  permissions the owner has not allowed. Checked: `ao0` (sense classes), the `adaptivesoundcontrol` package.
+- Safe listening and the safe volume control's WHO level: a listening-volume log the phone stores and shows (`SlState`, `SlDevice`, `SafeListening*` types);
+  no setting to offer without that store. Checked: `to0`, `so0`, `ro0`, `uo0`, `w40.a`, `wt.k`, `v40.b`.
+- Battery safe mode (type 11): built as a switch. A read answers the switch and whether its effect is active; a write is the switch then an effect control, which PairFree
+  sends as 0 (leave the effect as it is; 1 turns the effect off). What the mode limits is not stated in the app's code, so the explainer says only that it spares the battery.
+
+Also built on 2026-11-13: set 2's simpler noise control layouts (types `01`, `11`, `12`, `14` and `21`, read from `un0.n`, `o`, `k`, `l`, `d`: the effect byte, then the NC
+byte or NC value, ambient voice, and an ambient on/off or level; `SonyNoise`), vibration (set 1: system type 1, setting type 0, then 1 or 0; set 2: system type 0, on 0), set 1's power
+saving (type 2), the surround upmix (audio type 10: none, cinema, game, music; Sony's "listening option") and the left and right balance correction (EQEBB type `0x50`).
+
+LE Audio (owner, 2026-11-13: build it, the drop is expected): the switch is table 1's LEA type 12 (`LEA_SET_PARAM`: on 0 or off 1, then 0 when the connection method changes, which is
+how the app turns it on, or 1 for the setting alone, which is how it turns it off; read with `LEA_GET_PARAM`), and the connection mode is table 2's LEA type 2 (high reliability 0, low
+latency 1, low latency with the EQ restricted 2). The earbuds then ask to confirm the reconnection with `ALERT_NTFY_PARAM` (type 0, a fixed message, or type 6, a flexible one, each
+with an action type: 0 confirmation only, 1 or 2 an answer wanted); the app's dialog answers with `ALERT_SET_PARAM` (the type, the message, 1 positive or 0 negative). PairFree answers
+positive, once, only after a change of its own. The channel drops and PairFree's reconnect takes over.
+
+**Sony is finished as far as the sources go:** every function id in `data/unused_ids.json` is used or carries a "blocked: reason; checked: what" line (speaker-only features, head
+tracking and its calibration, assistant setup, device lists, LE Audio mode switching, server-held sound curves, read-only status).
+
 ## 8. Never sent
 
 Firmware update (`UPDT_*`), the test command and the logs are marked `never_send` in
@@ -254,3 +304,7 @@ only from the action the user confirms.
   (`2D`) and the playback controller (`A1`, `A4`). Power off (`23`) and the MTK firmware update (`36`)
   are listed too and stay never sent. Adding speakers would mean a `speaker` kind in `devices.json`,
   the ULT FIELD and SRS names Sony's app lists, and those functions' layouts from Sony's app.
+
+## WF-1000XM6 recording (issue #33, 2026-11-11)
+
+A user's recording of Sony's app with a WF-1000XM6 (firmware 2.0.5, Android 17, PairFree 0.7.2's recorder) shows the earbuds on table set 2 (service 956C7B26) with 53 functions listed, including the 10-band EQ (functions 56 and 57, `eqebb` messages: command 58 set, 59 notify, 5A extended info, whose reply lists the ten bands from 31 Hz to 16 kHz as `0A 01 00 1F ...`), LE Audio (40, 42, 66 with a 16-byte value), head gestures (ff), smart talking mode (fc), SAR and head tracker (b0, b6, b7) and safe listening (table 2, 56 to 59). **Difference to check:** Sony's app wrote its custom EQ as preset `A1` (User setting 1: `58 04 A1 0A` and ten bytes, 6 being 0 dB, one step per dB), selecting `A1`/`A2` with a zero band count to switch user slots. PairFree (0.11.1) now writes into the user setting the earbuds hold and keeps `A0` (Custom, as Gadgetbridge does) otherwise. PairFree 0.11.1 showed the WF-1000XM6 no equalizer (issue #33): it lists function 57, PRESET_EQ_AND_ERRORCODE (EQEBB type 4), which PairFree did not know. From 0.11.2 type 4 is read like the plain preset EQ (status, extended info and param; no capability request, which Sony's app does not send for it), ten values flat at 6 (13 steps, assumed +-6 dB from the flat value in the recording), the presets taken as the earbuds' user settings only. Not tried on a real XM6. The recording's table 2 peripheral parameter reply (`2.37`) held other devices' Bluetooth addresses and names as text; the recorder now leaves those messages out (table 2, commands 34 to 3D).

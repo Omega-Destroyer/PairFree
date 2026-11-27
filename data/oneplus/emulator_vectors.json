@@ -1,0 +1,211 @@
+{
+  "_about": "Actual outgoing HeyMelody frames against a synthetic Buds Pro 2. Latest example per distinct command/payload, sorted by timestamp. ACKs and replies are not included; some commands were intentionally unanswered. Not hardware captures.",
+  "source": {
+    "date": "2026-11-06",
+    "package": "com.heytap.headset",
+    "version": "117.6.6",
+    "model": "OnePlus Buds Pro 2",
+    "catalog_id": "062014",
+    "apk_modified": false,
+    "runtime_hooks": false,
+    "device_virtual": true,
+    "replies_synthetic": true,
+    "hardware_tested": false,
+    "pairfree_ui_tested": false,
+    "android": "37.0 Google Play x86_64, ARM64 translation",
+    "emulator": "37.2.12.0",
+    "bumble": "0.0.235",
+    "capability_fixture_bits": [
+      0,
+      1,
+      3,
+      4,
+      7,
+      8,
+      10
+    ],
+    "installed_apk_sha256": {
+      "base.apk": "2a592c98720444988abd9cde852dc56e4e6ed6792dd2aa3257a47731dd865f9a",
+      "split_config.arm64_v8a.apk": "53d54514f7a02ba1bb32b0a5da9a4bf5d837798f43a346bdd0b78e65bb644c9a",
+      "split_config.en.apk": "011af3ba684ea8f158605d1488e8b2afb873de8d7be5dcfb50f56cbd2e7a1007",
+      "split_config.xxhdpi.apk": "a641d340d26b212351698a944301fe0088f7ad976ae34536a301ada7ca3a35ba"
+    }
+  },
+  "cases": [
+    {
+      "time": "2026-11-06T14:02:09.037309+00:00",
+      "command": "0100",
+      "sequence": 0,
+      "payload": "",
+      "frame": "aa0700000001000000"
+    },
+    {
+      "time": "2026-11-06T14:02:09.114862+00:00",
+      "command": "0102",
+      "sequence": 1,
+      "payload": "ffff",
+      "frame": "aa0900000201010200ffff"
+    },
+    {
+      "time": "2026-11-06T14:02:09.116861+00:00",
+      "command": "0106",
+      "sequence": 2,
+      "payload": "",
+      "frame": "aa0700000601020000"
+    },
+    {
+      "time": "2026-11-06T14:02:09.117861+00:00",
+      "command": "010b",
+      "sequence": 3,
+      "payload": "",
+      "frame": "aa0700000b01030000"
+    },
+    {
+      "time": "2026-11-06T14:02:09.118861+00:00",
+      "command": "0103",
+      "sequence": 4,
+      "payload": "",
+      "frame": "aa0700000301040000"
+    },
+    {
+      "time": "2026-11-06T14:02:09.119861+00:00",
+      "command": "0101",
+      "sequence": 5,
+      "payload": "0002",
+      "frame": "aa09000001010502000002"
+    },
+    {
+      "time": "2026-11-06T14:02:09.122862+00:00",
+      "command": "0200",
+      "sequence": 8,
+      "payload": "",
+      "frame": "aa0700000002080000"
+    },
+    {
+      "time": "2026-11-06T14:02:09.125497+00:00",
+      "command": "010c",
+      "sequence": 10,
+      "payload": "0101",
+      "frame": "aa0900000c010a02000101"
+    },
+    {
+      "time": "2026-11-06T14:02:09.127498+00:00",
+      "command": "010c",
+      "sequence": 11,
+      "payload": "0301",
+      "frame": "aa0900000c010b02000301"
+    },
+    {
+      "time": "2026-11-06T14:02:09.128498+00:00",
+      "command": "010c",
+      "sequence": 12,
+      "payload": "0401",
+      "frame": "aa0900000c010c02000401"
+    },
+    {
+      "time": "2026-11-06T14:02:09.130497+00:00",
+      "command": "0105",
+      "sequence": 15,
+      "payload": "",
+      "frame": "aa07000005010f0000"
+    },
+    {
+      "time": "2026-11-06T14:03:14.505282+00:00",
+      "command": "0401",
+      "sequence": 17,
+      "payload": "0101010206",
+      "frame": "aa0c000001041105000101010206"
+    },
+    {
+      "time": "2026-11-06T14:04:05.103368+00:00",
+      "command": "0401",
+      "sequence": 19,
+      "payload": "0102010205",
+      "frame": "aa0c000001041305000102010205"
+    },
+    {
+      "time": "2026-11-06T14:04:05.104873+00:00",
+      "command": "0108",
+      "sequence": 20,
+      "payload": "020301",
+      "frame": "aa0a00000801140300020301"
+    },
+    {
+      "time": "2026-11-06T14:04:33.196590+00:00",
+      "command": "0404",
+      "sequence": 21,
+      "payload": "010104",
+      "frame": "aa0a00000404150300010104"
+    },
+    {
+      "time": "2026-11-06T14:04:52.767360+00:00",
+      "command": "0404",
+      "sequence": 23,
+      "payload": "010102",
+      "frame": "aa0a00000404170300010102"
+    },
+    {
+      "time": "2026-11-06T14:04:52.876700+00:00",
+      "command": "010c",
+      "sequence": 24,
+      "payload": "0201",
+      "frame": "aa0900000c011802000201"
+    },
+    {
+      "time": "2026-11-06T14:05:12.772371+00:00",
+      "command": "0406",
+      "sequence": 25,
+      "payload": "03",
+      "frame": "aa080000060419010003"
+    },
+    {
+      "time": "2026-11-06T14:05:18.956719+00:00",
+      "command": "0406",
+      "sequence": 27,
+      "payload": "02",
+      "frame": "aa08000006041b010002"
+    },
+    {
+      "time": "2026-11-06T14:05:25.185565+00:00",
+      "command": "0406",
+      "sequence": 29,
+      "payload": "01",
+      "frame": "aa08000006041d010001"
+    },
+    {
+      "time": "2026-11-06T14:05:31.435316+00:00",
+      "command": "0406",
+      "sequence": 31,
+      "payload": "00",
+      "frame": "aa08000006041f010000"
+    },
+    {
+      "time": "2026-11-06T14:05:31.466837+00:00",
+      "command": "010f",
+      "sequence": 32,
+      "payload": "",
+      "frame": "aa0700000f01200000"
+    },
+    {
+      "time": "2026-11-06T14:05:34.559222+00:00",
+      "command": "0403",
+      "sequence": 33,
+      "payload": "0601",
+      "frame": "aa09000003042102000601"
+    },
+    {
+      "time": "2026-11-06T14:05:37.686660+00:00",
+      "command": "0403",
+      "sequence": 35,
+      "payload": "0600",
+      "frame": "aa09000003042302000600"
+    },
+    {
+      "time": "2026-11-06T14:05:37.733453+00:00",
+      "command": "010d",
+      "sequence": 36,
+      "payload": "0a05040b0c0f1118061d1c",
+      "frame": "aa1200000d01240b000a05040b0c0f1118061d1c"
+    }
+  ]
+}

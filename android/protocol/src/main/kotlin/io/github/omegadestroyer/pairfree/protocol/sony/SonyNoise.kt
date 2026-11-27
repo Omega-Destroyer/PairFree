@@ -76,6 +76,8 @@ public class SonyNoise private constructor(public val tableSet: Int, public val 
                 }
             }
         }
+        layout.asm?.let { p[it] = (if (target == Mode.AMBIENT) 1 else 0).toByte() }
+        layout.mirror?.let { p[it] = (if (p.u8(layout.on) != 0) 1 else 0).toByte() }
         if (level != null) p[layout.level ?: return null] = level.toByte()
         if (voice != null) p[layout.voice ?: return null] = (if (voice) 1 else 0).toByte()
         if (wind != null) {
@@ -109,6 +111,10 @@ public class SonyNoise private constructor(public val tableSet: Int, public val 
         val ncValue: Int? = null,
         val voice: Int? = null,
         val level: Int? = null,
+        /** A second on/off byte that follows the effect: set 2's NC-only and ambient-only types, and the ambient on/off beside a noise cancelling byte. */
+        val mirror: Int? = null,
+        /** The ambient sound on/off byte of the types that have no level (set 2's 0x11 and 0x12): on for ambient, off otherwise. */
+        val asm: Int? = null,
     )
 
     public companion object {
@@ -152,6 +158,11 @@ public class SonyNoise private constructor(public val tableSet: Int, public val 
             SonyFunction.Set2.MODE_NC_NCSS_ASM_NOISE_CANCELLING_DUAL_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT_WITH_TEST_MODE to 0x18,
             SonyFunction.Set2.MODE_NC_ASM_NOISE_CANCELLING_DUAL_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT_NOISE_ADAPTATION to 0x19,
             SonyFunction.Set2.NOISE_CANCELLING_ONOFF_AND_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT to 0x13,
+            SonyFunction.Set2.NOISE_CANCELLING_DUAL_SINGLE_OFF_AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT to 0x14,
+            SonyFunction.Set2.NOISE_CANCELLING_DUAL_SINGLE_OFF_AND_AMBIENT_SOUND_MODE_ONOFF to 0x12,
+            SonyFunction.Set2.NOISE_CANCELLING_ONOFF_AND_AMBIENT_SOUND_MODE_ONOFF to 0x11,
+            SonyFunction.Set2.NOISE_CANCELLING_ONOFF to 0x01,
+            SonyFunction.Set2.AMBIENT_SOUND_MODE_ONOFF to 0x21,
             SonyFunction.Set2.AMBIENT_SOUND_MODE_LEVEL_ADJUSTMENT to 0x22,
         )
 
@@ -185,6 +196,13 @@ public class SonyNoise private constructor(public val tableSet: Int, public val 
                         dualSingle = 5.takeIf { type == 0x16 },
                     )
                     (type == 0x17 || type == 0x18) && size == 7 -> Layout(Kind.MODE, on = 3, nc = 4, voice = 5, level = 6)
+                    // The simpler headphones: NC on/off (effect, NC), NC with ambient on/off (effect, NC, voice, ambient), NC dual/single/off with ambient on/off or a level,
+                    // and ambient sound alone with on/off (effect, voice, ambient). Sony's app: NcAsmInquiredType, un0.n, o, k, l and d.
+                    type == 0x01 && size == 5 -> Layout(Kind.NC_ONLY, on = 3, mirror = 4)
+                    type == 0x11 && size == 7 -> Layout(Kind.NC_SWITCH, on = 3, nc = 4, voice = 5, asm = 6)
+                    type == 0x12 && size == 7 -> Layout(Kind.NC_SWITCH, on = 3, nc = 4, voice = 5, asm = 6, dualSingle = 4)
+                    type == 0x14 && size == 7 -> Layout(Kind.NC_SWITCH, on = 3, nc = 4, voice = 5, level = 6, dualSingle = 4)
+                    type == 0x21 && size == 6 -> Layout(Kind.ASM_ONLY, on = 3, voice = 4, mirror = 5)
                     type == 0x19 && size == 9 -> Layout(Kind.MODE, on = 3, nc = 4, voice = 5, level = 6)
                     type == 0x22 && size == 6 -> Layout(Kind.ASM_ONLY, on = 3, voice = 4, level = 5)
                     else -> null

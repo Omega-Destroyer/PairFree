@@ -1,0 +1,42 @@
+{
+  "_about": "Single outgoing API-version query observed in the original running AT app after instrumented A2DP discovery. Confirmed in passive app-output and peer HCI logs. Startup only, no settings validation, not hardware.",
+  "source": {
+    "date": "2026-11-06",
+    "package": "jp.co.audiotechnica.connect",
+    "version": "2.8.0",
+    "model": "ATH-M50xBT",
+    "protocol_family": "GAIA_V2",
+    "apk_modified": false,
+    "runtime_hooks": [
+      "A2DP connected-device list and state supplied for one synthetic address",
+      "BluetoothOutputStream.write pass-through logging"
+    ],
+    "command_encoders_modified": false,
+    "original_native_libraries_extracted_to_app_native_library_dir": true,
+    "device_virtual": true,
+    "hardware_tested": false,
+    "settings_tested": false,
+    "pairfree_ui_tested": false,
+    "android": "30 Google APIs x86_64, ARM32 translation",
+    "transport": "legacy RootCanal HCI TCP, RFCOMM",
+    "emulator": "37.2.12.0",
+    "bumble": "0.0.235",
+    "frida": "17.26.1",
+    "installed_apk_sha256": {
+      "jp.co.audiotechnica.connect.apk": "1c9e7153983ed6179f521d1134ac4aa049096bb41dc2bb608d441331eef52908",
+      "config.armeabi_v7a.apk": "19b34664f0e0f604ef9e6ae0ff31ac28702dff4b5f1dd563c4ba2c65dd6315a2",
+      "config.en.apk": "e6fb672c7e0b32751010a060709538207c55238b8d3bc12fff9cba55e74ab784",
+      "config.mdpi.apk": "69fc82f790b5f3d058c5f3de199149569aeb3825851934bb0e27e8fed31cb5ab"
+    }
+  },
+  "cases": [
+    {
+      "action": "GAIA API version query during discovery",
+      "wire_vendor": "000a",
+      "command": "0300",
+      "payload": "",
+      "frame": "ff010000000a0300",
+      "acknowledgement_validated": false
+    }
+  ]
+}

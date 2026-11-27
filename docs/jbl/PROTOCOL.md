@@ -202,6 +202,18 @@ feature family the sound effect, the audio limiter and Hi-Res are feature record
 | Low volume EQ | `LowVolumeEq`, `LowEQCompensationCard` | `9E` (direct), feature `24` | `01` | `02` (write `00`), on |
 | Find My Buds | `FindMyBudCard` | `36` | | one value per earbud: `11` start the left, `10` the right, `01` stop the left, `00` the right |
 
+Smart Audio & Video goes over two sets of commands. JBL's app has two status classes with the same methods and the same
+bytes for everything but this: `HmProtocol3DeviceStatusControl` (`SmartSwitchCmd`, `80` as in the table) and
+`BesDeviceStatusControl`, the base of every control class that extends `BesBasicControl` or `BesSdkControl`
+(`CmdGen.generateReqSmartSwitch`, `generateSetSmartSwitch`): the read is `AA 82 00`, a write `AA 81 08` and the four numbers
+with **no sub-command in front**, and the reply `AA 83 08` and the same eight bytes (`HandleParse`, `RetHeader` "aa83").
+`devices.json` marks those 39 models `smart_switch: bes` (`JblModel.besSmartSwitch`); the protocol 3 models (Wave Buds 2,
+Tune Buds 2 and the like) keep `80`. The two sets were found by comparing the two classes method by method, and a Tune 230NC
+run in an emulator (JBL Headphones 5.37.10 against a synthetic peer, `docs/jbl/VIRTUAL_TESTING.md`) showed the app sending
+`AA 82 00` and `AA 81 08 00 01 2E 00 18 01 FF FF` (Audio) and `AA 81 08 C5 00 2E 00 18 01 FF FF` (Normal); PairFree's old
+`AA 80 09 00 ...` was not what that app sent. The emulator's replies are invented: whether real BES firmware also answers
+`80` is not known, and a user's report would settle it.
+
 Smart Audio & Video's numbers come from the product list (`smartAudioVideo`: `normal`, `audio`,
 `video`, in `devices.json` as `smart_audio_video`). JBL's card is a switch (off is `normal`) with
 Audio or Video under it; a model with three numbers writes 65535 as the fourth, and the reply is
@@ -286,6 +298,182 @@ Also left out: the LE Audio switch (`LeAudioCard`, 23 models), which restarts th
 needs the phone to reconnect over LE Audio while JBL's app waits on dialogs; PersoniFi
 (`PersoniFiCard`), a hearing test that plays tones through JBL's app; relax sounds, which the phone
 plays; and the equalizer (section 9).
+
+### 4.11 PSAP, the smart case, the clock, the fit checks and the ear tips: `A0`, `A3`, `A4`, `A7`, `99`, `9A`, `9C`
+
+Read from JBL Headphones 5.37.10 (2026-11-23): the command classes `PSAPCmd`, `ChargingCaseDisplayStatusCmd`, `ChargingCaseFeatureCmd`, `SyncTimeToDeviceCmd`,
+`EnvironmentNoiseCheckCmd`, `EarCanalTestingCmd` and `TipsTypeCmd` of `com.harman.bluetooth.imp.cmd`, and the dashboard cards that call them. Each is a Harman frame
+(`AA`, the command, the payload's length, then the payload) whose first payload byte is the sub-command: 00 write, 01 read, 02 reply (`CmdBase.combine` adds the length).
+A model has a setting when its dashboard card is in its config and its control class implements the write (`BesDeviceStatusControl` carries them for the BES models; the
+protocol 4 models send the same settings as `DeviceInfoFeature5` records, section 4.12, and the Airoha models through their own adapter, section 4.13). So far:
+Tour Pro 2, Live Beam 3 and Live Flex 3 (the smart case), the Tour One M2, Tour Pro 2, Live 670NC, 675NC, 770NC, 775NC and Live Beam 3 (PSAP), the Live Pro 2 TWS, Tour Pro 2 and
+Live Beam 3 (the fit checks), the Tune Flex and Tune Flex 2 (the ear tips) and eight models for the Auracast receiver: `settings` in `devices.json`.
+
+- **PSAP** (`A0`, `PSAP2Card`, `iq/g.java`: the page "Personal Sound Amplification"). Read `01`; the reply `02` then pairs of feature and value: 01 on, 02 the balance, 03 the gain
+  (`PSAPCmd.parse`; a reply of fewer than ten bytes holds only the on byte and the balance). The page's balance bar is 95 to 105 (100 in the middle, `M0`), its gain bar has
+  five steps (`GradientProgressBar` with `PartSplictLineCount` 5, so 0 to 5). A write is `00` and the three pairs together, with the values last reported (`toBytesSet`).
+  JBL's text says that turning it on turns off spatial sound and the low volume EQ (`enabling_psap_will_diable_ss_and_lvd_eq`); PairFree shows that note and does not switch the
+  other two itself, since the earbuds do. The page's reduce-background-noise and beamforming switches (`setPSAPReduceBackgroundNoise`, `setPSAPBeamforming`) are implemented only
+  by the protocol 4 base class (`General4Control`), so a BES model has neither.
+- **The smart case's screen** (`A3`, the cards `BrightnessCard`, `MsgNotificationCard`, `ScreenSaverCard`, `CaseLanguageCard`, `TapToWakeCard`, `CaseInfoCard`). Read `01`; the
+  reply `02` then pairs of id and value (`parse`): 1 brightness (0 to 3: `BrightnessCard` has a three-step bar), 2 message notification, 3 the screen saver's index, 4 the screen
+  saver's time in seconds (two bytes, low first; the card's slider has 31 positions of five seconds, 0 is "never"), 5 message preview, 6 whether the screen saver is the user's
+  own, 7 that picture's CRC (four bytes), 8 the case's language (`CaseLangType`: 1 English, 2 Dutch, 3 French, 4 German, 5 Italian, 6 Japanese, 7 Korean, 8 Portuguese, 9 Russian,
+  10 Simplified Chinese, 11 Spanish, 12 Thai, 13 Vietnamese), 9 the unlock indicator, 10 quick wake-up (the status in the bits above the seventh, the tap in the low seven: 1 single,
+  2 double, 3 triple; the switch sends the status with action 0 and a tap its number with the status on, `TapToWakeCard`), 11 and 12 the earbuds' and the case's latest firmware
+  as three bytes, 13 find my case. A write is `00` and the pairs, the screen saver time in two bytes (`toBytesSet`); `03 06 xx` deletes the user's own screen saver
+  (`delCustomizeScreenSaver`).
+- **The smart case's pages** (`A4`, `SmartCaseSettingCard` and `CaseCard`). Read `01`; the reply `02` and pairs of id and one byte (192 the case's version as three bytes, 193 its
+  Bluetooth address as six bytes, 194 its language): ids 1 to 17 are the pages the case's screen can show (ambient sound control, equalizer, speak to chat, 3D spatial sound,
+  low volume EQ, VoiceAware, auto play and pause, Silent Now, earbuds in the case, timer, lock screen wallpaper, notifications, find my buds, flashlight, music playback, volume,
+  screen brightness), each 1 for shown and 0 for hidden (`ChargingCaseFeatureCmd.toBytesSet`, whose list form writes each page's id with `pageDisplay`). A write is `00` and the pairs.
+  `03` launches the case's firmware update and is never sent.
+- **The clock** (`A7`). JBL's app sends it on every connection to every model (`gn/p0.java` on `CONNECT_STATUS`), and the control class decides: the BES models write
+  `00 01 hh mm ss weekday day month yearLo yearHi` with the phone's local time (weekday 0 is Sunday; `SyncTimeToDeviceCmd.toBytesSet(long)`), and so does PairFree, once, when the
+  channel opens, on the models whose config has the `SyncTimeCard`. The display format (`02` and 1 for 12 hours, 2 for 24 hours, the variant with the format) belongs to the models that
+  list `syncTimeFormat`, which these three do not.
+- **The noise check** (`99`) and **the ear canal test** (`9A`). Read `01` starts each. The noise check's reply `02` holds the left and the right level, two bytes each, low first
+  (`EnvironmentNoiseCheckCmd.parse`); the ear canal test's reply `02` holds a result byte, 3 for success, anything else a failure (`EarCanalTestingFragment`: `T0(result == 3)`). The
+  test plays tones in the earbuds and compensates noise cancelling for the ear canal. PairFree shows the two levels and "done" or "failed" as they come.
+- **The seal check** (`21` with the status type `42`, `CmdGen.genGetSealingStatus`): the reply `22` holds `42`, then the left and the right earbud, 1 for sealed and 0 for not
+  (`HandleParse.parseDevStatus`, `SEAL_CHECK_STATUS`); JBL's fit page (`gp/j.java`, `k1`) asks the user to adjust the earbud whose byte is 0. JBL's page runs its steps in an order
+  of its own (in-ear status `41`, the noise check, the seal check, the ear canal test) and gates them on the noise levels (both 50 or more); PairFree offers each as a button.
+- **The Auracast receiver** (`B0`, `LeaAudioCmd`; the Auracast cards of the Tour One M2, Tour Pro 2, Live Beam 3, Live Flex 3, Tune Buds 2, Tune Flex 2, Tune Beam 2 and Tune 255NC; the
+  LE Audio switch is a different card and a different command). The earbuds scan for broadcasts themselves; the sub-command is the first payload byte: `00` asks what they receive, `01` `01`
+  and the seconds (30) starts a scan, `02` `00` stops it, `20` `01` the six address bytes and the password's characters receives a source, `21` `00` stops receiving, `22` and an index picks a
+  sub-group. The replies are `10` (what they receive), `11` (one scan result per message), `12` (the scan stopped), `30`, `31` and `32` (the answers to `20`, `21` and `22`), each then a
+  return status (for `30`: 0 done, 1 wrong password, 2 timed out; for `10` and `11`: 0 done, 1 not receiving, 2 the scan timed out) and, for `10` and `11`, records of a type, a length and a
+  value: type 0 is the source and any other a sub-group of it, each holding records of an id, a length and a value (1 the address, 2 the name in UTF-8, 3 the receive status, 4 whether it
+  needs a password, 32 the sub-group's index, 33 whether it is on, 35 its quality: 2 high). The address a reply gives goes back in the reverse order in `20` (`receiveLeAudioSource`). A
+  source counts as received when one of its sub-groups is on (`AuracastP2Ui2ViewModel.I`).
+- **The ear tips** (`9C`, `SoundFitCard`, only the Tune Flex family: `TIPS_OPEN` 0 and `TIPS_SEALING` 1). Read `01`, the reply `02` and the type, a write `00` and the type.
+
+None of these is on the never-sent list. Open, in `data/completeness.json`: the screen saver's pictures and the user's own screen saver (a file transfer to the case,
+`ScreenSaverAdapter`, ids 3, 6 and 7 of `A3`), find my case (`FindMyCaseCard`, id 13). The protocol 4 models send the rest as features (section 4.12) and the Airoha models as RACE commands (section 4.13).
+
+### 4.12 The same settings on protocol 4
+
+Read from `General4Control` (JBL Headphones 5.37.10, 2026-11-24) and the `DeviceInfoFeature5` table with its value classes (`com.harman.protocol4.features`). The protocol 4 models send the
+cards of section 4.11 as feature records (section 6): an id (two bytes, low first), a length and a value, in a set (`0002`) or a read (`0001`); the earbuds answer or notify with the same
+records. Value classes: `StatusLevelSize1Feature` is one byte, bit 7 the status and bits 0 to 6 the level (127 where the app has none); `Occupy1ByteEachIntFeature` a byte for each number;
+`StatusLevelSize2Feature` two bytes, low first, bit 15 the status; `BitListFeature` one byte read bit by bit from the top; `CasePageConfigFeature` one byte, bit 7 whether the page shows, bit 6
+whether the user may set it, bits 0 to 5 its place. A model has a setting under the same rule as before (its dashboard card in the config, the base class's write): `settings` in `devices.json`.
+
+- **PSAP**: 3200 status (a one-byte status and 127), 3201 the balance (45 to 55: the page's 95 to 105 less 50, `setPSAPStatus`, `gn/l0`), 3202 the gain step (0 to 5), 3203 reduce
+  background noise (status, level 0) and 3204 voice focus (`setPSAPBeamforming`: status on unless 0, the level 0, 1 or 2 for off, medium and high). `getPSAPStatus` reads the first three; PairFree reads
+  all five.
+- **Ear tips**: 4101, the status bit is the type (0 open, 1 sealing; `setTipsType` writes `setValue(type, 127)`).
+- **Noise check** (4100) and **seal check** (4099, `getSealingStatus`): each is started by writing one byte, 0, and answered by a notification of one byte read bit by bit: for the seal check bit 7 is
+  the left earbud and bit 6 the right, 1 for sealed (`SealingInfo`); for the noise check a set bit is quiet and a clear bit noisy (`gn/l0` turns them into the levels 0 and 100). Protocol 4 has no ear canal test
+  (`General4Control` leaves `earCanalTesting` at the base class's default).
+- **The clock** (49, `setDeviceTime`): nine bytes, seconds, minutes, hours, weekday (0 Sunday), day, month, the year low byte then high, and the display format (0 when the phone has none), sent when the
+  channel opens. 7953 is the case's 24-hour switch.
+- **The case's screen**: 7940 brightness (status 1, the level 0 to 3), 7941 message notification (bit 7 on, bit 6 the permission the case reported, kept when written; a case that reported none gets 127 in the level),
+  7944 preview, 7943 the screen saver time (`StatusLevelSize2Feature`: the seconds in fifteen bits; the status bit is set for one to a hundred seconds, as `setChargingCaseDisplaySettingsStatus` sets it),
+  7946 the language (the same numbers as `A3` id 8), 7948 quick wake-up (status, and the level 1 to 3 for the tap; the switch sends 127), 7937 and 7950 the case's version and the latest as three bytes,
+  7942 the screen saver's index, 7945 and 7954 to 7959 the custom screen saver's CRC, status and look.
+- **The case's pages**: 8064 to 8081, in the order ambient sound control, equalizer, speak to chat, 3D spatial sound, low volume EQ, VoiceAware, auto play and pause, Silent Now, earbuds in the case,
+  timer, lock screen wallpaper, notifications, find my buds, flashlight, music playback, screen brightness, language and 24-hour time. PairFree switches bit 7 and keeps the other bits as the case reported them;
+  a page the case does not let the user set (bit 6 clear) is shown greyed out.
+
+Open, in `data/completeness.json`: the screen saver's index and pictures, find my case (7951) and the unlock indicator (7947, which only the Smart Tx page shows).
+
+### 4.13 The same settings on the Airoha models
+
+Read from JBL's Airoha adapter (`com.airoha.adapter.harman.AirohaDeviceStatusControl` and its `MmiStage_*` classes, JBL Headphones 5.37.10, 2026-11-24). The Live Buds 3 (`LiveBuds3Control`
+over `gi/c`) and the Tour Pro 3 (`TourPro3LeControl` over `gi/a`, on LE) both end in the same flows, so both send RACE commands (section 10) of fixed layout: a read has no payload, the answer starts
+with a status byte (0 is fine) and then the values, a write carries every field of its struct, and a field the app leaves alone is 0xFF (each info object starts at -1). The ids are the decimal
+numbers of the stages' `mRaceId`:
+
+- **PSAP**: `0077` reads, `0078` writes three bytes: on, the balance (95 to 105) and the gain step (0 to 5); the answer to either holds the same three.
+- **The case's screen**: `0079` reads and `0080` writes a 26-byte struct: 0 brightness (0 to 3), 1 message notification, 2 preview, 3 the screen saver's index, 4 its time in seconds (one byte), 5 whether it is the
+  user's own, 6 to 9 that picture's CRC, 10 the language (`CaseLangType` ordinal, 1 English to 13 Vietnamese), 11 the unlock indicator, 12 tap to wake, 13 to 15 the earbuds' latest version, 16 to 18 the case's, 19 find my case,
+  20 to 23 the screen's width and height, 24 and 25 quick wake-up (the status, then the tap 1 to 3; the switch sends the status alone).
+- **The case's pages**: `0081` reads and `0082` writes a 27-byte struct: bytes 0 to 8 whether the pages ambient sound control, equalizer, speak to chat, 3D spatial sound, low volume EQ, VoiceAware, auto play and pause,
+  Silent Now and earbuds in the case show, 9 to 11 the case's version, 12 to 17 its address, 18 its language, 19 to 26 the timer, lock screen wallpaper, notifications, find my buds, flashlight, music playback, volume and
+  screen brightness pages. PairFree sends the case's version and address back as the case reported them (the app sends zeros when it has none).
+- **The clock**: the Harman frame `A7` of section 4.11 passed to the earbuds through RACE `0093` (`MmiStage_SendHmCmd`, the app's `writeHmCommand`), written once when the channel opens: both `LiveBuds3Control.setDeviceTime`
+  and `TourPro3LeControl.setDeviceTime` write `SyncTimeToDeviceCmd`'s bytes that way. `0093` is on the never-sent list because it can carry any Harman command; PairFree lets through this one frame (`A7`) and nothing else.
+  `0083` (`MmiStage_SetSmartCaseAction`, the case's firmware update) stays never sent. The adapter's own `SET_DEVICE_TIME` flow (`MmiStage_SetDeviceTime`, `0090`, seconds since 1970) is for other models and stays on the list.
+- The Airoha adapter's `getTipsType` and `setTipsType` only log that nothing is there, so the ear tips row stays on the other families.
+
+- **The noise check**: the app reads the environment detection's status (`0E17`, payload 3 and 2) and then its information (`0E15`, payload 3; `0E18` on the AB1562, `AncStageGetEnvironmentDetectionInfo1562`).
+  The answer's data holds the type 3, the two gains, the level, then the stationary noise of the agent and of the partner earbud (two bytes each, low first, signed); the earbud PairFree talks to is the right one when
+  the session's agent read says so, which swaps the two. A level from 0 to 100 comes from each noise by a line of the model's own (`getEnvironmentNoise`: (noise x 45 + a) / b, less or plus a constant; the Live Free 2,
+  Reflect Aero, Quantum TWS, Live Buds 3 and Tour Pro 3 each have one), and a model with none shows 0.
+- **The seal check**: `0E13` with the mode 0 and 1 (`MmiStageLeakageDetecttion`), answered up to 15 seconds later by an indication of 21 bytes whose bytes 19 and 20 are the first and second earbud, 0 for sealed
+  (`OnAncAdaptiveStatus`); the right earbud is first when the agent is the right one.
+
+The ear canal test (`EAR_CANAL_TESTING`; read 2026-11-24): `AirohaDeviceStatusControl` unzips the asset `EarCanalTesting.zip` and starts Airoha's ANC user trigger (`AncStageStartAncUserTrigger`: RACE `0901` with module 5, whose responses and the partner's relays go to `AirohaAncUserTriggerStateMachine`). The state machine measures the ear canal, `AncUserTriggerUtils` works out new feedback filter coefficients from the model's tuning tables and the coefficients are written to both earbuds (`AncStageUpdateAncUserTriggerCoef`). The zip holds tables for three models only, folders 2067 (Live Free 2), 207B (Reflect Aero) and 207D (Quantum TWS), about 3 MB each. Blocked: decision the owner has reserved (the tables are the vendor's tuning data and derived data goes into `data/` only with the owner's agreement; the test rewrites the earbuds' noise cancelling filters); checked: the flow, the stage, the utility's file list and the zip's folders, in the registry item. The Live Buds 3 and Tour Pro 3 have no folder, so their fit checks are the seal check and the noise check.
+
+### 4.14 PersoniFi: the hearing test's curve
+
+Read from JBL Headphones 5.37.10 (2026-11-24): the wizard `sk/q.java` and its helpers (`ek`, `fk`, `kk`, `zk`, `ih`), the Kotlin side of `com.jbl.personifi3`, and the native library `libpersonifiAlgorithm.so`
+(16 KB). The resource pack the wizard downloads (`personifi3_resource.zip` from `appstorage.onecloud.harman.com`, a plain GET) holds only the test tones: `warble_<frequency>_<left|right>_14s.mp3` for 250, 500, 750 Hz,
+1, 1.5, 2, 3, 4, 6, 8, 10 and 12 kHz. PairFree makes its own warbles and does not ship JBL's files.
+
+**The test.** Nine tones for each ear, in this order: 1 kHz, 500 Hz, 250 Hz, 2 kHz, 4, 6, 8, 10 and 12 kHz, the left ear first (`ek.a`, `q.initData`). The user holds a finger down while a tone is audible; the tone
+fades over 14 seconds, and the seconds between the finger going down and up give the level it was heard to (`m2`): `caldB(n)` is 43 - 3n dB for n from 1 to 14 (the library's own function, and the whole of the test's scale).
+After 500 Hz, 2 kHz and 4 kHz the app adds a 750 Hz, 1.5 kHz or 3 kHz tone for that ear when the result is more than 20 dB from the preceding 1 kHz or 2 kHz result (`y1`); those extra results go to the library with the rest. While a tone plays the app tells the earbuds which one (`A1` ids 5 and 6: the side 1 or 2 and the frequency in Hz), and brackets the whole flow with the setup flow flag (`A1` id 3, 1 at the start and
+0 at the end) and the hearing test mode (id 2, 0 when it is over).
+
+**From levels to bands.** The app works out gains of its own from the levels (0.6 x the level less the tone's reference and the smallest such difference over both ears, between 0 and 9 dB; an 8 kHz high shelf of 2 dB
+when nothing has a gain; `HearingTestBandComputation`, `A2`), but only for its report screen: the library takes each band's frequency and level and works the gains out again. The app drops the 250 Hz tone before the library
+on the open-fit models (`sk/q.H1`, `zk.d.i`).
+
+**The library** (`calCompensation`, mode 3, the only one any model passes): each tone is matched to a slot of the library's 12 frequencies (250, 500, 1000, 2000, 4000, 6000, 8000, 10000, 12000, 750, 1500, 3000 Hz), the
+gain is worked out again as 0.6 x (the level - the library's own references 20, 10, 10, 15, 10, 20, 20, 10, 5, 10, 10, 10), kept between 0 and 9, the Qs are 1, 2, 2, 2, 3, 3, 3, 3, 1, 2, 2, 3 and the types 0 for 250 Hz, 2 for
+12 kHz and 1 otherwise; then bands are merged where their gains differ by less than 1 dB (the three lowest into a low shelf, the highest three or four into a high shelf, everything into a shelf at 18 kHz when the whole
+curve is flat), merged bands set to type 5 (off), and the master gain is minus the largest gain. `JblPersonifi` is a port, and `data/jbl/personifi_vectors.json` holds 400 cases of the library run in an emulator, which
+`JblPersonifiTest` reproduces exactly.
+
+**The messages around the test** (`PersoniFiModeHearingTextCmd`, `PersoniFi2Info`; `JblPersonifiMode`). On the Harman models they are command `A1`: `01` reads; the reply is `02` and pairs of id and value; a write is `00` and the
+pairs in id order. The ids: `01` PersoniFi on, `02` the hearing test mode, `03` the setup flow, `04` the test file, `05` the side being tested (1 left, 2 right) and `06` the tone's frequency in Hz in four bytes, low first; the
+others take one byte. On protocol 4 they are features 7680 to 7684 (`PersoniFiMode`, `HearingTestMode`, `PersoniFiSetupFlow`, `HearingTestFileSide`, `HearingTestFileFrequency`: the names the app gives the Airoha race ids
+`RACE_GET_BOOT_REASON` to `RACE_GET_DUMP_REGION_INFO`), each a status bit and level byte written as the app writes it (`StatusLevelSize1Feature`: the value in bit 7, 127 as the level), the side as 0 or 1 and the
+frequency in four bytes. The wizard sends the setup flow flag as it starts (`pk.e.startPersonifiFlow`) and, when a tone is due, the side and frequency (`sk.q.q2`, `A1` ids 5 and 6 in one write); it plays the tone only
+when the finger is down and the earbuds have answered with that frequency (`sk.q.Y1`, polled every 500 ms: the app's status SUCCESS); the hearing test mode the earbuds report is 1 while it runs and 3 or 4 when they end it
+(a call, or the earbuds lost the phone's sound), on protocol 4 read from levels 1 to 4 as 2 to 5 (`gn.l0`), and the wizard then asks whether to continue. At the end, or when the user leaves, it sends the hearing test mode 0 and
+the setup flow 0 (`pk.e.stopPersonifiFlow`).
+
+**The curve's write.** The wizard puts the library's output on the earbuds as `EQSettings2` (`zk.c.a`, `ih.b.c`, `hh.c.Y0` with no keeping): category 201, calibration 0 (it is not worked out against the design EQ, as the BES
+models' custom curves are), 48 kHz, the master gain for both ears, 24 bands (the left ear's twelve, then the right's, a band set off sent as type 5), and the EQ's own path writes it: A2 (with Q in tenths on the models that
+mark it), or protocol 4's EQ info with the keep byte at 0 and, on the Airoha-library models, no EQ curve feature (`General4Control.setEQSettings2`). The earbuds' PersoniFi switch (`A1` id 1, feature 7680) is turned on by the app's
+own screen; PairFree turns it on after the curve and offers it as a row.
+
+**The tone.** The resource pack's files decoded (a plain read of the mp3s outside the repo): 14 s long, one earbud only, the last second silent from 13 s; a pulse of about 185 ms every 400 ms with ramps of about 10 ms; the pitch
+swings about 11 % either way about ten times a second; 3 dB quieter for each second (the 1-second RMS values fall 3.00 dB each); and each frequency starts at its own level, the peak of its first pulse in dB below full
+scale: 250 Hz -0.5, 500 -14, 750 -17, 1000 -20, 1500 -19, 2000 -18.5, 3000 -17, 4000 -15.5, 6000 -20, 8000 -11.5, 10000 -7.5, 12000 -2.5. PairFree makes its own tone to that description (`JblWarble`) and ships none of the files.
+Phone volume is set to the top for the test, as PairFree's other hearing tests do (`TonePlayer.begin`); how the app handles volume belongs to the wizard's other pages, listed as open below.
+
+**What PairFree builds** (all 30 models with the card): `JblPersonifiRun` (the order of the tones, the extra ones, the scale), `JblWarble`, the screen
+(`JblPersonifiScreen`: hold while the tone is heard, let go when it is gone; the seconds held give the level, `caldB`; a tone that plays out counts as heard to the end; a button back one tone), the write and the switch. Never tried on JBL earbuds.
+
+The Club One (`ClubOneControl.setEQSettings2`) picks the user's slot with 40 and sends the curve as the older 41 transfer in category 3 (`EnumEqCategory.PERSONIFY_EQ`; `BesEQControl.setEQSetting`), built too.
+
+The Airoha models (Live Buds 3, Tour Pro 3) send the same over RACE (`MmiStage_SetPersoniFiStatus` 0063 and its read 0062: the on byte, the test status, the file, the side and the frequency in two bytes, low first, 255 for what is not set; `MmiStage_SetPersoniFiSetupFlow` 0073: the flag; `MmiStage_SetPersoniFiEQ` 0071: the band count, the left gain in hundredths of a dB in four bytes, per band its type and frequency, gain and Q in hundredths, four bytes each, and with 24 bands the right gain), built too. The wizard sets the hearing test mode on in the pages before the tones; PairFree does as it begins.
+
+Open, in `data/completeness.json`: the wizard's pages before the tones (the sealing page with the noise check, the sealing status and the in-ear status, the 75 Hz seal tone per ear with the file side flag, the can't-hear page and the report of the levels in bands), whose device traffic PairFree has in its own noise check and seal check but not as the wizard's sequence.
+
+### 4.16 The smart case's pictures, the unlock indicator and find my case
+
+Read from `ScreenSaverCard`, `LockScreenCard`, `FindMyCaseFragment` (`wq.k`, `wq.l`), `ChargingCaseDisplayStatusCmd`, `General4Control.setChargingCaseDisplaySettingsStatus`, `MmiStage_SetChargingCaseDisplaySetting` and `fr.m` (2026-11-24). Display ids (section 4.11): 3 the screen saver picture (0 to 4 the built-in ones, 193 a custom picture), 6 whether a custom picture is there, 9 the unlock indicator, 13 find my case (1 plays a sound on the case, 2 stops it). Every dashboard with the card lists five built-in pictures (`defaultScreenSaver`). On protocol 4 they are features 7942, 7954, 7947 and 7951 (find my case: 0x81 plays, 0x02 stops, as `General4Control` writes the status and level) and the custom picture is removed by writing 193 to 7955; on the Airoha models they are bytes 3, 5, 11 and 19 of the 26-byte display array and the removal is the command `0089`. Removing the custom picture is behind a confirmation. Putting a picture on the case is `LockScreenOtaViewModel`: it builds `image_ota.bin`, checks its CRC32 and sends it through the case's firmware updater (`startOta` with `OTADfuInfo.IS_CASE_OTA`), which the hard rule on firmware-update traffic forbids; blocked: firmware transport; checked: `fr/m.java` (image_ota.bin, CRC32 checks, `startOta` with `IS_CASE_OTA`) and `ScreenSaverCard`, listed in the registry item.
+
+### 4.17 The noise cancelling and Ambient Aware levels
+
+Read from `AscHaveAncLevelCard`, `AscStatusWithAncAndAaLevelCard`, `AscStatusWithAnrAndAaLevelCard`, `AscCard`, `AscStatusCard`, the customize page (`bo.d`, `co.a`), `AdvancedAncCmd`, `General4Control.setAdvanceAnc`, `WaveFlex3Control.setAncSetting` and the Airoha stages `MmiStage_SetAncAaLevel`, `MmiStage_GetAncLevel` and `MmiStage_GetAaLevel` (2026-11-24). Every slider has eight steps (`PartSplictLineCount` 7: 0 to 7) and is live only in its own mode. On the Harman models they are `AdvancedAncCmd`'s pairs `04` (the manual noise cancelling level) and `A1` (the Ambient Aware level) of command `91` (`20` writes, `21` reads, `22` answers), with `05` leakage and `06` ear canal compensation, the customize page's other two switches, on the Harman models only (`General4Control.setAdvanceAnc` has no field for them). On protocol 4 the level is the level of the mode's own feature (`ANC` 0x18, `AA` 0x19), written with the status 1; the models with an ambient sound control (`WaveFlex3Control`, `LiveTws4Control` and the like) send that feature's status with it. On the Airoha models it is `0E06` with `00 1E` and the step in two bytes, which sets the mode that is on; the levels are read with `0901` for module 5 (the filter, then the noise cancelling level in two bytes) and module 7 (the Ambient Aware level). Never tried on earbuds.
+
+### 4.18 The function button, the touch panel, the Quantum dials and the touch sensitivity
+
+Read from `CmdGen`, `HandleParse` (cases 19 and 20), `FunctionButtonFragment`, `TapHoldTouchPanelFragment`, `wp.f`, `wp.g`, `wp.k`, `General4Control.setTouchSensitivity`, the dashboards' `SupportTouchSensitivity` and `product_gesture_config.json` (2026-11-24). The function button is command `78` and the touch panel's tap and hold command `79`: `01` reads, the answer holds the sub-command, the function id 1 and the category, a write is `00`, `01` and the category (function button: 1 voice assistant, 2 ambient sound control, 3 active mode control; touch panel: 1 voice assistant, 2 ambient sound control, 3 TalkThru). The Quantum 360 headsets' page sets three gestures through command `77`: dial 1 (gesture 55, wire `10`), dial 2 (56, wire `11`) and the microphone button's long press (64, wire `13`), to volume (`AA`), game and chat balance (`A9`), microphone mute (`AB`) or the light (`AC`); a dial cannot take what the other has. `GestureType` 19 to 22 and `GestureActionType` 23 to 26 give the bytes through `CmdBase.values` and `values_Action`. The Quantum 910 family's writes are refused by the Airoha SDK itself (`IsGestureIdValid` accepts 1 to 8, 49 and 50). Touch sensitivity is protocol 4 features `4033` (left) and `4034` (right), a status 1 and a step, two or three steps by the product's `levelLimit` (the Wave Beam 3 has two). Never tried on earbuds.
+
+### 4.19 Adaptive noise cancelling on the Airoha models
+
+Read from `AirohaDeviceStatusControl` (`setAdvanceAnc`, `execFlow` cases 33 to 35), `AncStageSetEnvironmentDetectionStatus`, `AncStageGetEnvironmentDetectionStatus`, `AncStageGetFullAdaptiveAncStatus` and `AncStageSetFullAdaptiveAncStatus` (2026-11-24). The Live Buds 3 and Tour Pro 3's adaptive switch is the environment detection status: RACE `0E17` with the type 3 and 0 or 1 (a read sends the type 3 and the action 2; the answer repeats the type and holds the status). The leakage and ear canal switches of the customize page are not sent on the Airoha models: the two flows of `setAdvanceAnc` take only the adaptive, auto compensation, manual level and Ambient Aware entries. Auto compensation is `setFullAdaptiveAncStatus`, which the card's switch calls as `setFullAdaptiveAncStatus(1, AirohaFullAdaptiveAncInfo(1, 1, 2, 8, 0))` on every model but the 20D8 and 20D9 (`execFlow` case 34). `doSetFullAdaptiveAncStatus` turns the info's mode 1 into the stage's mode 10 and the filter 1 stays 1; `AncStageSetFullAdaptiveAncStatus` then sends RACE `0E06` (the same id as the noise control command) with 15 bytes: a zero, 10, the filter, 5, 1, 0, the mode (10), the power saving mode (1), 0, the passive rate (8) and the active rate (2), and zeros. A read is `0E26` with `00 0D 00 00`; the answer holds the type (13) and the mode at bArr[7] and bArr[8], which the app turns into on when the mode is not 0 (`FullAdaptiveAncListener.onRead`). Off is, on the Live Buds 3 (and the 20D4 and 20D5), a plain noise cancelling write (filter 1, mode 0: `setAncSetting`), on the Tour Pro 3 and the rest RACE id `0095` (`RACE_SET_AUTO_COMPENSATION_OFF`, `MmiStage_SetAutoCompensationOff`) with one zero byte, answered by the status byte and the state. The 20D8 and 20D9 use their own `MmiStage_SetAutoCompensationStatus` (RACE `0E13`), which PairFree has no model for. PairFree reads it again after each write. Never tried on earbuds.
+
+### 4.15 The LE Audio switch
+
+Read from JBL Headphones 5.37.10 (2026-11-24): `LeAudioCard`, `GetSetFeatureCmd`, `General4Control.setFeatures`, `TourPro3LeControl`, `Tune770ncControl` and `AirohaDeviceStatusControl.writeHmCommand`. The card calls `BaseControl.setFeatures({1: on})` after a dialog that says the earbuds restart their link. On the Harman models that is command `B1` (`GetSetFeatureCmd`): a read is `00` and, for each key, the key and `00`; a write `01`, the key, the size 1 and the value; the answer (`aab1`) holds the sub-command and then key, size and value. Key 1 is the LE Audio switch (`LEAudioStatus`), 2 Auracast and 4 accidental touch prevention. On protocol 4 it is feature 2976 (`LEAudioUniCastStatus`), a status bit and level byte. On the Airoha models the `B1` frame goes inside the passthrough `0093` (`MmiStage_SendHmCmd`), as the clock does; PairFree lets through only a read or a write of key 1. The Tune 670NC has the card but its control class does nothing for `setFeatures`, so it gets no row. PairFree shows the row once the earbuds answer the read, instead of the app's per-model capability table (`qm.c`'s `le_audio_unicast`). Never tried on earbuds.
 
 ## 5. How each model sends its settings
 
@@ -555,6 +743,11 @@ models without a dash4 config (the Club Pro+, Reflect Mini NC and Live Free NC+)
 product list's ANC flag and Smart Audio & Video, voice prompts, VoiceAware and auto power-off from their class;
 PairFree shows each only once the earbuds answer its read.
 
+Voice prompt languages and custom prompts (issue #1, 2026-11-19): JBL's app offers no way to load a prompt of the user's own. Its language list is a set of voice packs: the
+Airoha models take them as an update flow (`AirohaOTATask`, `MultiLangVoicePrompt`, `VpLangTypeEnum`) and the protocol 4 models report `VoicePromptLanguage` and
+`VoiceFileVersion` (`DeviceInfoFeature5`). blocked: a language pack is a firmware-class transfer whose file comes from JBL's servers (hard rules: no server contact, no firmware traffic);
+checked: JBL Headphones 5.37.10, `General4Control`, `HandleParse`, the Airoha adapter classes, and no screen that lets the user choose a file of their own.
+
 **Touch controls** (section 10.1) are covered on the models whose page JBL's app has. **Not covered yet:** the noise cancelling and Ambient Aware level
 (`0E06` `00 1E` and the level, which JBL's app sends only with the mode on, and reads back only from
 indications), adaptive noise cancelling and auto compensation (separate flows per product id through Airoha's
@@ -784,3 +977,14 @@ single precision; `AirohaPeq.Library.SERIALIZE` does the same (150 random curves
 three whole curves in `test_vectors.json`). The set is longer than one packet, so it goes in parts of the MTU less 15
 bytes, each with the part count and its index (`AssembleCmd4`, `JblP4Packet.frames`).
 
+## 12. Avnera: the Everest Elite range and the Reflect Aware
+
+Read from JBL Headphones 5.37.10 (2026-11-24): `EverestControl` (what `gn.n.y0` builds for old devices), `gn.d`, `gn.v`, `gn.l` and the `a7` package (Avnera's LightX library: `o`, `q`, `k`, `d`). The product list gives six models the platform Avnera and the connection type BT: the Everest Elite 100, 150NC, 300, 700 and 750NC and the Reflect Aware. The 150NC runs the accessory manager (`z6`) over the same serial port, with the same keys behind another header (section 12.4); all six use `00001101-0000-1000-8000-00805F9B34FB`.
+
+**Frame.** `FF 5A 00 00`, the frame's length in two bytes (high first, header and check byte included), a 12-byte packet header, the buffer and a check byte that is the negated sum of all the bytes before it (a failed check drops the frame). The header: the source port (15, Bluetooth), the destination (64, the application), the opcode (1 read, 2 write, with 0x80 added when a buffer follows), the status and type, a little-endian word holding the key in its top byte and a 24-bit offset below, and the buffer's length as a little-endian word. A read sends 256 zero bytes as its buffer, or the request's own (the equalizer's bands). An answer has the same layout, with the key and the value in its buffer.
+
+**Keys** (`a7.k`; the numbers come from `DataBinderMapperImpl`): `AppAudioEQPreset` 129, `AppANCEnable` 133 (a word, 0 or 1), `AppANCAwarenessPreset` 134 (1 low, 2 medium, 3 high), `AppFirmwareVersion` 135 (three bytes), `AppAwarenessRawLeft` and `Right` 137 and 138 and `Steps` 139, `AppGraphicEQCurrentPreset` 146 (0 off, 1 jazz, 2 vocal, 3 bass, 4 the user's own), `AppGraphicEQPresetBandSettings` 148 (asked with the preset and 10 in two words, answered with the preset, the count and ten words of gains), `AppGraphicEQBand` 149 (written as the preset, the band and the gain, three signed words, -10 to 10 dB), `AppBatteryLevel` 176 (a word, a percentage), `AppSmartButtonFeatureIndex` 181, `AppOnEarDetectionWithAutoOff` 182 and `AppVoicePromptEnable` 183 (words, 0 or 1). PairFree reads the first set on connecting and the battery again every 30 s, and writes only these keys; the boot, configuration and firmware keys (below 128) and the rest of the application range never go out. The left and right ear's outside sound (137 and 138) is a step from 0 to the count less one that 139 holds (7 until it answers; `gn.d.u` turns the slider's percentage into the step), written as a word. The tap sensor's keys (160 to 167) are the library's own: no screen of JBL's app refers to them (a search for `AppTap` outside the `a7` package finds nothing), so PairFree leaves them alone. Never tried on headphones.
+
+### 12.4 The 150NC's accessory manager
+
+Read from `z6` (`f0`, `s`, `x0`, `m`, `l`, `e`) and the app's `assets/commands.json` (`ModuleId` 43), 2026-11-24. JBL's app runs the 150NC through the accessory manager, not `a7`, but the transport is the same: `z6.l` opens RFCOMM on `00001101-...`, and `z6.m.n` wraps every command in `FF 5A 00 00 00 <length>` with the negated-sum check, as LightX does. The command table gives each function an id of two bytes (`F085` for noise cancelling, `AA86` the ambient level, `AA89` to `AA8B` the raw steps, `0187` the firmware, `01B0` the battery, `01B6` auto off, `01B7` voice prompts, `B0B5` the smart button, `F192` the equalizer preset, `F394` and `F395` its bands): the low byte is the LightX key (133, 134, 137 to 139, 135, 176, 182, 183, 181, 146, 148, 149), the high byte is a class. The 12-byte header is `0F`, the module (0x43), the operation (1 get, 2 set, plus 0x80 for a buffer), 0, then the word `00 00 <class> <key>` (key in the top byte as in LightX, the class as the top byte of the 24-bit offset) and the buffer's length (`z6.f0.a`; `x0.z0` writes the operation and `cmd.g()`, the class). The buffer is one word per value, as LightX's: a get carries as many zero bytes as the answer holds (the larger of the set and get formats, `z6.f0.g`), a set the values, and the formats (Bool and UInt32 a word, the band settings twelve words) are the ones PairFree already writes for the other models. `AvneraTalk` serves the 150NC with `accessory` set: module 0x43, the class bytes of `CLASSES`, and reads of one word. The smart button's get answers a byte (`UInt8`). The app also runs an app-mode authentication first (`AppAuthStatus`, `AppSerialNumber`, `AppAuthChallenge`, `AppAuthResponse` of `AuthenticateAppMode`, `z6.g.t1`): the response is a constant byte pair the app builds from its own state, no key, and `z6.g.v` carries on with `Not Authorized -- continue !!` when the earbuds do not accept it, and the settings answer without it. Never tried on headphones; the module and class bytes follow from the code and nothing recorded confirms them. blocked: firmware and flash traffic is a hard rule; checked: the app's id table `z6.l0.f58347q` lists `FlashWrite`, `FlashErase`, `JumpToBootloader`, `ImageInfo` and `Reset` below key 128, and `AvneraTalk.allowed` lets only the application keys through.

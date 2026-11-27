@@ -22,6 +22,9 @@ What it shows, where the model has it:
   finding a lost earbud, sound quality (LDAC, aptX, aptX Adaptive, aptX Lossless: the earbuds restart after a
   change), and restarting or turning the earbuds off, after you confirm.
 
+Added in 0.12.0 from EarFun's app, per model as the app enables them (not tried on real earbuds): bass enhancement, manner mode, game EQ, DAC,
+left and right balance, USB charging, ambient voice, call environment, the codec in use and which noise modes each earbud's key cycles through.
+
 Not yet: the voice prompt languages of the Qualcomm models, which EarFun's app downloads as voice packs, and the
 models on chips whose own protocol PairFree does not cover yet (marked in the table). The speakers are left for
 later.
@@ -69,7 +72,7 @@ address or name. Say which settings worked and which did nothing.
 <tr><td>EarFun Free 1S</td><td><code>TW100</code></td><td>Earbuds</td><td>—</td><td>—</td><td>Not yet (ZhongKe)</td></tr>
 <tr><td>EarFun Free 2S</td><td><code>TW101S</code></td><td>Earbuds</td><td>—</td><td>game mode, 6-band EQ with presets, touch controls, restart</td><td>Not tested</td></tr>
 <tr><td>EarFun Free Pro 3</td><td><code>TW400</code></td><td>Earbuds</td><td>ANC (standard, wind), ambient (full)</td><td>game mode, two devices, microphone, voice prompt volume, find the earbuds, 10-band EQ with presets, touch controls (can be turned off), sound quality (aptX, aptX Adaptive), restart</td><td>Not tested</td></tr>
-<tr><td>EarFun OpenJump</td><td><code>OW100</code>, <code>OW100_NEW</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, spatial audio, voice prompt volume, find the earbuds, auto power-off, 10-band EQ with presets, touch controls (can be turned off), sound quality (LDAC), voice prompt language, power off</td><td>Not tested</td></tr>
+<tr><td>EarFun OpenJump</td><td><code>OW100</code>, <code>OW100_NEW</code></td><td>Earbuds</td><td>—</td><td>game mode, two devices, spatial audio, voice prompt volume, volume limit, find the earbuds, auto power-off, 10-band EQ with presets, touch controls (can be turned off), sound quality (LDAC), voice prompt language, power off</td><td>Not tested</td></tr>
 <tr><td>EarFun Tune Pro</td><td><code>HP220</code></td><td>Headphones</td><td>ANC (ANC 1, ANC 2, wind), ambient</td><td>game mode, two devices, spatial audio, voice prompt volume, auto power-off, 10-band EQ with presets, button controls, voice prompt language</td><td>Not tested</td></tr>
 <tr><td>EarFun Wave Life</td><td><code>HP201</code></td><td>Headphones</td><td>ANC (ANC 2, wind), ambient</td><td>game mode, two devices, voice prompt volume, auto power-off, 10-band EQ with presets, button controls</td><td>Not tested</td></tr>
 <tr><td>EarFun Wave Pro</td><td><code>HP200</code>, <code>HP200_BT8931H</code></td><td>Headphones</td><td>—</td><td>—</td><td>Not yet (BES (or BT8931H))</td></tr>

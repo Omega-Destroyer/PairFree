@@ -75,7 +75,7 @@ class VendorRecordingTest {
         assertTrue(lines.any { it.contains("0681 set_sound_modes") && it.endsWith("01 00 01 00 00 00 (x2)") }, text)
         assertTrue(lines.any { it.contains("0B01") && it.endsWith("(42 bytes left out)") }, text)
         assertTrue(lines.any { it.contains("0F81 ?") && it.endsWith("01 02") }, "a short unknown message is shown")
-        assertTrue(lines.any { it.contains("0F82 ?") && it.endsWith("(10 bytes left out)") }, "a longer unknown one is not")
+        assertTrue(lines.any { it.contains("0F82 ?") && it.endsWith("(10 bytes; prefix=07 07 07 07; remaining bytes left out)") }, "only four bytes of a longer unknown message")
         assertTrue(lines[1].trimStart().startsWith("0.000 app"), lines[1])
     }
 
@@ -129,6 +129,16 @@ class VendorRecordingTest {
     }
 
     @Test
+    fun sonyPairedDeviceListsAreLeftOutOfAReport() {
+        // A WF-1000XM6 recording (issue #33) showed other devices' addresses and names in table 2's peripheral parameter reply.
+        val list = "0203393a39383a46423a35373a33353a4543".hexBytes()
+        for (set in 0..2) {
+            assertEquals("(${list.size} bytes left out)", VendorRecording.shown(RecordedBrand.SONY, VendorRecording.sonyId(set, 2, 0x37), list, null))
+        }
+        assertEquals("02 03", VendorRecording.shown(RecordedBrand.SONY, VendorRecording.sonyId(1, 1, 0x23), "0203".hexBytes(), null), "table 1 is something else")
+    }
+
+    @Test
     fun findsNothingFramesAndLeavesOutTheSerialNumber() {
         val log = SnoopLog()
         log.connected(t0, 0x0E, addressBytes)
@@ -155,6 +165,40 @@ class VendorRecordingTest {
     }
 
     private fun hex(text: String) = text.encodeToByteArray().spaced().replace(" ", "")
+
+    @Test
+    fun unframedTransfersNeedAnIdentifiedChannelAndDoNotExposeContents() {
+        val log = SnoopLog()
+        val raw = "A private filename and audio contents".encodeToByteArray()
+        log.connected(t0, 0x0B, addressBytes)
+        log.rfcomm(t0 + 1, false, 0x0B, 10, SoundcorePacket.build(SoundcoreCommand.STATE))
+        log.rfcomm(t0 + 2, false, 0x0B, 10, raw)
+        log.rfcomm(t0 + 3, true, 0x0B, 10, byteArrayOf(1))
+        log.rfcomm(t0 + 4, false, 0x0B, 12, raw) // Unidentified channel stays out.
+        log.disconnected(t0 + 5, 0x0B)
+        log.connected(t0 + 6, 0x0B, addressBytes)
+        log.rfcomm(t0 + 7, false, 0x0B, 10, raw) // Handle/channel reuse is not identification.
+        val packets = SnoopScanner().apply { feed(log.bytes()) }.packets()
+        assertEquals(3, packets.size)
+        assertEquals(2, packets.count { it.transportOnly })
+        val text = VendorRecording.lines(VendorRecording.of(packets).single()).joinToString("\n")
+        assertTrue(text.contains("unframed RFCOMM bytes"), text)
+        assertFalse(text.contains(raw.spaced()))
+        assertFalse(text.contains("41 20 70 72"), "no prefix of unframed contents")
+    }
+
+    @Test
+    fun soundcoreAudioCannotBecomeAnotherBrandsRecording() {
+        val log = SnoopLog()
+        log.connected(t0, 0x0B, addressBytes)
+        log.rfcomm(t0 + 1, false, 0x0B, 10, SoundcorePacket.build(SoundcoreCommand.STATE))
+        val chanceMatch = SamsungPacket.build(SamsungMessage.NOISE_CONTROLS, byteArrayOf(2))
+        repeat(2) { log.rfcomm(t0 + it + 2, false, 0x0B, 10, chanceMatch) }
+        val packets = SnoopScanner().apply { feed(log.bytes()) }.packets()
+        assertEquals(3, packets.size)
+        assertTrue(packets.all { it.brand == RecordedBrand.SOUNDCORE })
+        assertEquals(2, packets.count { it.transportOnly })
+    }
 
     @Test
     fun aRecordingStartsWhenTheEarbudsLastConnected() {

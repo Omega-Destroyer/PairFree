@@ -311,6 +311,15 @@ left/right switch.
 - **146, touch and hold:** the left and right codes, then each side's assistant: 1 Google,
   2 another, 0 when the option is not the assistant. Codes: 1 Bixby, 2 noise control, 3 the
   digital assistant, 6 volume, 5 anything else.
+- **Touch and hold with an app (issue #54, read 2026-11-18, not built).** The earbuds only report that a hold happened; which app then opens is the phone's choice, kept in
+  the plugin's own preferences. The plugin (`MsgTouchAndHoldReceive`) does not launch apps the user picks: it has special cases (Bixby, Samsung's interpreter app, Samsung Health's
+  mindfulness deep link, Spotify through Spotify's SpotOn service with a client id Samsung holds) and, for every other app, a broadcast
+  `com.samsung.accessory.earbuds.action.SEND_PUI_EVENT` to that package, or a foreground service in it. The apps offered are the ones that declare a receiver for that action with
+  `menu_name`, `description` and an `autho_key` meta-data the plugin checks, which only partners Samsung has authorised pass. So there is no
+  "open any app" in Samsung's design, and what PairFree could add is different: its own hold handler that starts an activity. blocked: Android (10 and later) does not let an app start an
+  activity from the background without the special "display over other apps" permission or a visible window, and offering a list of the user's apps needs package visibility;
+  owner, 2026-11-18: no additional permissions. checked: the whole `a1/c4.java` hold handler and `fn/g.java` (`TouchAndHoldUtil.getThirdPartyApps`) of the plugin, and the manifest
+  permissions PairFree holds. A partner-style broadcast to an app that listens for it needs no permission, but needs the app's own opt-in.
 - **175, seamless connection:** 1 for on.
 - **134 and 137, the custom curve:** it is equalizer number 6 (Balanced 0, then bass boost,
   smooth, dynamic, clear, treble boost, custom). The plugin selects 6, then sends the bands.
@@ -360,3 +369,44 @@ Also in the plugin, not used by PairFree: adaptive response level (0x49), the Bi
 (0x66), voice boost and volume normalisation (0x6A), the auto power-off timer (0x6B), spatial
 audio and head tracking (0x7C), the hearing aid's WDRC (0xB8), neck stretch (0xC9), adjust sound
 fit (0xDA) and self diagnostics (0xEA, never sent).
+
+## 14. Adapt Sound hearing test (read 2026-11-10, built the same day)
+
+From Samsung's plugin (budsunitemgr 9.0.10: `HearingTestManager` in `lp/f.java`, its state in `lp/e.java`, the screen's handlers in `gp/m.java` and
+`gp/o.java`, the presets in `jp/a.java`). The feature flag is `HEARING_ADJUST` in the plugin's base list, so every model with `samsung_app` has it
+(the Buds4 family, Buds On, H1, T1); PairFree offers it on the Sound tab for those (`SamsungModel.buds4Layout`). **The earbuds make the tones**: the
+phone needs no tone files, only message 204 (`0xCC`) with a 25-byte block:
+
+| Byte | Meaning |
+|---|---|
+| 0 | Adapt Sound on (1) or off |
+| 1 | command: 0 start, 1 play a tone, 2 stop the tone, 3 cancel, 4 take the profile, 5 apply (with byte 0) |
+| 2 | the earbud for a tone: 1 left, 0 right |
+| 3 | the frequency's slot: 0, 1, 3, 5, 7, 9 for 250, 500, 1000, 2000, 4000, 8000 Hz |
+| 4 | the tone's attenuation code, `13 - level / 5` (bigger is quieter) |
+| 5 to 14 | the left profile, a level at `5 + slot` |
+| 15 to 24 | the right profile, a level at `15 + slot` |
+
+The test: media and notification sound are muted and the plugin refuses to run while music plays. The order is each of the twelve (earbud, frequency)
+pairs three times, shuffled (Samsung's swap loop), then an end marker. Every frequency starts at level 20. A tone plays by sending the block with
+command 1; the same block goes again every 800 ms while it plays; Yes (heard) or No stops it (command 2) and moves that frequency's level
+(`SamsungHearingTest.next`: 5 to 5 or 10, 10 to 5 or 15, 15 to 15 or 20, 20 to 10 or 30, 25 to 25 or 30, 30 to 25 or 35, 35 to 35 or 40; Samsung's
+code writes 0 for a level after 40, PairFree keeps 40). At the end the levels go into the profile slots with command 4, then command 5 with byte 0 set
+turns Adapt Sound on. Levels read as thresholds: Samsung's presets are all 5 (no loss), `5,5,5,5,5,20,...` and `25,25,30,35,40,40,...`.
+Not traced: the earbuds' reply to 204 (PairFree does not wait for one) and how the Galaxy Wearable app then keeps the profile on the phone
+(`FittingDataProvider`, a Samsung content provider that does not exist outside Samsung's phones). Virtual and unit tests only
+(`SamsungHearingTestTest`); no Galaxy Buds have been tried.
+
+## 13. Samsung's own plugins for the older models (read 2026-11-13)
+
+The owner supplied the plugins of eight more models (decompiled outside the repo): Galaxy Buds (`fridaymgr`, SM-R170), Buds+ (`popcornmgr`, R175), Buds Live (`neobeanmgr`, R180), Buds2 (`berrymgr`, R177), Buds FE (`pearlmgr`, R400N), Buds2 Pro (`zenithmgr`, R510), Buds3 (`jellymgr`, R530) and Buds3 Pro (`paranmgr`, R630). Each has the status parser (`MsgExtendedStatusUpdated`, the class with the `<Codename>_MsgExtendedStatusUpdated` log tag) and a table of features by revision (`p097i7/e.java` in the Buds2, Buds2 Pro and Buds3 plugins), so the bytes that exist at a revision are known from the app, not inferred.
+
+What was compared with GalaxyBudsClient's layout and what changed in PairFree:
+
+- **Buds3 (R530):** differs from GalaxyBudsClient from byte 41, as the Buds4 family does: byte 41 is auto adjust sound (GalaxyBudsClient has head tracking there), so head tracking, the charging byte, extra clear call sound, extra high ambient and auto pause sit one byte later, and there is no lighting byte. After the hot command language (48), the adaptive volume (50) and adapt sound (51) come the hot command version (52 to 54), voice boost (55), volume normalization (56) and the digital assistant's two sides (57). PairFree now reads the Buds3 so (`SamsungStatus.readBuds4`, the Buds3 branch); writes are unchanged, since the plugin's writes for the Buds3 have not been compared.
+- **Buds2 Pro (R510):** the plugin's table adds voice boost and volume normalization from revision 14 (read now), and at revision 1 only an ear adaptation status and fitting and sound detect modes (bytes 41 to 44; not read: revision 1 is the first firmware), and at revision 6 only a skipped byte (amplify ambient sound). Auto adjust sound from revision 3, head tracking from 8, charging from 11 and extra clear call sound and extra high ambient from 13 match GalaxyBudsClient.
+- **Buds2 (R177):** the plugin's table: fit test from revision 2, bixby from 1, double tap side and customised ambient sound from 5, ambient during calls from 6, touch control for calls and in-ear detection from 7, 360 audio and its calibration from 8, background auto update and ring on wearing from 9, charging from 10; ANC with one earbud only at revisions 3 and 4. GalaxyBudsClient's Buds2 path agrees except that it reads the one-earbud switch at every revision from 3 (byte 28); the plugin lists it for 3 and 4 only. Not changed: no firmware with such a reply is known.
+- **Buds3 Pro (R630), Buds FE (R400N), Buds+, Live, Buds:** their parsers are present (only the Buds3's and the Buds2 Pro's tails were compared here). The Buds3 Pro's decompiled constructor holds more feature-gated fields than the Buds3's, so its layout still follows GalaxyBudsClient. Open, not blocked: the feature table of the Buds3 Pro (`paranmgr`, `p097i7`-style class) has to be read the way the Buds3's was.
+
+None of this has been tried on earbuds.
+

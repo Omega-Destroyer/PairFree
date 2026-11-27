@@ -1,0 +1,26 @@
+{
+ "name": "OPPO Enco Buds / OPPO Enco Buds2 / OPPO Enco Buds2 Pro / OPPO Enco Buds3 / OPPO Enco Buds3 Pro / OPPO Enco Buds3 Pro+ / OPPO Enco Buds3s",
+ "names": [
+  "OPPO Enco Buds",
+  "OPPO Enco Buds2",
+  "OPPO Enco Buds2 Pro",
+  "OPPO Enco Buds3",
+  "OPPO Enco Buds3 Pro",
+  "OPPO Enco Buds3 Pro+",
+  "OPPO Enco Buds3s"
+ ],
+ "codes": [],
+ "source": "Traced from oppo_enco_buds2_pro, the left bud (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": " The other Enco Buds are grouped with it: same small stem form.",
+  "body": "115,69 138,70 167,84 170,77 174,75 197,80 212,93 217,116 214,133 199,147 181,153 173,146 155,158 132,163 151,204 154,224 149,238 141,244 132,246 117,241 107,230 66,150 59,126 65,108 74,102 84,100 97,78",
+  "axis": [
+   138.0,
+   157.7
+  ],
+  "accent": [
+   "87,142 86,150 84,157 80,162 75,163 70,162 66,157 63,150 63,142 63,133 66,126 70,122 75,120 80,122 84,126 86,133"
+  ]
+ },
+ "case": null
+}

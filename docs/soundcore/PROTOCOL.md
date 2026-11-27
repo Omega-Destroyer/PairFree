@@ -14,6 +14,11 @@ on 2026-10-29 (section 10). Each model's state layout (section 5) was read from 
 on 2026-10-13 and checked against the replies in its tests and, where 2.9.9 has the model, against the
 app's own parser.
 
+Protocol follow-up (2026-11-13): [exposed-source findings and targeted validation](PROTOCOL_RESEARCH_2026_11_13.md)
+record the A3943/A3961 manager bindings, A3947/A3953 noise-write checks, a Rock preset
+table discrepancy, and the separate Sleep A10 audio-transfer service. These are
+version-scoped research findings; they do not establish newer-model support.
+
 ## 1. Transport
 
 Classic Bluetooth serial (RFCOMM), like SoundPEATS. OpenSCQ30 connects to a vendor service
@@ -454,8 +459,243 @@ nor PairFree reads.
   OpenSCQ30's common set for this model: Bass Booster goes as preset `7E 7E`, as OpenSCQ30 has it for the
   A3005, A3035 and A3062, and Rock is the set's +4 and +5 dB ending, not the common set's +3 and +3.
 - **Noise mode.** The app sends `06 81` with six bytes: the mode (0 noise cancelling, 2 normal,
-  1 transparency, OpenSCQ30's numbers), three zero bytes, then `01 FC` each time. The state holds two
-  bytes after the four sound mode bytes, `8D FC` before the app's first write and `01 FC` after it.
-  OpenSCQ30, and so PairFree, sends the four sound mode bytes alone. Not changed until a user says
-  whether PairFree's noise mode works on the Q20i: what the two bytes are is not known.
+  1 transparency, OpenSCQ30's numbers), three zero bytes, then `01 FC` each time. **Answered 2026-11-15 from
+  the app's own code** (Soundcore 5.0.35, restored: `A3004AnalysisService.y3` reads the block and
+  `A3004CmdService.M0` writes it): the six bytes are the mode, the manual strength (high nibble) and adaptive
+  strength (low nibble), the transparency byte, the automation mode, the wind noise byte and the adaptive
+  sensitivity. The wind byte holds the suppression switch in bit 0 and "wind detected" in bit 1 (read only);
+  the app writes `isWindNoiseSuppression() ? 1 : 0`, so the `8D` the earbuds reported (suppression on, other
+  bits not the app's) goes back as `01`. The sensitivity goes back as reported, `FC` here. PairFree now sends
+  all six, the same way (`theQ20iWritesTheSixByteSoundModesTheAppWrites`); before 0.12.2 it sent four.
 - The earbuds answered each mode change with `0B 02` (seven bytes, left out of the recording).
+
+## 13. Sleep A30 (D1301): custom local audio research
+
+The [custom-audio feasibility assessment](SLEEP_A30_AUDIO_FEASIBILITY.md) records the 2026-11-09
+app/native investigation and a proposed saved-file library. The A30 holds one local audio file.
+The app's generic SBC container writer was reproduced in isolation, but its A30 use, accepted
+encoding, transfer commands and maximum clip size/duration remain unverified. No audio uploader
+is implemented or hardware-tested by that assessment; existing D1301 settings are separate.
+
+**Recording support:** PairFree's on-phone snoop filter now retains timing, sizes and at most
+four preview bytes for unknown framed Soundcore messages, plus metadata for unframed data on a
+previously identified Soundcore RFCOMM channel. Its CRC-checked `6611`-family container recognizer
+exports payload length/type/check results without the filename, 64-bit identifier or audio.
+The recognizer also covers a header split across packets of the same command and connection;
+it does not infer the A30's format or upload command IDs. Bulk packet reports retain samples
+and total counts instead of dumping audio. Known alarm, clock and sleep-history traffic remains
+private. D1301 listening/default/sleep-switch controls from OpenSCQ30 have recording names and
+bounded body sizes in `commands.json`; these entries add no probes or settings.
+
+The [capture guide](SLEEP_A30_CAPTURE_GUIDE.md) uses PairFree's filtered public report rather
+than requesting raw files. This needs a build containing these recorder changes. A separate
+unidentified transfer channel or another container format still requires further app analysis.
+
+## A3953 (Liberty 4): the state reply as Soundcore 3.3.0 reads it (2026-11-12)
+
+Source: `com/oceanwing/devicecmd/manager/l/n/a.java` (`A3953AnalysisService`) of Soundcore 3.3.0 (the newest readable app, `docs/soundcore/NEW_APK_ASSESSMENT.md`) and its base class `k/b.java`; command constants in `k/g.java` (`Cmm2CmdData`, 87 `08 EE 00 00 00 <group> <command>` prefixes). The state reply must be at least 163 bytes (`parseCmmBtDeviceInfo2`); offsets below count from the start of the packet (the 9-byte header `08 EE 00 00 00 cmd1 cmd2 len len` ends at 8), so subtract 9 for PairFree's payload-relative layouts.
+
+| Offset | Size | Field |
+|---|---|---|
+| 9 | 1 | host device (which earbud the phone is on) |
+| 10 | 1 | TWS status (1 both earbuds) |
+| 11, 12 | 1+1 | left and right battery (level 0 to 5) |
+| 13, 14 | 1+1 | left and right charging |
+| 15 | 5+5 | left and right firmware text |
+| 25 | 16 | serial number text |
+| 41, 42 | 1+1 | current EQ index (two bytes; `FE` second byte = custom, `EE` = another set, else a preset number) |
+| 43 | 20 | the custom EQ curve (ten bands, two bytes each) |
+| 63 | 1 | HearID age range (`FF`/`FE` mean no data) |
+| 64 | 1 | HearID switch |
+| 65 | 20 | HearID curve |
+| 85 | 4 | HearID time (little-endian) |
+| 89 | 1 | HearID type |
+| 90 | 20 | custom HearID curve (first byte `FF` = none) |
+| 110, 111 | 1+1 | HearID EQ index |
+| 112 | 1 | length of the button block, counting from this byte |
+| 113 | 24 | button block (`ControllerBtnModel`): per press (single, double, long, triple) and side, an enabled/action pair for the earbud alone and for TWS (high and low nibbles) |
+| 112 + length - 1 | 1 | which of ANC, transparency and normal the cycle includes (bits 1, 2, 3) |
+| then | 6 | ANC block (`A3951ANC`): mode byte, manual (low nibble) and auto (high nibble) level, a byte, the automation mode, wind flags (bit 1 suppression, bit 2 detected) and the auto sensitivity |
+| +6 | 4 | personalised ANC test time |
+| | 1+1 | its volume and result index |
+| | 1 | wear detection switch |
+| | 1+1 | left and right wearing |
+| | 1 | case battery |
+| | 1 | bass up |
+| | 1 | LDAC |
+| | 1 | two-device switch |
+| | 1+1 | auto power-off switch and its index (0 to 3) |
+| | 1 | HearID volume |
+| | 1 | in-ear beep |
+| | 1 | low battery alert |
+| | 1 | ambient sound prompt |
+| | 1 | spatial audio switch |
+| | 1+1 | spatial effect and sound mode |
+| | 4 | health: sedentary reminder, sitting posture, abnormal heart rate alarm, its threshold |
+| (replies longer than 163 bytes) | 1+1 | device colour (one character) and press sensitivity |
+
+Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Not built yet for the model: the equalizer (the app writes `03 87` or `02 81`; the HearID part is 49 bytes here, not the 48 of the A3947's), the touch controls (the 24-byte button block), and the HearID and ANC tests. Nothing has been tried on a Liberty 4.
+
+## 14. The Soundcore app 5.0.35 (2026-11-15)
+
+The owner restored the packed business code of the Soundcore app 5.0.35-435 (`com.oceanwing.soundcore`) outside the repo and wrote up what it holds
+on the local branch `research/soundcore-full-protocol` (`docs/soundcore/*_5_0_35.*` there, not part of `main`; vendor code and raw artifacts stay outside
+Git). What PairFree took from it, and what it did to the models and to pull request 42:
+
+- **Model list.** The app registers 165 keys (161 app registrations and four SDK-only ones). Every earbud and headphone among them is in
+  `devices.json`; the speakers and the cases are left out. The aliases the app lists under another key are names of that key's model (the Sleep A30
+  Special, the AeroFit 2 AI Assistant). Each model's state parser is `AnalysisService.e1` in the restored
+  `com.oceanwing.devicecmd.manager.product.<model>` package (the older models: their `DeviceManager`), and each was compared with the parsers of the
+  models PairFree already reads: the same bytes in the same order, the same command service, and no branch on the product code is what makes two
+  models twins (a twin's bytes are never assumed from a name). What each new model offers (none is tried on real earbuds; "head" is the level, the
+  charging, the firmware, the serial and the case):
+
+  | Model | Read as | Offered |
+  |---|---|---|
+  | A3331 C40i | the C30i (A3330), its surround byte skipped | everything the C30i has |
+  | A3878 V40i | the V20i (A3876) plus a bass up byte | everything the V20i has, without the light |
+  | A3004C Q20i Plus | the Q20i (A3004) | head only (its command service is its own) |
+  | A300B Q21i NC | the Q20i plus dual connections and auto power off (user's reply, issue #22) | head, switches |
+  | A3958 A30i | the P30i (A3959): one parser class, one command service | everything the P30i has |
+  | A3943 Life Note C | the Life P2 Mini (A3944): A3948's classes | everything the P2 Mini has |
+  | A3969 R50i VI | the P20i (A3949): A3948's classes | everything the P20i has |
+  | A3937 P41i | the P40i (A3955): A3955's classes | everything the P40i has |
+  | A3961 Sport X10 | the Life Note 3i (A3982): the legacy A3933 manager | all but the single presses (they move with the firmware) |
+  | A3045 Life Q20+ | the Life Q30 (A3028): the legacy A3951 manager | everything the Q30 has |
+  | A3994 K20i | the P30i's head, no noise modes | touch controls, game mode, touch tone, auto power off |
+  | A3871, A3872, A3873 AeroFit Pro, AeroFit, V30i | the V20i's head, six touch bytes | touch controls, switches |
+  | A3874, A3875, A3600, A3012, D1404 | their own head | head (the A3012 also its two switches) |
+  | D1200 Liberty Buds | the Liberty 5 (A3957) up to the hearing protection, own tail | noise mode, switches, touch controls |
+  | D1205 P42i | its own head, the P31i's tail | head, touch controls |
+  | D1402 Space 2 | the Space One Pro (A3062) head, own tail | noise mode, LDAC, dual connections, auto power off, volume limit |
+  | D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303 | tag-length-value (below) | see below |
+
+  The battery is shown only where a twin or a recording gives its scale: a parser's clamp (0 to 100, 0 to 9) is not a scale (the Liberty 5 and the
+  Liberty 4 Pro share one clamp and differ in scale), so the models above without a twin show no battery until a device report settles it. No earbud or
+  headphone the app registers is report-only any more. The **Life NC (A3201)** speaks an older protocol: one request, `01 09` (it names its own
+  `stateCommand` in `devices.json`), returns its whole state in a frame with no checksum (the level 0 to 5, the vibration switch, the custom button
+  function, the volume limit's switch and value 0 to 16, the firmware as four characters, the serial and the name); the writes are `01 82`, `01 84` and
+  `01 85`. Its equalizer is read and set by index (`02 01`, `02 81`) and its presets are in a native screen, so none is offered.
+  **Switch bits of the tag-length-value models** (records 26 and 27: the prompts, the touch lock, LDAC, 3D mode, adaptive volume, side tone and the
+  rest): blocked: which of them each model shows is the model's "more" data provider, whose bodies are empty stubs in the restored app; checked:
+  `D1206MoreDataProvider` (6 of its 9 methods are stubs), `D1206MainActivity` (57 stubs, 12 native methods), `A3954AncFragmentVM` and the other
+  models' main view models. The bits are read; offering a switch the model does not have would write to a bit it ignores. A device report from the
+  model (or the Soundcore app's screens recorded) settles which to offer.
+- **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
+  from the first byte (`ParseCommonCmdUtils.a`) and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns
+  the records into the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and
+  `"hi"` a nibble, `"pack"` the touch control's two bytes (with both earbuds in, with one) as OpenSCQ30's one nibble-packed byte, `"level"` and
+  `"swap"` the nibble forms the app's noise mode write uses; `tlv_private` lists the records that hold serial numbers and addresses (hidden in a
+  report). The records the Liberty Buds 2, the Liberty 5 Pro pair and the AeroClip 2 share: 1 host, 2 TWS, 3 and 4 (charging, level) per earbud, 5 and 6
+  firmware, 7 serial, 8 case (charging, level), 13 to 24 the touch controls (single, double, triple, long, slide up, slide down; left then right),
+  25 auto power off, 26 and 27 switch bits, 36 to 38 the noise mode, 39 the high volume limit, 44 spatial audio, 46 the modes the button cycles. The
+  touch writes of these models are `04 8C` (side, gesture, the value with both earbuds in, the value with one: `wide` in the button spec; the Sleep
+  Earbuds 4 keep `04 81`), and the noise mode write is the model's own: eight bytes on the Liberty Buds 2 (mode, manual level << 4 | 15, hear guard,
+  automation, wind, 0, multi-scene, 0), seven on the Liberty 5 Pro pair (mode, automation, transparency option, two level bytes as reported, two
+  multi-scene bytes), six on the Space 2 pair. Offered: the Liberty Buds 2's and the Liberty 5 Pro pair's noise mode and touch controls, the AeroClip 2's
+  touch controls (triple tap: white noise) and dual connections, the AeroClip 2 Pro's touch controls (its own action list), the Space 2 pair's noise
+  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the
+  sleep sounds and playback records (31 to 33, 81, 106) of the Sleep Earbuds 4, and the case's own channels (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
+- **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
+  triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
+  write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The
+  limit-high-volume write is three bytes (switch, dB, third byte). The slider's direction is not in the restored code (the screen's view model is native
+  code that the restoration leaves empty). A real pair settles it (Onlineraider's Liberty 4 Pro, firmware 04.29, pull request 42 and issue #50): 1 to 5
+  is transparency, 6 normal and 7 to 11 noise cancelling, as on the Soundcore app's own slider. OpenSCQ30 reads it the other way round, and PairFree
+  0.12.1 followed it: the earbuds then moved each slider value PairFree sent back to its mode's side, and the level row, shown only for a slider on
+  the side PairFree expected, vanished about two seconds after each change (the issue's screen recording). The level row now shows whenever its mode is
+  on. Not confirmed: which end of each side is the strongest; PairFree takes the slider's ends (1 and 11).
+- **P30i (A3959) and R50i NC, recorded from the official app (issue #45).** The sound modes block is seven bytes: the mode (0 noise cancelling, 1 transparency,
+  2 normal), the manual strength (high nibble, 1 to 5) and adaptive level (low nibble, read only), a byte the app leaves 0, the kind of noise cancelling
+  (0 manual, 1 adaptive, 2 multi-scene), wind noise (bit 0 suppression, bit 1 detected), a byte and the multi-scene
+  setting (0 transport, 1 outdoor, 2 indoor). **Corrected 2026-11-18 from the app's own code** (Soundcore 5.0.35, `A3958AnalysisService.y3` and
+  `A3958CmdService.M0`, for the A3958 and A3959 family): the third byte is the transparency option (0 to 2, `j()` clamps it) and the sixth byte is
+  `isEnvironmentDetection` (1 means on; the app reads `1 == byte` and writes 1 or 0), not an "adaptive sensitivity" from 0 to 10, which is OpenSCQ30's reading. No screen of the
+  official app shows either as a slider: its ANC page for this family (`A3955AncActivity`, shared with the D1202 family) offers the kind (manual, adaptive,
+  multi-scene), the manual level, the multi-scene list and the personalised ANC switch; the wind switch is on the home panel. "Wind detected" (bit 1) is parsed
+  but no screen shows it. So PairFree 0.16.0 offers neither the slider (a user's R50i NC set it and it came back as 0: the earbuds keep the byte as a switch, and
+  any other value reads as off, issue #43) nor the detection row, and writes the block as the app does: the wind byte as the suppression switch alone, the
+  transparency byte as read (0 to 2), the sixth byte as 1 or 0. checked: the whole `a3958`, `d1202` and `a3955` packages and the `a3958` activities and view models (no
+  sensitivity or detection control, only the model's own fields). The recording shows each as a `06 81` write of those seven bytes, which PairFree now offers
+  (`a3959SoundRows`, pinned by `theP30iFamilyReadsAndWritesItsNoiseControl`). Also in the recording and now offered: surround sound (`02 86`, state byte after the dual connection switch), the
+  auto power off durations (`01 86`: switch and index, 10, 20, 30, 60 minutes) and the fit test (`09 01`, answered with 14 bytes after about nine seconds, 0 or 1 for a good fit). The sensitivity slider's range is OpenSCQ30's (the recording never moves it).
+
+- **P31i (D1202) and R60i NC (D1202C), from the app (2026-11-18).** The sound mode block is eight bytes (`D1202AnalysisService.y3`, `D1202CmdService.M0`):
+  the mode, the manual (high nibble) and adaptive (low nibble) level, the side tone switch (1 or 0), the kind of noise cancelling, wind noise (bit 0 suppression,
+  bit 1 detected), a byte the app carries as the adaptive sensitivity level and no screen shows, the multi-scene setting and a "real-time adaptive ANC" byte
+  the app also only carries. The app drives the same ANC page as the P30i's (`A3955AncActivity`), so PairFree shows the same rows (kind, manual strength, adaptive
+  level, scene, wind noise) and writes the block back as the app does: the side tone as 1 or 0, the wind byte as the suppression switch alone, the carried bytes as the
+  earbuds reported them. Not tried on the earbuds.
+
+- **Pull request 42** (Onlineraider, merged with its commits and corrected): its layout fix and its writes for spatial audio, easy chat, the case's
+  features and language, and the auto power off durations match the vendor's code and OpenSCQ30. Its noise slider (low half transparency, high half noise
+  cancelling) differs from OpenSCQ30's reading and was changed to OpenSCQ30's in 0.12.1, wrongly: it was tried on a real pair and is restored (issue #50,
+  above). Corrected: it wrote the limit-high-volume setting without its third byte, sent an air pressure
+  update command (`16 81`) that neither the app's constants nor OpenSCQ30 hold (removed: no source), kept wind noise's detection bit in the write, and
+  showed the wearing detection, low battery prompt, sound leak compensation and spatial audio switches a second time beside the shared rows.
+- **Legacy A3909 family.** The restored `A3909DeviceManager` parsers agree with the layouts taken from 2.9.9: the HearID block is 21 bytes (switch, eight
+  positions per ear, a big-endian time), the buttons come as four bytes on the A3909 and A3913 and, on the A3910, as enable and function pairs with a
+  wear detection byte from 51 bytes and the single taps from 55. The writes are `04 81` (side, gesture, one function byte on this family; the newer
+  `CmmBtCmdService` packs two nibbles under the same command), `04 83` (side, gesture, enabled), `02 81` (an index and eight positions per ear) and `03 82`
+  (HearID). The A3909 and A3913 carry a transparency switch byte after the buttons that PairFree does not read.
+- **The parametric equalizer (`03 8A`).** The models whose command service takes `c6()` (the Liberty 5 Pro pair, the AeroClip 2 and 2 Pro, the P42i, the
+  Liberty Buds 2, the Q31i and the Space 2 Pro pair; `eq_normalized` in `devices.json`) write their equalizer as one packet,
+  `CmmBtCmdService.m6`: the position (u16 little-endian), the HearID switch (always off), the HearID state and its time (u32 little-endian, as the earbuds
+  last reported them: record 51 on the tag-length-value models, 0 where the reply holds none), the filter count and 13 bytes a filter (a type byte, then
+  the gain in dB, the centre frequency in Hz and the Q as little-endian floats). A preset is its own position with its own filters, from the app's tables
+  (`data/soundcore/eq_filters.json`: Soundcore Signature, Clear Vocals, Powerful Bass, Soothing Calm, and Balanced where the model has it); the Liberty 5 Pro
+  pair's list depends on the firmware (3.48 to 3.98, 4.48 to 4.98, 5.48 to 5.98 and 6.48 to 6.98 list Balanced at position 0 and the Signature at 4). A
+  custom curve is position 0xFEFE with up to eight peaking filters (type 1, Q 0.7) at 100, 200, 400, 800, 1600, 3200, 6400 and 12800 Hz whose gains
+  are the curve's; PairFree offers -6 to 6 dB in half steps (the app's own HearID curve limit is 7 dB less one; the custom screen's range is in the app's
+  native screen code). The earbuds report the position they hold (record 11), so a preset shows by name; a custom curve's gains are not in the reply.
+  Left out: the AeroClip 2's "volume booster" (position 30), whose table holds values (type 0xFD, and -3, 2 and 4 in the gain, frequency and Q columns)
+  that look like another structure. Bytes are pinned by `theNormalisedEqualizerWritesTheAppsBytes`, which rebuilds the Liberty Buds 2's signature and
+  balanced presets and a custom curve. Not tried on earbuds.
+- **Sleep A30 upload (issue #23): built and offered on the Device tab, UNTESTED on an A30.** `SleepAudioFile` writes the container the app's native writer makes
+  (a 256-byte header with the magic, codec, media ID, sound type, name, payload length, sample rate and the two CRC-16s, then the encoded audio unchanged)
+  and `BesTransferMessages` the BES transfer's simple messages (version, side, user index `10 + index`, begin, announcement with the file's CRC-32, segment
+  check, end, final activation); `SleepAudioFileTest` pins them to the bytes in `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md` (on the research branch). What stops the
+  upload itself, each with what was checked:
+  1. The transfer configuration (`86`) and the resume message (`8C`) are now traced and built (`BesTransferMessages.configuration` and `resume`), from the
+     restored DEX of `BesOtaCMD.m`, `e` and `v` and the helpers `ArrayUtil.h` (little-endian int), `e` (`java.util.zip.CRC32`) and `a` (concatenation): the
+     92 bytes are the inner length 88 (u32), the file's `n-4`, `n-3` and `n-2` bytes and a zero, the option flags (bit 0 clear user data, 1 update the
+     Bluetooth name, 2 the BLE name, 3 the Bluetooth address, 4 the BLE address, all read from the app's preferences `ota_config_*`, which nothing in the
+     music path sets, so 0), the name and address fields (zero), the CRC-32 of the first 88 bytes (u32). The resume message is `BEST`, the 32-byte code the
+     earbuds gave the app earlier (zeros when it has none), 1 2 3 4 and the CRC-32 of those 36 bytes. The reply parser `BesOtaCMD.y`, the scheduler `k`, `j` and `f` and the handler `BesOtaService.e` are traced too (restored DEX; the opcode constants
+     are the class's static byte fields): requests are 0x99 (protocol query, answered 0x9A, which turns the length field on), 0x97 (slot `10 + index`, 0x98),
+     0x90 (begin, 0x91), 0x8C (resume, 0x8D), 0x80 (announcement, 0x81), 0x86 (configuration, 0x87), 0x85 (data, no answer), 0x82 (segment check, 0x83),
+     0x88 (end, 0x84), 0x92 (activate, 0x93); a status of 1 at byte 5 accepts. The 0x8D answer holds the offset the earbuds have (u32 at byte 5): above 0
+     the app goes straight to the configuration, at 0 the answer carries the 32-byte code at byte 9 (kept in the app's preferences) and the announcement
+     follows; the 0x81 answer holds `BEST`, two versions and the earbuds' packet size (u16 at byte 13). Data chunks are `min(packet size - 1, 512) - 4`
+     bytes (507 for a 512 packet), written about 20 ms apart; a segment is 32,768 bytes and ends the chunk that reaches its boundary (or the file's end), and
+     its check is the CRC-32 of the file from the segment's start to the offset; a refused check puts the offset back to the last verified one and the
+     segment goes again, three times at most. `BesUpload` (with the virtual earbud of `BesUploadTest`) runs this from the first message to the activation,
+     with a fresh start, a resume and refused segments. The first message is the only one sent before the length field exists (`99 00 00 00 01`, the app's
+     protocol query with its skip-version flag), read from the code and not seen on the wire. For a music file the handler is the firmware updater's own with
+     the music flags: `startOta` goes to the begin message when both are set and otherwise to the upgrade type.
+  2. The encoder: built (`SbcEncoder`). The app calls FFmpeg (FFmpegKit) for mono SBC (16 kHz, 128 kb/s, or 72 on the second try; 32 kHz for sound type 3)
+     and caps the clip at 60 seconds (10 for the AAC branch). Android's own SBC encoder is the Bluetooth stack's, not an API an app can call to make a file, so
+     PairFree carries a port of FFmpeg's `sbc` encoder (from BlueZ's codec, LGPL-2.1-or-later, credited in the file): 8 subbands, 16 blocks, loudness
+     allocation, bitpool 60 / 32 at 16 kHz and 28 / 14 at 32 kHz for 128 / 72 kb/s (frames of 128, 72, 64 and 36 bytes). `SbcEncoderTest` compares its output
+     byte for byte with FFmpeg's (PyAV 17) at all four settings. Any further option in the app's FFmpeg command line (beyond rate, channels
+     and bit rate) was not checked here. The AAC branch and the decoding of the user's own audio files (MP3, M4A and so on) to
+     16-bit mono PCM are not built; Android's `MediaCodec` does the decoding in the app.
+  3. Media IDs: PairFree picks a random positive 64-bit ID (`SleepUploader`) and the screen says so. Not settled: whether the earbuds accept it. Blocked from the app: the app takes them from its server (`getIdFromServer`) and no source says whether the earbuds accept an ID PairFree picks; checked:
+     `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md` section 8 and the evidence JSON's `unresolved` list.
+  4. The transport: built (`BesLink`, `BesUploadRunner`): a second RFCOMM socket on `66666666-6666-6666-6666-666666666666` opened beside the control channel,
+     which stays open; the earbuds' behaviour with both open is not known. `BesUploadRunnerTest` runs the transfer over a line that cuts, joins and delays the
+     answers, makes the earbuds miss a turn, refuse segments, fall silent or lose the link, and cancels mid-transfer. The sound is decoded with Android's
+     `MediaCodec`, mixed to mono, resampled (`SleepSound.resample`), cut at 60 s and encoded (`SleepSound.prepare`: 128 kb/s, 72 kb/s when over 1,024,000
+     bytes).
+     The catalogue (`SleepLibrary`, kept in `files/sleep/` on the phone): a sound is identified by the SHA-256 of its encoded audio and sound type, so the
+     same audio keeps the media ID it was first given and is stored once; PairFree remembers which sound it last sent to each slot of each earbud and does
+     not send it again unless asked ("send anyway"). It does not read the earbuds' inventory (`13 01`), so a slot changed by the Soundcore app since is not
+     noticed. The prepared container is kept, so a catalogued sound is sent again without the original file.
+  5. Acceptance: the screen asks for an opt-in switch and a confirmation before anything is sent, and says it is untested. No independently prepared file has been played by an A30 (research section 10). The transfer is the app's firmware-update machinery with the
+     music-file settings (`upgradeType 2`, user flag 1); PairFree's rule is that such traffic goes only behind an explicit confirmation and an opt-in, and
+     the first real test is the issue's author's A30.
+  Local playback itself needs none of this: the listening mode `01 A9` (0 Bluetooth, 1 local) is in the Device tab since 0.9.0, so a sound the Soundcore app
+  already put on the earbuds plays in local mode from PairFree.
+- **Not recoverable from the app.** The online product catalogue (HTTP 401 without an account) and the screens' view models (native code in the 5.0.35
+  restoration). The Sleep A30's audio upload is in the research branch's `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md`; PairFree builds none of it
+  (section 13).

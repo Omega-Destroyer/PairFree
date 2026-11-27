@@ -64,6 +64,7 @@ Every number of two bytes is low byte first.
   - nadamas follows `C001` with `F001` (protocol activated, no payload).
   - PairFree sends `C001` like Nothing X. It sends `F001` only if a reply comes back with
     response code 2 (not activated), and then reads everything again, once.
+- **Opening the channel:** Nothing X (`BaseSppConnector`) opens the serial service by its record, twice, and when that fails opens RFCOMM channel 15 directly (`createRfcommSocket(15)`); PairFree's third attempt does the same (`SppLink`, issue #77: a CMF Buds Pro 2 on a Nothing phone failed both record lookups after about 5 s each). Whether the phone's own earbud integration holds the channel is not known.
 - **Timing:** Nothing X sends one command at a time and waits for its reply: 5 s for most,
   1 s for the version read. It leaves 40 ms between writes.
   - PairFree waits up to 1 s per command. A read the earbuds lack gets no reply at all on some
@@ -140,10 +141,25 @@ Every number of two bytes is low byte first.
     `freqPeak`, `qPeak`, `freqHigh`, `qHigh`), `simple_eq` in `data/nothing/devices.json`.
   - `CustomEQ` sizes its buffer at 16 bytes a filter and fills 13, so 9 zero bytes follow the three
     filters; PairFree sends them too.
+  - **Two routes, two sets of numbers.** On an Android phone the app opens each product's own `EqualizerActivity`
+    (`IOT<codename>Action.startEqualizerActivity`; Nothing OS phones get an `OsEqualizerActivity`), whose view model
+    (`BaseEqualizerViewModel.getFreq`/`getQ`) writes constants of its own; `SimpleEqualizerViewModel` takes the numbers
+    from the feature table. A virtual Ear (2) run (`VIRTUAL_TESTING.md`) invoked the Ear (2)'s own view model by hand and
+    got the wire frame `F041 03 …` with the **high shelf at Q 0.7** (the feature table says 1.0). PairFree uses 0.7 for the
+    Ear (2) (B155). The own view models of the other products say (decompiled 3.4.15, not observed running):
+    Ear (2), Ear (a), Ear and Ear (open) (`ear.two`, `ear.color`, `ear.twos`, `ear.flaffy`): 140 Hz Q 0.8, 980 Hz Q 0.7,
+    3400 Hz Q 0.7; Ear (stick), CMF Buds Pro, Neckband Pro, CMF Buds, Headphone (1), CMF Buds Pro 2 (B172), CMF Buds 2 and
+    2 Plus, CMF Headphone Pro (`ear.stick`, `corsola`, `crobat`, `donphan`, `elekid`, `espeon`, `girafarig`, `gligar`,
+    `forretress`): 140 Hz Q 0.8, 980 Hz Q 0.66, **3500 Hz** Q 1.0. The feature table gives the CMF models 6900 Hz and Q 0.7
+    for the peak. Those models keep the table's numbers until a run shows which route the app takes (it is open whether a
+    phone that is not a Nothing phone takes the product's own screen for all of them); hoothoot, heracross, hitmontop and
+    earthree have no own view model and use the table.
   - `C044` answers in the same layout without the zeros, so PairFree reads the curve back.
 - **Extra features (`C00E`, `F004`):** a count, then a feature and its value for each. Feature 1
   is in-ear detection (`DeviceExtraFeatureStatus`). Set with `F004 01 01 <on>`.
-- **Low lag (`C041`, `F040`):** 1 on, 2 off, written as two bytes.
+- **Low lag (`C041`, `F040`):** 1 on, 2 off. Nothing X's Flutter screen writes **one byte** (`F040 01` and `F040 02`;
+  virtual Ear (2) run), as nada lists it; the Kotlin builder the first reading took it from pads a second byte, which
+  PairFree sent up to 0.8.x. The answer (`C041`) is read from its first byte.
 - **Bass boost (`C04E`, `F051`):** on, then the level 1 to 5. Nothing X's plain switch writes
   level 5. nada found that with spatial audio on, a bass write is acknowledged and ignored.
 - **Spatial audio (`C04F`, `F052`):** on, then on the models with head tracking (the
@@ -216,7 +232,18 @@ for.
   band. Left out until a report shows what the profile index means on the earbuds (Nothing X keeps
   its profiles on the phone, and writing one index may replace what it stored there) and how the
   mode and the presets interact. nada uses `C06C`/`C06D`, which are not in 3.4.15.
-- **Dual connection** (`F01A`/`C027`): what its value means is in Dart, so it is left out. Some
-  models restart after a change (`dualConnectionReboot`).
-- **Ear tip fit test:** the result arrives as `E00D`; how to start it is in Dart.
+- **Dual connection** (`F01A` write, `C027` read): built 2026-11-13 from Nothing X's Kotlin (`TWSDeviceExtKt.dual`, `DualConnectViewModel`): one byte, 1 on and 0 off, any
+  other value on a read counts as on; shown on the models whose table row has `dual_connection`. The paired devices' list (`C02E`/`E00E` and the connect and disconnect
+  writes) holds other devices' addresses and stays unsent. Some models restart after a change (`dualConnectionReboot`, in Dart).
+- **Personalised noise cancelling** (`F011` write, `C020` read, `DeviceANCSwitch`): the switch byte, then a calibration byte; PairFree writes only the switch, and
+  never starts the calibration (`SET_CALIBRATION`, in the never-sent list). It reads the switch on every model and shows it where the earbuds answer.
+- **Read from the Flutter layer (2026-11-13).** Nothing X 3.4.15's Dart code (Dart 3.9.2, `libapp.so` decompiled with blutter in Docker, outside the repo) was read for what the Kotlin
+  layer leaves out: **Dirac Opteo presets** (`F01D` write, `C050` read, one byte, `DiracEQMode`: 0 Opteo, 1 rock, 2 electronic, 3 pop, 4 enhance vocals, 5 classical, 6 the custom
+  curve; the models whose table row has `diracOpteoSupport`), the **timed power off** (`F00B`/`C011`: the mode, 0 shut down or 1 standby, then the minutes in two bytes, low byte first;
+  half an hour to four hours; only the CMF Headphone Pro's row has `powerOffTime`), **call transparency** (`F060`/`C05F`, one byte; the Ear (3)) and the **advanced equalizer's switch**
+  (`F04F`/`C04C`, one byte; the models with `advancedEq`). The Dart `EarHelper` has no method for the 3D sound, smart ANC and smart free, adaptive EQ, bass enhancer mode, FIR ANC,
+  high volume gain, system audio, box LED or LE switch commands, nor does the Kotlin layer call them, so their payloads are in no source (`data/unused_ids.json` says so for each).
+  Not built: the super mic and walkie-talkie modes of the Ear (3) (`F05F`/`F061`: phone recording features), and the advanced equalizer's curve (the eight bands are edited by Nothing X's
+  own EQ pages as phone-held profiles).
+- **Ear tip fit test:** started with `F014` (`SET_LEAK_DETECT`) and the byte 1; the result arrives as `E00D`, one byte per earbud (left, right). The start and the layout are from the open-source web client ear-web and desktop client attune (AGPL-3.0: facts only), which send them on the Ear (2), Ear (a), Ear, Ear (3) and the CMF Buds models; Nothing X's own start sits in its Dart code (`libapp.so`, not yet read, `isSupportEarTipFitTest` gates the screen). Which value means what (0 good, 1 poor, 2 not in the ear) is attune's reading, not Nothing X's: inferred, to be settled by a recording or the Dart code. PairFree offers the test on the models whose feature table says `fit_test` (`NothingTest.fitTestOnTheModelsThatHaveItAndNoOther`).
 - **Other features:** personalised noise cancelling and sound (Mimi).

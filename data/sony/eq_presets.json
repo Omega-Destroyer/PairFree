@@ -1,5 +1,5 @@
 {
-  "_about": "Sony's EQ presets by the id the earbuds report (EqPresetId in com.sony.songpal.mdr 13.3.0; set 1 has the same ids up to the user settings). label is PairFree's English for the enum name, used when the earbuds give a preset no name of their own. custom marks the curves the user sets: Custom and the user settings. When PairFree sends its own bands, set 1 names no preset (FF, as Sony's app does) and set 2 names Custom (A0, as Gadgetbridge does).",
+  "_about": "Sony's EQ presets by the id the earbuds report (EqPresetId in com.sony.songpal.mdr 13.3.0; set 1 has the same ids up to the user settings). label is PairFree's English for the enum name, used when the earbuds give a preset no name of their own. custom marks the curves the user sets: Custom and the user settings. When PairFree sends its own bands, set 1 names no preset (FF, as Sony's app does) and set 2 names the user setting the earbuds hold (A1 to A3, as Sony's app does on the WF-1000XM6, issue #33), else Custom (A0, as Gadgetbridge does).",
   "unspecified": 255,
   "presets": [
     {"id": 0, "name": "OFF", "label": "Off"},

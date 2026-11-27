@@ -1,0 +1,67 @@
+{
+  "units": "app_slider_percent_minus100_to100",
+  "source": "com/jabra/moments/equalizerpresets/model/ProvidedEqualizerPreset.java",
+  "presets": [
+    {
+      "name": "JABRA_DEFAULT",
+      "gain_percent": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "VOICE",
+      "gain_percent": [
+        -60,
+        0,
+        0,
+        17,
+        -20
+      ]
+    },
+    {
+      "name": "BASS_BOOST",
+      "gain_percent": [
+        60,
+        -33,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "TREBLE_BOOST",
+      "gain_percent": [
+        -20,
+        -33,
+        0,
+        33,
+        40
+      ]
+    },
+    {
+      "name": "SMOOTH",
+      "gain_percent": [
+        0,
+        33,
+        0,
+        -33,
+        0
+      ]
+    },
+    {
+      "name": "ENERGIZE",
+      "gain_percent": [
+        40,
+        0,
+        -33,
+        -17,
+        30
+      ]
+    }
+  ],
+  "note": "Map percentages through device-returned per-band limits; these are not fixed dB curves."
+}

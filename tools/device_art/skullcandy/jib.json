@@ -1,0 +1,19 @@
+{
+ "name": "Jib True XT2",
+ "names": [
+  "Jib True XT2"
+ ],
+ "codes": [
+  "Jib True XT2"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_jib_xt_black, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "181,6 206,7 273,16 301,27 323,45 331,59 336,81 333,161 330,189 326,205 318,223 308,236 282,253 257,261 230,264 183,262 162,289 150,299 134,307 106,313 87,313 74,310 49,297 30,270 22,239 27,209 37,187 53,169 73,157 93,153 97,150 113,77 126,39 132,29 151,14",
+  "axis": [
+   179.0,
+   159.8
+  ]
+ },
+ "case": "generic"
+}

@@ -1,14 +1,19 @@
 {
  "name": "Soundcore Life Dot 2",
  "names": [
+  "Soundcore Dot 3i",
   "Soundcore Life Dot 2 NC",
   "Soundcore Life Dot 2S",
+  "Soundcore Life Dot 3i",
   "Soundcore Sleep A30"
  ],
  "codes": [
   "A3926",
   "A3931",
-  "D1301"
+  "A3982",
+  "D1301",
+  "Soundcore Dot 3i",
+  "Soundcore Life Dot 3i"
  ],
  "source": "Traced from Soundcore's Life Dot 2 product photo; not in the repo.",
  "bud": {

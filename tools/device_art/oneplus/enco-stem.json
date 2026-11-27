@@ -1,0 +1,49 @@
+{
+ "name": "OPPO Enco Air 3i / OPPO Enco Air3 / OPPO Enco Air3 Pro / OPPO Enco Air3i / OPPO Enco Air3s / OPPO Enco Air4 / OPPO Enco Air4 Pro / OPPO Enco Air4i / OPPO Enco Air4s / OPPO Enco Air4（新声版） / OPPO Enco A",
+ "names": [
+  "OPPO Enco Air 3i",
+  "OPPO Enco Air3",
+  "OPPO Enco Air3 Pro",
+  "OPPO Enco Air3i",
+  "OPPO Enco Air3s",
+  "OPPO Enco Air4",
+  "OPPO Enco Air4 Pro",
+  "OPPO Enco Air4i",
+  "OPPO Enco Air4s",
+  "OPPO Enco Air4（新声版）",
+  "OPPO Enco Air5",
+  "OPPO Enco Air5 Pro",
+  "OPPO Enco Air5s",
+  "OPPO Enco Air5s（星光版）",
+  "OPPO Enco Einstein 1",
+  "OPPO Enco Einstein 3",
+  "OPPO Enco Free",
+  "OPPO Enco Free2",
+  "OPPO Enco Free2i",
+  "OPPO Enco Free3",
+  "OPPO Enco Free4",
+  "OPPO Enco Free4（丹拿版）",
+  "OPPO Enco Laplace 1",
+  "OPPO Enco Laplace 2",
+  "OPPO Enco Laplace 3",
+  "OPPO Enco W31",
+  "OPPO Enco W51",
+  "OPPO Enco ohm",
+  "OPPO Enco ohm DO",
+  "OPPO Enco ohm EX"
+ ],
+ "codes": [],
+ "source": "Traced from oppo_enco_free2i, a bud out of its case (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": " The Air3 to Air5 and the W31 and W51 are grouped with it: same stem form.",
+  "body": "393,72 410,73 434,84 450,101 466,112 473,123 475,133 471,149 458,164 445,169 422,169 421,248 415,260 405,264 393,260 387,248 386,152 369,132 363,115 363,101 369,88 379,78",
+  "axis": [
+   419.0,
+   168.1
+  ],
+  "accent": [
+   "410,132 409,145 408,157 406,165 403,168 401,165 398,157 397,145 397,132 397,118 398,106 401,98 403,96 406,98 408,106 409,118"
+  ]
+ },
+ "case": null
+}

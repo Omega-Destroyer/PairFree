@@ -1,0 +1,235 @@
+{
+  "description": "Original 1MORE app outgoing frames for a virtual Aero; saved public model config seeded in app memory. Replies and hardware effects are not validated. See docs/1more/VIRTUAL_TESTING.md.",
+  "model": "1MORE Aero / ES903",
+  "app_version": "2.0.0",
+  "package": "com.onemore.connect",
+  "reference_sha256": "72d12ec33039bcf2ec587d8327bc57bba4491dc390970f80fc6054525caeaeb5",
+  "selected_apk_sha256": {
+    "com.onemore.connect.apk": "503b5a006304097bf97dcabac0498cd5e81a37f4cc3a632d11b6d8637b5a2488",
+    "config.arm64_v8a.apk": "ad391c016cf3d19bed7d9adecf11e46a0d8f9430695002348135a0bbde2fbdec",
+    "config.xxhdpi.apk": "7a6d00193169cb6c7faebc7dc7a9e5bbabd7b7037370797c3534d571eed64672"
+  },
+  "ui_setting_frames": [
+    {
+      "action": "onemore-anc",
+      "command": "005e",
+      "payload": "01",
+      "frame": "1101005e000100004f01"
+    },
+    {
+      "action": "onemore-transparent-stateful",
+      "command": "005e",
+      "payload": "05",
+      "frame": "1101005e0001000b4405"
+    },
+    {
+      "action": "onemore-off-stateful",
+      "command": "005e",
+      "payload": "00",
+      "frame": "1101005e0001000f4000"
+    },
+    {
+      "action": "onemore-preset-Bass reducer",
+      "command": "0069",
+      "payload": "01",
+      "frame": "11010069000100017901"
+    },
+    {
+      "action": "onemore-preset-Bass booster",
+      "command": "0069",
+      "payload": "02",
+      "frame": "11010069000100017902"
+    },
+    {
+      "action": "onemore-preset-Acoustic",
+      "command": "0069",
+      "payload": "03",
+      "frame": "11010069000100017903"
+    },
+    {
+      "action": "onemore-preset-Classical",
+      "command": "0069",
+      "payload": "04",
+      "frame": "11010069000100017904"
+    },
+    {
+      "action": "onemore-preset-Podcast",
+      "command": "0069",
+      "payload": "05",
+      "frame": "11010069000100017905"
+    },
+    {
+      "action": "onemore-preset-Deep",
+      "command": "0069",
+      "payload": "06",
+      "frame": "11010069000100017906"
+    },
+    {
+      "action": "onemore-preset-Electronic",
+      "command": "0069",
+      "payload": "07",
+      "frame": "11010069000100017907"
+    },
+    {
+      "action": "onemore-preset-Hip-Hop",
+      "command": "0069",
+      "payload": "08",
+      "frame": "11010069000100017908"
+    },
+    {
+      "action": "onemore-preset-Lounge",
+      "command": "0069",
+      "payload": "09",
+      "frame": "11010069000100017909"
+    },
+    {
+      "action": "onemore-preset-Pop",
+      "command": "0069",
+      "payload": "0a",
+      "frame": "1101006900010001790a"
+    },
+    {
+      "action": "onemore-preset-Voice Enhancement",
+      "command": "0069",
+      "payload": "0b",
+      "frame": "1101006900010001790b"
+    },
+    {
+      "action": "onemore-preset-Studio",
+      "command": "0069",
+      "payload": "00",
+      "frame": "11010069000100017900"
+    },
+    {
+      "action": "onemore-custom-open",
+      "command": "0069",
+      "payload": "0c",
+      "frame": "1101006900010001790c"
+    },
+    {
+      "action": "onemore-custom-band1",
+      "command": "0053",
+      "payload": "0105c80045003c",
+      "frame": "1101005300070001450105c80045003c"
+    },
+    {
+      "action": "onemore-custom-band-2",
+      "command": "0053",
+      "payload": "010384011a0046",
+      "frame": "110100530007000145010384011a0046"
+    },
+    {
+      "action": "onemore-custom-band-3",
+      "command": "0053",
+      "payload": "0105dc02aa0050",
+      "frame": "1101005300070001450105dc02aa0050"
+    },
+    {
+      "action": "onemore-custom-band-4",
+      "command": "0053",
+      "payload": "01038404d2005a",
+      "frame": "11010053000700014501038404d2005a"
+    },
+    {
+      "action": "onemore-custom-band-5",
+      "command": "0053",
+      "payload": "0105dc07dd0064",
+      "frame": "1101005300070001450105dc07dd0064"
+    },
+    {
+      "action": "onemore-custom-band-6",
+      "command": "0053",
+      "payload": "0103840c23008c",
+      "frame": "1101005300070001450103840c23008c"
+    },
+    {
+      "action": "onemore-custom-band-7",
+      "command": "0053",
+      "payload": "0105dc12210096",
+      "frame": "1101005300070001450105dc12210096"
+    },
+    {
+      "action": "onemore-custom-band-8",
+      "command": "0053",
+      "payload": "0103841a8a00c8",
+      "frame": "1101005300070001450103841a8a00c8"
+    },
+    {
+      "action": "onemore-custom-band-9",
+      "command": "0053",
+      "payload": "0105dc265700dc",
+      "frame": "1101005300070001450105dc265700dc"
+    },
+    {
+      "action": "onemore-custom-band-10",
+      "command": "0053",
+      "payload": "01038436e500c8",
+      "frame": "11010053000700014501038436e500c8"
+    },
+    {
+      "action": "onemore-eq-curve-reset",
+      "command": "0053",
+      "payload": "0104b00045003c0104b0011a00460104b002aa00500104b004d2005a0104b007dd00640104b00c23008c0104b0122100960104b01a8a00c80104b0265700dc0104b036e500c8",
+      "frame": "1101005300460001040104b00045003c0104b0011a00460104b002aa00500104b004d2005a0104b007dd00640104b00c23008c0104b0122100960104b01a8a00c80104b0265700dc0104b036e500c8"
+    },
+    {
+      "action": "onemore-spatial-on",
+      "command": "0082",
+      "payload": "01",
+      "frame": "11010082000100168501"
+    },
+    {
+      "action": "onemore-spatial-off",
+      "command": "0082",
+      "payload": "00",
+      "frame": "110100820001001b8800"
+    },
+    {
+      "action": "onemore-voice-on",
+      "command": "0080",
+      "payload": "01",
+      "frame": "1101008000010020b101"
+    },
+    {
+      "action": "onemore-voice-off",
+      "command": "0080",
+      "payload": "00",
+      "frame": "1101008000010022b300"
+    },
+    {
+      "action": "onemore-autopause",
+      "command": "0062",
+      "payload": "00",
+      "frame": "11010062000100255600"
+    },
+    {
+      "action": "onemore-no-smart",
+      "command": "0062",
+      "payload": "02",
+      "frame": "11010062000100275402"
+    },
+    {
+      "action": "onemore-auto-play",
+      "command": "0062",
+      "payload": "01",
+      "frame": "11010062000100295a01"
+    },
+    {
+      "action": "onemore-left-double-next",
+      "command": "0084",
+      "payload": "0101",
+      "frame": "110100840002002cba0101"
+    },
+    {
+      "action": "onemore-right-triple-volume",
+      "command": "0084",
+      "payload": "0404",
+      "frame": "110100840002002eb80404"
+    }
+  ],
+  "startup_handshake": {
+    "command": "004d",
+    "payload": "01",
+    "frame": "1101004d000100015d01"
+  }
+}

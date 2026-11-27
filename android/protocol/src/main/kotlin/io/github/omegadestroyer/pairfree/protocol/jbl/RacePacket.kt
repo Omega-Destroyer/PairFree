@@ -41,7 +41,7 @@ public class RacePacket(
     public val data: ByteArray
         get() = when {
             type == JblRace.TYPE_COMMAND || type == JblRace.TYPE_COMMAND_NO_RESPONSE -> payload
-            id == JblRace.NV_READ -> {
+            id == JblRace.NV_READ -> if (payload.size < 2) ByteArray(0) else {
                 val n = u16(0).coerceAtMost(payload.size - 2).coerceAtLeast(0)
                 payload.copyOfRange(2, 2 + n)
             }

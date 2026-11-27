@@ -38,8 +38,23 @@ interface EarbudsActions {
     /** Picks the battery notification for the connected earbuds. */
     fun chooseStatus(choice: StatusChoice)
 
+    /** Sets what the notification's button [n] (1 or 2) does for the connected earbuds: [io.github.omegadestroyer.pairfree.status.StatusSettings.NOISE], NONE or a switch's key (issue 72). */
+    fun chooseStatusButton(n: Int, action: String)
+
     /** After the user answered a notification or companion prompt from the Device tab. */
     fun statusChanged()
+
+    /** Sends [frames] as they are on the open channel (the Galaxy Buds' hearing test). */
+    fun sendFrames(frames: List<ByteArray>) = Unit
+
+    /** The open channel's hold for JBL's PersoniFi hearing test, or null where the earbuds have none. */
+    fun jblPersonifi(): io.github.omegadestroyer.pairfree.brands.PersonifiHost? = null
+
+    /** The Sleep A30's sound upload, or null where the earbuds have none. */
+    fun sleepUploader(): io.github.omegadestroyer.pairfree.sleep.SleepUploader? = null
+
+    /** A new hearing enhancement test on OnePlus or OPPO earbuds that have it, else null. */
+    fun oneplusHearingTest(): io.github.omegadestroyer.pairfree.protocol.oneplus.OneplusHearingTest? = null
 }
 
 /** Does nothing. For previews. */
@@ -54,5 +69,6 @@ object NoActions : EarbudsActions {
     override fun resetTouch() = Unit
     override fun changeSetting(change: SettingChange) = Unit
     override fun chooseStatus(choice: StatusChoice) = Unit
+    override fun chooseStatusButton(n: Int, action: String) = Unit
     override fun statusChanged() = Unit
 }

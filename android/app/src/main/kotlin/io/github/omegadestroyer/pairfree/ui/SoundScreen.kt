@@ -57,13 +57,13 @@ import io.github.omegadestroyer.pairfree.eq.EqActions
 import io.github.omegadestroyer.pairfree.eq.EqProfile
 import io.github.omegadestroyer.pairfree.eq.EqState
 import io.github.omegadestroyer.pairfree.eq.Equalizer
-import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
+import io.github.omegadestroyer.pairfree.eq.BandEqTarget
+import io.github.omegadestroyer.pairfree.eq.SonyBandEq
 import io.github.omegadestroyer.pairfree.protocol.EqBand
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
-import io.github.omegadestroyer.pairfree.ui.theme.StudioShape
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -84,12 +84,14 @@ internal fun SoundScreen(
     unavailableNote: Int = R.string.eq_unavailable,
     /** Opens the brand's hearing test, where PairFree has one for the model. */
     onHearingTest: (() -> Unit)? = null,
+    /** Opens the A/B sound finder (PairFree's own), for earbuds with a custom curve. */
+    onFinder: (() -> Unit)? = null,
 ) {
     if (eq == null) {
         TabContent {
-            Text(stringResource(R.string.tab_sound), style = Studio.type.title)
-            Text(stringResource(unavailableNote), color = Studio.colors.secondaryText)
-            if (onRecord != null) StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
+            Text(stringResource(R.string.tab_sound), style = Look.type.title)
+            Text(stringResource(unavailableNote), color = Look.colors.secondaryText)
+            if (onRecord != null) AppButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth(), primary = true)
             SettingGroups(settings, SettingTab.SOUND, onSetting)
         }
         return
@@ -124,7 +126,7 @@ internal fun SoundScreen(
     val selected = band.coerceIn(gains.indices)
 
     TabContent {
-        Text(stringResource(R.string.tab_sound), style = Studio.type.title)
+        Text(stringResource(R.string.tab_sound), style = Look.type.title)
 
         // Profiles: Stock, presets, saved, and New. The row opens at the one on the earbuds.
         val chips = rememberLazyListState()
@@ -139,45 +141,56 @@ internal fun SoundScreen(
             if (eq.target.hasCustom) item { Chip(stringResource(R.string.eq_new), selected = false) { actions.startNew() } }
         }
         Label(stringResource(R.string.eq_on_earbuds, currentProfileName(eq)))
-        if (onHearingTest != null && eq.target.hasCustom) StudioButton(stringResource(R.string.hearing_test), onHearingTest, Modifier.fillMaxWidth())
+        if (onHearingTest != null) AppButton(stringResource(R.string.hearing_test), onHearingTest, Modifier.fillMaxWidth())
+        if (onFinder != null) AppButton(stringResource(R.string.finder_open), onFinder, Modifier.fillMaxWidth())
         if (!eq.known) {
             val hint = if (eq.target.reportsEq) R.string.eq_reading else R.string.eq_unknown_hint
-            Text(stringResource(hint), style = Studio.type.small, color = Studio.colors.secondaryText)
+            Text(stringResource(hint), style = Look.type.small, color = Look.colors.secondaryText)
         }
         if (!eq.target.confirmed) {
-            Text(stringResource(R.string.eq_unconfirmed), style = Studio.type.small, color = Studio.colors.secondaryText)
-            if (onRecord != null) StudioButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth())
+            Text(stringResource(R.string.eq_unconfirmed), style = Look.type.small, color = Look.colors.secondaryText)
+            if (onRecord != null) AppButton(stringResource(R.string.capture_open), onRecord, Modifier.fillMaxWidth())
         }
 
         val editable = eq.preset == null && eq.target.hasCustom
         if (editable || eq.target.presetCurves) {
+            // The curve and the band buttons run from low to high pitch going right in every language.
             Panel {
-                EqGraph(eq, selected, editable, onSelect = { band = it }) { b, g ->
-                    band = b
-                    actions.setGain(b, g)
+                Physical {
+                    EqGraph(eq, selected, editable, onSelect = { band = it }) { b, g ->
+                        band = b
+                        actions.setGain(b, g)
+                    }
                 }
             }
         }
 
         if (editable) {
             // One button per band, with its gain.
-            Row(
-                Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                eq.layout.bands.forEachIndexed { i, b -> BandButton(bandShort(b), gains[i], i == selected) { band = i } }
+            Physical {
+                Row(
+                    Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    eq.layout.bands.forEachIndexed { i, b -> BandButton(bandShort(b), gains[i], i == selected) { band = i } }
+                }
             }
 
             Panel {
                 val gain = gains[selected]
+                val step = eq.target.gainStepDb
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(bandName(eq.layout.bands[selected]), Modifier.weight(1f), style = Studio.type.heading)
-                    Text(dbText(gain), style = Studio.type.number, color = Studio.colors.accent)
+                    Text(bandName(eq.layout.bands[selected]), Modifier.weight(1f), style = Look.type.heading)
+                    Text(dbText(gain), style = Look.type.number, color = Look.colors.accent)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StepButton(plus = false, { actions.setGain(selected, gain - 1) }, enabled = gain > -r)
-                    StudioSlider(gain, -r..r, { actions.setGain(selected, it) }, Modifier.weight(1f), bandName(eq.layout.bands[selected]), origin = 0)
-                    StepButton(plus = true, { actions.setGain(selected, gain + 1) }, enabled = gain < r)
+                Physical {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StepButton(plus = false, { actions.setGain(selected, gain - step) }, enabled = gain > -r)
+                        // The slider counts steps (whole dB, or half dB where the earbuds take them).
+                        val steps = (r / step).roundToInt()
+                        AppSlider((gain / step).roundToInt(), -steps..steps, { actions.setGain(selected, it * step) }, Modifier.weight(1f), bandName(eq.layout.bands[selected]), origin = 0)
+                        StepButton(plus = true, { actions.setGain(selected, gain + step) }, enabled = gain < r)
+                    }
                 }
             }
         } else {
@@ -186,42 +199,46 @@ internal fun SoundScreen(
                 eq.target.hasStock -> R.string.eq_preset_fixed
                 else -> R.string.eq_preset_fixed_no_stock
             }
-            Text(stringResource(fixed), style = Studio.type.small, color = Studio.colors.secondaryText)
+            Text(stringResource(fixed), style = Look.type.small, color = Look.colors.secondaryText)
         }
 
         if (eq.target.hasPreamp) Panel {
             val preamp = eq.setting.preampDb
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(stringResource(R.string.preamp), Modifier.weight(1f))
-                StepButton(plus = false, { actions.setPreamp(preamp - 1) }, enabled = preamp > Equalizer.PREAMP_MIN_DB)
-                Text(dbText(preamp), Modifier.width(56.dp), style = Studio.type.number, color = Studio.colors.accent, textAlign = TextAlign.Center)
-                StepButton(plus = true, { actions.setPreamp(preamp + 1) }, enabled = preamp < 0)
+                Physical {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StepButton(plus = false, { actions.setPreamp(preamp - 1) }, enabled = preamp > Equalizer.PREAMP_MIN_DB)
+                        Text(dbText(preamp), Modifier.width(56.dp), style = Look.type.number, color = Look.colors.accent, textAlign = TextAlign.Center)
+                        StepButton(plus = true, { actions.setPreamp(preamp + 1) }, enabled = preamp < 0)
+                    }
+                }
             }
         }
 
-        if (editable) StudioButton(stringResource(R.string.eq_save), { saving = true }, Modifier.fillMaxWidth(), primary = true)
+        if (editable) AppButton(stringResource(R.string.eq_save), { saving = true }, Modifier.fillMaxWidth(), primary = true)
         if (eq.target.hasCustom) Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StudioButton(
+            AppButton(
                 stringResource(R.string.eq_import),
                 { importer.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) },
                 Modifier.weight(1f),
             )
             if (editable) {
                 val fileName = (eq.basis?.takeIf { !it.builtIn }?.name ?: "pairfree-eq") + ".json"
-                StudioButton(stringResource(R.string.eq_export), { exporter.launch(fileName) }, Modifier.weight(1f))
+                AppButton(stringResource(R.string.eq_export), { exporter.launch(fileName) }, Modifier.weight(1f))
             }
         }
         eq.basis?.takeIf { !it.builtIn }?.let { profile ->
-            StudioButton(stringResource(R.string.eq_delete, profile.name), { deleting = profile }, Modifier.fillMaxWidth(), destructive = true)
+            AppButton(stringResource(R.string.eq_delete, profile.name), { deleting = profile }, Modifier.fillMaxWidth(), destructive = true)
         }
-        message?.let { Text(stringResource(it), style = Studio.type.small, color = Studio.colors.secondaryText) }
+        message?.let { Text(stringResource(it), style = Look.type.small, color = Look.colors.secondaryText) }
         val note = when {
-            eq.target is SonyEqTarget -> R.string.eq_note_sony
-            !eq.target.presetCurves -> R.string.eq_note_samsung
+            (eq.target as? BandEqTarget)?.source is SonyBandEq -> R.string.eq_note_sony
+            !eq.target.presetCurves && !eq.target.reportsCustom -> R.string.eq_note_samsung
             eq.target.reportsEq -> R.string.eq_note_reported
             else -> R.string.eq_note
         }
-        Text(stringResource(note), style = Studio.type.small, color = Studio.colors.label)
+        Text(stringResource(note), style = Look.type.small, color = Look.colors.label)
         SettingGroups(settings, SettingTab.SOUND, onSetting)
     }
 
@@ -240,10 +257,13 @@ internal fun SoundScreen(
     }
 }
 
-/** A profile's name: Stock in words, presets and saved profiles by their own names. */
+/** A profile's name: Stock and the presets in the app's language, saved profiles by the names the user gave them. */
 @Composable
-internal fun profileName(profile: EqProfile): String =
-    if (profile.id == EqProfile.STOCK) stringResource(R.string.eq_stock) else profile.name
+internal fun profileName(profile: EqProfile): String = when {
+    profile.id == EqProfile.STOCK -> stringResource(R.string.eq_stock)
+    profile.preset != null -> LocalContext.current.presetLabel(profile.name)
+    else -> profile.name
+}
 
 /** What is on the earbuds, as a short name for Home. */
 @Composable
@@ -286,14 +306,22 @@ private fun bandLabel(key: String, short: Boolean): String = stringResource(
 
 /** `+2 dB`, `0 dB`, `−3 dB`, with a true minus sign. */
 @Composable
-internal fun dbText(db: Int): String = stringResource(
-    R.string.db,
-    when {
-        db > 0 -> "+$db"
-        db < 0 -> "−${-db}"
-        else -> "0"
-    },
-)
+internal fun dbText(db: Int): String = dbText(db.toDouble())
+
+/** A gain in dB with its sign: whole numbers as they are, half steps with one decimal ("+1.5"). */
+@Composable
+internal fun dbText(db: Double): String {
+    val n = kotlin.math.abs(db)
+    val number = if (n == kotlin.math.floor(n)) n.toInt().toString() else "%.1f".format(java.util.Locale.ROOT, n)
+    return stringResource(
+        R.string.db,
+        when {
+            db > 0 -> signed("+$number")
+            db < 0 -> signed("−$number")
+            else -> "0"
+        },
+    )
+}
 
 /**
  * The curve: each band's difference from stock, bands evenly spaced. When [editable], tap a
@@ -301,13 +329,14 @@ internal fun dbText(db: Int): String = stringResource(
  * is larger and its label amber. A preset is drawn the same way, on a wider scale if it needs one.
  */
 @Composable
-private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (Int) -> Unit, onGain: (Int, Int) -> Unit) {
-    val c = Studio.colors
+private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (Int) -> Unit, onGain: (Int, Double) -> Unit) {
+    val c = Look.colors
     val measurer = rememberTextMeasurer()
-    val axis = Studio.type.label.copy(letterSpacing = 0.sp, color = c.label)
+    val axis = Look.type.label.copy(letterSpacing = 0.sp, color = c.label)
     val gains = eq.curve
     val r = scaleFor(eq)
     val user = eq.layout.userRangeDb
+    val stepDb = eq.target.gainStepDb
     val n = gains.size
     val labels = eq.curveBands.map { bandShort(it) }
     val select by rememberUpdatedState(onSelect)
@@ -320,7 +349,7 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
         fun x(i: Int) = left + column * (i + 0.5f)
         fun y(db: Double) = top + ((r - db) / (2.0 * r)).toFloat() * (bottom - top)
         fun band(x: Float) = ((x - left) / column).toInt().coerceIn(0, n - 1)
-        fun db(y: Float) = (r - (y - top) / (bottom - top) * 2 * r).roundToInt().coerceIn(-r, r)
+        fun db(y: Float): Double = ((r - (y - top) / (bottom - top) * 2 * r) / stepDb).roundToInt() * stepDb
     }
 
     Canvas(
@@ -339,7 +368,7 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
                 var dragged = 0
                 detectDragGestures(onDragStart = { dragged = geo.band(it.x); select(dragged) }) { change, _ ->
                     change.consume()
-                    gain(dragged, geo.db(change.position.y).coerceIn(-user, user))
+                    gain(dragged, geo.db(change.position.y).coerceIn(-user.toDouble(), user.toDouble()))
                 }
             },
     ) {
@@ -354,8 +383,8 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
             val y = geo.y(db.toDouble())
             drawLine(if (db == 0) c.label else c.hairline, Offset(geo.left, y), Offset(size.width, y), hairline)
             val text = when {
-                db > 0 -> "+$db"
-                db < 0 -> "−${-db}"
+                db > 0 -> signed("+$db")
+                db < 0 -> signed("−${-db}")
                 else -> "0"
             }
             val t = measurer.measure(text, axis)
@@ -388,24 +417,22 @@ private fun EqGraph(eq: EqState, selected: Int, editable: Boolean, onSelect: (In
 
 /** A band's button: frequency over gain. The picked one is filled amber. */
 @Composable
-private fun BandButton(label: String, gain: Int, selected: Boolean, onClick: () -> Unit) {
-    val c = Studio.colors
-    val shape = RoundedCornerShape(StudioShape.smallCorner)
+private fun BandButton(label: String, gain: Double, selected: Boolean, onClick: () -> Unit) {
+    val c = Look.colors
+    val shape = Look.shape.control
     Column(
         Modifier
             .width(56.dp)
-            .heightIn(min = StudioShape.touch)
-            .clip(shape)
-            .background(if (selected) c.accent else c.panel)
-            .border(StudioShape.hairline, if (selected) c.accent else c.hairline, shape)
+            .heightIn(min = Look.shape.touch)
+            .surface(shape, if (selected) c.accent else c.panel, if (selected) c.accent else c.outline, raised = false)
             .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
             .padding(vertical = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         val ink = if (selected) c.onAccent else c.secondaryText
-        Text(label, style = Studio.type.label.copy(letterSpacing = 0.sp), color = ink)
-        Text(dbText(gain).removeSuffix(" dB"), style = Studio.type.number, color = if (selected) c.onAccent else c.text)
+        Text(label, style = Look.type.label.copy(letterSpacing = 0.sp), color = ink)
+        Text(dbText(gain).removeSuffix(" dB"), style = Look.type.number, color = if (selected) c.onAccent else c.text)
     }
 }
 
@@ -435,7 +462,7 @@ internal fun scaleFor(eq: EqState): Int {
 /** The current curve as a small line, for Home. */
 @Composable
 internal fun MiniCurve(eq: EqState, modifier: Modifier = Modifier) {
-    val c = Studio.colors
+    val c = Look.colors
     val r = scaleFor(eq).toFloat()
     val gains = eq.curve
     Canvas(modifier) {
@@ -454,7 +481,7 @@ internal fun SoundCard(eq: EqState, onOpen: () -> Unit) {
     Panel(Modifier.clickable(role = Role.Button, onClick = onOpen)) {
         Label(stringResource(R.string.sound_profile))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(currentProfileName(eq), Modifier.weight(1f), style = Studio.type.heading)
+            Text(currentProfileName(eq), Modifier.weight(1f), style = Look.type.heading)
             MiniCurve(eq, Modifier.width(96.dp).height(28.dp))
             Chevron()
         }
@@ -465,10 +492,12 @@ internal fun SoundCard(eq: EqState, onOpen: () -> Unit) {
 internal object NoEqActions : EqActions {
     override fun select(profile: EqProfile) = Unit
     override fun startNew() = Unit
-    override fun setGain(band: Int, db: Int) = Unit
+    override fun setGain(band: Int, db: Double) = Unit
     override fun setPreamp(db: Int) = Unit
     override fun save(name: String) = Unit
     override fun applyCurve(name: String, gains: List<Int>) = Unit
+    override fun preview(gains: List<Int>) = Unit
+    override fun previewDb(gains: List<Double>) = Unit
     override fun delete(profile: EqProfile) = Unit
     override fun exportJson(): String = ""
     override fun importJson(text: String): Boolean = false

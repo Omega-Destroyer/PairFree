@@ -1,0 +1,1884 @@
+{
+ "_about": "Sennheiser's Nautilus headphones (Momentum 3, PXC 550, PXC 550-II) as Smart Control 4.9.4's product files define them (docs/sennheiser/PROTOCOL.md section 4.10): a packet is EB FE 01 00 01 00 00 00, the length of what follows the checksum (two bytes, little-endian), a CRC-8 (polynomial 07, initial FF; two bytes, little-endian) and the header (module, optional submodule, command; each two bytes little-endian) with the parameters; on the serial port each packet is wrapped in 2A and 2A and the bytes 2A and 3F are escaped. Written by tools/import_sennheiser_app.py.",
+ "transport": {
+  "spp_uuid": "1ddce62a-ecb1-4455-8153-0743c87aec9f"
+ },
+ "products": [
+  {
+   "name": "Momentum 3 Wireless",
+   "kind": "headband",
+   "names": [
+    "MOMENTUM 3"
+   ],
+   "source": "Smart Control 4.9.4 m3.json",
+   "properties": {
+    "battery_percent": {
+     "get": {
+      "module": "0012",
+      "command": "0003",
+      "params": [],
+      "reply": {
+       "module": "0012",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "percentage"
+        ]
+       ]
+      }
+     }
+    },
+    "battery_level": {
+     "get": {
+      "module": "0012",
+      "command": "0001",
+      "params": [],
+      "reply": {
+       "module": "0012",
+       "command": "0001",
+       "params": [
+        [
+         "UINT16",
+         "voltage"
+        ],
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     }
+    },
+    "anc_mode": {
+     "get": {
+      "module": "0017",
+      "command": "0009",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0009",
+       "params": [
+        [
+         "UINT16",
+         "ancModeId"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0008",
+      "params": [
+       [
+        "UINT16",
+        "ancModeId"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0008",
+       "params": [
+        [
+         "UINT8",
+         "acknowledge"
+        ]
+       ]
+      }
+     }
+    },
+    "ambient_audio": {
+     "values": {
+      "on": 1,
+      "off": 0
+     },
+     "get": {
+      "module": "0017",
+      "command": "000B",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "000B",
+       "params": [
+        [
+         "UINT8",
+         "audioSwitch"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "000A",
+      "params": [
+       [
+        "UINT8",
+        "audioSwitch"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "000A",
+       "params": []
+      }
+     }
+    },
+    "anc_control": {
+     "get": {
+      "module": "0017",
+      "command": "0010",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0010",
+       "params": [
+        [
+         "UINT8",
+         "currentControl"
+        ],
+        [
+         "UINT16",
+         "modeId"
+        ]
+       ]
+      }
+     }
+    },
+    "ambient_toggle": {
+     "set": {
+      "module": "0017",
+      "command": "0011",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0011",
+       "params": [
+        [
+         "UINT8",
+         "acknowledge"
+        ]
+       ]
+      }
+     }
+    },
+    "proximity": {
+     "values": {
+      "DISABLED": 0,
+      "ENABLED": 1,
+      "STATUS": 2
+     },
+     "get": {
+      "module": "0008",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "mode"
+       ]
+      ],
+      "submodule": "00EF",
+      "reply": {
+       "module": "0008",
+       "command": "0001",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ],
+       "submodule": "00EF"
+      }
+     },
+     "set": {
+      "module": "0008",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "mode"
+       ]
+      ],
+      "submodule": "00EF",
+      "reply": {
+       "module": "0008",
+       "command": "0001",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ],
+       "submodule": "00EF"
+      }
+     }
+    },
+    "prompt_mode": {
+     "values": {
+      "ALL_DISABLED": 0,
+      "VOICE_ENABLED": 1,
+      "TONE_ENABLED": 2,
+      "TEMPORARY_ALL_DISABLED": 3
+     },
+     "get": {
+      "module": "0007",
+      "command": "0005",
+      "params": [],
+      "reply": {
+       "module": "0007",
+       "command": "0005",
+       "params": [
+        [
+         "UINT8",
+         "mode"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0007",
+      "command": "0001",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": {
+       "module": "0007",
+       "command": "0001",
+       "params": []
+      }
+     }
+    },
+    "prompt_language": {
+     "values": {
+      "ENGLISH": 0,
+      "GERMAN": 1,
+      "FRENCH": 2,
+      "SPANISH": 3,
+      "CHINESE": 4,
+      "JAPANESE": 5,
+      "RUSSIAN": 6,
+      "KOREAN": 7
+     },
+     "get": {
+      "module": "0007",
+      "command": "0003",
+      "params": [],
+      "reply": {
+       "module": "0007",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "language"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0007",
+      "command": "0002",
+      "params": [
+       [
+        "UINT16",
+        "language"
+       ]
+      ],
+      "reply": {
+       "module": "0007",
+       "command": "0002",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "codec": {
+     "values": {
+      "CODEC_SBC": 0,
+      "CODEC_PCM": 1,
+      "CODEC_CVSD": 2,
+      "CODEC_ALAW": 3,
+      "CODEC_ULAW": 4,
+      "CODEC_G722": 5,
+      "CODEC_APTX": 6,
+      "CODEC_MSBC": 7,
+      "CODEC_CELT": 8,
+      "CODEC_BV16": 9,
+      "CODEC_AAC": 10,
+      "CODEC_APTXLL": 90
+     },
+     "get": {
+      "module": "000A",
+      "command": "0010",
+      "params": [],
+      "reply": {
+       "module": "000A",
+       "command": "0010",
+       "params": [
+        [
+         "UINT8",
+         "codec type"
+        ]
+       ]
+      }
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "module": "0001",
+      "command": "0016",
+      "params": [],
+      "reply": {
+       "module": "0001",
+       "command": "0016",
+       "params": [
+        [
+         "UINT16",
+         "Major"
+        ],
+        [
+         "UINT16",
+         "Minor"
+        ],
+        [
+         "UINT16",
+         "Patch"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0001",
+      "command": "0017",
+      "params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ],
+      "reply": {
+       "module": "0001",
+       "command": "0017",
+       "params": []
+      }
+     }
+    },
+    "software_version": {
+     "get": {
+      "module": "0001",
+      "command": "0003",
+      "params": [],
+      "reply": {
+       "module": "0001",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "pVer"
+        ],
+        [
+         "UINT16",
+         "pVer"
+        ],
+        [
+         "UINT16",
+         "pVer"
+        ]
+       ]
+      }
+     }
+    },
+    "eq_params": {
+     "set": {
+      "module": "000A",
+      "command": "000D",
+      "params": [
+       [
+        "UINT8",
+        "Index"
+       ],
+       [
+        "UINT8",
+        "NoCommit"
+       ],
+       [
+        "UINT8",
+        "Type"
+       ],
+       [
+        "INT32",
+        "b0"
+       ],
+       [
+        "INT32",
+        "b1"
+       ],
+       [
+        "INT32",
+        "b2"
+       ],
+       [
+        "INT32",
+        "a0"
+       ],
+       [
+        "INT32",
+        "a1"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "000D",
+       "params": []
+      }
+     }
+    },
+    "eq_knob": {
+     "get": {
+      "module": "000A",
+      "command": "000F",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "000F",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "000E",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "000E",
+       "params": []
+      }
+     }
+    },
+    "assistant": {
+     "values": {
+      "STANDARD": 0,
+      "GOOGLE_BISTO": 1,
+      "BAIDUS_DUEROS": 2,
+      "ALEXA": 3
+     },
+     "get": {
+      "module": "0006",
+      "command": "0042",
+      "params": [],
+      "reply": {
+       "module": "0006",
+       "command": "0042",
+       "params": [
+        [
+         "UINT8",
+         "mode"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0006",
+      "command": "0041",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": {
+       "module": "0006",
+       "command": "0041",
+       "params": []
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "PXC 550",
+   "kind": "headband",
+   "names": [
+    "PXC 550"
+   ],
+   "source": "Smart Control 4.9.4 pxc550.json",
+   "properties": {
+    "battery_percent": {
+     "values": {
+      "0": 0,
+      "20": 1,
+      "40": 2,
+      "60": 3,
+      "80": 4,
+      "100": 5
+     },
+     "get": {
+      "module": "0012",
+      "command": "0001",
+      "params": [],
+      "reply": {
+       "module": "0012",
+       "command": "0001",
+       "params": [
+        [
+         "UINT16",
+         "voltage"
+        ],
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     }
+    },
+    "battery_level": {
+     "get": {
+      "module": "0012",
+      "command": "0001",
+      "params": [],
+      "reply": {
+       "module": "0012",
+       "command": "0001",
+       "params": [
+        [
+         "UINT16",
+         "voltage"
+        ],
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     }
+    },
+    "anc_mode": {
+     "get": {
+      "module": "0017",
+      "command": "0009",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0009",
+       "params": [
+        [
+         "UINT16",
+         "ancModeId"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0008",
+      "params": [
+       [
+        "UINT16",
+        "ancModeId"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0008",
+       "params": [
+        [
+         "UINT8",
+         "acknowledge"
+        ]
+       ]
+      }
+     }
+    },
+    "anc_control": {
+     "get": {
+      "module": "0017",
+      "command": "0010",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0010",
+       "params": [
+        [
+         "UINT8",
+         "currentControl"
+        ],
+        [
+         "UINT16",
+         "modeId"
+        ]
+       ]
+      }
+     }
+    },
+    "proximity": {
+     "values": {
+      "DISABLED": 0,
+      "ENABLED": 1,
+      "STATUS": 2
+     },
+     "get": {
+      "module": "0008",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "mode"
+       ]
+      ],
+      "submodule": "00EF",
+      "reply": {
+       "module": "0008",
+       "command": "0001",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ],
+       "submodule": "00EF"
+      }
+     },
+     "set": {
+      "module": "0008",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "mode"
+       ]
+      ],
+      "submodule": "00EF",
+      "reply": {
+       "module": "0008",
+       "command": "0001",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ],
+       "submodule": "00EF"
+      }
+     }
+    },
+    "prompt_mode": {
+     "values": {
+      "ALL_DISABLED": 0,
+      "VOICE_ENABLED": 1,
+      "TONE_ENABLED": 2,
+      "TEMPORARY_ALL_DISABLED": 3
+     },
+     "get": {
+      "module": "0007",
+      "command": "0005",
+      "params": [],
+      "reply": {
+       "module": "0007",
+       "command": "0005",
+       "params": [
+        [
+         "UINT8",
+         "mode"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0007",
+      "command": "0001",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": {
+       "module": "0007",
+       "command": "0001",
+       "params": []
+      }
+     }
+    },
+    "prompt_language": {
+     "values": {
+      "ENGLISH": 0,
+      "GERMAN": 1,
+      "FRENCH": 2,
+      "SPANISH": 3,
+      "CHINESE": 4,
+      "JAPANESE": 5,
+      "RUSSIAN": 6,
+      "KOREAN": 7
+     },
+     "get": {
+      "module": "0007",
+      "command": "0003",
+      "params": [],
+      "reply": {
+       "module": "0007",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "language"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0007",
+      "command": "0002",
+      "params": [
+       [
+        "UINT16",
+        "language"
+       ]
+      ],
+      "reply": {
+       "module": "0007",
+       "command": "0002",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "anc_state": {
+     "values": {
+      "OFF": 0,
+      "ON": 1,
+      "ADAPTIVE": 2
+     },
+     "get": {
+      "module": "0017",
+      "command": "0004",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         "state"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        "state"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "call_enhancement": {
+     "values": {
+      "DISABLED": 0,
+      "ENABLED": 1
+     },
+     "get": {
+      "module": "000A",
+      "command": "0004",
+      "params": [],
+      "reply": {
+       "module": "000A",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         ""
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        ""
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "0003",
+       "params": []
+      }
+     }
+    },
+    "software_version": {
+     "get": {
+      "module": "0001",
+      "command": "0003",
+      "params": [],
+      "reply": {
+       "module": "0001",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "pVer"
+        ],
+        [
+         "UINT16",
+         "pVer"
+        ],
+        [
+         "UINT16",
+         "pVer"
+        ]
+       ]
+      }
+     }
+    },
+    "sound_preset": {
+     "values": {
+      "NEUTRAL": 0,
+      "CLUB": 1,
+      "MOVIE": 2,
+      "SPEECH": 3,
+      "DIRECTOR": 4
+     },
+     "get": {
+      "module": "000A",
+      "command": "0008",
+      "params": [],
+      "reply": {
+       "module": "000A",
+       "command": "0008",
+       "params": [
+        [
+         "UINT16",
+         "preset_index"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0007",
+      "params": [
+       [
+        "UINT16",
+        "preset_index"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "0007",
+       "params": []
+      }
+     }
+    },
+    "anc_level": {
+     "get": {
+      "module": "0017",
+      "command": "0006",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0006",
+       "params": [
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0005",
+      "params": [
+       [
+        "UINT16",
+        "status"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0005",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "boost": {
+     "get": {
+      "module": "000A",
+      "command": "0008",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0008",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0007",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0007",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "reverb": {
+     "get": {
+      "module": "000A",
+      "command": "0004",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0003",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "dlc": {
+     "get": {
+      "module": "000A",
+      "command": "000A",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "000A",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0009",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0009",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "spatial": {
+     "get": {
+      "module": "000A",
+      "command": "0002",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0002",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0001",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "PXC 550-II",
+   "kind": "headband",
+   "names": [
+    "PXC 550-II"
+   ],
+   "source": "Smart Control 4.9.4 pxc550II.json",
+   "properties": {
+    "battery_percent": {
+     "values": {
+      "0": 0,
+      "20": 1,
+      "40": 2,
+      "60": 3,
+      "80": 4,
+      "100": 5
+     },
+     "get": {
+      "module": "0012",
+      "command": "0001",
+      "params": [],
+      "reply": {
+       "module": "0012",
+       "command": "0001",
+       "params": [
+        [
+         "UINT16",
+         "voltage"
+        ],
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     }
+    },
+    "battery_level": {
+     "get": {
+      "module": "0012",
+      "command": "0001",
+      "params": [],
+      "reply": {
+       "module": "0012",
+       "command": "0001",
+       "params": [
+        [
+         "UINT16",
+         "voltage"
+        ],
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     }
+    },
+    "anc_mode": {
+     "get": {
+      "module": "0017",
+      "command": "0009",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0009",
+       "params": [
+        [
+         "UINT16",
+         "ancModeId"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0008",
+      "params": [
+       [
+        "UINT16",
+        "ancModeId"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0008",
+       "params": [
+        [
+         "UINT8",
+         "acknowledge"
+        ]
+       ]
+      }
+     }
+    },
+    "anc_control": {
+     "get": {
+      "module": "0017",
+      "command": "0010",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0010",
+       "params": [
+        [
+         "UINT8",
+         "currentControl"
+        ],
+        [
+         "UINT16",
+         "modeId"
+        ]
+       ]
+      }
+     }
+    },
+    "proximity": {
+     "values": {
+      "DISABLED": 0,
+      "ENABLED": 1,
+      "STATUS": 2
+     },
+     "get": {
+      "module": "0008",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "mode"
+       ]
+      ],
+      "submodule": "00EF",
+      "reply": {
+       "module": "0008",
+       "command": "0001",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ],
+       "submodule": "00EF"
+      }
+     },
+     "set": {
+      "module": "0008",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "mode"
+       ]
+      ],
+      "submodule": "00EF",
+      "reply": {
+       "module": "0008",
+       "command": "0001",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ],
+       "submodule": "00EF"
+      }
+     }
+    },
+    "prompt_mode": {
+     "values": {
+      "ALL_DISABLED": 0,
+      "VOICE_ENABLED": 1,
+      "TONE_ENABLED": 2,
+      "TEMPORARY_ALL_DISABLED": 3
+     },
+     "get": {
+      "module": "0007",
+      "command": "0005",
+      "params": [],
+      "reply": {
+       "module": "0007",
+       "command": "0005",
+       "params": [
+        [
+         "UINT8",
+         "mode"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0007",
+      "command": "0001",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": {
+       "module": "0007",
+       "command": "0001",
+       "params": []
+      }
+     }
+    },
+    "prompt_language": {
+     "values": {
+      "ENGLISH": 0,
+      "GERMAN": 1,
+      "FRENCH": 2,
+      "SPANISH": 3,
+      "CHINESE": 4,
+      "JAPANESE": 5,
+      "RUSSIAN": 6,
+      "KOREAN": 7
+     },
+     "get": {
+      "module": "0007",
+      "command": "0003",
+      "params": [],
+      "reply": {
+       "module": "0007",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "language"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0007",
+      "command": "0002",
+      "params": [
+       [
+        "UINT16",
+        "language"
+       ]
+      ],
+      "reply": {
+       "module": "0007",
+       "command": "0002",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "anc_state": {
+     "values": {
+      "OFF": 0,
+      "ON": 1,
+      "ADAPTIVE": 2
+     },
+     "get": {
+      "module": "0017",
+      "command": "0004",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         "state"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        "state"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "call_enhancement": {
+     "values": {
+      "DISABLED": 0,
+      "ENABLED": 1
+     },
+     "get": {
+      "module": "000A",
+      "command": "0004",
+      "params": [],
+      "reply": {
+       "module": "000A",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         ""
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        ""
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "0003",
+       "params": []
+      }
+     }
+    },
+    "anc_middle": {
+     "values": {
+      "ADNC": 0,
+      "FFDIS": 1
+     },
+     "get": {
+      "module": "0017",
+      "command": "0013",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0013",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0012",
+      "params": [
+       [
+        "UINT8",
+        "state"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0012",
+       "params": [
+        [
+         "UINT8",
+         "state"
+        ]
+       ]
+      }
+     }
+    },
+    "firmware_version": {
+     "get": {
+      "module": "0001",
+      "command": "0016",
+      "params": [],
+      "reply": {
+       "module": "0001",
+       "command": "0016",
+       "params": [
+        [
+         "UINT16",
+         "Major"
+        ],
+        [
+         "UINT16",
+         "Minor"
+        ],
+        [
+         "UINT16",
+         "Patch"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0001",
+      "command": "0017",
+      "params": [
+       [
+        "UINT16",
+        "Major"
+       ],
+       [
+        "UINT16",
+        "Minor"
+       ],
+       [
+        "UINT16",
+        "Patch"
+       ]
+      ],
+      "reply": {
+       "module": "0001",
+       "command": "0017",
+       "params": []
+      }
+     }
+    },
+    "software_version": {
+     "get": {
+      "module": "0001",
+      "command": "0003",
+      "params": [],
+      "reply": {
+       "module": "0001",
+       "command": "0003",
+       "params": [
+        [
+         "UINT16",
+         "pVer"
+        ],
+        [
+         "UINT16",
+         "pVer"
+        ],
+        [
+         "UINT16",
+         "pVer"
+        ]
+       ]
+      }
+     }
+    },
+    "sound_preset": {
+     "values": {
+      "NEUTRAL": 0,
+      "CLUB": 1,
+      "MOVIE": 2,
+      "SPEECH": 3,
+      "DIRECTOR": 4
+     },
+     "get": {
+      "module": "000A",
+      "command": "0008",
+      "params": [],
+      "reply": {
+       "module": "000A",
+       "command": "0008",
+       "params": [
+        [
+         "UINT16",
+         "preset_index"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0007",
+      "params": [
+       [
+        "UINT16",
+        "preset_index"
+       ]
+      ],
+      "reply": {
+       "module": "000A",
+       "command": "0007",
+       "params": []
+      }
+     }
+    },
+    "anc_level": {
+     "get": {
+      "module": "0017",
+      "command": "0006",
+      "params": [],
+      "reply": {
+       "module": "0017",
+       "command": "0006",
+       "params": [
+        [
+         "UINT16",
+         "level"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0017",
+      "command": "0005",
+      "params": [
+       [
+        "UINT16",
+        "status"
+       ]
+      ],
+      "reply": {
+       "module": "0017",
+       "command": "0005",
+       "params": [
+        [
+         "UINT16",
+         "status"
+        ]
+       ]
+      }
+     }
+    },
+    "assistant": {
+     "values": {
+      "STANDARD": 0,
+      "GOOGLE_BISTO": 1,
+      "BAIDUS_DUEROS": 2,
+      "ALEXA": 3
+     },
+     "get": {
+      "module": "0006",
+      "command": "0042",
+      "params": [],
+      "reply": {
+       "module": "0006",
+       "command": "0042",
+       "params": [
+        [
+         "UINT8",
+         "mode"
+        ]
+       ]
+      }
+     },
+     "set": {
+      "module": "0006",
+      "command": "0041",
+      "params": [
+       [
+        "UINT8",
+        "mode"
+       ]
+      ],
+      "reply": {
+       "module": "0006",
+       "command": "0041",
+       "params": []
+      }
+     }
+    },
+    "boost": {
+     "get": {
+      "module": "000A",
+      "command": "0008",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0008",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0007",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0007",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "reverb": {
+     "get": {
+      "module": "000A",
+      "command": "0004",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0004",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0003",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0003",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "dlc": {
+     "get": {
+      "module": "000A",
+      "command": "000A",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "000A",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0009",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0009",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    },
+    "spatial": {
+     "get": {
+      "module": "000A",
+      "command": "0002",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0002",
+       "params": [
+        [
+         "UINT16",
+         "Value"
+        ]
+       ],
+       "submodule": "00FF"
+      }
+     },
+     "set": {
+      "module": "000A",
+      "command": "0001",
+      "params": [
+       [
+        "UINT16",
+        "Index"
+       ],
+       [
+        "UINT16",
+        "Value"
+       ]
+      ],
+      "submodule": "00FF",
+      "reply": {
+       "module": "000A",
+       "command": "0001",
+       "params": [],
+       "submodule": "00FF"
+      }
+     }
+    }
+   }
+  }
+ ]
+}

@@ -78,6 +78,21 @@ class AppleTest {
     }
 
     @Test
+    fun offTurnsAllowOffOnFirstWhereTheAirPodsDoNotReportItOrHaveItOff() {
+        val s = AppleSession()
+        s.receive(reply("listening_mode_transparency"))
+        // A user's AirPods Pro 3 never reported control 34 and answered Off with an error beep (issue #3).
+        assertEquals(
+            listOf("0400040009003401000000", "0400040009000d01000000"),
+            s.set(Command.ANC_MODE, anc("off"))!!.map { hex(it.bytes()) },
+        )
+        assertEquals(anc("off"), s.state.number(Command.ANC_MODE))
+        // With Off allowed already, only the mode goes.
+        assertEquals(listOf("0400040009000d02000000"), s.set(Command.ANC_MODE, anc("anc"))!!.map { hex(it.bytes()) })
+        assertEquals(listOf("0400040009000d01000000"), s.set(Command.ANC_MODE, anc("off"))!!.map { hex(it.bytes()) })
+    }
+
+    @Test
     fun theListeningModeGoesToTheSharedNoiseControl() {
         val s = AppleSession()
         assertFalse(s.state.supports(Command.ANC_MODE))
@@ -182,7 +197,8 @@ class AppleTest {
         assertEquals(Form.HEADPHONES, AppleModels.ALL.first { it.name == "AirPods Max" }.form)
         assertTrue(AppleModels.identify("Kitchen", listOf("74EC2172-0BAD-4D01-8F77-997B2BE0722A")))
         assertTrue(AppleModels.identify("Sam's AirPods Pro", emptyList()))
-        assertFalse(AppleModels.identify("Beats Studio Buds", emptyList()), "Beats only by the service")
+        assertTrue(AppleModels.identify("Beats Studio Buds", emptyList()), "Beats that speak B2P are known by name")
+        assertFalse(AppleModels.identify("Beats Pill+", emptyList()), "other Beats only by the service")
         assertEquals(4097, AppleWire.PSM)
     }
 

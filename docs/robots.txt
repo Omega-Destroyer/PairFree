@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://omega-destroyer.github.io/PairFree/sitemap.xml

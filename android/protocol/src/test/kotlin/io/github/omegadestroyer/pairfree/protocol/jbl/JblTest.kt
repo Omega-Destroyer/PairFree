@@ -372,6 +372,32 @@ class JblTest {
     }
 
     @Test
+    fun theBesModelsSendSmartAudioAndVideoOverTheirOwnCommands() {
+        // JBL's app, run in an emulator against a synthetic Tune 230NC (data/jbl/emulator_vectors.json): read AA 82 00, write AA 81 08 and the four numbers.
+        val sent = load("emulator_vectors.json").getValue("settings").jsonArray.map { it.jsonObject }
+            .filter { it.getValue("command").jsonPrimitive.content == "81" }
+            .associate { it.getValue("action").jsonPrimitive.content to it.getValue("frame").jsonPrimitive.content }
+        val s = JblSession(model("JBL TUNE230NC TWS"))
+        assertTrue("aa8200" in s.start().map { it.hex() }, "reads with 82")
+        assertTrue("aa800101" !in s.start().map { it.hex() })
+        // The reply 83 has the numbers straight after the length: AAC 256, SBC 46, latency 280 and the empty fourth number is Audio.
+        s.receive(packet("aa8308" + "0001" + "2e00" + "1801" + "ffff"))
+        assertEquals(Setting.Choice("jbl_smart_audio_video", "audio", listOf("standard", "audio", "video")), setting(s, "jbl_smart_audio_video"))
+        assertEquals(sent.getValue("jbl-smart-again"), s.change(SettingChange.Choice("jbl_smart_audio_video", "standard"))!!.single().hex())
+        assertEquals(sent.getValue("jbl-smart-on"), s.change(SettingChange.Choice("jbl_smart_audio_video", "audio"))!!.single().hex())
+        // The gesture sets the same app sent for left Volume and right None: PairFree writes the same four-gesture frame (the app's reset of the side first, `77 00 FD 00`, is left out: the set replaces all four).
+        val frames = load("emulator_vectors.json").getValue("settings").jsonArray.map { it.jsonObject }
+            .filter { it.getValue("command").jsonPrimitive.content == "77" }.map { it.getValue("frame").jsonPrimitive.content }
+        s.receive(packet("aa7711" + "01" + "060b" + "0704" + "0800" + "0ca1" + "090a" + "0a05" + "0b06" + "0ea1"))
+        assertEquals("aa7709000601070208000ca1", s.change(SettingChange.Choice("jbl_touch_left", "volume"))!!.single().hex())
+        assertEquals("aa77090009000a000b000e00", s.change(SettingChange.Choice("jbl_touch_right", "none"))!!.single().hex())
+        assertTrue("aa7709000601070208000ca1" in frames && "aa77090009000a000b000e00" in frames)
+        // A model on JBL's protocol 3 base (Tune Flex 2) keeps the 80 commands (the other test); the BES list is the models on BesBasicControl or BesSdkControl.
+        assertTrue(JblModels.ALL.count { it.besSmartSwitch } >= 39)
+        assertTrue(model("JBL Tune Flex 2").besSmartSwitch.not())
+    }
+
+    @Test
     fun theTuneFlex2sOtherSettingsGoOverHarmansCommands() {
         val s = JblSession(model("JBL Tune Flex 2"))
         val reads = s.start().map { it.hex() }

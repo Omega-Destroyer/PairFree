@@ -35,7 +35,7 @@ public object SoundpeatsSettings {
             }
             state.number(Command.PANORAMIC_SOUND)?.let { v ->
                 val labels = Command.PANORAMIC_SOUND.labels
-                add(Setting.Choice(key(Command.PANORAMIC_SOUND), labels[v], labels.toSortedMap().values.toList()))
+                add(Setting.Choice(key(Command.PANORAMIC_SOUND), labels[v], labels.sortedValues()))
             }
             state.number(Command.VOLUME_BALANCE)?.let { add(Setting.Level(key(Command.VOLUME_BALANCE), it.coerceIn(0, PERCENT_MAX), 0, PERCENT_MAX)) }
             state.number(Command.HEARING_PROTECTION)?.let {

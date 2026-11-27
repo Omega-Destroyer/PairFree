@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.nothing
 
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
@@ -48,6 +49,60 @@ class NothingTest {
     }
 
     private fun setting(s: NothingSession, key: String) = s.groups.flatMap { it.settings }.firstOrNull { it.key == key }
+
+    @Test
+    fun timedPowerOffCallTransparencyAndTheAdvancedEqualizerSwitch() {
+        // Nothing X's Flutter layer: NtEarPowerTime (mode 0 shut down or 1 standby, the minutes low byte first), call transparency (a byte) and the advanced EQ mode (a byte).
+        val hp = session("B175")
+        hp.receive(reply(NothingCommand.GET_AUTO_POWER_OFF_TIME, "007800"))
+        assertEquals(Setting.Choice("power_off_time", "120", listOf("30", "60", "120", "180", "240")), setting(hp, "power_off_time"))
+        val w = hp.change(SettingChange.Choice("power_off_time", "60"))!!.single()
+        assertEquals(NothingCommand.SET_AUTO_POWER_OFF_TIME, w.command)
+        assertEquals("003c00", hex(w.payload))
+        val e3 = session("B173")
+        e3.receive(reply(NothingCommand.GET_CALL_TRANSPARENCY, "01"))
+        e3.receive(reply(NothingCommand.GET_ADVANCE_CUSTOM_EQ_MODE, "00"))
+        assertEquals(Setting.Toggle("call_transparency", true), setting(e3, "call_transparency"))
+        assertEquals("00", hex(e3.change(SettingChange.Toggle("call_transparency", false))!!.single().payload))
+        assertEquals("01", hex(e3.change(SettingChange.Toggle("advanced_eq", true))!!.single().payload))
+        val one = session("B181")
+        one.receive(reply(NothingCommand.GET_AUTO_POWER_OFF_TIME, "007800"))
+        assertEquals(null, setting(one, "power_off_time"))
+    }
+
+    @Test
+    fun diracOpteoPresets() {
+        // Nothing X's DiracEQMode: 0 Opteo, 1 rock, 2 electronic, 3 pop, 4 enhance vocals, 5 classical, 6 custom; the models whose table row has diracOpteoSupport.
+        val s = session("B184")
+        s.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "03"))
+        assertEquals("dirac_pop", (setting(s, "dirac_eq") as Setting.Choice).value)
+        val w = s.change(SettingChange.Choice("dirac_eq", "dirac_vocals"))!!.single()
+        assertEquals(NothingCommand.SET_DIRAC_OPTEO_EQ, w.command)
+        assertEquals("04", hex(w.payload))
+        s.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "06"))
+        assertEquals("custom", (setting(s, "dirac_eq") as Setting.Choice).value)
+        val ear2 = session("B155")
+        ear2.receive(reply(NothingCommand.GET_DIRAC_OPTEO_EQ, "03"))
+        assertEquals(null, setting(ear2, "dirac_eq"))
+    }
+
+    @Test
+    fun twoDevicesAndPersonalisedNoiseCancelling() {
+        // Nothing X's DualConnectViewModel: anything but 0 is on, 1 and 0 written; DeviceANCSwitch: the switch, then the calibration byte.
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_DUAL_ENABLE, "01"))
+        s.receive(reply(NothingCommand.GET_PERSONALIZED_ANC, "0100"))
+        assertEquals(Setting.Toggle("dual_connection", true), setting(s, "dual_connection"))
+        assertEquals(Setting.Toggle("personalised_anc", true), setting(s, "personalised_anc"))
+        val off = s.change(SettingChange.Toggle("dual_connection", false))!!.single()
+        assertEquals(NothingCommand.SET_DUAL_ENABLE, off.command)
+        assertEquals("00", hex(off.payload))
+        assertEquals("00", hex(s.change(SettingChange.Toggle("personalised_anc", false))!!.single().payload))
+        // The Ear (1) has no two-devices switch in Nothing X's table.
+        val one = session("B181")
+        one.receive(reply(NothingCommand.GET_DUAL_ENABLE, "01"))
+        assertEquals(null, setting(one, "dual_connection"))
+    }
 
     @Test
     fun theCrcIsModbus() {
@@ -145,6 +200,21 @@ class NothingTest {
     }
 
     @Test
+    fun fitTestOnTheModelsThatHaveItAndNoOther() {
+        val ear2 = session("B155")
+        assertTrue(ear2.state.hasFitTest)
+        val frame = NothingParser().feed(ear2.startFitTest()!!.single()).single()
+        assertEquals(NothingCommand.SET_LEAK_DETECT, frame.command)
+        assertEquals("01", hex(frame.payload))
+        assertTrue(ear2.allowed(frame))
+        ear2.receive(NothingFrame(NothingCommand.EVENT_TIP_FIT_RESULT, "0001".hexBytes(), 0x0120))
+        assertEquals(FitResult(FitResult.Fit.GOOD, FitResult.Fit.NOT_FIT), ear2.state.fit)
+        // The Ear (1) has none.
+        val ear1 = session("B181")
+        assertEquals(null, ear1.startFitTest())
+    }
+
+    @Test
     fun modelsWithoutTransparencyOrNoiseCancelling() {
         // The Ear (stick) has noise cancelling only from firmware x.x.2, and never transparency: a switch.
         val stick = session("B157", "1.0.2.10")
@@ -220,10 +290,64 @@ class NothingTest {
     }
 
     @Test
+    fun theFramesNothingXSentToAVirtualEar2() {
+        // data/nothing/emulator_vectors.json: Nothing X 3.4.15 against a synthetic Ear (2) (docs/nothing/VIRTUAL_TESTING.md).
+        val cases = Json.parseToJsonElement(repoFile("data/nothing/emulator_vectors.json").readText()).jsonObject.getValue("cases").jsonArray.map { it.jsonObject }
+        fun payloads(command: String, evidence: String = "vendor_app_bluetooth_tx") =
+            cases.filter { it.getValue("command").jsonPrimitive.content == command && it.getValue("evidence").jsonPrimitive.content == evidence }
+                .map { it.getValue("payload").jsonPrimitive.content }
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_EXTRA_FEATURE_STATUS, "010101"))
+        s.receive(reply(NothingCommand.GET_HOST_LAG_MODE, "0200"))
+        // Low lag: one byte, 01 on and 02 off.
+        assertEquals(listOf("01", "02"), payloads("f040"))
+        assertEquals("01", hex(s.set(Command.GAME_MODE, 1)!!.single().payload))
+        assertEquals("02", hex(s.set(Command.GAME_MODE, 0)!!.single().payload))
+        // In-ear detection: a count of one, the feature, on or off.
+        assertEquals(listOf("010100", "010101"), payloads("f004"))
+        assertEquals("010100", hex(s.set(Command.IN_EAR_DETECTION, 0)!!.single().payload))
+        assertEquals("010101", hex(s.set(Command.IN_EAR_DETECTION, 1)!!.single().payload))
+        // Noise (F00F): the app wrote 01 and the mode, 00: high 1, mid 2, low 3, adaptive 4, off 5, transparency 7.
+        assertEquals(setOf("010100", "010200", "010300", "010400", "010500", "010700"), payloads("f00f").toSet())
+        s.receive(reply(NothingCommand.GET_CURRENT_NOISE_REDUCTION, "010100"))
+        assertEquals(setOf("010100", "010200", "010300", "010400"), NothingModels.of("B155")!!.config("1.0.1.80").anc.filter { it in setOf("high", "mid", "low", "adaptive") }
+            .map { hex(s.change(SettingChange.Choice("noise_strength", it))!!.single().payload) }.toSet())
+        assertEquals("010500", hex(s.set(Command.ANC_MODE, ancNumber("off"))!!.single().payload))
+        assertEquals("010700", hex(s.set(Command.ANC_MODE, ancNumber("transparency"))!!.single().payload))
+        // The left double pinch (F003: a count of one, the left earbud 2, button 1, gesture 2, then the action): previous 8, next 9, assistant 11.
+        s.receive(reply(NothingCommand.GET_KEY_CONFIGURATION, "080201020903010209020103080301030802010716030107160201090103010901"))
+        val pinch = payloads("f003").toSet()
+        assertEquals(setOf("0102010208", "010201020b", "0102010209"), pinch)
+        for ((option, expected) in listOf("previous" to "0102010208", "next" to "0102010209", "voice_assistant" to "010201020b")) {
+            assertEquals(expected, hex(s.change(SettingChange.Choice("touch_double_left", option))!!.single().payload), option)
+        }
+        // The presets, two bytes: balanced 0, voice 1, more treble 2, more bass 3, custom 5.
+        assertEquals(listOf("0300", "0200", "0100", "0000", "0500"), payloads("f010"))
+        assertEquals(listOf("0300", "0200", "0100", "0000"), listOf("bass", "treble", "voice", "balanced").map { hex(s.eqPreset(it)!!.single().payload) })
+        // The custom curve the app's own view model wrote for mid +1, treble -3 and bass +6 (invoked by hand, so the evidence is
+        // "original_callback_invoked"): the same bytes as PairFree's, now that the Ear (2)'s high shelf has Q .7.
+        val vendor = payloads("f041", "original_callback_invoked").single()
+        val frames = s.eqCustom(listOf(6, 1, -3))!!
+        assertEquals(vendor, hex(frames.last().payload))
+    }
+
+    @Test
+    fun theCustomEqTakesHalfSteps() {
+        // The filters' gains are floats: bass +1.5 dB is 3FC00000, and the total gain is minus the highest gain.
+        val s = session("B155")
+        s.receive(reply(NothingCommand.GET_EQ_MODE, "0000"))
+        val whole = s.eqCustomDb(listOf(2.0, 0.0, 0.0))!!.last().payload
+        assertEquals(hex(s.eqCustom(listOf(2, 0, 0))!!.last().payload), hex(whole))
+        val frames = s.eqCustomDb(listOf(1.5, -0.5, 0.0))!!
+        assertTrue(hex(frames.last().payload).contains("0000c0bf"), "the total gain of -1.5")
+        assertTrue(hex(frames.last().payload).contains("000000bf"), "mid -0.5")
+    }
+
+    @Test
     fun theCustomEqAsNothingXWritesIt() {
         val s = session("B155")
         assertTrue(NothingCommand.GET_CUSTOM_EQ_VALUE in NothingSession(NothingModels.of("B155")).start().map { it.command })
-        assertEquals(NothingSimpleEq(140.0, 0.8, 980.0, 0.7, 3400.0, 1.0), s.simpleEqFilters)
+        assertEquals(NothingSimpleEq(140.0, 0.8, 980.0, 0.7, 3400.0, 0.7), s.simpleEqFilters)
         s.receive(reply(NothingCommand.GET_EQ_MODE, "0000"))
         // Bass +3, mid -2, treble +6: the custom mode first, then mid, treble and bass with a total gain of -6,
         // as little-endian floats, and the zeros Nothing X's buffer leaves at the end (computed in Python).
@@ -231,14 +355,14 @@ class NothingTest {
         assertEquals(listOf(NothingCommand.SET_EQ_MODE, NothingCommand.SET_CUSTOM_EQ), frames.map { it.command })
         assertEquals("0500", hex(frames[0].payload))
         assertEquals(
-            "030000c0c001000000c0000075443333333f020000c040008054450000803f000000404000000c43cdcc4c3f000000000000000000",
+            "030000c0c001000000c0000075443333333f020000c040008054453333333f000000404000000c43cdcc4c3f000000000000000000",
             hex(frames[1].payload),
         )
         assertEquals(listOf(NothingCommand.GET_EQ_MODE, NothingCommand.GET_CUSTOM_EQ_VALUE), s.takeReadBacks().map { it.command })
         // Once custom, only the curve goes.
         assertEquals(listOf(NothingCommand.SET_CUSTOM_EQ), s.eqCustom(listOf(0, 0, 0))!!.map { it.command })
         // The earbuds report the curve as they hold it, in their order.
-        s.receive(reply(NothingCommand.GET_CUSTOM_EQ_VALUE, "030000c0c001000000c0000075443333333f020000c040008054450000803f000000404000000c43cdcc4c3f"))
+        s.receive(reply(NothingCommand.GET_CUSTOM_EQ_VALUE, "030000c0c001000000c0000075443333333f020000c040008054453333333f000000404000000c43cdcc4c3f"))
         s.receive(reply(NothingCommand.GET_EQ_MODE, "0500"))
         assertEquals(NothingEq(null, true, listOf(3, -2, 6)), s.eq)
         // The Ear (1) has presets only.
@@ -254,7 +378,8 @@ class NothingTest {
         assertEquals(true, s.state.switch(Command.IN_EAR_DETECTION))
         assertEquals(false, s.state.switch(Command.GAME_MODE))
         assertEquals("010100", hex(s.set(Command.IN_EAR_DETECTION, 0)!!.single().payload))
-        assertEquals("0100", hex(s.set(Command.GAME_MODE, 1)!!.single().payload))
+        assertEquals("01", hex(s.set(Command.GAME_MODE, 1)!!.single().payload), "one byte, as Nothing X's screen writes it")
+        assertEquals("02", hex(s.set(Command.GAME_MODE, 0)!!.single().payload))
         assertEquals(Setting.Choice("codec", "standard", listOf("standard", "ldac")), setting(s, "codec"))
         assertEquals("0200", hex(s.change(SettingChange.Choice("codec", "ldac"))!!.single().payload))
         // Finding: each earbud on its own, by its battery part number.

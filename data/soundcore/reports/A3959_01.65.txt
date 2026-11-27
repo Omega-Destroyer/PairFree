@@ -1,0 +1,309 @@
+PairFree recording from the official app
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues so this model's controls and
+equalizer can be added. It holds no names, addresses or other personal data.
+
+Model:     Soundcore P30i (A3959)
+App:       PairFree 0.12.0
+Phone:     Android 16 (API 36), realme realme 5i
+
+---- What the official app and Soundcore P30i (A3959) sent each other (from the Bluetooth log) ----
+Seconds from the first message; app: sent by the official app, buds: sent by the earbuds.
+    0.000 app  0101 state
+    0.006 buds 0101 state                      00 01 07 06 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+    1.098 buds 0B02 ?                          00
+    1.197 buds 0102 tws_status                 00 01
+    1.198 buds 0103 battery                    07 05 ff
+    9.232 buds 0B02 ?                          00
+   30.041 app  0101 state
+   30.124 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   31.502 app  0101 state
+   31.650 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   33.965 app  0101 state
+   34.084 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   36.974 app  0101 state
+   37.052 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   37.540 app  0101 state
+   37.574 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   38.120 app  0501 usage_statistics
+   38.262 buds 0501 usage_statistics           (114 bytes left out)
+   38.269 app  0581 clear_usage_statistics
+   38.329 buds 0581 clear_usage_statistics
+   44.919 app  0101 state
+   45.056 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   46.165 app  0101 state
+   46.267 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   71.537 app  0101 state
+   71.623 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   73.046 app  0101 state
+   73.102 buds 0101 state                      00 01 07 05 ff ff 30 31 2e 36 35 30 31 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX fe fe b4 64 7d 82 87 96 87 96 78 78 00 00 00 00 00 00 00 00 00 00 0a ff ff 63 6f ff ff 44 44 35 02 51 00 01 00 ff 00 31 01 00 00 01 02 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+   73.657 app  0501 usage_statistics
+   73.703 buds 0501 usage_statistics           (114 bytes left out)
+   73.710 app  0581 clear_usage_statistics
+   73.783 buds 0581 clear_usage_statistics
+   75.044 app  0681 set_sound_modes            00 51 00 01 00 00 00
+   75.146 buds 0681 set_sound_modes
+   75.147 buds 0601 sound_modes                00 55 00 01 00 00 00 (x2)
+   80.196 app  0681 set_sound_modes            01 55 00 01 00 00 00
+   80.230 buds 0681 set_sound_modes
+   80.303 buds 0601 sound_modes                01 55 00 01 00 00 00
+   83.502 app  0681 set_sound_modes            01 55 00 01 01 00 00
+   83.511 buds 0681 set_sound_modes
+   83.553 buds 0601 sound_modes                01 55 00 01 01 00 00
+   88.383 app  0681 set_sound_modes            01 55 00 01 00 00 00
+   88.393 buds 0681 set_sound_modes
+   88.499 buds 0601 sound_modes                01 55 00 01 00 00 00
+   89.303 app  0681 set_sound_modes            00 55 00 01 00 00 00
+   89.328 buds 0681 set_sound_modes
+   89.352 buds 0601 sound_modes                00 55 00 01 00 00 00 (x2)
+   92.579 app  0681 set_sound_modes            00 55 00 00 00 00 00
+   92.697 buds 0681 set_sound_modes
+   92.698 buds 0601 sound_modes                00 55 00 00 00 00 00
+   94.283 app  0681 set_sound_modes            00 45 00 00 00 00 00
+   94.645 buds 0681 set_sound_modes
+   94.999 buds 0601 sound_modes                00 45 00 00 00 00 00
+   95.279 app  0681 set_sound_modes            00 35 00 00 00 00 00
+   95.312 buds 0681 set_sound_modes
+   95.313 buds 0601 sound_modes                00 35 00 00 00 00 00
+   97.953 app  0681 set_sound_modes            00 25 00 00 00 00 00
+   97.982 buds 0681 set_sound_modes
+   98.001 buds 0601 sound_modes                00 25 00 00 00 00 00
+   98.871 app  0681 set_sound_modes            00 15 00 00 00 00 00
+   98.920 buds 0681 set_sound_modes
+   98.921 buds 0601 sound_modes                00 15 00 00 00 00 00
+  101.733 app  0681 set_sound_modes            00 25 00 00 00 00 00
+  101.840 buds 0681 set_sound_modes
+  101.997 buds 0601 sound_modes                00 25 00 00 00 00 00
+  102.765 app  0681 set_sound_modes            00 35 00 00 00 00 00
+  102.773 buds 0681 set_sound_modes
+  102.807 buds 0601 sound_modes                00 35 00 00 00 00 00
+  104.051 app  0681 set_sound_modes            00 45 00 00 00 00 00
+  104.079 buds 0681 set_sound_modes
+  104.101 buds 0601 sound_modes                00 45 00 00 00 00 00
+  105.121 app  0681 set_sound_modes            00 55 00 00 00 00 00
+  105.146 buds 0681 set_sound_modes
+  105.151 buds 0601 sound_modes                00 55 00 00 00 00 00
+  105.907 app  0681 set_sound_modes            00 55 00 02 00 00 00
+  105.931 buds 0681 set_sound_modes
+  105.953 buds 0601 sound_modes                00 55 00 02 00 00 00
+  107.499 app  0681 set_sound_modes            00 55 00 02 00 00 01
+  107.595 buds 0681 set_sound_modes
+  108.017 buds 0601 sound_modes                00 55 00 02 00 00 01
+  110.970 app  0681 set_sound_modes            00 55 00 02 00 00 02
+  110.995 buds 0681 set_sound_modes
+  111.072 buds 0601 sound_modes                00 55 00 02 00 00 02
+  117.785 app  0681 set_sound_modes            00 55 00 02 00 00 00
+  117.821 buds 0681 set_sound_modes
+  117.897 buds 0601 sound_modes                00 55 00 02 00 00 00
+  124.274 app  0681 set_sound_modes            00 55 00 02 00 00 01
+  124.400 buds 0681 set_sound_modes
+  124.525 buds 0601 sound_modes                00 55 00 02 00 00 01
+  130.566 app  0681 set_sound_modes            00 55 00 02 00 00 02
+  130.599 buds 0681 set_sound_modes
+  130.659 buds 0601 sound_modes                00 55 00 02 00 00 02
+  136.333 app  0681 set_sound_modes            00 55 00 02 00 00 00
+  136.380 buds 0681 set_sound_modes
+  136.448 buds 0601 sound_modes                00 55 00 02 00 00 00
+  140.461 app  0681 set_sound_modes            00 55 00 01 00 00 00
+  140.749 buds 0681 set_sound_modes
+  140.784 buds 0601 sound_modes                00 55 00 01 00 00 00 (x2)
+  144.736 app  0681 set_sound_modes            00 55 00 01 01 00 00
+  144.773 buds 0681 set_sound_modes
+  144.849 buds 0601 sound_modes                00 55 00 01 01 00 00
+  147.228 app  0681 set_sound_modes            00 55 00 01 00 00 00
+  147.446 buds 0681 set_sound_modes
+  147.496 buds 0601 sound_modes                00 55 00 01 00 00 00
+  151.858 app  0286 surround_sound             01
+  151.884 buds 0286 surround_sound
+  155.186 app  0286 surround_sound             00
+  155.603 buds 0286 surround_sound
+  156.825 app  0283 equalizer_with_drc         02 00 a0 96 82 78 78 78 78 78 78 00 7b 7a 78 78 78 78 78 78 78 00
+  156.905 buds 0283 equalizer_with_drc
+  159.173 app  0283 equalizer_with_drc         00 00 78 78 78 78 78 78 78 78 78 00 78 78 78 78 78 78 78 78 78 00
+  159.227 buds 0283 equalizer_with_drc
+  161.021 app  0283 equalizer_with_drc         02 00 a0 96 82 78 78 78 78 78 78 00 7b 7a 78 78 78 78 78 78 78 00
+  161.359 buds 0283 equalizer_with_drc
+  163.803 buds 0601 sound_modes                00 51 00 01 00 00 00
+  164.088 app  0283 equalizer_with_drc         03 00 50 5a 6e 78 78 78 78 78 78 00 75 76 78 78 78 78 78 78 78 00
+  164.179 buds 0283 equalizer_with_drc
+  167.010 app  0283 equalizer_with_drc         14 00 64 64 64 6e 82 8c 8c a0 78 00 76 77 77 77 79 7a 78 7d 78 00
+  167.116 buds 0283 equalizer_with_drc
+  168.747 app  0283 equalizer_with_drc         15 00 78 78 78 64 5a 50 50 3c 78 00 78 78 79 76 77 75 77 71 78 00
+  168.795 buds 0283 equalizer_with_drc
+  169.598 app  0283 equalizer_with_drc         0a 00 8c 96 6e 6e 8c 6e 8c 96 78 00 79 7c 76 76 7d 74 7b 7b 78 00
+  169.606 buds 0283 equalizer_with_drc
+  170.249 app  0283 equalizer_with_drc         08 00 96 8c 64 8c 82 8c 96 96 78 00 7a 7b 73 7d 77 7a 7a 7b 78 00
+  170.256 buds 0283 equalizer_with_drc
+  172.444 app  0283 equalizer_with_drc         fe fe b4 64 7d 82 87 96 87 96 78 78 81 71 7b 78 78 7b 77 7c 78 00
+  172.899 buds 0283 equalizer_with_drc
+  174.580 app  0283 equalizer_with_drc         fe fe b4 64 7d 82 87 96 87 96 78 78 81 71 7b 78 78 7b 77 7c 78 00
+  174.599 buds 0283 equalizer_with_drc
+  176.986 app  0283 equalizer_with_drc         fe fe b4 64 7d 82 87 96 87 96 78 78 81 71 7b 78 78 7b 77 7c 78 00
+  177.020 buds 0283 equalizer_with_drc
+  178.658 app  0283 equalizer_with_drc         fe fe ab 64 7d 82 87 96 87 96 78 78 80 72 7b 78 78 7b 77 7c 78 00
+  179.120 buds 0283 equalizer_with_drc
+  180.275 app  0283 equalizer_with_drc         fe fe 9b 64 7d 82 87 96 87 96 78 78 7e 72 7a 78 78 7b 77 7c 78 00
+  180.302 buds 0283 equalizer_with_drc
+  181.529 app  0283 equalizer_with_drc         fe fe 77 64 6f 78 64 77 85 8f 78 78 79 76 77 7a 75 79 79 7b 78 00
+  181.553 buds 0283 equalizer_with_drc
+  183.232 app  0283 equalizer_with_drc         fe fe b4 a8 8a 79 79 8e aa b4 78 78 7d 7b 79 78 78 79 7c 7e 78 00
+  183.250 buds 0283 equalizer_with_drc
+  187.899 app  0283 equalizer_with_drc         fe fe b4 64 7d 82 87 96 87 96 78 78 81 71 7b 78 78 7b 77 7c 78 00
+  188.246 buds 0283 equalizer_with_drc
+  194.761 app  0286 surround_sound             01
+  194.775 buds 0286 surround_sound
+  199.106 app  0286 surround_sound             00
+  199.279 buds 0286 surround_sound
+  206.313 app  0481 button_action              00 02 f1
+  206.551 buds 0481 button_action
+  208.426 app  0481 button_action              00 02 f0
+  208.453 buds 0481 button_action
+  209.982 app  0481 button_action              00 02 f3
+  210.123 buds 0481 button_action
+  210.817 app  0481 button_action              00 02 f2
+  210.852 buds 0481 button_action
+  211.385 app  0481 button_action              00 02 f6
+  211.446 buds 0481 button_action
+  212.003 app  0481 button_action              00 02 ff
+  212.258 buds 0481 button_action
+  231.577 app  0481 button_action              01 02 f1
+  231.921 buds 0481 button_action
+  232.318 app  0481 button_action              01 02 f0
+  232.361 buds 0481 button_action
+  232.971 app  0481 button_action              01 02 f3
+  232.996 buds 0481 button_action
+  233.790 app  0481 button_action              01 02 f2
+  233.799 buds 0481 button_action
+  234.474 app  0481 button_action              01 02 f6
+  234.482 buds 0481 button_action
+  234.909 app  0481 button_action              01 02 ff
+  234.997 buds 0481 button_action
+  237.854 app  0481 button_action              01 00 62
+  238.161 buds 0481 button_action
+  239.153 app  0481 button_action              01 00 61
+  239.197 buds 0481 button_action
+  239.740 app  0481 button_action              01 00 6f
+  239.751 buds 0481 button_action
+  244.407 app  0481 button_action              01 00 66
+  244.880 buds 0481 button_action
+  247.293 app  0481 button_action              01 05 f4
+  247.407 buds 0481 button_action
+  248.964 app  0682 sound_mode_cycle           37
+  248.986 buds 0682 sound_mode_cycle           37
+  250.149 app  0682 sound_mode_cycle           36
+  250.641 buds 0682 sound_mode_cycle           36
+  253.041 app  0682 sound_mode_cycle           37
+  253.067 buds 0682 sound_mode_cycle           37
+  253.793 app  0682 sound_mode_cycle           35
+  253.801 buds 0682 sound_mode_cycle           35
+  257.386 app  0682 sound_mode_cycle           37
+  257.842 buds 0682 sound_mode_cycle           37
+  258.438 app  0682 sound_mode_cycle           33
+  258.474 buds 0682 sound_mode_cycle           33
+  259.374 app  0682 sound_mode_cycle           37
+  259.402 buds 0682 sound_mode_cycle           37
+  260.526 app  0682 sound_mode_cycle           36
+  260.556 buds 0682 sound_mode_cycle           36
+  261.378 app  0682 sound_mode_cycle           37
+  261.400 buds 0682 sound_mode_cycle           37
+  261.991 app  0682 sound_mode_cycle           35
+  262.019 buds 0682 sound_mode_cycle           35
+  267.061 app  0481 button_action              01 01 45
+  267.446 buds 0481 button_action
+  267.793 app  0481 button_action              01 01 46
+  267.847 buds 0481 button_action
+  268.593 app  0481 button_action              01 01 42
+  268.624 buds 0481 button_action
+  279.358 app  0481 button_action              01 01 43
+  279.485 buds 0481 button_action
+  279.922 app  0481 button_action              01 01 40
+  279.996 buds 0481 button_action
+  280.273 app  0481 button_action              01 01 41
+  280.321 buds 0481 button_action
+  281.509 app  0481 button_action              01 01 44
+  281.585 buds 0481 button_action
+  291.777 app  0187 gaming_mode                01
+  291.970 buds 0187 gaming_mode
+  296.469 app  0187 gaming_mode                00
+  296.546 buds 0187 gaming_mode
+  303.053 buds 0B02 ?                          (7 bytes; prefix=01 77 e7 57; remaining bytes left out)
+  311.925 buds 0B02 ?                          00 (x2)
+  331.084 buds 0B02 ?                          (7 bytes; prefix=01 77 e7 57; remaining bytes left out)
+  333.524 buds 0B02 ?                          00
+  335.705 buds 0B02 ?                          (7 bytes; prefix=01 77 e7 57; remaining bytes left out)
+  338.435 buds 0B02 ?                          00 (x2)
+  340.662 app  0681 set_sound_modes            02 51 00 01 00 00 00
+  340.699 buds 0681 set_sound_modes
+  340.703 buds 0601 sound_modes                02 51 00 01 00 00 00
+  346.017 app  0901 wear_fit_detection
+  355.332 buds 0901 wear_fit_detection         00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  355.407 buds 0601 sound_modes                02 51 00 01 00 00 00
+  361.127 app  0183 touch_tone                 00
+  361.526 buds 0183 touch_tone
+  364.234 app  0183 touch_tone                 01
+  364.250 buds 0183 touch_tone
+  367.397 app  1082 low_battery_prompt         00
+  367.766 buds 1082 low_battery_prompt
+  371.288 app  1082 low_battery_prompt         01
+  371.299 buds 1082 low_battery_prompt
+  374.938 app  0B02 ?
+  375.031 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  376.273 app  0B84 dual_connections_enabled   01
+  376.304 buds 0B84 dual_connections_enabled (x2)
+  376.308 app  0B01 dual_connections_devices
+  376.347 buds 0B01 dual_connections_devices   (42 bytes left out)
+  376.854 app  0B01 dual_connections_devices
+  376.866 buds 0B01 dual_connections_devices   (42 bytes left out)
+  377.369 app  0B02 ?
+  377.397 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  377.901 app  0B01 dual_connections_devices
+  377.928 buds 0B01 dual_connections_devices   (42 bytes left out)
+  378.432 app  0B01 dual_connections_devices
+  378.447 buds 0B01 dual_connections_devices   (42 bytes left out)
+  378.950 app  0B02 ?
+  379.006 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  379.510 app  0B02 ?
+  379.549 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  380.053 app  0B02 ?
+  380.246 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  380.751 app  0B02 ?
+  380.781 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  381.285 app  0B02 ?
+  381.312 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  383.229 app  0B84 dual_connections_enabled   00
+  383.251 buds 0B84 dual_connections_enabled (x2)
+  383.270 app  0B02 ? (x2)
+  383.351 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out) (x2)
+  388.490 app  0186 auto_power_off             01 00
+  388.905 buds 0186 auto_power_off
+  391.074 app  0186 auto_power_off             01 01
+  391.102 buds 0186 auto_power_off
+  395.438 app  0186 auto_power_off             01 02
+  395.608 buds 0186 auto_power_off
+  397.517 app  0186 auto_power_off             00 03
+  397.548 buds 0186 auto_power_off
+  398.636 app  0186 auto_power_off             01 02
+  398.720 buds 0186 auto_power_off
+  406.211 app  1089 ?                          01 00 00
+  406.789 buds 1089 ?
+  411.884 app  1089 ?                          00 00 00
+  412.009 buds 1089 ?
+  413.508 app  1089 ?                          00 01 00
+  413.519 buds 1089 ?
+  417.456 app  1089 ?                          00 00 00
+  417.693 buds 1089 ?
+  418.348 app  1089 ?                          00 00 00
+  418.372 buds 1089 ?
+  437.021 app  0B02 ?
+  437.363 buds 0B02 ?                          (7 bytes; prefix=00 01 aa 55; remaining bytes left out)
+  459.002 buds 0B02 ?                          (7 bytes; prefix=01 77 e7 57; remaining bytes left out)
+  461.900 buds 0B02 ?                          00
+Soundcore transfer/research diagnostics (unknown IDs are not identified as uploads):
+buds 0B02 channel=20 packets=22 payload_bytes=106 sizes=1x8,7x14 first=1.098 last=461.901
+app 0B02 channel=20 packets=10 payload_bytes=0 sizes=0x10 first=374.939 last=437.022
+app 1089 channel=20 packets=5 payload_bytes=15 sizes=3x5 first=406.211 last=418.349
+buds 1089 channel=20 packets=5 payload_bytes=0 sizes=0x5 first=406.789 last=418.373
+
+---- What I changed in the official app, in order ----
+(Write it here.)
+

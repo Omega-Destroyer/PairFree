@@ -2,15 +2,25 @@
  "name": "Soundcore Q20i",
  "names": [
   "Soundcore Life 2 Neo",
+  "Soundcore Life Q20+",
   "Soundcore Q11i",
   "Soundcore Q20I",
-  "Soundcore Vortex"
+  "Soundcore Vortex",
+  "soundcore Life Q20",
+  "soundcore Life Q20+ SE",
+  "soundcore Q20"
  ],
  "codes": [
   "A3004",
   "A3005",
+  "A3025",
   "A3031",
-  "A3033"
+  "A3033",
+  "A3045",
+  "Soundcore Life Q20+",
+  "soundcore Life Q20",
+  "soundcore Life Q20+ SE",
+  "soundcore Q20"
  ],
  "source": "Traced from Soundcore's Q20i product photo; not in the repo.",
  "bud": {

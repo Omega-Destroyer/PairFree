@@ -10,56 +10,28 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.omegadestroyer.pairfree.bluetooth.Brand
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
+import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.brands.OneplusDriver
+import io.github.omegadestroyer.pairfree.brands.ReportInfo
+import io.github.omegadestroyer.pairfree.brands.SoundcoreDriver
+import io.github.omegadestroyer.pairfree.brands.SoundpeatsDriver
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.capture.BugReport
 import io.github.omegadestroyer.pairfree.capture.Capture
 import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.eq.Equalizer
-import io.github.omegadestroyer.pairfree.eq.NothingEqTarget
-import io.github.omegadestroyer.pairfree.eq.JblEqTarget
-import io.github.omegadestroyer.pairfree.eq.PixelEqTarget
-import io.github.omegadestroyer.pairfree.eq.EarfunEqTarget
-import io.github.omegadestroyer.pairfree.eq.OneMoreEqTarget
-import io.github.omegadestroyer.pairfree.eq.QcyEqTarget
-import io.github.omegadestroyer.pairfree.eq.SamsungEqTarget
-import io.github.omegadestroyer.pairfree.eq.SonyEqTarget
-import io.github.omegadestroyer.pairfree.eq.SoundcoreEqTarget
-import io.github.omegadestroyer.pairfree.eq.CapsuleEqTarget
-import io.github.omegadestroyer.pairfree.eq.SoundpeatsEqTarget
-import io.github.omegadestroyer.pairfree.protocol.PowerActions
-import io.github.omegadestroyer.pairfree.protocol.SoundpeatsSettings
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.ConnectionReport
 import io.github.omegadestroyer.pairfree.protocol.CurveMatch
-import io.github.omegadestroyer.pairfree.protocol.DeviceReport
 import io.github.omegadestroyer.pairfree.protocol.EqCapture
 import io.github.omegadestroyer.pairfree.protocol.LoggedReads
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.protocol.RecordedBrand
 import io.github.omegadestroyer.pairfree.protocol.RecordingReport
-import io.github.omegadestroyer.pairfree.protocol.ReportPrivacy
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.VendorRecording
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblEqCurve
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingEq
-import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunSession
-import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreEq
-import io.github.omegadestroyer.pairfree.protocol.qcy.QcyEq
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
-import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreSession
-import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
-import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungStatus
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyEq
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyFunction
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTouch
 import io.github.omegadestroyer.pairfree.status.CompanionLink
 import io.github.omegadestroyer.pairfree.status.FastPairCheck
@@ -71,7 +43,7 @@ import io.github.omegadestroyer.pairfree.status.StatusUi
 import io.github.omegadestroyer.pairfree.status.canNotify
 import io.github.omegadestroyer.pairfree.ui.CaptureActions
 import io.github.omegadestroyer.pairfree.ui.EarbudsActions
-import io.github.omegadestroyer.pairfree.ui.modelOf
+import io.github.omegadestroyer.pairfree.brands.modelOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -101,379 +73,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
     val equalizer: Equalizer = hub.equalizer
 
-    /** The Soundcore EQ while the Sound tab shows Soundcore earbuds whose EQ write is confirmed. */
-    private var soundcoreEq: SoundcoreEqTarget? = null
-
-    /**
-     * Opens the Sound tab's EQ for [device]: SoundPEATS models from their table, Soundcore models
-     * whose EQ write a recording or OpenSCQ30's tests confirm (docs/soundcore/PROTOCOL.md section 8).
-     */
-    fun openEqualizer(device: Paired, model: Model?) {
-        if (device.brand != Brand.PIXEL) pixelEq = null
-        if (device.brand == Brand.PIXEL) {
-            nothingEq = null
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openPixelEq(device, model)
-            return
-        }
-        if (device.brand != Brand.NOTHING) nothingEq = null
-        if (device.brand != Brand.QCY) qcyEq = null
-        if (device.brand != Brand.ONEMORE) oneMoreEq = null
-        if (device.brand != Brand.EARFUN) earfunEq = null
-        if (device.brand != Brand.JBL) jblEq = null
-        if (device.brand == Brand.JBL) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openJblEq(device, model)
-            return
-        }
-        if (device.brand == Brand.EARFUN) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openEarfunEq(device, model)
-            return
-        }
-        if (device.brand == Brand.ONEMORE) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openOneMoreEq(device, model)
-            return
-        }
-        if (device.brand == Brand.QCY) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openQcyEq(device, model)
-            return
-        }
-        if (device.brand == Brand.NOTHING) {
-            soundcoreEq = null
-            samsungEq = null
-            sonyEq = null
-            openNothingEq(device, model)
-            return
-        }
-        if (device.brand == Brand.SONY) {
-            soundcoreEq = null
-            samsungEq = null
-            openSonyEq(device, model)
-            return
-        }
-        sonyEq = null
-        if (device.brand == Brand.SAMSUNG) {
-            soundcoreEq = null
-            val target = SamsungModels.of(device.model)?.let { SamsungEqTarget(it, connection.samsungEqCurves.value) }
-            samsungEq = target
-            equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
-            connection.samsungStatus.value?.let(::reportSamsungEq)
-            return
-        }
-        samsungEq = null
-        if (device.brand != Brand.SOUNDCORE) {
-            soundcoreEq = null
-            equalizer.open(device.address, model)
-            return
-        }
-        // Every model with an EQ in data/soundcore/devices.json (owner, 2026-10-29); the screen says when its write is not confirmed.
-        val spec = SoundcoreEqSpec.of(device.model)
-        val target = spec?.let { SoundcoreEqTarget(it, { connection.soundcoreState.value }, SoundcoreLayout.of(it.model)?.checksum ?: true) }
-        soundcoreEq = target
-        equalizer.open(device.address, model, target?.layout, target ?: SoundpeatsEqTarget)
-        connection.soundcoreState.value?.let(::reportEq)
-    }
-
-    /** The Pixel Buds' EQ while the Sound tab shows a Pixel Buds Pro, Pro 2 or 2a whose EQ read answered. */
-    private var pixelEq: PixelEqTarget? = null
-
-    /**
-     * Pixel Buds report their EQ once read; the Sound tab's EQ opens then, with Google's presets and the earbuds'
-     * saved curve where they hold one, and follows what they report from then on. The 2020 model and the A-Series
-     * have bass boost alone, which is a row on the Sound tab.
-     */
-    private fun openPixelEq(device: Paired, model: Model?) {
-        val session = connection.pixelSession
-        if (session == null || !session.hasEq) {
-            pixelEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        val open = pixelEq
-        if (open != null && open.session === session && open.hasSaved == (session.savedEq != null) && equalizer.state.value != null) return
-        // Open again when the saved curve arrived after the EQ: Last saved joins the presets.
-        if (open?.session === session) equalizer.open(device.address, null)
-        val target = PixelEqTarget(session)
-        pixelEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.pixelEq.value?.let(::reportPixelEq)
-    }
-
-    private fun reportPixelEq(gains: List<Float>) {
-        val target = pixelEq ?: return
-        val (profile, whole) = target.reported(gains)
-        equalizer.reported(profile, whole)
-    }
-
-    /** The JBL EQ while the Sound tab shows JBL earbuds whose EQ PairFree writes and which have reported theirs. */
-    private var jblEq: JblEqTarget? = null
-
-    /** JBL models report their EQ once read; the Sound tab opens it then, with JBL's presets, and follows what they hold. */
-    private fun openJblEq(device: Paired, model: Model?) {
-        val session = connection.jblSession
-        val spec = session?.model?.eq
-        if (session == null || spec?.written != true || (spec.reports && session.eq == null)) {
-            jblEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (jblEq?.session === session && equalizer.state.value != null) return
-        val target = JblEqTarget(session)
-        jblEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.jblEq.value?.let(::reportJblEq)
-    }
-
-    private fun reportJblEq(eq: JblEqCurve) {
-        val target = jblEq ?: return
-        val current = equalizer.state.value?.setting?.gains ?: return
-        val (profile, gains) = target.reported(eq, current) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The 1MORE EQ while the Sound tab shows 1MORE earbuds whose model has presets or a custom EQ. */
-    private var oneMoreEq: OneMoreEqTarget? = null
-
-    /** 1MORE models' EQ is in their table; the Sound tab opens it at once and follows what the earbuds report. */
-    private fun openOneMoreEq(device: Paired, model: Model?) {
-        val session = connection.oneMoreSession
-        val m = session?.model
-        if (session == null || m == null || (m.eqPresets.isEmpty() && m.eqBands == null)) {
-            oneMoreEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (oneMoreEq?.session === session && equalizer.state.value != null) return
-        val target = OneMoreEqTarget(session)
-        oneMoreEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.oneMoreEq.value?.let(::reportOneMoreEq)
-    }
-
-    private fun reportOneMoreEq(eq: OneMoreEq) {
-        val target = oneMoreEq ?: return
-        val current = equalizer.state.value?.setting?.gains ?: return
-        val (profile, gains) = target.reported(eq, current) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The EarFun EQ while the Sound tab shows EarFun earbuds whose model has one. */
-    private var earfunEq: EarfunEqTarget? = null
-
-    /** EarFun models' EQ is in their table and cannot be read; the Sound tab opens it at once, showing what this phone last sent. */
-    private fun openEarfunEq(device: Paired, model: Model?) {
-        val session = connection.earfunSession
-        val spec = session?.model?.eq
-        if (session == null || spec == null) {
-            earfunEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (earfunEq?.session === session && equalizer.state.value != null) return
-        val target = EarfunEqTarget(session, spec)
-        earfunEq = target
-        equalizer.open(device.address, model, target.layout, target)
-    }
-
-    /** The QCY EQ while the Sound tab shows QCY earbuds that reported an EQ PairFree can set. */
-    private var qcyEq: QcyEqTarget? = null
-
-    /** QCY earbuds report their EQ after they connect; the Sound tab's EQ opens once they have, over the bands they report. */
-    private fun openQcyEq(device: Paired, model: Model?) {
-        // SOUNDPEATS' QCY-built models: their curve from SOUNDPEATS' data, not QCY's EQ.
-        if (device.soldAs == Brand.SOUNDPEATS) {
-            qcyEq = null
-            equalizer.open(device.address, model, model?.eq, CapsuleEqTarget)
-            return
-        }
-        val session = connection.qcySession
-        val eq = connection.qcyEq.value
-        if (session == null || eq == null) {
-            qcyEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        qcyEq?.let { if (it.session === session && it.freqs == eq.freqs && equalizer.state.value != null) return }
-        val target = QcyEqTarget(session, eq)
-        qcyEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        reportQcyEq(eq)
-    }
-
-    private fun reportQcyEq(eq: QcyEq) {
-        val gains = qcyEq?.reported(eq) ?: return
-        equalizer.reported(null, gains)
-    }
-
-    /** The Nothing EQ while the Sound tab shows Nothing or CMF earbuds whose model PairFree knows. */
-    private var nothingEq: NothingEqTarget? = null
-
-    /**
-     * Nothing earbuds name their model in their first answers; the Sound tab's EQ opens once they have, with the
-     * model's presets and custom curve, and follows what they report from then on.
-     */
-    private fun openNothingEq(device: Paired, model: Model?) {
-        val session = connection.nothingSession
-        if (session == null || session.model == null || (session.eqPresets.isEmpty() && session.simpleEqFilters == null)) {
-            nothingEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        if (nothingEq?.session === session && equalizer.state.value != null) return
-        val target = NothingEqTarget(session)
-        nothingEq = target
-        equalizer.open(device.address, model, target.layout, target)
-        connection.nothingEq.value?.let(::reportNothingEq)
-    }
-
-    private fun reportNothingEq(eq: NothingEq) {
-        val target = nothingEq ?: return
-        val current = equalizer.state.value?.setting?.gains ?: return
-        val (profile, gains) = target.reported(eq, current) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The Sony EQ while the Sound tab shows Sony earbuds, with the EQ and the earbuds it was opened for. */
-    private var sonyEq: Triple<SonyEqTarget, SonyEq, String>? = null
-
-    /**
-     * Sony earbuds list their presets and bands as they answer; the Sound tab opens once they have, and
-     * again if what they listed changes. Until then it shows no EQ.
-     */
-    private fun openSonyEq(device: Paired, model: Model?) {
-        val session = connection.sonySession
-        val eq = connection.sonyEq.value
-        if (session == null || eq == null || eq.steps == null || eq.bands == null) {
-            sonyEq = null
-            equalizer.open(device.address, null)
-            return
-        }
-        // The same earbuds, connection and layout: the screen stays as it is, and follows their reports.
-        sonyEq?.let { (target, shape, address) ->
-            val same = address == device.address && target.session === session &&
-                shape.presets == eq.presets && shape.bands == eq.bands && shape.steps == eq.steps
-            if (same && equalizer.state.value != null) return
-        }
-        val target = SonyEqTarget(session, eq)
-        sonyEq = Triple(target, eq, device.address)
-        // A layout of its own per band set, so profiles saved for one model's bands stay with it.
-        equalizer.open(device.address, model, target.layout, target)
-        reportSonyEq(eq)
-    }
-
-    private fun reportSonyEq(eq: SonyEq) {
-        val (profile, gains) = sonyEq?.first?.reported(eq) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    private fun reportEq(state: SoundcoreState) {
-        val (profile, gains) = soundcoreEq?.reported(state) ?: return
-        equalizer.reported(profile, gains)
-    }
-
-    /** The Galaxy Buds EQ while the Sound tab shows Galaxy Buds. */
-    private var samsungEq: SamsungEqTarget? = null
-
-    /** Galaxy Buds whose custom curve went out again on this connection, so it goes once. */
-    private var samsungCurveResent: String? = null
-
-    /**
-     * Galaxy Buds report which preset they hold, or that they hold a custom curve, but not the curve;
-     * the Sound tab shows the curve this phone last sent. A custom curve goes out again once per
-     * connection, as the earbuds forget it when they power off.
-     */
-    private fun reportSamsungEq(status: SamsungStatus) {
-        val reported = samsungEq?.reported(status) ?: return
-        val gains = equalizer.state.value?.setting?.gains ?: return
-        equalizer.reported(reported.profileId, gains)
-        val address = (connection.status.value as? LinkStatus.Connected)?.device?.address ?: return
-        if (reported.custom && samsungCurveResent != address) {
-            samsungCurveResent = address
-            equalizer.resendCustom(address)
-        }
-    }
-
-    init {
-        // Soundcore earbuds report their EQ with every state; the Sound tab follows it.
-        viewModelScope.launch { connection.soundcoreState.collect { s -> s?.let(::reportEq) } }
-        viewModelScope.launch { connection.samsungStatus.collect { s -> s?.let(::reportSamsungEq) } }
-        // The Galaxy Buds' preset curves arrive after the screen opened: draw them then.
-        viewModelScope.launch {
-            connection.samsungEqCurves.collect { curves ->
-                val target = samsungEq ?: return@collect
-                val device = (connection.status.value as? LinkStatus.Connected)?.device ?: return@collect
-                if (curves.isNotEmpty()) openEqualizer(device, SamsungModels.model(target.model.model))
-            }
-        }
-        viewModelScope.launch { connection.status.collect { if (it !is LinkStatus.Connected) samsungCurveResent = null } }
-        // Pixel Buds report their EQ once read: open it then, and follow what they hold.
-        viewModelScope.launch {
-            connection.pixelEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.PIXEL || eq == null) return@collect
-                openPixelEq(device, modelOf(device, connection.state.value))
-                reportPixelEq(eq)
-            }
-        }
-        // JBL earbuds report their EQ once read: open it then, and follow what they hold.
-        viewModelScope.launch {
-            connection.jblEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.JBL || eq == null) return@collect
-                openJblEq(device, modelOf(device, connection.state.value))
-                reportJblEq(eq)
-            }
-        }
-        // 1MORE earbuds report their preset and curve after connecting: follow what they hold.
-        viewModelScope.launch {
-            connection.oneMoreEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.ONEMORE || eq == null) return@collect
-                openOneMoreEq(device, modelOf(device, connection.state.value))
-                reportOneMoreEq(eq)
-            }
-        }
-        // QCY earbuds report their EQ after connecting: open it once they have, then follow what they hold.
-        viewModelScope.launch {
-            connection.qcyEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.QCY || eq == null) return@collect
-                openQcyEq(device, modelOf(device, connection.state.value))
-                reportQcyEq(eq)
-            }
-        }
-        // Nothing earbuds name their model, then report their EQ: open it once they have, then follow what they hold.
-        viewModelScope.launch {
-            connection.nothingEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.NOTHING || eq == null) return@collect
-                openNothingEq(device, modelOf(device, connection.state.value))
-                reportNothingEq(eq)
-            }
-        }
-        // Sony earbuds tell their EQ bit by bit: open it once they have, then follow what they hold.
-        viewModelScope.launch {
-            connection.sonyEq.collect { eq ->
-                val device = connectedDevice() ?: return@collect
-                if (device.brand != Brand.SONY || eq == null) return@collect
-                openSonyEq(device, modelOf(device, connection.state.value))
-                reportSonyEq(eq)
-            }
-        }
-    }
+    /** Opens the Sound tab's EQ for [device] (the [EqOpener] in the Hub does the work). */
+    fun openEqualizer(device: Paired, model: Model?) = hub.eqOpener.open(device, model)
 
     private val statusSettings = StatusSettings(prefs)
     private val _statusUi = MutableStateFlow<StatusUi?>(null)
@@ -539,7 +140,17 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
             fastPair == true,
             canNotify(app),
             CompanionLink.isAssociated(app, device.address),
+            listOf(statusSettings.button(device.address, 1), statusSettings.button(device.address, 2)),
+            io.github.omegadestroyer.pairfree.widget.WidgetToggles.load(hub.prefs, device.address).map { it.first },
+            connection.state.value.supports(Command.ANC_MODE),
         )
+    }
+
+    override fun chooseStatusButton(n: Int, action: String) {
+        val device = connectedDevice() ?: return
+        statusSettings.chooseButton(device.address, n, action)
+        refreshStatus(device)
+        StatusService.startIfWanted(getApplication(), device.address, fromBackground = false)
     }
 
     /** Starts or ends the notification as the choice says; with [prompt], the first time, asks for what it needs. */
@@ -633,23 +244,26 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun factoryResetConfirmedByUser() = connection.factoryResetConfirmedByUser()
 
-    override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) = connection.changeSoundcoreTouch(make)
-
-    override fun resetTouch() = connection.resetSoundcoreTouch()
-
-    override fun changeSetting(change: SettingChange) {
-        // SOUNDPEATS earbuds' extra settings are commands of their own table, sent as any SET is.
-        if (connectedDevice()?.brand == Brand.SOUNDPEATS) {
-            // Restart comes only from its row, after the user confirmed it on screen.
-            if (change is SettingChange.Press && change.key == PowerActions.RESTART) {
-                connection.rebootConfirmedByUser()
-                return
-            }
-            SoundpeatsSettings.change(change)?.let { (command, value) -> connection.set(command, value) }
-            return
-        }
-        connection.changeSetting(change)
+    override fun changeTouch(make: (SoundcoreTouch) -> SoundcoreButtons.Change?) {
+        (connection.driver as? SoundcoreDriver)?.changeTouch(make)
     }
+
+    override fun resetTouch() {
+        (connection.driver as? SoundcoreDriver)?.resetTouch()
+    }
+
+    override fun changeSetting(change: SettingChange) = connection.changeSetting(change)
+
+    override fun sendFrames(frames: List<ByteArray>) = connection.sendEq(frames)
+
+    override fun jblPersonifi() = (connection.driver as? io.github.omegadestroyer.pairfree.brands.JblDriver)?.personifi()
+
+    private val sleepUploader = io.github.omegadestroyer.pairfree.sleep.SleepUploader(app, viewModelScope, adapter)
+
+    override fun sleepUploader() = sleepUploader
+
+    override fun oneplusHearingTest() =
+        (connection.driver as? OneplusDriver)?.session?.hearingTest(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")))
 
     override fun startFitTest() {
         val name = (connection.status.value as? LinkStatus.Connected)?.device?.name
@@ -669,254 +283,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
     }
 
     /**
-     * A complete, pasteable capture of what the earbuds answered, so a model can be added
-     * from a user's phone with no developer mode and no Bluetooth snooping. On connect the
-     * app sends every read it knows (Requests.ON_CONNECT); this formats the replies the same
-     * way tools/probe.py does, under a header that identifies the model and says where to paste.
+     * The device report to paste into an issue: what the earbuds answered, as their brand's driver writes it
+     * ([io.github.omegadestroyer.pairfree.brands.BrandDriver.report]). Before a driver has anything of its own, SOUNDPEATS' form.
      */
     override fun deviceReport(): String {
         val app = getApplication<Application>()
         val version = app.packageManager.getPackageInfo(app.packageName, 0).versionName
         val device = (connection.status.value as? LinkStatus.Connected)?.device
-        val firmware = connection.state.value.firmware
         val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'").format(LocalDateTime.now(ZoneOffset.UTC))
-        connection.samsungSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Samsung")
-                appendLine("Model:           ${session.model.model} (${session.model.name})")
-                appendLine("Found by:        ${device?.modelId?.let { "model id $it in the service list" } ?: "Bluetooth name"}")
-                appendLine("Firmware:        ${firmware?.version ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                val payload = session.lastStatusPayload
-                appendLine("The earbuds' full state (message 97, revision ${session.status?.revision ?: "?"}, ${payload?.size ?: 0} bytes), as hex:")
-                appendLine(payload?.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') } ?: "no state yet")
-                appendLine()
-                appendLine("As PairFree read it:")
-                session.status?.values?.forEach { (k, v) -> appendLine("  $k = $v") }
-            }
-        }
-        connection.boseSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Bose")
-                val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product $id, variant ${session.variant ?: "?"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last message of each kind the device sent (block.function, operator: payload as hex;")
-                appendLine("operator 3 is a value, 4 an error, whose first byte says which):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.pixelSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Google Pixel Buds")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (device type ${session.deviceType ?: "unknown"})")
-                appendLine("Transport:       ${session.transport.name.lowercase()}${session.channel?.let { " (channel $it)" }.orEmpty()}")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last answer to each read PairFree sent (setting N: the field as protobuf, or the error")
-                appendLine("status the earbuds gave; the battery and firmware as protobuf):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-                if (session.refused.isNotEmpty()) appendLine("Settings the earbuds do not have: ${session.refused.joinToString(", ")}")
-            }
-        }
-        connection.nothingSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Nothing")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (product ${session.productId ?: "unknown"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last answer to each read PairFree sent, and the battery and noise events")
-                appendLine("(command: payload as hex; empty means the earbuds answered without a value):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.qcySession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           QCY")
-                val model = session.model
-                appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (vendor id ${model?.code ?: "unknown"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last value of each item and characteristic PairFree read (item or name: value as hex):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.oneMoreSession?.let { session -> return oneMoreReport(session, device, version, date) }
-        connection.earfunSession?.let { session -> return earfunReport(session, device, version, date) }
-        connection.appleSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Brand:           Apple (AirPods or Beats)")
-                appendLine("Model:           ${session.model?.name ?: "not in PairFree's table"} (model number ${session.modelNumber ?: "unknown"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, build ${Build.ID})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("Battery (count, then component, 01, level, status, 01 each), as hex:")
-                appendLine("  ${session.batteryData?.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') } ?: "none yet"}")
-                appendLine("Settings the AirPods reported (control command id: value, as hex):")
-                session.controls.forEach { (id, value) ->
-                    appendLine("  %02x: %s".format(id, value.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }))
-                }
-            }
-        }
-        connection.jblSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           JBL")
-                val id = session.productId?.let { "%04X".format(it) } ?: "unknown"
-                appendLine("Model:           ${session.model.name} (product $id, ${if (session.model.gatt) "Bluetooth LE" else "serial channel"})")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                if (session.model.family == JblModel.Family.AIROHA) {
-                    appendLine("Airoha chip:     ${session.chipName ?: "unknown"}")
-                    appendLine("Model name:      ${session.modelName ?: "unknown"}")
-                }
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                appendLine("The last answer to each of PairFree's reads (command, with the status type or feature id:")
-                appendLine("payload as hex; the device info's name and address are blanked):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.sonySession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help check")
-                appendLine("this model. It holds no serial number, address or other personal data.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Sony")
-                appendLine("Model:           ${session.modelName ?: session.model?.name ?: "unknown"}")
-                appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-                appendLine("Table set:       ${session.tableSet} (service ${device?.service ?: "unknown"})")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                val names = if (session.tableSet == 1) SonyFunction.Set1.NAMES else SonyFunction.Set2.NAMES
-                appendLine("Functions the earbuds list (data/sony/functions.json):")
-                session.functions.sorted().forEach { appendLine("  %02x %s".format(it, names[it] ?: "unknown")) }
-                appendLine()
-                appendLine("The last message of each kind they sent (table, command, type: payload as hex):")
-                session.replies.forEach { (key, payload) ->
-                    appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-                }
-            }
-        }
-        connection.soundcoreSession?.let { session ->
-            return buildString {
-                appendLine("PairFree device report")
-                appendLine("Paste this whole report into a new issue at")
-                appendLine("$ISSUES to help add support")
-                appendLine("for this model. The serial number's Bluetooth address is masked.")
-                appendLine()
-                appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-                appendLine("Brand:           Soundcore")
-                appendLine("Model:           ${session.model}")
-                appendLine("Service:         ${device?.service ?: "serial port"}")
-                appendLine("Firmware:        ${session.lastState?.firmware ?: "unknown"}")
-                appendLine("App:             PairFree $version")
-                appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-                appendLine("Captured:        $date")
-                appendLine()
-                val expected = session.layout?.minSize?.let { "at least $it bytes expected" } ?: "no layout"
-                val got = session.lastState?.size?.let { "$it bytes" } ?: "no reply yet"
-                appendLine("The earbuds' reply to the state request (01 01) ($got, $expected), as hex:")
-                appendLine(session.lastState?.reportHex() ?: "no reply yet")
-            }
-        }
-        return buildString {
-            appendLine("PairFree device report")
-            appendLine("Paste this whole report into a new issue at")
-            appendLine("$ISSUES to help add support")
-            appendLine("for this model. It holds no account, address or other personal data.")
-            appendLine()
-            appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-            appendLine("Firmware:        ${firmware?.text ?: "unknown"}")
-            appendLine("Firmware code:   ${firmware?.code ?: "unknown"}")
-            appendLine("App:             PairFree $version (SPP)")
-            appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-            appendLine("Captured:        $date")
-            appendLine()
-            appendLine("The app asked the earbuds every read it knows. Each line is the feature,")
-            appendLine("its command, the decoded reply and the raw bytes. \"no reply\" means the")
-            appendLine("firmware does not support that read.")
-            appendLine()
-            DeviceReport.lines(connection.lastReplies).forEach(::appendLine)
-            connection.state.value.gaiaFeatures?.let { appendLine(DeviceReport.gaiaLine(it)) }
-            appendLine()
-            appendLine("This is enough to add this model's controls. For its equalizer too, use")
-            appendLine("\"Record from the official app\" on PairFree's Device tab instead.")
-        }
+        val info = ReportInfo(device, version, date, ISSUES, connection.platform)
+        return connection.driver?.report(info) ?: SoundpeatsDriver.plainReport(info, connection.lastReplies, connection.state.value)
     }
 
     private val _capture = MutableStateFlow<Capture>(Capture.Closed)
@@ -964,50 +340,6 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
         return Capture.Done(result, since, wholeLog, writes, matches, LoggedReads.of(frames, since), names, vendor, vendor.map(::vendorName))
     }
 
-    /** The device report for 1MORE earbuds or headphones: the model, the firmware and each read's last answer. */
-    private fun oneMoreReport(session: OneMoreSession, device: Paired?, version: String?, date: String): String = buildString {
-        appendLine("PairFree device report")
-        appendLine("Paste this whole report into a new issue at")
-        appendLine("$ISSUES to help check")
-        appendLine("this model. It holds no serial number, address or other personal data.")
-        appendLine()
-        appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-        appendLine("Brand:           1MORE")
-        val model = session.model
-        appendLine("Model:           ${model?.name ?: "not in PairFree's table"} (${model?.model ?: "model unknown"})")
-        appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-        appendLine("App:             PairFree $version")
-        appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("Captured:        $date")
-        appendLine()
-        appendLine("The last answer to each read PairFree sent (command: payload as hex):")
-        session.replies.forEach { (key, payload) ->
-            appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-        }
-    }
-
-    /** The device report for EarFun earbuds or headphones: the model, its protocol, the firmware and each read's last answer. */
-    private fun earfunReport(session: EarfunSession, device: Paired?, version: String?, date: String): String = buildString {
-        appendLine("PairFree device report")
-        appendLine("Paste this whole report into a new issue at")
-        appendLine("$ISSUES to help check")
-        appendLine("this model. It holds no serial number, address or other personal data.")
-        appendLine()
-        appendLine("Bluetooth name:  ${ReportPrivacy.name(device?.name.orEmpty())}")
-        appendLine("Brand:           EarFun")
-        val model = session.model
-        appendLine("Model:           ${model.name} (${model.codes.joinToString(" or ")}, ${model.chip}, ${model.protocol} protocol)")
-        appendLine("Firmware:        ${session.firmware ?: "unknown"}")
-        appendLine("App:             PairFree $version")
-        appendLine("OS:              Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("Captured:        $date")
-        appendLine()
-        appendLine("The last answer to each read PairFree sent (command: payload as hex):")
-        session.replies.forEach { (key, payload) ->
-            appendLine("  $key: ${payload.joinToString(" ") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }}")
-        }
-    }
-
     /** The paired device at the address of [earbuds] in a recording; the address itself goes into no report. */
     private fun pairedFor(earbuds: VendorRecording.Earbuds): Paired? {
         val address = earbuds.address?.reversedArray()?.joinToString(":") { "%02X".format(it) } ?: return null
@@ -1016,21 +348,12 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     /** The model of other earbuds in a recording, as PairFree knows the paired device at their address. */
     private fun vendorName(earbuds: VendorRecording.Earbuds): String {
-        val code = pairedFor(earbuds)?.model
-        val model = when (earbuds.brand) {
-            RecordedBrand.SOUNDCORE -> SoundcoreModels.model(code)
-            RecordedBrand.SAMSUNG -> SamsungModels.model(code)
-            RecordedBrand.SONY -> code?.let { SonyModels.model(it) }
-            RecordedBrand.NOTHING -> NothingModels.model(code)
-        }
+        // The recorder's brands are named as the app's are.
+        val spec = Brands[Brand.valueOf(earbuds.brand.name)]
+        val model = spec.recordedModel(pairedFor(earbuds)?.model)
         // Sony models are known by their name alone, which is also their code.
         if (model != null) return if (model.names.first() == model.code) model.code else "${model.names.first()} (${model.code})"
-        return when (earbuds.brand) {
-            RecordedBrand.SOUNDCORE -> "Soundcore earbuds (model not matched)"
-            RecordedBrand.SAMSUNG -> "Galaxy Buds (model not matched)"
-            RecordedBrand.SONY -> "Sony earbuds or headphones (model not matched)"
-            RecordedBrand.NOTHING -> "Nothing or CMF earbuds (model not matched)"
-        }
+        return spec.recordedUnmatched
     }
 
     /** Reads a bug report picked on the capture screen, off the main thread. */

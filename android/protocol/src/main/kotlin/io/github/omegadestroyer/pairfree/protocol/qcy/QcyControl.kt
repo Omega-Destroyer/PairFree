@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.protocol.qcy
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 
@@ -9,9 +10,9 @@ import io.github.omegadestroyer.pairfree.protocol.SettingGroup
  * One connection to QCY earbuds, whichever protocol they speak: QCY's own ([QcySession]) or JieLi's RCSP
  * carrying QCY's items ([QcyJieliSession]). Messages in and out are [io.github.omegadestroyer.pairfree.protocol.GattEnvelope]s.
  */
-public interface QcyControl {
+public interface QcyControl : FitTest {
     public val model: QcyModel?
-    public val state: EarbudState
+    public override val state: EarbudState
     public val groups: List<SettingGroup>
     public val firmware: String?
 
@@ -50,6 +51,12 @@ public interface QcyControl {
 
     /** The messages that put a curve of [gains] (whole dB, one per band of [eq]) on the earbuds, or null when PairFree cannot. */
     public fun eqCustom(gains: List<Int>): List<ByteArray>? = null
+
+    /** The messages that select one of the model's parametric presets (bands of their own), or null when this is not one or PairFree cannot yet. */
+    public fun eqPreset(name: String): List<ByteArray>? = null
+
+    /** The messages that start the ear tip fit test, on the models that have it ([QcyModel.fitTest]). */
+    public override fun startFitTest(): List<ByteArray>? = null
 
     public companion object {
         /** The session for [model]'s protocol; QCY's own for a model PairFree does not know. */

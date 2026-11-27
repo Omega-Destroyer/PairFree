@@ -13,6 +13,10 @@ internal class AirohaGestureVariant(
     val writeOverrides: Map<Pair<Int, Int>, List<IntArray>>,
     val readOrder: List<Int>,
     val read: List<Pair<Int, List<IntArray>>>,
+    /** The action a key type no rule matches reads as, where [fillsUnmatched]: 0 in JBL's tables, the firmware's default (209) in Airoha's own SDK. */
+    val unmatched: Int = 0,
+    /** True where an earbud with no gesture is written as eight zero bytes rather than an entry of type 0 (JBL's plain variant). */
+    val emptyZeros: Boolean = false,
 )
 
 /**
@@ -28,6 +32,8 @@ internal class JblAirohaGesture private constructor(
     private var nvdmVersion: Int?,
     private val earbuds: Boolean,
     agentRight: Boolean,
+    /** The variants' tables: JBL's by default; Skullcandy's Airoha models use Airoha's own (SKULLCANDY_AIROHA_GESTURE_VARIANTS), keyed by Airoha's action ids. */
+    private val tables: Map<String, AirohaGestureVariant> = AIROHA_GESTURE_VARIANTS,
 ) {
     /** Which earbud PairFree talks to, as the read found it (0CD4); the write's sides follow it. */
     var agentRight: Boolean = agentRight
@@ -37,7 +43,7 @@ internal class JblAirohaGesture private constructor(
     lateinit var name: String
         private set
 
-    private val variant: AirohaGestureVariant get() = AIROHA_GESTURE_VARIANTS.getValue(name)
+    private val variant: AirohaGestureVariant get() = tables.getValue(name)
     /** One step: the command, built when its turn comes, and what to do with the answer. */
     private class Step(val relay: Boolean, val build: () -> RacePacket, val answer: (RacePacket) -> Boolean)
 
@@ -148,7 +154,7 @@ internal class JblAirohaGesture private constructor(
             val read = { if (ab1562) RacePacket(JblRace.KEYMAP_GET) else RacePacket.nvRead(ownKey, JblRace.GESTURE_READ_LENGTH) }
             steps += Step(relay, read) { p ->
                 val data = if (ab1562) p.payload else p.data
-                gestures += decode(name, data, agentRight, relay)
+                gestures += decode(name, data, agentRight, relay, tables)
                 if (variant.keyIdFromRead && data.size >= ENTRY) keyId = data[data.size - ENTRY + 1].toInt() and 0xFF
                 true
             }
@@ -170,11 +176,11 @@ internal class JblAirohaGesture private constructor(
         if (earbuds) findPartner()
         for (relay in if (earbuds) listOf(false, true) else listOf(false)) {
             if (ab1562) {
-                steps += Step(relay, { RacePacket(JblRace.KEYMAP_SET, encode(name, keyId ?: variant.keyId, all, agentRight, relay, peer = false)) }, ::ok)
+                steps += Step(relay, { RacePacket(JblRace.KEYMAP_SET, encode(name, keyId ?: variant.keyId, all, agentRight, relay, peer = false, tables)) }, ::ok)
                 continue
             }
-            steps += Step(relay, { nvWrite(ownKey, encode(name, keyId ?: variant.keyId, all, agentRight, relay, peer = false)) }, ::ok)
-            steps += Step(relay, { nvWrite(JblRace.GESTURE_NV_PEER, encode(name, keyId ?: variant.keyId, all, agentRight, relay, peer = true)) }, ::ok)
+            steps += Step(relay, { nvWrite(ownKey, encode(name, keyId ?: variant.keyId, all, agentRight, relay, peer = false, tables)) }, ::ok)
+            steps += Step(relay, { nvWrite(JblRace.GESTURE_NV_PEER, encode(name, keyId ?: variant.keyId, all, agentRight, relay, peer = true, tables)) }, ::ok)
             steps += Step(relay, { RacePacket(JblRace.NV_RELOAD, key(ownKey)) }, ::ok)
         }
     }
@@ -203,12 +209,15 @@ internal class JblAirohaGesture private constructor(
         }
 
         /** The read of both earbuds' key maps; [gestures] holds them once [done]. */
-        fun read(chip: RaceChip, nvdmVersion: Int?, earbuds: Boolean): JblAirohaGesture =
-            JblAirohaGesture(chip, nvdmVersion, earbuds, false).apply { planRead() }
+        fun read(chip: RaceChip, nvdmVersion: Int?, earbuds: Boolean, tables: Map<String, AirohaGestureVariant> = AIROHA_GESTURE_VARIANTS): JblAirohaGesture =
+            JblAirohaGesture(chip, nvdmVersion, earbuds, false, tables).apply { planRead() }
 
         /** The write of [list] on top of [known] (what the last read found), with the key id that read left. */
-        fun write(variant: String, earbuds: Boolean, agentRight: Boolean, known: Map<Int, Int>, keyId: Int?, list: List<Pair<Int, Int>>): JblAirohaGesture =
-            JblAirohaGesture(null, null, earbuds, agentRight).apply {
+        fun write(
+            variant: String, earbuds: Boolean, agentRight: Boolean, known: Map<Int, Int>, keyId: Int?, list: List<Pair<Int, Int>>,
+            tables: Map<String, AirohaGestureVariant> = AIROHA_GESTURE_VARIANTS,
+        ): JblAirohaGesture =
+            JblAirohaGesture(null, null, earbuds, agentRight, tables).apply {
                 name = variant
                 gestures += known
                 keyId?.let { this.keyId = it }
@@ -219,8 +228,11 @@ internal class JblAirohaGesture private constructor(
          * One earbud's key map for [list]: the entries of the gestures that earbud holds (the agent's side, or with [relay] the
          * other's; [peer] the opposite, for the copy), in the list's order, or one empty entry when there are none.
          */
-        fun encode(variant: String, keyId: Int, list: List<Pair<Int, Int>>, agentRight: Boolean, relay: Boolean, peer: Boolean): ByteArray {
-            val v = AIROHA_GESTURE_VARIANTS.getValue(variant)
+        fun encode(
+            variant: String, keyId: Int, list: List<Pair<Int, Int>>, agentRight: Boolean, relay: Boolean, peer: Boolean,
+            tables: Map<String, AirohaGestureVariant> = AIROHA_GESTURE_VARIANTS,
+        ): ByteArray {
+            val v = tables.getValue(variant)
             val right = agentRight != (relay != peer)
             val out = ArrayList<Byte>()
             for ((g, a) in list) {
@@ -230,7 +242,7 @@ internal class JblAirohaGesture private constructor(
                 for (e in entries) out += entry(if (e[0] == -1) own else e[0], keyId, e[1], e[2]).toList()
             }
             // Nothing for that earbud: eight zero bytes on the plain variant (MmiStage_SetGesture), else an entry of type 0.
-            if (out.isEmpty()) return if (variant == PLAIN) ByteArray(ENTRY) else entry(0, keyId, 0, 0)
+            if (out.isEmpty()) return if (v.emptyZeros) ByteArray(ENTRY) else entry(0, keyId, 0, 0)
             return out.toByteArray()
         }
 
@@ -243,21 +255,22 @@ internal class JblAirohaGesture private constructor(
          * The actions [data] (one earbud's key map) gives, by JBL's gesture id: per key type in the variant's order, the last
          * rule all of whose entries are there; a key type with none is 0 where the variant's parser fills it in.
          */
-        fun decode(variant: String, data: ByteArray, agentRight: Boolean, relay: Boolean): Map<Int, Int> {
-            val v = AIROHA_GESTURE_VARIANTS.getValue(variant)
+        fun decode(variant: String, data: ByteArray, agentRight: Boolean, relay: Boolean, tables: Map<String, AirohaGestureVariant> = AIROHA_GESTURE_VARIANTS): Map<Int, Int> {
+            val v = tables.getValue(variant)
             val right = agentRight != relay
             // An empty key map: every gesture of that earbud at 0 (genDefaultResult), on every variant.
-            if (data.isEmpty()) return v.keyTypes.filter { (g, t) -> (g % 2 == 0) == right && t in v.readOrder }.mapValues { 0 }
+            if (data.isEmpty()) return v.keyTypes.filter { (g, t) -> (g % 2 == 0) == right && t in v.readOrder }.mapValues { v.unmatched }
             val have = (0 until data.size / ENTRY).map { i ->
                 val at = i * ENTRY
                 (data[at].toInt() and 0xFF) to ((data[at + 2].toInt() and 0xFF) or (data[at + 3].toInt() shl 8)).toShort().toInt()
             }.toSet()
             val out = mutableMapOf<Int, Int>()
             for (type in v.readOrder) {
-                var action = 0
-                for ((a, req) in v.read) if (req.all { r -> ((if (r[0] == -1) type else r[0]) to r[1]) in have }) action = a
+                var action = v.unmatched
+                var matched = false
+                for ((a, req) in v.read) if (req.all { r -> ((if (r[0] == -1) type else r[0]) to r[1]) in have }) { action = a; matched = true }
                 val gesture = v.keyTypes.entries.firstOrNull { (g, t) -> t == type && (g % 2 == 0) == right }?.key ?: continue
-                if (action != 0 || v.fillsUnmatched) out[gesture] = action
+                if ((matched && action != 0) || v.fillsUnmatched) out[gesture] = action
             }
             return out
         }

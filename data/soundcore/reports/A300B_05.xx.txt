@@ -1,0 +1,25 @@
+Soundcore Q21i NC (A300B): firmware 05.xx
+=========================================
+
+Date:      2026-11-06
+Firmware:  "05." then the digits the masker hid (bytes 2-6 of the state reply)
+Phone:     a user's phone, Android 17 (API 37)
+App:       PairFree 0.7.2
+Method:    PairFree's device report (Device tab, Copy device report), posted as GitHub issue #22. The serial number is masked (XX).
+Findings:  the model was not in the table, so PairFree showed the report only. The first 39 bytes of the reply fit the Q20i's (A3004)
+           layout exactly: battery `02 00`, firmware `30 35 2e XX XX` ("05."), a 16-byte serial, the EQ `7E 7E` (preset) with ten
+           bands, and four sound-mode bytes `00 00 00 00`; 22 more bytes follow (`00 00 01 00 01 00 03 04 03` and zeros) that the
+           A3004 layout has no field for. That is a lead, not a layout: nothing here shows what the Q21i NC accepts.
+
+---- The report as sent ----
+Bluetooth name:  soundcore Q21i NC
+Brand:           Soundcore
+Model:           A300B
+Service:         0cf12d31-fac3-4553-bd80-d6832e7b300b
+Firmware:        unknown
+App:             PairFree 0.7.2
+OS:              Android 17 (API 37)
+Captured:        2026-11-06 13:26 UTC
+
+The earbuds' reply to the state request (01 01) (61 bytes, at least 0 bytes expected), as hex:
+02 00 30 35 2e XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX 7e 7e 8c 82 96 96 8c 64 50 46 78 78 00 00 00 00 00 00 01 00 01 00 03 04 03 00 00 00 00 00 00 00 00 00 00 00 00 00

@@ -1,6 +1,11 @@
 package io.github.omegadestroyer.pairfree.protocol
 
+import io.github.omegadestroyer.pairfree.protocol.cambridge.CambridgeModels
+import io.github.omegadestroyer.pairfree.protocol.sennheiser.SennheiserModels
+
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
+import io.github.omegadestroyer.pairfree.protocol.jabra.JabraModels
+import io.github.omegadestroyer.pairfree.protocol.jabra.fromName
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
 import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
 import kotlinx.serialization.json.Json
@@ -30,13 +35,25 @@ class IdentifyTest {
             assertEquals(want, Identify.maker(name, uuids), name)
             (e["model"] as? JsonPrimitive)?.content?.let { model ->
                 when (want) {
-                    Maker.JBL -> assertEquals(model, JblModels.fromName(name)?.name, name)
+                    Maker.JBL -> assertEquals(model, JblModels.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.jbl.AvneraModels.fromName(name)?.name, name)
                     Maker.PIXEL -> assertEquals(model, PixelModels.fromName(name)?.name, name)
                     Maker.EARFUN -> assertEquals(model, EarfunModels.fromName(name)?.name, name)
+                    Maker.CAMBRIDGE -> assertEquals(model, CambridgeModels.fromName(name)?.name, name)
+                    Maker.JABRA -> assertEquals(model, JabraModels.fromName(name)?.name, name)
+                    Maker.SKULLCANDY -> assertEquals(model, io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyModels.fromName(name)?.name, name)
+                    Maker.SENNHEISER -> assertEquals(model, SennheiserModels.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.Gaia2Models.fromName(name)?.name ?: io.github.omegadestroyer.pairfree.protocol.sennheiser.NautilusModels.fromName(name)?.name, name)
                     else -> error("no model check for $want")
                 }
             }
         }
+    }
+
+    /** Every Skullcandy product, with the brand word in front, is Skullcandy's (its own names are too generic to stand alone: Mod, Rail, Dime). */
+    @Test
+    fun everySkullcandyProductWithItsBrandWord() {
+        val wrong = io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyProducts.ALL
+            .filter { Identify.maker("Skullcandy " + it.name, emptyList()) != Maker.SKULLCANDY }.map { it.name }
+        assertEquals(emptyList<String>(), wrong)
     }
 
     /** Every name a brand's own table gives its models must come out as that brand, with no list of services. */
@@ -54,6 +71,7 @@ class IdentifyTest {
             Maker.QCY to "data/qcy/devices.json",
             Maker.ONEMORE to "data/1more/devices.json",
             Maker.EARFUN to "data/earfun/devices.json",
+            Maker.CAMBRIDGE to "data/cambridge/devices.json",
         )
         val wrong = mutableListOf<String>()
         for ((maker, path) in tables) {

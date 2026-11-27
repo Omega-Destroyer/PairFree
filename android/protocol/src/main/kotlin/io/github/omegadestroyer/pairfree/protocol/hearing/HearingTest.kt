@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.hearing
 
 import kotlin.math.abs
+import kotlin.math.ln
 import kotlin.math.roundToInt
 
 /** One tone of a hearing test: its frequency, its level in dB below full scale, and the EQ gain it stands for. */
@@ -98,6 +99,30 @@ public object HearingEq {
             last = at[i]
         }
         return gains.map { it.roundToInt().coerceIn(-rangeDb, rangeDb) }
+    }
+
+    /**
+     * PairFree's own merge for every other brand (the vendors' apps have no phone-run test for them): each result's gain sits at its frequency, and every
+     * band takes the gain at its frequency by straight lines between the results over the logarithm of the frequency, held flat beyond the first and last
+     * result. Whole dB within [rangeDb]. Unlike [onBands] it works for any band count and spacing (three filters, ten bands, named bands).
+     */
+    public fun interpolated(results: List<HearingTone>, bandsHz: List<Int>, rangeDb: Int): List<Int> {
+        if (results.isEmpty()) return List(bandsHz.size) { 0 }
+        val pts = results.sortedBy { it.hz }.map { ln(it.hz.toDouble()) to it.gainDb.toDouble() }
+        return bandsHz.map { band ->
+            val x = ln(band.toDouble())
+            val gain = when {
+                x <= pts.first().first -> pts.first().second
+                x >= pts.last().first -> pts.last().second
+                else -> {
+                    val i = pts.indexOfLast { it.first <= x }
+                    val (x0, y0) = pts[i]
+                    val (x1, y1) = pts[i + 1]
+                    y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+                }
+            }
+            gain.roundToInt().coerceIn(-rangeDb, rangeDb)
+        }
     }
 
     /** PeatsAudio's `findClosestElements` for one frequency: an index into the sorted band frequencies [a]. */

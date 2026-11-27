@@ -188,4 +188,28 @@ class SamsungBuds4Test {
         assertNull(s.state.batteryCase)
         assertEquals(true, s.state.supports(Command.ANC_MODE))
     }
+
+    @Test
+    fun theBuds3IsReadAsItsOwnPluginDoes() {
+        // Galaxy Buds3 (jellymgr): bytes 34 to 46 as the Buds4's, then no lighting byte or siren detection: adapt sound at 51, the hot command
+        // version at 52 to 54, voice boost 55, volume normalization 56 and the digital assistant 57.
+        val b = IntArray(58)
+        b[0] = 3; b[4] = 1; b[6] = 0x11; b[19] = 0
+        b[41] = 1; b[42] = 1; b[43] = 0x10; b[44] = 1; b[46] = 1; b[47] = 1; b[48] = 2; b[50] = 1; b[51] = 1
+        b[52] = 4; b[53] = 5; b[54] = 6; b[55] = 1; b[57] = 0x21
+        val s = SamsungStatus.parse(SamsungModels.of("SM-R530")!!, ByteArray(b.size) { b[it].toByte() })!!
+        assertEquals(true, s.flag("auto_adjust_sound"), "byte 41, which GalaxyBudsClient has as head tracking")
+        assertEquals(true, s.flag("spatial_audio_head_tracking"))
+        assertEquals(true, s.flag("is_left_charging"))
+        assertEquals(true, s.flag("auto_pause_resume"))
+        assertEquals(true, s.flag("hot_command_enabled"))
+        assertEquals(true, s.flag("adapt_sound_enabled"))
+        assertEquals("4.5.6", s.values["hot_command_version"])
+        assertEquals(true, s.flag("voice_boost"))
+        assertEquals(false, s.flag("volume_normalization"))
+        assertEquals(0x21, s.int("digital_assistant"))
+        assertEquals(true, s.flag("seamless_connection_enabled"), "0 is on for the Buds3, as in its plugin")
+        // A shorter reply keeps what it holds.
+        assertEquals(true, SamsungStatus.parse(SamsungModels.of("SM-R530")!!, ByteArray(52) { b[it].toByte() })!!.flag("adapt_sound_enabled"))
+    }
 }

@@ -1,0 +1,38 @@
+{
+ "name": "Momentum True Wireless 4 / Momentum True Wireless 5",
+ "names": [
+  "MOMENTUM TW 4",
+  "MOMENTUM TW 5",
+  "MTW4",
+  "MTW4 Black",
+  "MTW4 Black Copper",
+  "MTW4 Black Graphite",
+  "MTW4 Copper",
+  "MTW4 Denim",
+  "MTW4 Graphite",
+  "MTW4 JD",
+  "MTW4 Silver",
+  "MTW4 White",
+  "MTW4 White Silver",
+  "MTW5",
+  "Momentum True Wireless 4",
+  "Momentum True Wireless 5",
+  "PHOBOS",
+  "Phobos",
+  "phobos"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control Plus bundles (mtw4, graphite, the left bud; the Momentum True Wireless 5, which no Sennheiser app pictures, is grouped with it), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "221,147 253,147 269,150 284,156 294,164 303,176 310,201 334,209 347,223 351,235 351,248 347,259 340,269 328,276 315,279 299,277 286,269 262,271 242,269 226,263 207,247 200,237 194,222 191,199 192,178 195,166 201,157 210,151",
+  "axis": [
+   271.2,
+   213.0
+  ],
+  "accent": [
+   "252,191 251,198 246,203 240,207 232,208 224,207 217,203 213,198 211,191 213,184 217,179 224,175 232,174 240,175 246,179 251,184"
+  ]
+ },
+ "case": "generic"
+}

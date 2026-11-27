@@ -2,6 +2,8 @@ package io.github.omegadestroyer.pairfree.protocol.pixel
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.protocol.FitTest
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
@@ -41,8 +43,8 @@ public class PixelFeed(public val changed: Boolean, public val replies: List<Pix
  *
  * @param hint the model the Bluetooth name gave, used until the earbuds report their device type.
  */
-public class PixelSession(public val transport: PixelTransport, private val hint: PixelModel? = null) {
-    public var state: EarbudState = EarbudState()
+public class PixelSession(public val transport: PixelTransport, private val hint: PixelModel? = null) : FitTest {
+    override var state: EarbudState = EarbudState()
         private set
 
     /** The device type from the earbuds' hardware info; their serial numbers there are never kept. */
@@ -171,6 +173,10 @@ public class PixelSession(public val transport: PixelTransport, private val hint
     private val logTlv = PixelTlvParser()
 
     private fun receive(packet: PixelRpcPacket): PixelReply? {
+        if (packet.serviceId == PixelRpc.FIT_SERVICE) {
+            fitReply(packet)
+            return null
+        }
         if (packet.serviceId != PixelRpc.SERVICE) return null
         val method = PixelRpc.methodName(packet.methodId) ?: return null
         val ok = packet.status == 0 && packet.type != PixelWire.PACKET_SERVER_ERROR
@@ -282,7 +288,7 @@ public class PixelSession(public val transport: PixelTransport, private val hint
         bool("in_ear_detection")?.let { v[Command.IN_EAR_DETECTION] = Value.Switch(it) }
         bool("multipoint")?.let { v[Command.MULTIPOINT] = Value.Switch(it) }
         value("anc_state")?.int?.let { wire -> ancShared(wire)?.let { v[Command.ANC_MODE] = Value.Number(it) } }
-        state = state.copy(values = v)
+        state = state.copy(values = v, fitTest = transport == PixelTransport.MAESTRO && family == PixelFamily.ALLEGRO)
     }
 
     private val hasAdaptive: Boolean get() = model?.adaptive == true || value("anc_state")?.int == PixelValues.ANC_STATES["adaptive"]
@@ -401,6 +407,69 @@ public class PixelSession(public val transport: PixelTransport, private val hint
     }
 
     private var lastEqWrite: List<PixelMessage> = emptyList()
+
+    // ---- The ear tip seal test ----
+
+    private var fitSide = 0
+    private var fitLeft: FitResult.Fit = FitResult.Fit.UNKNOWN
+
+    /**
+     * Starts the ear tip seal test on the Pixel Buds Pro, Pro 2 and 2a (docs/pixel/PROTOCOL.md section 6.4): the left earbud first, then the right one
+     * once the left has answered, each on its own RPC channel; [EarbudState.fit] gets both results.
+     */
+    override fun startFitTest(): List<ByteArray>? {
+        if (!state.fitTest || channel == null) return null
+        state = state.copy(fit = null)
+        fitSide = PixelWire.FIT_LEFT_PEER
+        fitLeft = FitResult.Fit.UNKNOWN
+        return fitStart(fitSide).also { lastEqWrite = it }.map { it.bytes }
+    }
+
+    /** The channel that reaches the earbud behind [peer] from the working channel's side. */
+    private fun fitChannel(peer: Int): Int? {
+        val address = PixelWire.CHANNELS[channel ?: return null] ?: return null
+        val wanted = (address and SOURCE_BITS) or ((peer and 0xF) shl TARGET_SHIFT)
+        return PixelWire.CHANNELS.entries.firstOrNull { it.value == wanted }?.key
+    }
+
+    private fun fitRpc(method: String, peer: Int): PixelMessage? {
+        val ch = fitChannel(peer) ?: return null
+        val packet = PixelRpcPacket(PixelWire.PACKET_REQUEST, ch, PixelRpc.FIT_SERVICE, PixelRpc.hash(method), ByteArray(0), callId = PixelWire.CALL_ID)
+        return PixelMessage(PixelHdlc.encode(PixelWire.CHANNELS.getValue(ch), packet.encode()), null, label = "seal test $method")
+    }
+
+    private fun fitStart(peer: Int): List<PixelMessage> = listOfNotNull(fitRpc(PixelWire.FIT_METHOD_RESULTS, peer), fitRpc(PixelWire.FIT_METHOD_START, peer))
+
+    /** A result from an earbud's test: the verdict of Google's app (data/pixel/commands.json, maestro.fit_test), then the next earbud or the end. */
+    private fun fitReply(packet: PixelRpcPacket) {
+        if (fitSide == 0 || packet.type != PixelWire.PACKET_SERVER_STREAM || packet.channelId != fitChannel(fitSide)) return
+        val f = Proto.parse(packet.payload) ?: return
+        val fit = f.firstOrNull { it.number == 1 }?.float ?: 0f
+        val noise = f.firstOrNull { it.number == 2 }?.float ?: 0f
+        val verdict = fitVerdict(fit, noise)
+        outbox += listOfNotNull(fitRpc(PixelWire.FIT_METHOD_END, fitSide))
+        if (fitSide == PixelWire.FIT_LEFT_PEER) {
+            fitLeft = verdict
+            fitSide = PixelWire.FIT_RIGHT_PEER
+            outbox += fitStart(fitSide)
+        } else {
+            fitSide = 0
+            state = state.copy(fit = FitResult(fitLeft, verdict))
+        }
+    }
+
+    /** Google's verdict for one earbud's scores (gxc.l): good, a seal that needs adjusting, or no reading (a failed run or too much noise). */
+    private fun fitVerdict(fit: Float, noise: Float): FitResult.Fit {
+        val limit = (if (deviceType in PixelWire.FIT_NOISE_LIMIT_HIGH_TYPES) PixelWire.FIT_NOISE_LIMIT_HIGH else PixelWire.FIT_NOISE_LIMIT).toFloat()
+        val inWindow = fit > PixelWire.FIT_GOOD_MIN && fit <= PixelWire.FIT_MAX
+        val quiet = noise >= 0f && noise <= limit
+        val failed = noise >= PixelWire.FIT_INVALID || fit >= PixelWire.FIT_INVALID
+        return when {
+            inWindow && quiet -> FitResult.Fit.GOOD
+            failed || !quiet -> FitResult.Fit.UNKNOWN
+            else -> FitResult.Fit.NOT_FIT
+        }
+    }
 
     /** The messages of the last [eqWrite] whose bytes are [frames] (the Sound tab hands the bytes back). */
     public fun eqMessages(frames: List<ByteArray>): List<PixelMessage> = lastEqWrite.filter { m -> frames.any { it === m.bytes } }
@@ -574,6 +643,8 @@ public class PixelSession(public val transport: PixelTransport, private val hint
         public const val FIND_HUB: String = "find_hub"
 
         private const val BRAND = "Pixel"
+        private const val SOURCE_BITS = 0xF shl 6
+        private const val TARGET_SHIFT = 10
         private const val PERCENT = 100
         private const val MIN_CYCLE = 2
 

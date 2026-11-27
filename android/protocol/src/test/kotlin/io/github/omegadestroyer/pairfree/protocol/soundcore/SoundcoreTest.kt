@@ -5,6 +5,8 @@ import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
+import io.github.omegadestroyer.pairfree.protocol.Value
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import io.github.omegadestroyer.pairfree.protocol.repoFile
 import kotlinx.serialization.json.Json
@@ -333,6 +335,123 @@ class SoundcoreLayoutTest {
         }
     }
 
+    /**
+     * The Q21i NC's 61-byte reply (issue #22, masked digits written as 0): the vendor parser (Soundcore 5.0.35, A3004AnalysisService) reads the
+     * Q20i's bytes, then the dual connections switch (packet byte 50), the colour, and the auto power off switch and index.
+     */
+    @Test
+    fun readsTheQ21iNcReplyAsTheVendorParserDoes() {
+        val body = ("02003035" + "2e3030" + "30".repeat(16) + "7e7e8c82969" + "68c6450467878" + "000000000000" + "01" + "00" + "0100" + "03" + "0403" +
+            "00".repeat(13)).hexBytes()
+        assertEquals(61, body.size)
+        val s = SoundcoreState.parse(SoundcoreLayout.of("A300B")!!, body)!!
+        assertEquals(40, s.batteryLeft)
+        assertEquals("05.00", s.firmware)
+        assertEquals(true, s.flag("dual_connections_enabled"))
+        assertEquals("0100", s.field("auto_power_off")!!.hex())
+    }
+
+    /** A tag-length-value reply (the Liberty Buds 2, Soundcore 5.0.35's D1206AnalysisService) and the writes its own command service makes. */
+    @Test
+    fun readsAndWritesTheLibertyBuds2sRecords() {
+        fun rec(tag: Int, vararg v: Int) = byteArrayOf(tag.toByte(), v.size.toByte()) + ByteArray(v.size) { v[it].toByte() }
+        fun text(s: String) = IntArray(s.length) { s[it].code }
+        var reply = rec(1, 0) + rec(2, 1) + rec(3, 0, 80) + rec(4, 1, 81) + rec(5, *text("01.23")) + rec(6, *text("01.24")) +
+            rec(7, *IntArray(16) { 0x41 + it }) + rec(8, 0, 90)
+        // The touch controls, records 13 to 24: the value with both earbuds in, then with one (15 is off).
+        for (tag in 13..24) reply += rec(tag, tag - 13, 15)
+        reply += rec(27, 0b0000_1000, 0b0000_1000, 0, 0, 1) + rec(36, 1, 2, 0) + rec(37, 0x31, 0x22) + rec(38, 3, 4) + rec(41, 1, 2, 3, 4, 5, 6)
+        val session = SoundcoreSession("D1206")
+        assertTrue(session.receive(SoundcorePacket(SoundcoreCommand.STATE, reply)))
+        val state = SoundcoreState.parse(SoundcoreLayout.of("D1206")!!, reply)!!
+        assertEquals("0001", state.field("tws_status")!!.hex())
+        assertEquals("50510001", state.field("dual_battery")!!.hex())
+        assertEquals("01.23", state.firmware)
+        assertEquals("5a", state.field("case_battery")!!.hex())
+        assertEquals("f0f1f2f3f4f5f6f7f8f9fafb", state.field("buttons")!!.hex())
+        // The noise mode block as the app's write holds it: mode, manual level << 4 | 15, hear guard, automation, wind, 0, multi-scene, 0.
+        assertEquals("011f010201000300", state.field("sound_modes")!!.hex())
+        assertEquals(AmbientMode.TRANSPARENCY, state.ambientMode)
+        // The serial and the case's address are hidden in a report.
+        val hex = state.reportHex()
+        assertTrue("41 42 43" !in hex && "01 02 03 04 05 06" !in hex, hex)
+        // A noise mode change writes the app's eight bytes with the mode changed.
+        val anc = session.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key)!!
+        assertEquals(SoundcoreCommand.SET_SOUND_MODES, ((anc[5].toInt() and 0xFF) shl 8) or (anc[6].toInt() and 0xFF))
+        assertEquals("001f010201000300", anc.copyOfRange(9, anc.size - 1).hex())
+        // A touch control goes as 04 8C: side, gesture, the value with both earbuds in, the value with one.
+        val group = SoundcoreButtonSpec.of("D1206")!!.groups.single()
+        val packet = SoundcoreButtons.set(group, state, TouchSide.LEFT, TouchPress.DOUBLE, 6)!!.packets.single()
+        assertEquals(0x048C, packet.command)
+        assertEquals("0000060f", packet.body.hex())
+    }
+
+    /** The Space 2 Pro's six-byte noise mode write: mode, the first level's nibbles swapped from its reply, the transparency option, automation, wind, and the second level's high nibble. */
+    @Test
+    fun theSpace2ProRebuildsItsNoiseModeWrite() {
+        fun rec(tag: Int, vararg v: Int) = byteArrayOf(tag.toByte(), v.size.toByte()) + ByteArray(v.size) { v[it].toByte() }
+        val reply = rec(1, 0) + rec(3, 0, 70) + rec(5, *"02.01".map { it.code }.toIntArray()) + rec(7, *IntArray(16) { 0x30 }) +
+            rec(27, 0, 0b0000_1000) + rec(36, 2, 1, 1) + rec(37, 0x12, 0x34) + rec(39, 1, 85, 0)
+        val state = SoundcoreState.parse(SoundcoreLayout.of("D1406")!!, reply)!!
+        assertEquals("022101010103", state.field("sound_modes")!!.hex())
+        assertEquals("015500", state.field("limit_high_volume")!!.hex())
+    }
+
+    /** The `03 8A` equalizer (Soundcore 5.0.35, `CmmBtCmdService.m6` and `j5`): each payload byte for byte, the HearID state and time passed on. */
+    @Test
+    fun theNormalisedEqualizerWritesTheAppsBytes() {
+        fun rec(tag: Int, vararg v: Int) = byteArrayOf(tag.toByte(), v.size.toByte()) + ByteArray(v.size) { v[it].toByte() }
+        fun text(s: String) = IntArray(s.length) { s[it].code }
+        val reply = rec(1, 0) + rec(2, 1) + rec(5, *text("01.23")) + rec(6, *text("01.24")) + rec(11, 4, 0) + rec(51, 0, 2, 0x78, 0x56, 0x34, 0x12)
+        val state = SoundcoreState.parse(SoundcoreLayout.of("D1206")!!, reply)!!
+        val presets = SoundcoreNormalizedSpec.of("D1206")!!.presets(state.firmware)
+        assertEquals(listOf("Soundcore Signature", "Clear Vocals", "Powerful Bass", "Soothing Calm", "Balanced"), presets.map { it.name })
+        assertEquals(listOf(0, 1, 2, 3, 4), presets.map { it.command })
+        val signature = SoundcoreNormalizedEqualizer.preset(presets[0], null)
+        assertEquals(0x038A, signature.command)
+        assertEquals("000000000000000003020000c03f0060ea453333333f01000040400000f0419a99993e010000803f000048420000803f", signature.body.hex())
+        // The earbuds' HearID state and time go back as they sent them.
+        assertEquals(
+            "040000027856341204020000803f00c0f3450000c03f0100000040000070420000003f01000060400000ba430000803f010000404000888c450000c03f",
+            SoundcoreNormalizedEqualizer.preset(presets[4], state).body.hex(),
+        )
+        assertEquals(4, SoundcoreNormalizedEqualizer.position(state))
+        val custom = SoundcoreNormalizedEqualizer.custom(listOf(0.0, 1.0, 2.0, 3.0, -3.5, 6.0, -6.0, 0.5), null)
+        assertEquals(
+            "fefe0000000000000801000000000000c8423333333f010000803f000048433333333f01000000400000c8433333333f0100004040000048443333333f" +
+                "01000060c00000c8443333333f010000c040000048453333333f010000c0c00000c8453333333f010000003f000048463333333f",
+            custom.body.hex(),
+        )
+        // The Liberty 5 Pro pair's list depends on the firmware: 3.48 to 3.98, 4.48 to 4.98 and so on add Balanced and move the Signature.
+        val pro = SoundcoreNormalizedSpec.of("D1203")!!
+        assertEquals(listOf(0, 1, 2, 3), pro.presets("03.47").map { it.command })
+        assertEquals(listOf(4, 1, 2, 3, 0), pro.presets("03.48").map { it.command })
+        assertEquals(listOf(4, 1, 2, 3, 0), pro.presets("03.98").map { it.command })
+        assertEquals(listOf(0, 1, 2, 3), pro.presets("03.99").map { it.command })
+        assertEquals(listOf(4, 1, 2, 3, 0), pro.presets("06.60").map { it.command })
+        assertEquals(listOf(0, 1, 2, 3), pro.presets(null).map { it.command })
+    }
+
+    /** The Life NC (Soundcore 5.0.35, A3201DeviceManager): its own request, no checksum, and the writes of its three settings. */
+    @Test
+    fun theLifeNcAsksWithItsOwnRequestAndReadsItsRows() {
+        val session = SoundcoreSession("A3201")
+        val request = session.requestState()
+        assertEquals("08ee00000001090900", request.hex(), "the request is `01 09` with no checksum")
+        val reply = byteArrayOf(4, 1, 2, 1, 10) + "1.23".encodeToByteArray() + "A3201XXXXXXXXXXX".encodeToByteArray() + "Life NC".encodeToByteArray()
+        assertTrue(session.receive(SoundcorePacket(0x0109, reply)))
+        assertEquals(Value.Steps(4, 5), session.state.values[Command.BATTERY_LEFT])
+        val rows = session.groups.flatMap { it.settings }.associateBy { it.key }
+        assertEquals(Setting.Toggle("sc_vibration", true), rows["sc_vibration"])
+        assertEquals(Setting.Toggle("sc_max_volume_switch", true), rows["sc_max_volume_switch"])
+        assertEquals(Setting.Level("sc_max_volume", 10, 0, 16), rows["sc_max_volume"])
+        fun write(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+        assertEquals("0182:00", write(SettingChange.Toggle("sc_vibration", false)))
+        assertEquals("0184:00", write(SettingChange.Toggle("sc_max_volume_switch", false)))
+        assertEquals("0185:0c", write(SettingChange.Level("sc_max_volume", 12)))
+        assertTrue("41 33 32 30 31" !in session.lastState!!.reportHex(), "the serial is hidden in a report")
+    }
+
     @Test
     fun readsEveryReplyInOpenScq30sTests() {
         assertEquals(37, replies.size)
@@ -491,6 +610,135 @@ class SoundcoreModelSessionTest {
         val session = SoundcoreSession("A3947")
         for (command in listOf(Command.ANC_MODE, Command.GAME_MODE, Command.LDAC, Command.MULTIPOINT)) assertNull(session.set(command, 1))
     }
+
+    /**
+     * The Liberty 4 Pro (pull request 42 by Onlineraider, corrected against the 5.0.35 app's parser and OpenSCQ30): the state of
+     * OpenSCQ30's test reply, and each write it takes, byte for byte.
+     */
+    @Test
+    fun liberty4ProReadsAndWritesItsRows() {
+        val session = connected("A3954")
+        val rows = session.groups.flatMap { it.settings }.associateBy { it.key }
+        assertEquals(Setting.Choice("a3954_ambient_mode", "normal", listOf("transparency", "normal", "anc", "airplane")), rows["a3954_ambient_mode"])
+        assertTrue("a3954_anc_strength" !in rows && "a3954_transparency_strength" !in rows, "the middle of the slider has no strength")
+        assertEquals(Setting.Toggle("a3954_wind_noise", false), rows["a3954_wind_noise"])
+        assertEquals(Setting.Choice("a3954_easy_chat_wait", "5s", listOf("5s", "10s", "15s")), rows["a3954_easy_chat_wait"])
+        assertEquals(Setting.Choice("a3954_auto_power_off_duration", "10", listOf("off", "10", "20", "30", "60")), rows["a3954_auto_power_off_duration"])
+        assertEquals(Setting.Level("a3954_volume_limit_db", 95, 75, 100), rows["a3954_volume_limit_db"])
+        // The shared switches are not shown twice.
+        assertTrue(rows.keys.none { it.startsWith("a3954_") && (it.contains("wearing") || it.contains("low_battery") || it.contains("leak")) })
+        assertNotNull(rows["sc_wearing_detection"])
+
+        fun body(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+        // Noise cancelling is the high half of the slider and transparency the low half, as a real pair takes them (issue #50); the
+        // app writes five bytes (the last is 0xFF).
+        assertEquals("0681:00070000", body(SettingChange.Choice("a3954_ambient_mode", "anc")))
+        assertEquals("0681:00080000", body(SettingChange.Level("a3954_anc_strength", 2)))
+        assertEquals("0681:01050000", body(SettingChange.Choice("a3954_ambient_mode", "transparency")))
+        assertEquals("0681:01010000", body(SettingChange.Level("a3954_transparency_strength", 5)))
+        assertEquals("0681:01010001", body(SettingChange.Toggle("a3954_wind_noise", true)))
+        val frame = session.frames(session.change(SettingChange.Toggle("a3954_wind_noise", true))!!).single()
+        assertEquals("01010001ff", frame.copyOfRange(9, 14).hex(), "the app's fifth byte")
+        // The level row stays while its mode is on, whatever slider the earbuds report (issue #50: it vanished when they moved it).
+        fun level(key: String) = session.groups.flatMap { it.settings }.firstOrNull { it.key == key }
+        assertEquals(Setting.Level("a3954_transparency_strength", 5, 1, 5), level("a3954_transparency_strength"))
+        session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, byteArrayOf(1, 9, 0, 0)))
+        assertNotNull(level("a3954_transparency_strength"), "shown even with the slider on the other side")
+        session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, byteArrayOf(1, 3, 0, 0)))
+        assertEquals(Setting.Level("a3954_transparency_strength", 3, 1, 5), level("a3954_transparency_strength"))
+        // The limit goes with its third byte as reported; the switch and the wait time keep the byte next to them.
+        assertEquals("2082:015500", body(SettingChange.Level("a3954_volume_limit_db", 85)))
+        assertEquals("2082:005500", body(SettingChange.Toggle("a3954_volume_limit", false)))
+        assertEquals("109d:0001", body(SettingChange.Choice("a3954_easy_chat_wait", "10s")))
+        assertEquals("109d:0101", body(SettingChange.Toggle("a3954_easy_chat", true)))
+        assertEquals("1081:010200", body(SettingChange.Choice("a3954_spatial_mode", "head_tracking")))
+        assertEquals("1081:010103", body(SettingChange.Choice("a3954_spatial_mode", "gaming")))
+        assertEquals("0787:00010000", body(SettingChange.Toggle("a3954_case_camera", true)))
+        assertEquals("078a:00", body(SettingChange.Choice("a3954_case_language", "Japanese")))
+        assertEquals("0186:0101", body(SettingChange.Choice("a3954_auto_power_off_duration", "20")))
+        assertEquals("0181:01", body(SettingChange.Toggle("sc_wearing_detection", true)))
+        assertNull(session.change(SettingChange.Level("a3954_anc_strength", 3)), "a strength only in its own mode")
+    }
+
+    /** A P30i / R50i NC recorded from the official app (issue #45): its state, and the seven-byte sound modes writes it sent. */
+    @Test
+    fun theP30iFamilyReadsAndWritesItsNoiseControl() {
+        val state = "0001070" + "6ffff30312e363530312e" + "30".repeat(18) + "fefeb4647d82879687967878" + "00".repeat(10) + "0a" + "ffff636fffff4444" + "35" +
+            "02510001" + "00ff00" + "31" + "01" + "00" + "00" + "0102" + "01" + "00" + "00".repeat(12)
+        val session = SoundcoreSession("A3959").also { assertTrue(it.receive(SoundcorePacket(SoundcoreCommand.STATE, state.hexBytes()))) }
+        fun rows() = session.groups.flatMap { it.settings }.associateBy { it.key }
+        fun notice(hex: String) = session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, hex.hexBytes()))
+        fun body(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+
+        // Normal mode: no noise cancelling rows, the power-off duration instead of a bare switch, and surround sound.
+        assertTrue(rows().keys.none { it.startsWith("a3959_") })
+        assertEquals(Setting.Choice("a3954_auto_power_off_duration", "30", listOf("off", "10", "20", "30", "60")), rows()["a3954_auto_power_off_duration"])
+        assertNull(rows()["sc_auto_power_off"])
+        assertEquals(Setting.Toggle("sc_surround_sound", false), rows()["sc_surround_sound"])
+        // The official app writes the unset sensitivity byte as 0 where the earbuds report 0xFF.
+        val frame = session.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key)!!
+        assertEquals("00510001000000", frame.copyOfRange(9, 16).hex())
+
+        notice("00550000000000")
+        assertEquals(Setting.Choice("a3959_nc_mode", "manual", listOf("manual", "adaptive", "multi_scene")), rows()["a3959_nc_mode"])
+        assertEquals(Setting.Level("a3959_manual_strength", 5, 1, 5), rows()["a3959_manual_strength"])
+        assertEquals(Setting.Toggle("a3959_wind_noise", false), rows()["a3959_wind_noise"])
+        assertEquals("0681:00450000000000", body(SettingChange.Level("a3959_manual_strength", 4)))
+        notice("00550000000000")
+        assertEquals("0681:00550001000000", body(SettingChange.Choice("a3959_nc_mode", "adaptive")))
+        notice("00550000000000")
+        assertEquals("0681:00550000010000", body(SettingChange.Toggle("a3959_wind_noise", true)))
+
+        notice("00550001000000")
+        assertEquals(Setting.Information("a3959_adaptive_level", "5/5"), rows()["a3959_adaptive_level"])
+        // No sensitivity slider: the official app's byte 5 is the environment detection switch, which the earbuds keep as 1 or 0 and the app writes back so.
+        assertNull(rows()["a3959_sensitivity"])
+        notice("00550001000100")
+        assertEquals("0681:00550001000100", body(SettingChange.Choice("a3959_nc_mode", "adaptive")))
+        notice("00550001000700")
+        assertEquals("0681:00550001000000", body(SettingChange.Choice("a3959_nc_mode", "adaptive")))
+        notice("00550001000000")
+        assertEquals("0681:00550002000000", body(SettingChange.Choice("a3959_nc_mode", "multi_scene")))
+
+        notice("00550002000000")
+        assertEquals(Setting.Choice("a3959_scene", "transport", listOf("transport", "outdoor", "indoor")), rows()["a3959_scene"])
+        assertEquals("0681:00550002000001", body(SettingChange.Choice("a3959_scene", "outdoor")))
+        notice("00550002000000")
+        assertEquals("0681:00550002000002", body(SettingChange.Choice("a3959_scene", "indoor")))
+
+        // Transparency has wind noise but no noise cancelling kind; the "wind detected" bit is the earbuds' own and never goes back (the app writes the switch alone).
+        notice("01550001020000")
+        assertNull(rows()["a3959_wind_detected"])
+        assertNull(rows()["a3959_nc_mode"])
+        assertEquals("0681:01550001010000", body(SettingChange.Toggle("a3959_wind_noise", true)))
+
+        assertEquals("0186:0101", body(SettingChange.Choice("a3954_auto_power_off_duration", "20")))
+        assertEquals("0186:0001", body(SettingChange.Choice("a3954_auto_power_off_duration", "off")))
+        assertEquals("0286:01", body(SettingChange.Toggle("sc_surround_sound", true)))
+        assertEquals("0901", session.startFitTest()!!.single().copyOfRange(5, 7).hex(), "the fit test the official app runs")
+    }
+
+    /** The P31i and R60i NC's eight-byte block, read from Soundcore 5.0.35 (`D1202AnalysisService.y3`, `D1202CmdService.M0`): the same ANC page as the P30i's. */
+    @Test
+    fun theP31iFamilyReadsAndWritesItsNoiseControlAsTheOfficialAppDoes() {
+        // The state's fields up to the sound mode block are 119 bytes (data/soundcore/devices.json), then the block, then 12 bytes.
+        fun state(modes: String) = "00".repeat(119) + modes + "00".repeat(13)
+        val session = SoundcoreSession("D1202").also { assertTrue(it.receive(SoundcorePacket(SoundcoreCommand.STATE, state("00550001000000ff").hexBytes()))) }
+        fun rows() = session.groups.flatMap { it.settings }.associateBy { it.key }
+        fun notice(hex: String) = session.receive(SoundcorePacket(SoundcoreCommand.SOUND_MODES, hex.hexBytes()))
+        fun body(change: SettingChange): String { val p = session.change(change)!!.single(); return "%04x:".format(p.command) + p.body.hex() }
+
+        assertEquals(Setting.Choice("a3959_nc_mode", "adaptive", listOf("manual", "adaptive", "multi_scene")), rows()["a3959_nc_mode"])
+        assertNull(rows()["a3959_sensitivity"])
+        assertNull(rows()["a3959_wind_detected"])
+        // Side tone (byte 2) goes back as 1 or 0, the wind byte as the suppression switch alone, the sensitivity (5) and real-time adaptive (7) bytes as reported.
+        notice("0055010103040200")
+        assertEquals("0681:0055010001040200", body(SettingChange.Choice("a3959_nc_mode", "manual")))
+        notice("0055010103040200")
+        assertEquals("0681:0055010101040200", body(SettingChange.Toggle("a3959_wind_noise", true)))
+        notice("0055020103040200")
+        assertEquals("0681:0055000001040200", body(SettingChange.Choice("a3959_nc_mode", "manual")))
+    }
 }
 
 /**
@@ -510,7 +758,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(47, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip")
+        assertEquals(55, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10 and the Life Q20+")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!
@@ -638,6 +886,12 @@ class SoundcoreEqualizerTest {
         assertEquals(listOf(6, 0, 0, 0, 0, 0, 0, 0), SoundcoreEqScreen.gainsDb(a40, custom))
         assertNull(SoundcoreEqScreen.preset(a40, custom))
         assertEquals("Soundcore Signature", SoundcoreEqScreen.preset(a40, SoundcoreEqualizer.forPreset(a40, a40.presetSet.presets[0]))!!.name)
+        // Models whose values are tenths of a dB take half steps: +1.5 dB is 15, and the screen's gains come back to the half dB.
+        assertEquals(0.5, SoundcoreEqScreen.stepDb(a40))
+        val half = SoundcoreEqScreen.custom(a40, listOf(1.5, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0))!!
+        assertEquals(listOf(15, -5, 0, 0, 0, 0, 0, 0, 0, 0), half.channels[0]!!.toList())
+        assertEquals(listOf(1.5, -0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), SoundcoreEqScreen.gainsDbFine(a40, half))
+        assertEquals(SoundcoreEqScreen.custom(a40, listOf(6, 0, 0, 0, 0, 0, 0, 0)), SoundcoreEqScreen.custom(a40, listOf(6.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)))
         // whole-dB models keep their own range
         assertEquals(6, SoundcoreEqScreen.layout(SoundcoreEqSpec.of("A3116")!!).userRangeDb)
         assertEquals(12, SoundcoreEqScreen.layout(SoundcoreEqSpec.of("A3909")!!).userRangeDb)
@@ -675,6 +929,10 @@ class SoundcoreModelsTest {
         // Models whose service OpenSCQ30 fixes.
         assertEquals(SoundcoreModels.Match("A3930", spp), SoundcoreModels.identify("Soundcore Liberty 2 Pro+", listOf(other)))
         assertEquals(SoundcoreModels.Match("A3116", "0cf12d31-fac3-4553-bd80-d6832e7b3116"), SoundcoreModels.identify("Soundcore Motion+", emptyList()))
+        // Issue #76: the app lists the Liberty Buds 2 without the maker's word, the earbuds may carry it.
+        for (name in listOf("Liberty Buds 2", "Soundcore Liberty Buds 2", "soundcore Liberty Buds 2", "Anker Liberty Buds 2", "Soundcore-Liberty Buds 2")) {
+            assertEquals("D1206", SoundcoreModels.identify(name, listOf(spp))?.model, name)
+        }
         assertNull(SoundcoreModels.identify("SOUNDPEATS H3", listOf(spp)))
         assertNull(SoundcoreModels.identify("", emptyList()))
     }
@@ -682,11 +940,12 @@ class SoundcoreModelsTest {
     @Test
     fun reportOnlyModels() {
         // Models only the Soundcore app's strings name: found by their service or name, with nothing to read but a report.
-        val liberty4 = "0cf12d31-fac3-4553-bd80-d6832e7b3953"
-        assertEquals(SoundcoreModels.Match("A3953", liberty4), SoundcoreModels.identify("soundcore Liberty 4", listOf(liberty4)))
-        assertEquals(SoundcoreModels.Match("A3953", null), SoundcoreModels.identify("Soundcore Liberty 4", emptyList()))
-        assertTrue(SoundcoreModels.model("A3953")!!.reportOnly)
-        assertTrue(SoundcoreLayout.of("A3953")!!.fields.isEmpty())
+        // Every model the Soundcore app 5.0.35 registers for earbuds and headphones now has a layout: a name finds one, not a report-only entry.
+        val lifeNc = "0cf12d31-fac3-4553-bd80-d6832e7b3201"
+        assertEquals(SoundcoreModels.Match("A3201", lifeNc), SoundcoreModels.identify("soundcore Life NC", listOf(lifeNc)))
+        assertEquals(SoundcoreModels.Match("A3201", null), SoundcoreModels.identify("Soundcore Life NC", emptyList()))
+        assertTrue(SoundcoreModels.ALL.none { it.reportOnly })
+        assertTrue(!SoundcoreModels.model("A3953")!!.reportOnly, "the Liberty 4 is read from Soundcore 3.3.0")
         assertTrue(!SoundcoreModels.model("A3936")!!.reportOnly)
         // A Soundcore vendor service naming a number PairFree does not know at all: report only too.
         val unknown = "0cf12d31-fac3-4553-bd80-d6832e7b9999"
@@ -817,7 +1076,7 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(38, withButtons.size)
+        assertEquals(58, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
             // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.
@@ -1028,6 +1287,24 @@ class SoundcoreSleepA20Test {
         }
     }
 
+    /**
+     * GitHub issue #11: the Q20i's noise mode writes are six bytes, the app's own (A3004CmdService.M0): the mode, the strengths, the automation mode, then the wind
+     * byte as its suppression bit alone and the sensitivity as reported. The first reply of the recording holds `8D FC` there; the app wrote `01 FC`.
+     */
+    @Test
+    fun theQ20iWritesTheSixByteSoundModesTheAppWrites() {
+        val q20i = vectors.getValue("a3004_recording").jsonObject
+        val writes = q20i.getValue("sound_mode_writes").jsonArray.map { it.jsonPrimitive.content }
+        val first = q20i.str("state").replace("0100000001fc", "02000000" + "8dfc")
+        val session = SoundcoreSession("A3004").also { assertTrue(it.receive(SoundcorePacket(SoundcoreCommand.STATE, first.hexBytes()))) }
+        fun mode(name: String): String {
+            val frame = session.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == name }.key)!!
+            assertEquals(SoundcoreCommand.SET_SOUND_MODES, ((frame[5].toInt() and 0xFF) shl 8) or (frame[6].toInt() and 0xFF))
+            return frame.copyOfRange(9, 15).hex()
+        }
+        assertEquals(writes, listOf(mode("anc"), mode("off"), mode("transparency")))
+    }
+
     /** GitHub issue #11: a Q20i's every EQ write from the Soundcore app, Bass Booster as preset 7E 7E. */
     @Test
     fun rebuildsTheQ20isRecordedEqWrites() {
@@ -1079,7 +1356,30 @@ class SoundcoreSleepA20Test {
             assertEquals(step.frames(), packets.map { SoundcorePacket.build(it.command, it.body).hex() }, step.toString())
         }
         assertEquals("off", (session.groups.single().settings.single() as Setting.Choice).value)
-        assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.singleOrNull(), "the A40 has no sleep timer")
+        assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.firstOrNull { it.key == "sleep" }, "the A40 has no sleep timer")
+    }
+
+    @Test
+    fun theSleepA30HasNoiseCancellingAndListeningModeRows() {
+        // GitHub issue #24: the Sleep A30 (D1301) showed none of its switches. Layout and commands are OpenSCQ30's (d1301); no recording yet.
+        val layout = SoundcoreLayout.of("D1301")!!
+        val session = SoundcoreSession("D1301")
+        session.receive(SoundcorePacket(SoundcoreCommand.STATE, ByteArray(layout.minSize)))
+        val home = session.groups.single { it.key == "sleep_sound" }
+        assertEquals(SettingTab.HOME, home.tab)
+        assertEquals(listOf("sleep_noise_canceling", "sleep_listening_mode"), home.settings.map { it.key })
+        assertEquals(Setting.Toggle("sleep_noise_canceling", false), home.settings[0])
+        assertEquals(Setting.Choice("sleep_listening_mode", "bluetooth", listOf("bluetooth", "local")), home.settings[1])
+        val on = session.change(SettingChange.Toggle("sleep_noise_canceling", true))!!.single()
+        assertEquals("0687" to "01", "%04x".format(on.command) to on.body.hex())
+        assertEquals(Setting.Toggle("sleep_noise_canceling", true), session.groups.single { it.key == "sleep_sound" }.settings[0])
+        val local = session.change(SettingChange.Choice("sleep_listening_mode", "local"))!!.single()
+        assertEquals("01a9" to "01", "%04x".format(local.command) to local.body.hex())
+        val start = session.change(SettingChange.Choice("sleep_default_listening_mode", "local"))!!.single()
+        assertEquals("1095" to "01", "%04x".format(start.command) to start.body.hex())
+        assertEquals("109e", "%04x".format(session.change(SettingChange.Toggle("sleep_auto_power_off_prompt", true))!!.single().command))
+        assertNull(session.change(SettingChange.Toggle("sleep_noise_canceling_x", true)))
+        assertNull(SoundcoreSession("A6611").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, rec.str("state").hexBytes())) }.groups.singleOrNull { it.key == "sleep_sound" }, "the A20 has none of these")
     }
 
     @Test
@@ -1113,4 +1413,48 @@ class SoundcoreRobustnessTest {
             }
         }
     }
+}
+
+/** The frames the Soundcore app 2.9.9 sent to a synthetic Life Q30 (data/soundcore/emulator_vectors.json, docs/soundcore/VIRTUAL_TESTING.md). */
+class SoundcoreVirtualQ30Test {
+    private val v = load("emulator_vectors.json")
+    private val spec = SoundcoreEqSpec.of("A3028")!!
+    private val checksum = SoundcoreLayout.of("A3028")!!.checksum
+    private val cases = v.getValue("cases").jsonArray.map { it.jsonObject }
+
+    private fun sent(config: SoundcoreEqConfig): String {
+        val packet = SoundcoreEqualizer.write(spec, null, config).single()
+        return SoundcorePacket.build(packet.command, packet.body, checksum).hex()
+    }
+
+    @Test
+    fun everyPresetTheAppSentIsWhatPairFreeSends() {
+        val presets = cases.filter { it.str("command") == "0281" && it.containsKey("preset_name") }
+        assertEquals(22, presets.size)
+        val missing = mutableListOf<String>()
+        for (c in presets) {
+            val name = c.str("preset_name")
+            val preset = spec.presetSet.presets.firstOrNull { it.name.replace(" ", "").replace("&", "").equals(name.replace(" ", ""), true) }
+            if (preset == null) { missing += name; continue }
+            assertEquals(c.str("frame"), sent(SoundcoreEqualizer.forPreset(spec, preset)), name)
+        }
+        assertEquals(emptyList<String>(), missing)
+    }
+
+    @Test
+    fun theCustomCurvesAndTheRecalledProfiles() {
+        // Eight bands, each byte the tenths of a dB above -12.0 (60 is -6.0 dB, 120 flat, 180 +6.0 dB).
+        val customs = cases.filter { it.str("command") == "0281" && it.str("payload").startsWith("fefe") } +
+            v.getValue("local_profile_recall").jsonArray.map { it.jsonObject }.flatMap { r -> r.getValue("frames").jsonArray.map { f -> JsonObjectOf(f.jsonPrimitive.content) } }
+        assertTrue(customs.size >= 9)
+        for (c in customs) {
+            val frame = c.str("frame")
+            val body = frame.substring(18, frame.length - 2).hexBytes()
+            val tenths = IntArray(8) { (body[2 + it].toInt() and 0xFF) + spec.min }
+            val config = SoundcoreEqualizer.forCustom(spec, tenths)!!
+            assertEquals(frame, sent(config))
+        }
+    }
+
+    private fun JsonObjectOf(frame: String): JsonObject = Json.parseToJsonElement("""{"frame":"$frame"}""").jsonObject
 }

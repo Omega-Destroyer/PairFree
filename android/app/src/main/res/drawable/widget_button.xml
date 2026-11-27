@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A widget button's edge: the fill sits 1 dp inside it. White: PairFreeWidget tints it with the look's colour (widget/WidgetLook.kt). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="14dp" />
+    <solid android:color="#FFFFFFFF" />
+</shape>

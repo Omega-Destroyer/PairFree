@@ -54,3 +54,6 @@ captures/
 *.swp
 .DS_Store
 Thumbs.db
+
+# Agent notes hold personal paths: kept on the owner machine only
+CLAUDE.md

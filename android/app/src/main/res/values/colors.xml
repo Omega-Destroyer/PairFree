@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Studio background (docs/DESIGN.md) -->
+    <!-- The launcher icon's background: Studio's, whatever look is chosen (docs/DESIGN.md) -->
     <color name="icon_background">#101214</color>
 </resources>

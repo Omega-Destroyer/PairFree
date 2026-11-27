@@ -1,0 +1,6985 @@
+{
+ "_about": "Which drawings (android/app/src/main/res/drawable/<name>.xml) each model uses: [earbud or product, case or null], by lower-case Bluetooth name and by per-brand code. Written by tools/gen_device_art.py; the desktop build reads it.",
+ "by_name": {
+  "1more aero": [
+   "device_1more_es903_bud",
+   "device_generic_case"
+  ],
+  "1more aero q32": [
+   "device_1more_aero_q32_bud",
+   "device_generic_case"
+  ],
+  "1more colorbuds 2": [
+   "device_1more_es602_bud",
+   "device_generic_case"
+  ],
+  "1more comfobuds 2": [
+   "device_1more_es303_bud",
+   "device_generic_case"
+  ],
+  "1more comfobuds mini": [
+   "device_1more_es603_bud",
+   "device_generic_case"
+  ],
+  "1more comfobuds pro": [
+   "device_1more_es901_bud",
+   "device_generic_case"
+  ],
+  "1more evo": [
+   "device_1more_eh902_bud",
+   "device_generic_case"
+  ],
+  "1more fit": [
+   "device_1more_ef906_bud",
+   "device_generic_case"
+  ],
+  "1more fit se": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
+  "1more g50": [
+   "device_1more_g50_bud",
+   null
+  ],
+  "1more hq20": [
+   "device_1more_hq20_bud",
+   null
+  ],
+  "1more hq31": [
+   "device_1more_hq31_bud",
+   null
+  ],
+  "1more hq36": [
+   "device_1more_hq36_bud",
+   null
+  ],
+  "1more hq51": [
+   "device_1more_hq51_bud",
+   null
+  ],
+  "1more hq60": [
+   "device_1more_hq60_bud",
+   null
+  ],
+  "1more nano": [
+   "device_1more_nano_bud",
+   null
+  ],
+  "1more pistonbuds pro": [
+   "device_1more_ec302_bud",
+   "device_generic_case"
+  ],
+  "1more pistonbuds pro q30": [
+   "device_1more_aero_q32_bud",
+   "device_generic_case"
+  ],
+  "1more q12": [
+   "device_1more_q12_bud",
+   "device_generic_case"
+  ],
+  "1more q21": [
+   "device_1more_q21_bud",
+   "device_generic_case"
+  ],
+  "1more q22": [
+   "device_1more_q22_bud",
+   "device_generic_case"
+  ],
+  "1more q50": [
+   "device_1more_es603_bud",
+   "device_generic_case"
+  ],
+  "1more s-31": [
+   "device_1more_s31_bud",
+   "device_generic_case"
+  ],
+  "1more s10ai": [
+   "device_1more_s10_bud",
+   "device_generic_case"
+  ],
+  "1more s10s": [
+   "device_1more_s10_bud",
+   "device_generic_case"
+  ],
+  "1more s11": [
+   "device_1more_s11_bud",
+   "device_generic_case"
+  ],
+  "1more s12": [
+   "device_1more_s12_bud",
+   "device_generic_case"
+  ],
+  "1more s15": [
+   "device_1more_s15_bud",
+   "device_generic_case"
+  ],
+  "1more s20": [
+   "device_1more_s20_bud",
+   "device_generic_case"
+  ],
+  "1more s20nova": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "1more s20pro": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "1more s20ultra": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "1more s21": [
+   "device_1more_s21_bud",
+   "device_generic_case"
+  ],
+  "1more s21air": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "1more s22": [
+   "device_1more_s22_bud",
+   "device_generic_case"
+  ],
+  "1more s25": [
+   "device_1more_s25_bud",
+   "device_generic_case"
+  ],
+  "1more s31": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
+  "1more s32": [
+   "device_1more_s31_bud",
+   "device_generic_case"
+  ],
+  "1more s51": [
+   "device_1more_s51_bud",
+   "device_generic_case"
+  ],
+  "1more s70": [
+   "device_1more_s70_bud",
+   "device_generic_case"
+  ],
+  "1more s90": [
+   "device_1more_s15_bud",
+   "device_generic_case"
+  ],
+  "1more sonoflow": [
+   "device_1more_sonoflow_bud",
+   null
+  ],
+  "1more sonoflow qc30": [
+   "device_1more_sonoflow_qc30_bud",
+   null
+  ],
+  "1more sonoflow s": [
+   "device_1more_sonoflow_s_bud",
+   null
+  ],
+  "1more sonoflow se": [
+   "device_1more_sonoflow_se_bud",
+   null
+  ],
+  "1more z30": [
+   "device_1more_q21_bud",
+   "device_generic_case"
+  ],
+  "ac1": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "ac1 black": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "ac1 white": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "acaebt": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "acaebt black": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "acaebt r": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "acaebt se": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "acaebt white": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "accentum": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "accentum plus": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "accentum true wireless": [
+   "device_sennheiser_accentum_tw_bud",
+   "device_generic_case"
+  ],
+  "accentum tw": [
+   "device_sennheiser_accentum_tw_bud",
+   "device_generic_case"
+  ],
+  "acp1": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "acp1 black": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "acp1 white": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "acpaebt black": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "acpaebt white": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "ailypods": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "air3 deluxe hs": [
+   "device_air3_deluxe_bud",
+   "device_generic_case"
+  ],
+  "airpods (1st generation)": [
+   "device_apple_classic_bud",
+   "device_apple_classic_case"
+  ],
+  "airpods (2nd generation)": [
+   "device_apple_classic_bud",
+   "device_apple_classic_case"
+  ],
+  "airpods (3rd generation)": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "airpods 4": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "airpods 4 with active noise cancellation": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "airpods 5": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "airpods 5 with wireless charging case": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "airpods max": [
+   "device_apple_max_bud",
+   null
+  ],
+  "airpods max (usb-c)": [
+   "device_apple_max_bud",
+   null
+  ],
+  "airpods max 2": [
+   "device_apple_max_bud",
+   null
+  ],
+  "airpods pro": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "airpods pro 2 (lightning)": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "airpods pro 2 (usb-c)": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "airpods pro 3": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "aphrodite": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "aphrodite black": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "aphrodite white": [
+   "device_sennheiser_accentum_plus_bud",
+   null
+  ],
+  "at02": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "atvel tune pro q7": [
+   "device_earfun_wave_pro_bud",
+   null
+  ],
+  "atvel tune s5 pro": [
+   "device_earfun_air_pro_2_bud",
+   null
+  ],
+  "atvel tune s5 prox": [
+   "device_earfun_air_s_bud",
+   null
+  ],
+  "atw1": [
+   "device_sennheiser_accentum_tw_bud",
+   "device_generic_case"
+  ],
+  "atw1 black": [
+   "device_sennheiser_accentum_tw_bud",
+   "device_generic_case"
+  ],
+  "atw1 blue": [
+   "device_sennheiser_accentum_tw_bud",
+   "device_generic_case"
+  ],
+  "atw1 se": [
+   "device_sennheiser_accentum_tw_bud",
+   "device_generic_case"
+  ],
+  "atw1 white": [
+   "device_sennheiser_accentum_tw_bud",
+   "device_generic_case"
+  ],
+  "aviator 900 anc": [
+   "device_skullcandy_aviator_900_bud",
+   null
+  ],
+  "beats fit pro": [
+   "device_apple_wingtip_bud",
+   "device_generic_case"
+  ],
+  "beats flex": [
+   "device_apple_neckband_bud",
+   null
+  ],
+  "beats solo 4": [
+   "device_apple_solo_bud",
+   null
+  ],
+  "beats solo buds": [
+   "device_apple_pill_bud",
+   "device_generic_case"
+  ],
+  "beats solo pro": [
+   "device_apple_solo_bud",
+   null
+  ],
+  "beats solo3": [
+   "device_apple_solo_bud",
+   null
+  ],
+  "beats studio buds": [
+   "device_apple_pill_bud",
+   "device_generic_case"
+  ],
+  "beats studio buds +": [
+   "device_apple_pill_bud",
+   "device_generic_case"
+  ],
+  "beats studio pro": [
+   "device_apple_studio_bud",
+   null
+  ],
+  "beats studio3": [
+   "device_apple_studio_bud",
+   null
+  ],
+  "beatsx": [
+   "device_apple_neckband_bud",
+   null
+  ],
+  "bose nc 700 headphones": [
+   "device_bose_nc700_bud",
+   null
+  ],
+  "bose qc 2 hp": [
+   "device_bose_qc45_bud",
+   null
+  ],
+  "bose qc 45": [
+   "device_bose_qc45_bud",
+   null
+  ],
+  "bose qc earbuds ii": [
+   "device_bose_qce2_bud",
+   "device_generic_case"
+  ],
+  "bose qc ultra 2 earbuds": [
+   "device_bose_qce2_bud",
+   "device_generic_case"
+  ],
+  "bose qc ultra 2 hp": [
+   "device_bose_ultra_bud",
+   null
+  ],
+  "bose qc ultra earbuds": [
+   "device_bose_qce2_bud",
+   "device_generic_case"
+  ],
+  "bose qc ultra headphones": [
+   "device_bose_ultra_bud",
+   null
+  ],
+  "bose quietcomfort 35": [
+   "device_bose_qc35_bud",
+   null
+  ],
+  "bose quietcomfort 35 series 2": [
+   "device_bose_qc35_bud",
+   null
+  ],
+  "bose quietcomfort earbuds": [
+   "device_bose_qce1_bud",
+   "device_generic_case"
+  ],
+  "bose quietcomfort headphones": [
+   "device_bose_qc45_bud",
+   null
+  ],
+  "bose quietcontrol 30": [
+   "device_bose_qc30_bud",
+   null
+  ],
+  "bose soundsport": [
+   "device_bose_soundsport_bud",
+   null
+  ],
+  "bose soundsport free": [
+   "device_bose_ssfree_bud",
+   "device_generic_case"
+  ],
+  "bose soundsport pulse": [
+   "device_bose_soundsport_bud",
+   null
+  ],
+  "bose sport earbuds": [
+   "device_bose_sport_bud",
+   "device_generic_case"
+  ],
+  "bose sport open earbuds": [
+   "device_bose_open_bud",
+   "device_generic_case"
+  ],
+  "bose ultra open 2 earbuds": [
+   "device_bose_uopen_bud",
+   "device_generic_case"
+  ],
+  "bose ultra open earbuds": [
+   "device_bose_uopen_bud",
+   "device_generic_case"
+  ],
+  "c1": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "c2": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "cmf buds": [
+   "device_nothing_cmf_buds_bud",
+   "device_generic_case"
+  ],
+  "cmf buds 2": [
+   "device_nothing_cmf_buds_2_bud",
+   "device_generic_case"
+  ],
+  "cmf buds 2 plus": [
+   "device_nothing_cmf_buds_2_plus_bud",
+   "device_generic_case"
+  ],
+  "cmf buds 2a": [
+   "device_nothing_cmf_buds_2a_bud",
+   "device_generic_case"
+  ],
+  "cmf buds pro": [
+   "device_nothing_cmf_buds_bud",
+   "device_generic_case"
+  ],
+  "cmf buds pro 2": [
+   "device_nothing_cmf_buds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "cmf headphone pro": [
+   "device_nothing_cmf_headphone_pro_bud",
+   null
+  ],
+  "cmf neckband pro": [
+   "device_nothing_cmf_neckband_pro_bud",
+   null
+  ],
+  "connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "crusher 1080 anc": [
+   "device_skullcandy_crusher_1080_bud",
+   null
+  ],
+  "crusher 540 active": [
+   "device_skullcandy_crusher_540_bud",
+   null
+  ],
+  "crusher 720": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "crusher 900 anc": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "crusher anc": [
+   "device_skullcandy_crusher_anc_bud",
+   null
+  ],
+  "crusher anc 2": [
+   "device_skullcandy_crusher_anc_2_bud",
+   null
+  ],
+  "crusher evo": [
+   "device_skullcandy_crusher_evo_bud",
+   null
+  ],
+  "crusher plyr": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "crusher plyr 720": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "crusher plyr 720 xbox": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "ct03": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "cx 200 true wireless": [
+   "device_sennheiser_cx_200_tw_bud",
+   "device_generic_case"
+  ],
+  "cx 200bt tw": [
+   "device_sennheiser_cx_200_tw_bud",
+   "device_generic_case"
+  ],
+  "cx 350bt": [
+   "device_sennheiser_cx_350bt_bud",
+   null
+  ],
+  "cx 400bt true wireless": [
+   "device_sennheiser_cx_400_tw_bud",
+   "device_generic_case"
+  ],
+  "cx 400bt tw": [
+   "device_sennheiser_cx_400_tw_bud",
+   "device_generic_case"
+  ],
+  "cx 400bt tw2": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "cx 400iibt tw": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "cx 500bt": [
+   "device_sennheiser_cx_500_tw_bud",
+   "device_generic_case"
+  ],
+  "cx 500bt true wireless": [
+   "device_sennheiser_cx_500_tw_bud",
+   "device_generic_case"
+  ],
+  "cx plus se true wireless": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "cx plus true wireless": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "cx sport true wireless": [
+   "device_sennheiser_cx_sport_tw_bud",
+   "device_generic_case"
+  ],
+  "cx true wireless": [
+   "device_sennheiser_cx_200_tw_bud",
+   "device_generic_case"
+  ],
+  "cx tw": [
+   "device_sennheiser_cx_400_tw_bud",
+   "device_generic_case"
+  ],
+  "cx200tw1": [
+   "device_sennheiser_cx_200_tw_bud",
+   "device_generic_case"
+  ],
+  "cx200tw1 black": [
+   "device_sennheiser_cx_200_tw_bud",
+   "device_generic_case"
+  ],
+  "cx200tw1 s": [
+   "device_sennheiser_cx_sport_tw_bud",
+   "device_generic_case"
+  ],
+  "cx200tw1 s black": [
+   "device_sennheiser_cx_sport_tw_bud",
+   "device_generic_case"
+  ],
+  "cx200tw1 white": [
+   "device_sennheiser_cx_200_tw_bud",
+   "device_generic_case"
+  ],
+  "cx400tw2": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "cx500bt1": [
+   "device_sennheiser_cx_500_tw_bud",
+   "device_generic_case"
+  ],
+  "cx500bt1 grey": [
+   "device_sennheiser_cx_500_tw_bud",
+   "device_generic_case"
+  ],
+  "cxplustw1 black": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "cxplustw1 se": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "cxplustw1 white": [
+   "device_sennheiser_cx_plus_tw_bud",
+   "device_generic_case"
+  ],
+  "dime 2": [
+   "device_skullcandy_dime_bud",
+   "device_generic_case"
+  ],
+  "dime 360": [
+   "device_skullcandy_dime_360_bud",
+   "device_generic_case"
+  ],
+  "dime 540 anc": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "dime evo": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "dime xt2": [
+   "device_skullcandy_dime_bud",
+   "device_generic_case"
+  ],
+  "dt06": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "dt08": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "dt10": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "ear (1)": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "ear (2)": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "ear (3)": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "ear (stick)": [
+   "device_nothing_ear_stick_bud",
+   "device_generic_case"
+  ],
+  "earfun air": [
+   "device_earfun_air_bud",
+   "device_earfun_air_case"
+  ],
+  "earfun air 2": [
+   "device_earfun_air_2_bud",
+   "device_earfun_air_2_case"
+  ],
+  "earfun air 2 nc": [
+   "device_earfun_air_2_nc_bud",
+   "device_earfun_air_2_nc_case"
+  ],
+  "earfun air life": [
+   "device_earfun_air_life_bud",
+   null
+  ],
+  "earfun air pro 2": [
+   "device_earfun_air_pro_2_bud",
+   null
+  ],
+  "earfun air pro 3": [
+   "device_earfun_air_pro_3_bud",
+   "device_earfun_air_pro_3_case"
+  ],
+  "earfun air pro 4": [
+   "device_earfun_air_pro_4_bud",
+   "device_earfun_air_pro_4_case"
+  ],
+  "earfun air pro 4+": [
+   "device_earfun_air_pro_4_plus_bud",
+   "device_earfun_air_pro_4_plus_case"
+  ],
+  "earfun air pro 4+ai": [
+   "device_earfun_air_pro_4_plus_bud",
+   "device_earfun_air_pro_4_plus_case"
+  ],
+  "earfun air pro 4i": [
+   "device_earfun_air_pro_4i_bud",
+   "device_earfun_air_pro_4i_case"
+  ],
+  "earfun air pro 5": [
+   "device_earfun_air_pro_4_plus_bud",
+   "device_earfun_air_pro_4_plus_case"
+  ],
+  "earfun air pro sv": [
+   "device_earfun_air_pro_sv_bud",
+   null
+  ],
+  "earfun air s": [
+   "device_earfun_air_s_bud",
+   null
+  ],
+  "earfun clip": [
+   "device_earfun_clip_bud",
+   "device_earfun_clip_case"
+  ],
+  "earfun clip 2": [
+   "device_earfun_clip_2_bud",
+   "device_earfun_clip_2_case"
+  ],
+  "earfun free 1s": [
+   "device_earfun_free_s_bud",
+   "device_earfun_free_s_case"
+  ],
+  "earfun free 2s": [
+   "device_earfun_free_s_bud",
+   "device_earfun_free_s_case"
+  ],
+  "earfun free pro 3": [
+   "device_earfun_free_pro_3_bud",
+   "device_earfun_free_pro_3_case"
+  ],
+  "earfun openjump": [
+   "device_earfun_openjump_bud",
+   "device_earfun_openjump_case"
+  ],
+  "earfun tune pro": [
+   "device_earfun_tune_pro_bud",
+   null
+  ],
+  "earfun wave life": [
+   "device_earfun_wave_life_bud",
+   null
+  ],
+  "earfun wave pro": [
+   "device_earfun_wave_pro_bud",
+   null
+  ],
+  "earfun wave pro x": [
+   "device_earfun_wave_pro_x_bud",
+   null
+  ],
+  "elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "elite 10 gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "elite 3 active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "elite 4 active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "elite 7 active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "elite 7 pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "elite 7 sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "elite 8 active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "elite 8 active gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "elite active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "elite active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "elite active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "elite flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "evolve2 65 flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "evolve2 buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
+  "g1": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds": [
+   "device_samsung_buds_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds core": [
+   "device_samsung_core_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds fe": [
+   "device_samsung_fe_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds live": [
+   "device_samsung_live_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds pro": [
+   "device_samsung_pro_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds+": [
+   "device_samsung_buds_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds2": [
+   "device_samsung_buds2_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds2 pro": [
+   "device_samsung_buds2pro_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds3": [
+   "device_samsung_buds3_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds3 fe": [
+   "device_samsung_buds3fe_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds3 pro": [
+   "device_samsung_buds3pro_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds4": [
+   "device_samsung_buds4_bud",
+   "device_generic_case"
+  ],
+  "galaxy buds4 pro": [
+   "device_samsung_buds4pro_bud",
+   "device_generic_case"
+  ],
+  "google pixel buds": [
+   "device_pixel_pixel_buds_bud",
+   "device_generic_case"
+  ],
+  "google pixel buds a-series": [
+   "device_pixel_a_series_bud",
+   "device_generic_case"
+  ],
+  "grind": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
+  ],
+  "grind fuel": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
+  ],
+  "h2": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "h2 pro": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "hd 250bt": [
+   "device_sennheiser_hd_250_bud",
+   null
+  ],
+  "hd 350bt": [
+   "device_sennheiser_hd_350_bud",
+   null
+  ],
+  "hd 450bt": [
+   "device_sennheiser_hd_450_bud",
+   null
+  ],
+  "hd 450se": [
+   "device_sennheiser_hd_450_bud",
+   null
+  ],
+  "hd 458bt": [
+   "device_sennheiser_hd_458_bud",
+   null
+  ],
+  "hdb 630": [
+   "device_sennheiser_hdb_630_bud",
+   null
+  ],
+  "hdbt": [
+   "device_sennheiser_hdb_630_bud",
+   null
+  ],
+  "hdr 275": [
+   "device_sennheiser_hdr_275_bud",
+   null
+  ],
+  "hdr 275 / 255": [
+   "device_sennheiser_hdr_275_bud",
+   null
+  ],
+  "hdr275": [
+   "device_sennheiser_hdr_275_bud",
+   null
+  ],
+  "hdr275 black": [
+   "device_sennheiser_hdr_275_bud",
+   null
+  ],
+  "hesh 360": [
+   "device_skullcandy_hesh_360_bud",
+   null
+  ],
+  "hesh 540 anc": [
+   "device_skullcandy_hesh_540_bud",
+   null
+  ],
+  "hi listening": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "hi50": [
+   "device_skullcandy_icon_180_bud",
+   null
+  ],
+  "ht01": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "ht01c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "ht02": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "ht03": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "ht03s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "ht08": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "icon 180": [
+   "device_skullcandy_icon_180_bud",
+   null
+  ],
+  "icon anc": [
+   "device_skullcandy_icon_anc_bud",
+   null
+  ],
+  "ie 80s bt": [
+   "device_sennheiser_ie_80s_bt_bud",
+   null
+  ],
+  "indy anc": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "indy evo": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "indy fuel": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "jabra connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 10 gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 3 active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 4 active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "jabra elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "jabra elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "jabra elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 7 sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 8 active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 8 active gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "jabra elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "jabra elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "jabra elite active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "jabra elite flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "jabra evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "jabra evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "jabra evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "jabra evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "jabra evolve2 65 flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "jabra evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "jabra evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "jabra evolve2 buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
+  "jabra speak2 75": [
+   "device_jabra_speak2_75_bud",
+   null
+  ],
+  "jbl club one": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl club pro+ tws": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "jbl club700bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl club950nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl endurance pace": [
+   "device_jbl_pace_bud",
+   null
+  ],
+  "jbl endurance peak 3": [
+   "device_jbl_hook_bud",
+   "device_generic_case"
+  ],
+  "jbl endurance peak 4": [
+   "device_jbl_hook_bud",
+   "device_generic_case"
+  ],
+  "jbl endurance race 2": [
+   "device_jbl_wing_bud",
+   "device_jbl_wing_case"
+  ],
+  "jbl endurance race tws": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl endurance run 3 wireless": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "jbl endurance zone": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "jbl junior 320bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl junior 470nc": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl junior free": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl live 670nc": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl live 675nc": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl live 680nc": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl live 770nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl live 775nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl live 780nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl live beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live beam 4": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live buds 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live buds 4": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl live flex": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live flex 4": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live free 2 tws": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "jbl live free nc+ tws": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "jbl live pro 2 tws": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live pro+ tws": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl live220bt": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "jbl live300tws": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "jbl live400bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl live460nc": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl live500bt": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl live650btnc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl live660nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl quantum 360": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum 360p": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum 360x": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum tws": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "jbl quantum tws air": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "jbl quantum910": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum910 wireless": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum910p": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum910p wireless": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum910x": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl quantum910x wireless": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "jbl reflect aero": [
+   "device_jbl_wing_bud",
+   "device_jbl_wing_case"
+  ],
+  "jbl reflect mini nc": [
+   "device_jbl_wing_bud",
+   "device_jbl_wing_case"
+  ],
+  "jbl rfl flow pro": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl sense lite": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "jbl sense pro": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "jbl smart tx": [
+   "device_jbl_tx_bud",
+   null
+  ],
+  "jbl soundgear clips": [
+   "device_jbl_clip_bud",
+   "device_generic_case"
+  ],
+  "jbl soundgear frames": [
+   "device_jbl_glasses_bud",
+   null
+  ],
+  "jbl soundgear sense": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "jbl tour one": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tour one m2": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tour one m3": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tour pro 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tour pro 3": [
+   "device_jbl_tour_pro_3_bud",
+   "device_jbl_tour_pro_3_case"
+  ],
+  "jbl tour pro+ tws": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "jbl tune 135bt": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "jbl tune 235bt": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "jbl tune 245nc tws": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune 255nc": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune 520bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 520bt2": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 525bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 527bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 530bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 535bt": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 670nc": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 680nc": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "jbl tune 720bt": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune 730bt": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune 735bt": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune 770nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune 775nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune 777nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune 780nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune 785nc": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "jbl tune beam": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune beam 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune buds": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl tune buds 2": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl tune buds 3": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl tune flex": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune flex 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune130nc tws": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl tune230nc tws": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl tune235nc tws": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl vibe beam 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl vibe beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl vibe buds 2": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl vibe buds 3": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl vibe flex 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl vibe flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl wave beam": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl wave beam 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl wave beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl wave buds": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl wave buds 2": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl wave buds 3": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "jbl wave flex": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl wave flex 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jbl wave flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "jib true xt2": [
+   "device_skullcandy_jib_bud",
+   "device_generic_case"
+  ],
+  "le-soundpeats mini hs": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "le-soundpeats mini pro": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "linkbuds": [
+   "device_sony_lb_bud",
+   "device_generic_case"
+  ],
+  "linkbuds clip": [
+   "device_sony_lbclip_bud",
+   "device_generic_case"
+  ],
+  "linkbuds fit": [
+   "device_sony_lbfit_bud",
+   "device_generic_case"
+  ],
+  "linkbuds open": [
+   "device_sony_lb_bud",
+   "device_generic_case"
+  ],
+  "linkbuds s": [
+   "device_sony_lbs_bud",
+   "device_generic_case"
+  ],
+  "linkbuds uc": [
+   "device_sony_lbs_bud",
+   "device_generic_case"
+  ],
+  "m10": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "m18": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "m4aebt": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt black": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt denim": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt graphite": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt jd": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt olive": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt pride": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt se": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m4aebt white": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "m5aebt": [
+   "device_sennheiser_momentum_5_bud",
+   null
+  ],
+  "magnum": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "magnum black": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "magnum graphite": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "magnum olive": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "mars": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "mars black": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "mars white": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "melobuds anc": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "melomania 1+": [
+   "device_cambridge_melomania_1_plus_bud",
+   "device_generic_case"
+  ],
+  "melomania a100": [
+   "device_cambridge_melomania_a100_bud",
+   "device_generic_case"
+  ],
+  "melomania a100 se": [
+   "device_cambridge_melomania_a100_bud",
+   "device_generic_case"
+  ],
+  "melomania m100": [
+   "device_cambridge_melomania_m100_bud",
+   "device_generic_case"
+  ],
+  "melomania p100": [
+   "device_cambridge_melomania_p100_bud",
+   null
+  ],
+  "melomania p100 se": [
+   "device_cambridge_melomania_p100_bud",
+   null
+  ],
+  "melomania t100": [
+   "device_cambridge_melomania_m100_bud",
+   "device_generic_case"
+  ],
+  "melomania touch": [
+   "device_cambridge_melomania_touch_bud",
+   "device_generic_case"
+  ],
+  "melomania x100": [
+   "device_cambridge_melomania_x100_bud",
+   null
+  ],
+  "method 360 anc": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "method 540 anc": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "mod": [
+   "device_skullcandy_mod_bud",
+   "device_generic_case"
+  ],
+  "momentum 3": [
+   "device_sennheiser_momentum_3_bud",
+   null
+  ],
+  "momentum 3 wireless": [
+   "device_sennheiser_momentum_3_bud",
+   null
+  ],
+  "momentum 4": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "momentum 4 wireless": [
+   "device_sennheiser_momentum_4_bud",
+   null
+  ],
+  "momentum 5": [
+   "device_sennheiser_momentum_5_bud",
+   null
+  ],
+  "momentum 5 wireless": [
+   "device_sennheiser_momentum_5_bud",
+   null
+  ],
+  "momentum sport": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "momentum sport1": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "momentum true wireless": [
+   "device_sennheiser_momentum_tw_bud",
+   "device_generic_case"
+  ],
+  "momentum true wireless 2": [
+   "device_sennheiser_momentum_tw_2_bud",
+   "device_generic_case"
+  ],
+  "momentum true wireless 3": [
+   "device_sennheiser_momentum_tw_3_bud",
+   "device_generic_case"
+  ],
+  "momentum true wireless 4": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "momentum true wireless 5": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "momentum tw": [
+   "device_sennheiser_momentum_tw_bud",
+   "device_generic_case"
+  ],
+  "momentum tw 2": [
+   "device_sennheiser_momentum_tw_2_bud",
+   "device_generic_case"
+  ],
+  "momentum tw 3": [
+   "device_sennheiser_momentum_tw_3_bud",
+   "device_generic_case"
+  ],
+  "momentum tw 4": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "momentum tw 5": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "msport1": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "msport1 black": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "msport1 graphite": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "msport1 olive": [
+   "device_sennheiser_momentum_sport_bud",
+   "device_generic_case"
+  ],
+  "mtw3": [
+   "device_sennheiser_momentum_tw_3_bud",
+   "device_generic_case"
+  ],
+  "mtw3 black": [
+   "device_sennheiser_momentum_tw_3_bud",
+   "device_generic_case"
+  ],
+  "mtw3 graphite": [
+   "device_sennheiser_momentum_tw_3_bud",
+   "device_generic_case"
+  ],
+  "mtw3 white": [
+   "device_sennheiser_momentum_tw_3_bud",
+   "device_generic_case"
+  ],
+  "mtw4": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 black": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 black copper": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 black graphite": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 copper": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 denim": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 graphite": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 jd": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 silver": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 white": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw4 white silver": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "mtw5": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "nothing ear": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "nothing ear (1)": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "nothing ear (2)": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "nothing ear (3)": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "nothing ear (3a)": [
+   "device_nothing_ear_a_bud",
+   "device_generic_case"
+  ],
+  "nothing ear (a)": [
+   "device_nothing_ear_a_bud",
+   "device_generic_case"
+  ],
+  "nothing ear (open)": [
+   "device_nothing_ear_open_bud",
+   "device_generic_case"
+  ],
+  "nothing ear (stick)": [
+   "device_nothing_ear_stick_bud",
+   "device_generic_case"
+  ],
+  "nothing headphone (1)": [
+   "device_nothing_headphone_1_bud",
+   null
+  ],
+  "oneplus buds 3": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds 4": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds bohr": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds clip": [
+   "device_oneplus_enco_clip_bud",
+   "device_generic_case"
+  ],
+  "oneplus buds pro": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds pro 2": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds pro 2r": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds pro 2（轻享版）": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds pro 3": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus buds pro 4": [
+   "device_oneplus_buds_pro_bud",
+   null
+  ],
+  "oneplus bullets wireless z3": [
+   "device_oneplus_bullets_bud",
+   null
+  ],
+  "oneplus bulletswireless z2 anc": [
+   "device_oneplus_bullets_bud",
+   null
+  ],
+  "oneplus flow buds": [
+   "device_oneplus_nord_buds_4_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds": [
+   "device_oneplus_nord_buds_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds 2": [
+   "device_oneplus_nord_buds_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds 2r": [
+   "device_oneplus_nord_buds_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds 3": [
+   "device_oneplus_nord_buds_3_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds 3 pro": [
+   "device_oneplus_nord_buds_3_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds 3r": [
+   "device_oneplus_nord_buds_3_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds 4": [
+   "device_oneplus_nord_buds_4_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds 4 pro": [
+   "device_oneplus_nord_buds_4_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds ce": [
+   "device_oneplus_nord_buds_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds einstein 2": [
+   "device_oneplus_nord_buds_4_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds laplace 4": [
+   "device_oneplus_nord_buds_4_bud",
+   "device_generic_case"
+  ],
+  "oneplus nord buds ohm ex": [
+   "device_oneplus_nord_buds_4_bud",
+   "device_generic_case"
+  ],
+  "oneplus open nobel": [
+   "device_oneplus_enco_clip_bud",
+   "device_generic_case"
+  ],
+  "opeh80": [
+   "device_skullcandy_push_540_open_bud",
+   null
+  ],
+  "oppo enco air 3i": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air3": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air3 pro": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air3i": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air3s": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air4": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air4 pro": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air4i": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air4s": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air4（新声版）": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air5": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air5 pro": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air5s": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco air5s（星光版）": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco bohr": [
+   "device_oneplus_enco_x3_bud",
+   "device_generic_case"
+  ],
+  "oppo enco buds": [
+   "device_oneplus_enco_buds_bud",
+   null
+  ],
+  "oppo enco buds2": [
+   "device_oneplus_enco_buds_bud",
+   null
+  ],
+  "oppo enco buds2 pro": [
+   "device_oneplus_enco_buds_bud",
+   null
+  ],
+  "oppo enco buds3": [
+   "device_oneplus_enco_buds_bud",
+   null
+  ],
+  "oppo enco buds3 pro": [
+   "device_oneplus_enco_buds_bud",
+   null
+  ],
+  "oppo enco buds3 pro+": [
+   "device_oneplus_enco_buds_bud",
+   null
+  ],
+  "oppo enco buds3s": [
+   "device_oneplus_enco_buds_bud",
+   null
+  ],
+  "oppo enco clip": [
+   "device_oneplus_enco_clip_bud",
+   "device_generic_case"
+  ],
+  "oppo enco clip2": [
+   "device_oneplus_enco_clip_bud",
+   "device_generic_case"
+  ],
+  "oppo enco einstein 1": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco einstein 3": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco free": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco free2": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco free2i": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco free3": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco free4": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco free4（丹拿版）": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco laplace 1": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco laplace 2": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco laplace 3": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco m31": [
+   "device_oneplus_enco_m_bud",
+   null
+  ],
+  "oppo enco m33": [
+   "device_oneplus_enco_m_bud",
+   null
+  ],
+  "oppo enco nobel": [
+   "device_oneplus_enco_clip_bud",
+   "device_generic_case"
+  ],
+  "oppo enco ohm": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco ohm do": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco ohm ex": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco w31": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco w51": [
+   "device_oneplus_enco_stem_bud",
+   null
+  ],
+  "oppo enco x": [
+   "device_oneplus_enco_x_bud",
+   "device_generic_case"
+  ],
+  "oppo enco x2": [
+   "device_oneplus_enco_x_bud",
+   "device_generic_case"
+  ],
+  "oppo enco x3": [
+   "device_oneplus_enco_x3_bud",
+   "device_generic_case"
+  ],
+  "oppo enco x3i": [
+   "device_oneplus_enco_x3_bud",
+   "device_generic_case"
+  ],
+  "oppo enco x3s": [
+   "device_oneplus_enco_x3_bud",
+   "device_generic_case"
+  ],
+  "oppo enco x4": [
+   "device_oneplus_enco_x3_bud",
+   "device_generic_case"
+  ],
+  "phobos": [
+   "device_sennheiser_momentum_tw_4_bud",
+   "device_generic_case"
+  ],
+  "pixel buds": [
+   "device_pixel_pixel_buds_bud",
+   "device_generic_case"
+  ],
+  "pixel buds 2a": [
+   "device_pixel_2a_bud",
+   "device_generic_case"
+  ],
+  "pixel buds a-series": [
+   "device_pixel_a_series_bud",
+   "device_generic_case"
+  ],
+  "pixel buds pro": [
+   "device_pixel_pro_bud",
+   "device_generic_case"
+  ],
+  "pixel buds pro 2": [
+   "device_pixel_pro_2_bud",
+   "device_generic_case"
+  ],
+  "plyr": [
+   "device_skullcandy_plyr_bud",
+   null
+  ],
+  "powerbeats fit": [
+   "device_apple_wingtip_bud",
+   "device_generic_case"
+  ],
+  "powerbeats pro": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "powerbeats pro 2": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "powerbeats3": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "powerbeats4": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "push 180 open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "push 540 open": [
+   "device_skullcandy_push_540_open_bud",
+   null
+  ],
+  "push 720 open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "push active": [
+   "device_skullcandy_push_active_bud",
+   "device_generic_case"
+  ],
+  "push anc active": [
+   "device_skullcandy_push_anc_active_bud",
+   "device_generic_case"
+  ],
+  "push ultra": [
+   "device_skullcandy_push_ultra_bud",
+   "device_generic_case"
+  ],
+  "pxc 550": [
+   "device_sennheiser_pxc_550_bud",
+   null
+  ],
+  "pxc 550-ii": [
+   "device_sennheiser_pxc_550_ii_bud",
+   null
+  ],
+  "qcy ailybuds clear": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailybuds e10": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailybuds e20": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailybuds e50": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailybuds lite": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailybuds pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailybuds pro+": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailypods": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailypods neo": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ailypodsbuds lite": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy air": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "qcy arcbuds": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "qcy arcbuds lite": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "qcy at02": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy buds": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy buds anc": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy c1": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "qcy c1 canal": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "qcy c1 open": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "qcy c2": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "qcy crossky c10": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "qcy crossky c30": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "qcy crossky c30s": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "qcy crossky c50": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "qcy crossky gtr": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "qcy crossky gtr2": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy crossky link": [
+   "device_qcy_link_bud",
+   null
+  ],
+  "qcy crossky link2": [
+   "device_qcy_link_bud",
+   null
+  ],
+  "qcy crossky r50": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "qcy crossky r70": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "qcy ct01 app": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ct03": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ct06 bluetooth 6.0": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "qcy dt06": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy dt08": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy dt10": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy era 5": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy era 7": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy fairybuds": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy g1": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy h2": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h2 pro": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h2app pro headset": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h3": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h3 anc headset": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h3 lite": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h3 lite anc app": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h3 pro": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h3 pro anc": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h3s": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h4": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy h4 anc headset": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy heroad v200": [
+   "device_qcy_gaming_bud",
+   null
+  ],
+  "qcy ht01": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy ht01c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy ht02": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy ht03": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ht03s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ht07 anc app": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "qcy ht08": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy ht08 melobuds pro plus": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy ht10 hires anc app": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ht10anc app": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy ht12 melobuds n50": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy ht16 melobuds": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy m10": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy m18": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds anc": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds n20": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds n30": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds n50": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds n60": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds n70": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds neo": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy melobuds pro": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy qt10": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy qt10 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy qt10s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy qt11": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy qt12": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy qt12s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy qt16": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy race": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "qcy t11s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13 anc": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13 anc2": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13 anc2 app": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13 plus": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13x": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t13x app": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t17": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t17s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t18": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t19": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t1c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t1c pro": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t1s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t1x": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t29 app": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t2c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t3": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t30 air": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t31 melobuds neo": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy t33 app": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "qcy t4": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t41 motif": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t43 buds": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t4s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t5": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t5 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t5s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t6": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "qcy t7": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t7s": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t8": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t8s": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy t9": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy t9s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy tws ht05": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy tws ht07": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "qcy tws qt26": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy tws qt27": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "qcy tws qt29": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-at02": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-c1": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "qcy-c2": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "qcy-dt06": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-dt10": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-g1": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-h2": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy-h2 pro": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "qcy-ht01": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-ht01c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-ht02": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "qcy-ht03": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-ht03s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-m10": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-m18": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-qt10": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-qt10s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-qt11": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-qt11s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-qt12": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-qt12s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-qt16": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t13": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t13 anc": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t13 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t17": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t17s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t18": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t19": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t1c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t1c pro": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t1s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t1x": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t22app": [
+   "device_qcy_link_bud",
+   null
+  ],
+  "qcy-t2c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t3": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t35 ailybuds": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t37 anc ailybuds": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t4": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t4s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t5": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t5 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t5 utc": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t5s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t6": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "qcy-t7": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t7s": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t8": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t8s": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "qcy-t9": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qcy-t9s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "qt10": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qt10 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qt10s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qt11": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qt12": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qt12s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "qt16": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "rail": [
+   "device_skullcandy_rail_bud",
+   "device_generic_case"
+  ],
+  "rail anc": [
+   "device_skullcandy_rail_anc_bud",
+   "device_generic_case"
+  ],
+  "riff wireless 2": [
+   "device_skullcandy_riff_bud",
+   null
+  ],
+  "sesh anc": [
+   "device_skullcandy_sesh_bud",
+   "device_generic_case"
+  ],
+  "sesh anc active": [
+   "device_skullcandy_sesh_active_bud",
+   "device_generic_case"
+  ],
+  "sg200-slave": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "sg200x-slave": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "slyr pro wireless": [
+   "device_skullcandy_slyr_pro_bud",
+   null
+  ],
+  "smokin' buds 360": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360 (h)": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360 (s)": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360h": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "smokin' buds 360s": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "sony ult": [
+   "device_sony_ult_bud",
+   null
+  ],
+  "soundcore a1": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "soundcore a20i": [
+   "device_soundcore_a20i_bud",
+   "device_generic_case"
+  ],
+  "soundcore a30i": [
+   "device_soundcore_a30i_bud",
+   "device_soundcore_a30i_case"
+  ],
+  "soundcore a3i": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "soundcore aeroclip": [
+   "device_soundcore_clip_bud",
+   "device_generic_case"
+  ],
+  "soundcore aerofit": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "soundcore aerofit 2": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "soundcore aerofit pro": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "soundcore c30i": [
+   "device_soundcore_clip_bud",
+   "device_generic_case"
+  ],
+  "soundcore c40i": [
+   "device_soundcore_clip_bud",
+   "device_generic_case"
+  ],
+  "soundcore c50i": [
+   "device_soundcore_c50i_bud",
+   "device_generic_case"
+  ],
+  "soundcore dot 3i": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "soundcore h30i": [
+   "device_soundcore_h30i_bud",
+   null
+  ],
+  "soundcore k20i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "soundcore liberty 2": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "soundcore liberty 2 pro": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "soundcore liberty 2 pro+": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "soundcore liberty 3 pro": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "soundcore liberty 4": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "soundcore liberty 4 nc": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "soundcore liberty 4 pro": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "soundcore liberty 5": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "soundcore liberty air 2": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "soundcore liberty air 2 pro": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "soundcore liberty air2": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "soundcore life 2 neo": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore life a1": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "soundcore life a2 nc": [
+   "device_soundcore_a40_bud",
+   "device_soundcore_a40_case"
+  ],
+  "soundcore life a3i": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "soundcore life dot 2 nc": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "soundcore life dot 2s": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "soundcore life dot 3i": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "soundcore life nc": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "soundcore life note 3": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore life note 3i": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore life note 3s": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore life note c": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore life p2 mini": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore life p3": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore life p3i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "soundcore life q20": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore life q20+": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore life q20+ se": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore life q30": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "soundcore life q35": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "soundcore life tune": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "soundcore life tune pro": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "soundcore motion+": [
+   "device_soundcore_motion_bud",
+   null
+  ],
+  "soundcore note 3i": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore p20i": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore p25i": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore p30i": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore p31i": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore p3i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "soundcore p40i": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore p41i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "soundcore q11i": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore q20": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore q20i": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore q30": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "soundcore r50i": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore r50i nc": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore r50i vi": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore r60i nc": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore sleep a10": [
+   "device_soundcore_sleep_bud",
+   "device_soundcore_sleep_case"
+  ],
+  "soundcore sleep a20": [
+   "device_soundcore_sleep_bud",
+   "device_soundcore_sleep_case"
+  ],
+  "soundcore sleep a30": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "soundcore space a40": [
+   "device_soundcore_a40_bud",
+   "device_soundcore_a40_case"
+  ],
+  "soundcore space one": [
+   "device_soundcore_q45_bud",
+   null
+  ],
+  "soundcore space one pro": [
+   "device_soundcore_q45_bud",
+   null
+  ],
+  "soundcore space q45": [
+   "device_soundcore_q45_bud",
+   null
+  ],
+  "soundcore sport x10": [
+   "device_soundcore_x20_bud",
+   "device_soundcore_x20_case"
+  ],
+  "soundcore sport x20": [
+   "device_soundcore_x20_bud",
+   "device_soundcore_x20_case"
+  ],
+  "soundcore v20i": [
+   "device_soundcore_v20i_bud",
+   "device_soundcore_v20i_case"
+  ],
+  "soundcore v30i": [
+   "device_soundcore_v30i_bud",
+   "device_soundcore_v30i_case"
+  ],
+  "soundcore v40i": [
+   "device_soundcore_v40i_bud",
+   "device_generic_case"
+  ],
+  "soundcore vortex": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore vr p10": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "soundoeats q35 hd+": [
+   "device_neckband_bud",
+   null
+  ],
+  "soundpeat gofree 2s": [
+   "device_hook_bud",
+   "device_generic_case"
+  ],
+  "soundpeats a8": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats air3": [
+   "device_generic_bud",
+   "device_air3_case"
+  ],
+  "soundpeats air3 deluxe hs": [
+   "device_air3_deluxe_bud",
+   "device_generic_case"
+  ],
+  "soundpeats air3 pro": [
+   "device_generic_bud",
+   "device_air3_case"
+  ],
+  "soundpeats air3-deluxe": [
+   "device_air3_deluxe_bud",
+   "device_generic_case"
+  ],
+  "soundpeats air3pro": [
+   "device_generic_bud",
+   "device_air3_case"
+  ],
+  "soundpeats air4": [
+   "device_generic_bud",
+   "device_air4_case"
+  ],
+  "soundpeats air4 lite": [
+   "device_generic_bud",
+   "device_air4_case"
+  ],
+  "soundpeats air4 pro": [
+   "device_generic_bud",
+   "device_air4_case"
+  ],
+  "soundpeats air5": [
+   "device_air5_bud",
+   "device_air5_case"
+  ],
+  "soundpeats air5 lite": [
+   "device_air5_lite_bud",
+   "device_air5_lite_case"
+  ],
+  "soundpeats air5 pro": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats air5 pro+": [
+   "device_air5_pro_plus_bud",
+   "device_air5_pro_plus_case"
+  ],
+  "soundpeats air6 hs": [
+   "device_generic_bud",
+   "device_air6_pro_case"
+  ],
+  "soundpeats air6 lite": [
+   "device_generic_bud",
+   "device_air6_pro_case"
+  ],
+  "soundpeats air6 pro": [
+   "device_generic_bud",
+   "device_air6_pro_case"
+  ],
+  "soundpeats airclip": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats arc": [
+   "device_arc_bud",
+   "device_generic_case"
+  ],
+  "soundpeats aura nebula": [
+   "device_pod_bud",
+   "device_pod_case"
+  ],
+  "soundpeats breezy": [
+   "device_breezy_bud",
+   "device_breezy_case"
+  ],
+  "soundpeats c30": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats capsule3 pro": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats capsule3 pro+": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats cc3 pro": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats chasers": [
+   "device_chasers_bud",
+   "device_generic_case"
+  ],
+  "soundpeats chatfree": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats clear": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats clear dot": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats clear-pods": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats clip1": [
+   "device_clip1_bud",
+   "device_generic_case"
+  ],
+  "soundpeats cove pro": [
+   "device_cove_pro_bud",
+   null
+  ],
+  "soundpeats cybergear": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats echo": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats engine 4": [
+   "device_pod_bud",
+   "device_pod_case"
+  ],
+  "soundpeats force pro": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats gofree": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "soundpeats gofree 2": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "soundpeats gofree 2+": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "soundpeats h1": [
+   "device_h1_bud",
+   "device_h1_case"
+  ],
+  "soundpeats h3": [
+   "device_h3_bud",
+   "device_h3_case"
+  ],
+  "soundpeats hearfit": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats life": [
+   "device_life_bud",
+   "device_life_case"
+  ],
+  "soundpeats life3": [
+   "device_life_bud",
+   "device_life_case"
+  ],
+  "soundpeats linkfree": [
+   "device_pod_bud",
+   "device_pod_case"
+  ],
+  "soundpeats mini hs": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats mini pro": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats mini pro hs": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats opera03": [
+   "device_opera_bud",
+   "device_opera_case"
+  ],
+  "soundpeats opera05": [
+   "device_opera05_bud",
+   "device_opera05_case"
+  ],
+  "soundpeats pearlclip": [
+   "device_pearlclip_pro_bud",
+   "device_pearlclip_pro_case"
+  ],
+  "soundpeats pearlclip pro": [
+   "device_pearlclip_pro_bud",
+   "device_pearlclip_pro_case"
+  ],
+  "soundpeats pop clip": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "soundpeats pop clip2": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "soundpeats q3 pro": [
+   "device_stem_flat_bud",
+   "device_generic_case"
+  ],
+  "soundpeats q30 hd+": [
+   "device_neckband_bud",
+   null
+  ],
+  "soundpeats q35 hd+": [
+   "device_neckband_bud",
+   null
+  ],
+  "soundpeats q40 hd": [
+   "device_neckband_bud",
+   null
+  ],
+  "soundpeats sonic": [
+   "device_sonic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats sonic pro": [
+   "device_sonic_bud",
+   "device_generic_case"
+  ],
+  "soundpeats space": [
+   "device_space_bud",
+   null
+  ],
+  "soundpeats space lite": [
+   "device_space_bud",
+   null
+  ],
+  "soundpeats space pro": [
+   "device_space_pro_bud",
+   null
+  ],
+  "soundpeats t3 pro": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundpeats trueair2": [
+   "device_generic_bud",
+   "device_trueair2_case"
+  ],
+  "soundpeats truengine 3 se": [
+   "device_truengine3se_bud",
+   "device_generic_case"
+  ],
+  "soundpeats truengine 3se": [
+   "device_truengine3se_bud",
+   "device_generic_case"
+  ],
+  "soundpeats wings2": [
+   "device_wings2_bud",
+   "device_wings2_case"
+  ],
+  "speak2 75": [
+   "device_jabra_speak2_75_bud",
+   null
+  ],
+  "sport true wireless": [
+   "device_sennheiser_cx_sport_tw_bud",
+   "device_generic_case"
+  ],
+  "t11s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t13": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t13 anc": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t13 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t17": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t17s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t18": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t19": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t1c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t1c pro": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t1s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t1x": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t2c": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t3": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t4": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t4s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t5": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t5 pro": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t5s": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "t6": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "t7": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "t7s": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "t8": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "t8s": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "t9": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "t9s": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "truefree c1": [
+   "device_hook_bud",
+   "device_generic_case"
+  ],
+  "truefree clip c10": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "truefree f2": [
+   "device_hook_bud",
+   "device_generic_case"
+  ],
+  "truefree soft": [
+   "device_hook_bud",
+   "device_generic_case"
+  ],
+  "tws ht05": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "tws ht07": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "tws qt26": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "tws qt27": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "tws qt29": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "ua project rock": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "ult wear": [
+   "device_sony_ult_bud",
+   null
+  ],
+  "venus": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "venus black": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "venus tvl": [
+   "device_sennheiser_hdr_275_bud",
+   null
+  ],
+  "venus white": [
+   "device_sennheiser_accentum_bud",
+   null
+  ],
+  "wf-1000xm3": [
+   "device_sony_wfxm3_bud",
+   "device_generic_case"
+  ],
+  "wf-1000xm4": [
+   "device_sony_wfxm4_bud",
+   "device_generic_case"
+  ],
+  "wf-1000xm5": [
+   "device_sony_wfxm5_bud",
+   "device_generic_case"
+  ],
+  "wf-1000xm6": [
+   "device_sony_wfxm5_bud",
+   "device_generic_case"
+  ],
+  "wf-c500": [
+   "device_sony_c500_bud",
+   "device_generic_case"
+  ],
+  "wf-c510": [
+   "device_sony_c500_bud",
+   "device_generic_case"
+  ],
+  "wf-c700n": [
+   "device_sony_c700_bud",
+   "device_generic_case"
+  ],
+  "wf-c710n": [
+   "device_sony_c700_bud",
+   "device_generic_case"
+  ],
+  "wf-sp800n": [
+   "device_sony_sp800_bud",
+   "device_generic_case"
+  ],
+  "wh-1000xm2": [
+   "device_sony_xm4_bud",
+   null
+  ],
+  "wh-1000xm3": [
+   "device_sony_xm4_bud",
+   null
+  ],
+  "wh-1000xm4": [
+   "device_sony_xm4_bud",
+   null
+  ],
+  "wh-1000xm5": [
+   "device_sony_xm5_bud",
+   null
+  ],
+  "wh-1000xm6": [
+   "device_sony_xm5_bud",
+   null
+  ],
+  "wh-ch720n": [
+   "device_sony_ch720_bud",
+   null
+  ],
+  "wi-c100": [
+   "device_sony_neckband_bud",
+   null
+  ],
+  "wi-sp600n": [
+   "device_sony_neckband_bud",
+   null
+  ]
+ },
+ "by_code": {
+  "11E1": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "11E2": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "11E3": [
+   "device_qcy_link_bud",
+   null
+  ],
+  "11E4": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "11E5": [
+   "device_qcy_neckband_bud",
+   null
+  ],
+  "11E7": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "1971": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "1972": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "1973": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "1974": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "1975": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "1976": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "1977": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "1978": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "19B1": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "3007AGOFREE": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "4161": [
+   "device_qcy_link_bud",
+   null
+  ],
+  "4162": [
+   "device_qcy_link_bud",
+   null
+  ],
+  "4171": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4172": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4173": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4174": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4175": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4176": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4177": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4178": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4179": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "417A": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "417B": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "417C": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "41B2": [
+   "device_qcy_gaming_bud",
+   null
+  ],
+  "41D1": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "41D2": [
+   "device_qcy_overear_bud",
+   null
+  ],
+  "4771": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4772": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4775": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "4776": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4777": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4778": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4779": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "477A": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "477B": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "477C": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "477D": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "477E": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "477F": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4971": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4972": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4973": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4974": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4975": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4976": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4978": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4979": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "497A": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "497B": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "497C": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "497D": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "497E": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "497F": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "49AF": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4A11": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4A71": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4A72": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4A73": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4A74": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4A75": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4A77": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4A78": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4A79": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4A7B": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4A7C": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4A7D": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4A7F": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "4B12": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4B13": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4B14": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4B15": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4B71": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4BC1": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4BC2": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "4BC4": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4BC5": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "4C21": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4C71": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4C72": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4C73": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4C74": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4C75": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4C76": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4C77": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4C78": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4CC1": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D12": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D14": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D15": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D17": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D21": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D22": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D23": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "4D24": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D25": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D27": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D31": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D32": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D33": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D34": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D35": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "4D41": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D42": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D43": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "4D44": [
+   "device_qcy_link_bud",
+   null
+  ],
+  "4D46": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "4D47": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "4D48": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D49": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "4D4A": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "4D4B": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D4C": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D4D": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D4E": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "4D4F": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "4D52": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "4D53": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "4D54": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "4D55": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "4D56": [
+   "device_qcy_hook_bud",
+   "device_generic_case"
+  ],
+  "4D57": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "4D59": [
+   "device_qcy_clip_bud",
+   "device_generic_case"
+  ],
+  "4D5A": [
+   "device_qcy_arcbuds_bud",
+   "device_generic_case"
+  ],
+  "4D71": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4D72": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4D81": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4D82": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4D86": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D91": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D92": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4D93": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4D94": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D95": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D96": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D97": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4D99": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4D9A": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4DA1": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "4DB1": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "4DC1": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4DC2": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4DC4": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4DC5": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "4DD1": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5971": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5A71": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5A72": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5A73": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "5A74": [
+   "device_qcy_round_bud",
+   "device_generic_case"
+  ],
+  "5A75": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5A76": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5A77": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5A78": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "5D40": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "5D41": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "5D42": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "5D43": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "5D45": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "5D46": [
+   "device_qcy_open_stem_bud",
+   "device_generic_case"
+  ],
+  "5D47": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "7034MXGOFREE": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "7034MXGoFree2S": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "8071": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "8072": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "8073": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "8074": [
+   "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "8075": [
+   "device_qcy_stem_bud",
+   "device_generic_case"
+  ],
+  "A3004": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "A3005": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "A3012": [
+   "device_soundcore_h30i_bud",
+   null
+  ],
+  "A3025": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "A3027": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "A3028": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "A3029": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "A3030": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "A3031": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "A3033": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "A3035": [
+   "device_soundcore_q45_bud",
+   null
+  ],
+  "A3040": [
+   "device_soundcore_q45_bud",
+   null
+  ],
+  "A3045": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "A3062": [
+   "device_soundcore_q45_bud",
+   null
+  ],
+  "A3116": [
+   "device_soundcore_motion_bud",
+   null
+  ],
+  "A3201": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "A3330": [
+   "device_soundcore_clip_bud",
+   "device_generic_case"
+  ],
+  "A3331": [
+   "device_soundcore_clip_bud",
+   "device_generic_case"
+  ],
+  "A3388": [
+   "device_soundcore_clip_bud",
+   "device_generic_case"
+  ],
+  "A3850": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "A3871": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "A3872": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "A3873": [
+   "device_soundcore_v30i_bud",
+   "device_soundcore_v30i_case"
+  ],
+  "A3874": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "A3876": [
+   "device_soundcore_v20i_bud",
+   "device_soundcore_v20i_case"
+  ],
+  "A3878": [
+   "device_soundcore_v40i_bud",
+   "device_generic_case"
+  ],
+  "A3909": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "A3910": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "A3913": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "A3926": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "A3927": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "A3930": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "A3931": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "A3933": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "A3935": [
+   "device_soundcore_a40_bud",
+   "device_soundcore_a40_case"
+  ],
+  "A3936": [
+   "device_soundcore_a40_bud",
+   "device_soundcore_a40_case"
+  ],
+  "A3937": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "A3939": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "A3943": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "A3944": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "A3945": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "A3947": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "A3948": [
+   "device_soundcore_a20i_bud",
+   "device_generic_case"
+  ],
+  "A3949": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "A3951": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "A3952": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "A3953": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "A3954": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "A3955": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "A3957": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "A3958": [
+   "device_soundcore_a30i_bud",
+   "device_soundcore_a30i_case"
+  ],
+  "A3959": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "A3961": [
+   "device_soundcore_x20_bud",
+   "device_soundcore_x20_case"
+  ],
+  "A3968": [
+   "device_soundcore_x20_bud",
+   "device_soundcore_x20_case"
+  ],
+  "A3969": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "A3982": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "A3983": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "A3992": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "A3993": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "A3994": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "A6610": [
+   "device_soundcore_sleep_bud",
+   "device_soundcore_sleep_case"
+  ],
+  "A6611": [
+   "device_soundcore_sleep_bud",
+   "device_soundcore_sleep_case"
+  ],
+  "AERO Q32": [
+   "device_1more_aero_q32_bud",
+   "device_generic_case"
+  ],
+  "AIR3DELUXEHSW53D": [
+   "device_air3_deluxe_bud",
+   "device_generic_case"
+  ],
+  "AIR4-BS590R2E": [
+   "device_generic_bud",
+   "device_air4_case"
+  ],
+  "AIR4PRO-BS588R2E": [
+   "device_generic_bud",
+   "device_air4_case"
+  ],
+  "ATS3019DK12": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "ATVEL_HP200": [
+   "device_earfun_wave_pro_bud",
+   null
+  ],
+  "ATVEL_TW201": [
+   "device_earfun_air_s_bud",
+   null
+  ],
+  "ATVEL_TW300": [
+   "device_earfun_air_pro_2_bud",
+   null
+  ],
+  "AVIATOR 900 ANC": [
+   "device_skullcandy_aviator_900_bud",
+   null
+  ],
+  "Air3Pro": [
+   "device_generic_bud",
+   "device_air3_case"
+  ],
+  "AirPods (1st generation)": [
+   "device_apple_classic_bud",
+   "device_apple_classic_case"
+  ],
+  "AirPods (2nd generation)": [
+   "device_apple_classic_bud",
+   "device_apple_classic_case"
+  ],
+  "AirPods (3rd generation)": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "AirPods 4": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "AirPods 4 with Active Noise Cancellation": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "AirPods 5": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "AirPods 5 with Wireless Charging Case": [
+   "device_apple_open_bud",
+   "device_apple_open_case"
+  ],
+  "AirPods Max": [
+   "device_apple_max_bud",
+   null
+  ],
+  "AirPods Max (USB-C)": [
+   "device_apple_max_bud",
+   null
+  ],
+  "AirPods Max 2": [
+   "device_apple_max_bud",
+   null
+  ],
+  "AirPods Pro": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "AirPods Pro 2 (Lightning)": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "AirPods Pro 2 (USB-C)": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "AirPods Pro 3": [
+   "device_apple_pro_bud",
+   "device_apple_pro_case"
+  ],
+  "B155": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "B157": [
+   "device_nothing_ear_stick_bud",
+   "device_generic_case"
+  ],
+  "B162": [
+   "device_nothing_ear_a_bud",
+   "device_generic_case"
+  ],
+  "B163": [
+   "device_nothing_cmf_buds_bud",
+   "device_generic_case"
+  ],
+  "B164": [
+   "device_nothing_cmf_neckband_pro_bud",
+   null
+  ],
+  "B168": [
+   "device_nothing_cmf_buds_bud",
+   "device_generic_case"
+  ],
+  "B170": [
+   "device_nothing_headphone_1_bud",
+   null
+  ],
+  "B171": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "B172": [
+   "device_nothing_cmf_buds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "B173": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "B174": [
+   "device_nothing_ear_open_bud",
+   "device_generic_case"
+  ],
+  "B175": [
+   "device_nothing_cmf_headphone_pro_bud",
+   null
+  ],
+  "B179": [
+   "device_nothing_cmf_buds_2_bud",
+   "device_generic_case"
+  ],
+  "B181": [
+   "device_nothing_ear_bud",
+   "device_generic_case"
+  ],
+  "B184": [
+   "device_nothing_cmf_buds_2_plus_bud",
+   "device_generic_case"
+  ],
+  "B185": [
+   "device_nothing_cmf_buds_2a_bud",
+   "device_generic_case"
+  ],
+  "B187": [
+   "device_nothing_cmf_buds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "B190": [
+   "device_nothing_ear_a_bud",
+   "device_generic_case"
+  ],
+  "BS343RB": [
+   "device_generic_bud",
+   "device_trueair2_case"
+  ],
+  "BS519W2D": [
+   "device_air3_deluxe_bud",
+   "device_generic_case"
+  ],
+  "BT5106-3040": [
+   "device_truengine3se_bud",
+   "device_generic_case"
+  ],
+  "BT5107": [
+   "device_h1_bud",
+   "device_h1_case"
+  ],
+  "BT893X": [
+   "device_pearlclip_pro_bud",
+   "device_pearlclip_pro_case"
+  ],
+  "BT893XPro": [
+   "device_pearlclip_pro_bud",
+   "device_pearlclip_pro_case"
+  ],
+  "Beats Fit Pro": [
+   "device_apple_wingtip_bud",
+   "device_generic_case"
+  ],
+  "Beats Flex": [
+   "device_apple_neckband_bud",
+   null
+  ],
+  "Beats Solo 4": [
+   "device_apple_solo_bud",
+   null
+  ],
+  "Beats Solo Buds": [
+   "device_apple_pill_bud",
+   "device_generic_case"
+  ],
+  "Beats Solo Pro": [
+   "device_apple_solo_bud",
+   null
+  ],
+  "Beats Solo3": [
+   "device_apple_solo_bud",
+   null
+  ],
+  "Beats Studio Buds": [
+   "device_apple_pill_bud",
+   "device_generic_case"
+  ],
+  "Beats Studio Buds +": [
+   "device_apple_pill_bud",
+   "device_generic_case"
+  ],
+  "Beats Studio Pro": [
+   "device_apple_studio_bud",
+   null
+  ],
+  "Beats Studio3": [
+   "device_apple_studio_bud",
+   null
+  ],
+  "BeatsX": [
+   "device_apple_neckband_bud",
+   null
+  ],
+  "Bose NC 700 Headphones": [
+   "device_bose_nc700_bud",
+   null
+  ],
+  "Bose QC 2 HP": [
+   "device_bose_qc45_bud",
+   null
+  ],
+  "Bose QC 45": [
+   "device_bose_qc45_bud",
+   null
+  ],
+  "Bose QC Earbuds II": [
+   "device_bose_qce2_bud",
+   "device_generic_case"
+  ],
+  "Bose QC Ultra 2 Earbuds": [
+   "device_bose_qce2_bud",
+   "device_generic_case"
+  ],
+  "Bose QC Ultra 2 HP": [
+   "device_bose_ultra_bud",
+   null
+  ],
+  "Bose QC Ultra Earbuds": [
+   "device_bose_qce2_bud",
+   "device_generic_case"
+  ],
+  "Bose QC Ultra Headphones": [
+   "device_bose_ultra_bud",
+   null
+  ],
+  "Bose QuietComfort 35": [
+   "device_bose_qc35_bud",
+   null
+  ],
+  "Bose QuietComfort 35 Series 2": [
+   "device_bose_qc35_bud",
+   null
+  ],
+  "Bose QuietComfort Earbuds": [
+   "device_bose_qce1_bud",
+   "device_generic_case"
+  ],
+  "Bose QuietComfort Headphones": [
+   "device_bose_qc45_bud",
+   null
+  ],
+  "Bose QuietControl 30": [
+   "device_bose_qc30_bud",
+   null
+  ],
+  "Bose SoundSport": [
+   "device_bose_soundsport_bud",
+   null
+  ],
+  "Bose SoundSport Free": [
+   "device_bose_ssfree_bud",
+   "device_generic_case"
+  ],
+  "Bose SoundSport Pulse": [
+   "device_bose_soundsport_bud",
+   null
+  ],
+  "Bose Sport Earbuds": [
+   "device_bose_sport_bud",
+   "device_generic_case"
+  ],
+  "Bose Sport Open Earbuds": [
+   "device_bose_open_bud",
+   "device_generic_case"
+  ],
+  "Bose Ultra Open 2 Earbuds": [
+   "device_bose_uopen_bud",
+   "device_generic_case"
+  ],
+  "Bose Ultra Open Earbuds": [
+   "device_bose_uopen_bud",
+   "device_generic_case"
+  ],
+  "CW100": [
+   "device_earfun_clip_bud",
+   "device_earfun_clip_case"
+  ],
+  "CW200": [
+   "device_earfun_clip_2_bud",
+   "device_earfun_clip_2_case"
+  ],
+  "Crusher 1080 ANC": [
+   "device_skullcandy_crusher_1080_bud",
+   null
+  ],
+  "Crusher 540 Active": [
+   "device_skullcandy_crusher_540_bud",
+   null
+  ],
+  "Crusher 720": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "Crusher 900 ANC": [
+   "device_skullcandy_crusher_720_bud",
+   null
+  ],
+  "Crusher ANC": [
+   "device_skullcandy_crusher_anc_bud",
+   null
+  ],
+  "Crusher ANC 2": [
+   "device_skullcandy_crusher_anc_2_bud",
+   null
+  ],
+  "Crusher Evo": [
+   "device_skullcandy_crusher_evo_bud",
+   null
+  ],
+  "Crusher PLYR 720": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "Crusher PLYR 720 XBOX": [
+   "device_skullcandy_crusher_plyr_bud",
+   null
+  ],
+  "D1101": [
+   "device_soundcore_c50i_bud",
+   "device_generic_case"
+  ],
+  "D1202": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "D1202C": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "D1301": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "DIME 540 ANC": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "Dime 2": [
+   "device_skullcandy_dime_bud",
+   "device_generic_case"
+  ],
+  "Dime 360": [
+   "device_skullcandy_dime_360_bud",
+   "device_generic_case"
+  ],
+  "Dime Evo": [
+   "device_skullcandy_dime_evo_bud",
+   "device_generic_case"
+  ],
+  "Dime XT2": [
+   "device_skullcandy_dime_bud",
+   "device_generic_case"
+  ],
+  "EC302": [
+   "device_1more_ec302_bud",
+   "device_generic_case"
+  ],
+  "EC305": [
+   "device_1more_aero_q32_bud",
+   "device_generic_case"
+  ],
+  "ECHO7018": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "EF606": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
+  "EF906": [
+   "device_1more_ef906_bud",
+   "device_generic_case"
+  ],
+  "EH902": [
+   "device_1more_eh902_bud",
+   "device_generic_case"
+  ],
+  "ES303": [
+   "device_1more_es303_bud",
+   "device_generic_case"
+  ],
+  "ES602": [
+   "device_1more_es602_bud",
+   "device_generic_case"
+  ],
+  "ES603": [
+   "device_1more_es603_bud",
+   "device_generic_case"
+  ],
+  "ES901": [
+   "device_1more_es901_bud",
+   "device_generic_case"
+  ],
+  "ES903": [
+   "device_1more_es903_bud",
+   "device_generic_case"
+  ],
+  "G50": [
+   "device_1more_g50_bud",
+   null
+  ],
+  "Grind": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
+  ],
+  "Grind Fuel": [
+   "device_skullcandy_grind_bud",
+   "device_generic_case"
+  ],
+  "HC306": [
+   "device_1more_sonoflow_se_bud",
+   null
+  ],
+  "HC905": [
+   "device_1more_sonoflow_bud",
+   null
+  ],
+  "HC905S": [
+   "device_1more_sonoflow_s_bud",
+   null
+  ],
+  "HILISTENING": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "HP1000": [
+   "device_earfun_wave_pro_x_bud",
+   null
+  ],
+  "HP200": [
+   "device_earfun_wave_pro_bud",
+   null
+  ],
+  "HP200_BT8931H": [
+   "device_earfun_wave_pro_bud",
+   null
+  ],
+  "HP201": [
+   "device_earfun_wave_life_bud",
+   null
+  ],
+  "HP220": [
+   "device_earfun_tune_pro_bud",
+   null
+  ],
+  "HQ20": [
+   "device_1more_hq20_bud",
+   null
+  ],
+  "HQ31": [
+   "device_1more_hq31_bud",
+   null
+  ],
+  "HQ36": [
+   "device_1more_hq36_bud",
+   null
+  ],
+  "HQ51": [
+   "device_1more_hq51_bud",
+   null
+  ],
+  "HQ60": [
+   "device_1more_hq60_bud",
+   null
+  ],
+  "Hesh 360": [
+   "device_skullcandy_hesh_360_bud",
+   null
+  ],
+  "Hesh 540 ANC": [
+   "device_skullcandy_hesh_540_bud",
+   null
+  ],
+  "Icon 180": [
+   "device_skullcandy_icon_180_bud",
+   null
+  ],
+  "Icon ANC": [
+   "device_skullcandy_icon_anc_bud",
+   null
+  ],
+  "Indy ANC": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "Indy Evo": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "Indy Fuel": [
+   "device_skullcandy_indy_bud",
+   "device_generic_case"
+  ],
+  "JBL CLUB ONE": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL CLUB PRO+ TWS": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "JBL CLUB700BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL CLUB950NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL ENDURANCE RACE TWS": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Endurance Pace": [
+   "device_jbl_pace_bud",
+   null
+  ],
+  "JBL Endurance Peak 3": [
+   "device_jbl_hook_bud",
+   "device_generic_case"
+  ],
+  "JBL Endurance Peak 4": [
+   "device_jbl_hook_bud",
+   "device_generic_case"
+  ],
+  "JBL Endurance Race 2": [
+   "device_jbl_wing_bud",
+   "device_jbl_wing_case"
+  ],
+  "JBL Endurance Run 3 Wireless": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "JBL Endurance Zone": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "JBL Junior 320BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Junior 470NC": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Junior Free": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL LIVE FLEX": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL LIVE FREE 2 TWS": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "JBL LIVE FREE NC+ TWS": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "JBL LIVE PRO 2 TWS": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL LIVE PRO+ TWS": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL LIVE220BT": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "JBL LIVE300TWS": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "JBL LIVE400BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL LIVE460NC": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL LIVE500BT": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL LIVE650BTNC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL LIVE660NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Live 670NC": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Live 675NC": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Live 680NC": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Live 770NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Live 775NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Live 780NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Live Beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Live Beam 4": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Live Buds 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Live Buds 4": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Live Flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Live Flex 4": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Quantum 360": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum 360P": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum 360X": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum TWS": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "JBL Quantum TWS Air": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "JBL Quantum910": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum910 Wireless": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum910P": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum910P Wireless": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum910X": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL Quantum910X Wireless": [
+   "device_jbl_headset_bud",
+   null
+  ],
+  "JBL REFLECT MINI NC": [
+   "device_jbl_wing_bud",
+   "device_jbl_wing_case"
+  ],
+  "JBL RFL FLOW PRO": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Reflect Aero": [
+   "device_jbl_wing_bud",
+   "device_jbl_wing_case"
+  ],
+  "JBL Sense Lite": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "JBL Sense Pro": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "JBL Smart Tx": [
+   "device_jbl_tx_bud",
+   null
+  ],
+  "JBL Soundgear Clips": [
+   "device_jbl_clip_bud",
+   "device_generic_case"
+  ],
+  "JBL Soundgear Frames": [
+   "device_jbl_glasses_bud",
+   null
+  ],
+  "JBL Soundgear Sense": [
+   "device_jbl_openhook_bud",
+   "device_generic_case"
+  ],
+  "JBL TOUR ONE": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL TOUR ONE M2": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL TOUR PRO 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL TOUR PRO+ TWS": [
+   "device_jbl_bean_bud",
+   "device_jbl_bean_case"
+  ],
+  "JBL TUNE BEAM": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL TUNE BUDS": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL TUNE FLEX": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL TUNE130NC TWS": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL TUNE230NC TWS": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL TUNE235NC TWS": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Tour One M3": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tour Pro 3": [
+   "device_jbl_tour_pro_3_bud",
+   "device_jbl_tour_pro_3_case"
+  ],
+  "JBL Tune 135BT": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "JBL Tune 235BT": [
+   "device_jbl_neckband_bud",
+   null
+  ],
+  "JBL Tune 245NC TWS": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Tune 255NC": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Tune 520BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 520BT2": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 525BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 527BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 530BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 535BT": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 670NC": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 680NC": [
+   "device_jbl_onear_bud",
+   null
+  ],
+  "JBL Tune 720BT": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune 730BT": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune 735BT": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune 770NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune 775NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune 777NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune 780NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune 785NC": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "JBL Tune Beam 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Tune Beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Tune Buds 2": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Tune Buds 3": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Tune Flex 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Tune Flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Vibe Beam 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Vibe Beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Vibe Buds 2": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Vibe Buds 3": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Vibe Flex 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Vibe Flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL WAVE BEAM": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL WAVE BUDS": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL WAVE FLEX": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Wave Beam 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Wave Beam 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Wave Buds 2": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Wave Buds 3": [
+   "device_jbl_inear_bud",
+   "device_jbl_inear_case"
+  ],
+  "JBL Wave Flex 2": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JBL Wave Flex 3": [
+   "device_jbl_stem_bud",
+   "device_jbl_stem_case"
+  ],
+  "JEILIClearDot": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "JIELILIFE3": [
+   "device_life_bud",
+   "device_life_case"
+  ],
+  "JL6973Clear": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "JL6973D8C1": [
+   "device_hook_bud",
+   "device_generic_case"
+  ],
+  "JL6973D8ClearPods": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "JLChatFree": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "JLLinkFree": [
+   "device_pod_bud",
+   "device_pod_case"
+  ],
+  "JLSPACELITE": [
+   "device_space_bud",
+   null
+  ],
+  "JULIATS3025HearFit": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "Jabra Connect 5t": [
+   "device_jabra_connect_5t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 10": [
+   "device_jabra_elite_10_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 10 Gen 2": [
+   "device_jabra_elite_10_gen_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 2": [
+   "device_jabra_elite_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 3": [
+   "device_jabra_elite_3_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 3 Active": [
+   "device_jabra_elite_3_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 4": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 4 Active": [
+   "device_jabra_elite_4_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 45e": [
+   "device_jabra_elite_45e_bud",
+   null
+  ],
+  "Jabra Elite 45h": [
+   "device_jabra_elite_45h_bud",
+   null
+  ],
+  "Jabra Elite 5": [
+   "device_jabra_elite_5_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 65e": [
+   "device_jabra_elite_65e_bud",
+   null
+  ],
+  "Jabra Elite 65t": [
+   "device_jabra_elite_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Active": [
+   "device_jabra_elite_7_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Pro": [
+   "device_jabra_elite_7_pro_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 7 Sport": [
+   "device_jabra_elite_7_sport_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 75t": [
+   "device_jabra_elite_75t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 8 Active": [
+   "device_jabra_elite_8_active_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 8 Active Gen 2": [
+   "device_jabra_elite_8_active_gen_2_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite 85h": [
+   "device_jabra_elite_85h_bud",
+   null
+  ],
+  "Jabra Elite 85t": [
+   "device_jabra_elite_85t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Active 45e": [
+   "device_jabra_elite_active_45e_bud",
+   null
+  ],
+  "Jabra Elite Active 65t": [
+   "device_jabra_elite_active_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Active 75t": [
+   "device_jabra_elite_active_75t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Elite Flex": [
+   "device_jabra_elite_flex_bud",
+   null
+  ],
+  "Jabra Evolve 65e": [
+   "device_jabra_evolve_65e_bud",
+   null
+  ],
+  "Jabra Evolve 65t": [
+   "device_jabra_evolve_65t_bud",
+   "device_generic_case"
+  ],
+  "Jabra Evolve2 55": [
+   "device_jabra_evolve2_55_bud",
+   null
+  ],
+  "Jabra Evolve2 65": [
+   "device_jabra_evolve2_65_bud",
+   null
+  ],
+  "Jabra Evolve2 65 Flex": [
+   "device_jabra_evolve2_65_flex_bud",
+   null
+  ],
+  "Jabra Evolve2 75": [
+   "device_jabra_evolve2_75_bud",
+   null
+  ],
+  "Jabra Evolve2 85": [
+   "device_jabra_evolve2_85_bud",
+   null
+  ],
+  "Jabra Evolve2 Buds": [
+   "device_jabra_evolve2_buds_bud",
+   "device_generic_case"
+  ],
+  "Jabra Speak2 75": [
+   "device_jabra_speak2_75_bud",
+   null
+  ],
+  "Jib True XT2": [
+   "device_skullcandy_jib_bud",
+   "device_generic_case"
+  ],
+  "LinkBuds": [
+   "device_sony_lb_bud",
+   "device_generic_case"
+  ],
+  "LinkBuds Clip": [
+   "device_sony_lbclip_bud",
+   "device_generic_case"
+  ],
+  "LinkBuds Fit": [
+   "device_sony_lbfit_bud",
+   "device_generic_case"
+  ],
+  "LinkBuds Open": [
+   "device_sony_lb_bud",
+   "device_generic_case"
+  ],
+  "LinkBuds S": [
+   "device_sony_lbs_bud",
+   "device_generic_case"
+  ],
+  "LinkBuds UC": [
+   "device_sony_lbs_bud",
+   "device_generic_case"
+  ],
+  "Method 360 ANC": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "Method 540 ANC": [
+   "device_skullcandy_method_bud",
+   "device_generic_case"
+  ],
+  "Mod": [
+   "device_skullcandy_mod_bud",
+   "device_generic_case"
+  ],
+  "NEW-WQ7034MXGoFree2": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "OPERA03": [
+   "device_opera_bud",
+   "device_opera_case"
+  ],
+  "OPERA05": [
+   "device_opera05_bud",
+   "device_opera05_case"
+  ],
+  "OW100": [
+   "device_earfun_openjump_bud",
+   "device_earfun_openjump_case"
+  ],
+  "OW100_NEW": [
+   "device_earfun_openjump_bud",
+   "device_earfun_openjump_case"
+  ],
+  "PLYR": [
+   "device_skullcandy_plyr_bud",
+   null
+  ],
+  "Pixel Buds": [
+   "device_pixel_pixel_buds_bud",
+   "device_generic_case"
+  ],
+  "Pixel Buds 2a": [
+   "device_pixel_2a_bud",
+   "device_generic_case"
+  ],
+  "Pixel Buds A-Series": [
+   "device_pixel_a_series_bud",
+   "device_generic_case"
+  ],
+  "Pixel Buds Pro": [
+   "device_pixel_pro_bud",
+   "device_generic_case"
+  ],
+  "Pixel Buds Pro 2": [
+   "device_pixel_pro_2_bud",
+   "device_generic_case"
+  ],
+  "Powerbeats Fit": [
+   "device_apple_wingtip_bud",
+   "device_generic_case"
+  ],
+  "Powerbeats Pro": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "Powerbeats Pro 2": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "Powerbeats3": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "Powerbeats4": [
+   "device_apple_pbhook_bud",
+   "device_generic_case"
+  ],
+  "Push 180 Open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "Push 540 Open": [
+   "device_skullcandy_push_540_open_bud",
+   null
+  ],
+  "Push 720 Open": [
+   "device_skullcandy_push_720_open_bud",
+   "device_generic_case"
+  ],
+  "Push ANC Active": [
+   "device_skullcandy_push_anc_active_bud",
+   "device_generic_case"
+  ],
+  "Push Active": [
+   "device_skullcandy_push_active_bud",
+   "device_generic_case"
+  ],
+  "Push Ultra": [
+   "device_skullcandy_push_ultra_bud",
+   "device_generic_case"
+  ],
+  "Q12": [
+   "device_1more_q12_bud",
+   "device_generic_case"
+  ],
+  "Q21": [
+   "device_1more_q21_bud",
+   "device_generic_case"
+  ],
+  "Q22": [
+   "device_1more_q22_bud",
+   "device_generic_case"
+  ],
+  "Q35HD": [
+   "device_neckband_bud",
+   null
+  ],
+  "Q50": [
+   "device_1more_es603_bud",
+   "device_generic_case"
+  ],
+  "QCC3040": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "QCC3040Q30HD": [
+   "device_neckband_bud",
+   null
+  ],
+  "QCC3046FORCEPRO": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "QCC3046Q30HD": [
+   "device_neckband_bud",
+   null
+  ],
+  "QCC3046Q35HD": [
+   "device_neckband_bud",
+   null
+  ],
+  "QCC3091AIR5": [
+   "device_air5_bud",
+   "device_air5_case"
+  ],
+  "QCYTS04": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "R1292A7018F": [
+   "device_space_bud",
+   null
+  ],
+  "Rail": [
+   "device_skullcandy_rail_bud",
+   "device_generic_case"
+  ],
+  "Rail ANC": [
+   "device_skullcandy_rail_anc_bud",
+   "device_generic_case"
+  ],
+  "Riff Wireless 2": [
+   "device_skullcandy_riff_bud",
+   null
+  ],
+  "S-31": [
+   "device_1more_s31_bud",
+   "device_generic_case"
+  ],
+  "S1": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "S10AI": [
+   "device_1more_s10_bud",
+   "device_generic_case"
+  ],
+  "S10S": [
+   "device_1more_s10_bud",
+   "device_generic_case"
+  ],
+  "S11": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "S12": [
+   "device_stem_flat_bud",
+   "device_generic_case"
+  ],
+  "S13": [
+   "device_pearlclip_pro_bud",
+   "device_pearlclip_pro_case"
+  ],
+  "S14": [
+   "device_generic_bud",
+   "device_air6_pro_case"
+  ],
+  "S15": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "S19": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "S2": [
+   "device_air5_pro_plus_bud",
+   "device_air5_pro_plus_case"
+  ],
+  "S20": [
+   "device_1more_s20_bud",
+   "device_generic_case"
+  ],
+  "S200": [
+   "device_1more_nano_bud",
+   null
+  ],
+  "S20NOVA": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "S20PRO": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "S20Ultra": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "S21": [
+   "device_cove_pro_bud",
+   null
+  ],
+  "S21Air": [
+   "device_1more_s20_nova_bud",
+   "device_generic_case"
+  ],
+  "S22": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "S23": [
+   "device_neckband_bud",
+   null
+  ],
+  "S24": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "S25": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "S27": [
+   "device_generic_bud",
+   "device_air6_pro_case"
+  ],
+  "S28": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "S29": [
+   "device_hook_bud",
+   "device_generic_case"
+  ],
+  "S30": [
+   "device_pod_bud",
+   "device_pod_case"
+  ],
+  "S31": [
+   "device_1more_ef606_bud",
+   "device_generic_case"
+  ],
+  "S32": [
+   "device_generic_bud",
+   "device_air6_pro_case"
+  ],
+  "S33": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "S36": [
+   "device_generic_bud",
+   "device_air6_pro_case"
+  ],
+  "S5": [
+   "device_h3_bud",
+   "device_h3_case"
+  ],
+  "S51": [
+   "device_1more_s51_bud",
+   "device_generic_case"
+  ],
+  "S6": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "S7": [
+   "device_clip1_bud",
+   "device_generic_case"
+  ],
+  "S70": [
+   "device_1more_s70_bud",
+   "device_generic_case"
+  ],
+  "S8": [
+   "device_neckband_bud",
+   null
+  ],
+  "S9": [
+   "device_arc_bud",
+   "device_generic_case"
+  ],
+  "S90": [
+   "device_1more_s15_bud",
+   "device_generic_case"
+  ],
+  "SLYR Pro Wireless": [
+   "device_skullcandy_slyr_pro_bud",
+   null
+  ],
+  "SM-R170": [
+   "device_samsung_buds_bud",
+   "device_generic_case"
+  ],
+  "SM-R175": [
+   "device_samsung_buds_bud",
+   "device_generic_case"
+  ],
+  "SM-R177": [
+   "device_samsung_buds2_bud",
+   "device_generic_case"
+  ],
+  "SM-R180": [
+   "device_samsung_live_bud",
+   "device_generic_case"
+  ],
+  "SM-R190": [
+   "device_samsung_pro_bud",
+   "device_generic_case"
+  ],
+  "SM-R400N": [
+   "device_samsung_fe_bud",
+   "device_generic_case"
+  ],
+  "SM-R410": [
+   "device_samsung_core_bud",
+   "device_generic_case"
+  ],
+  "SM-R420": [
+   "device_samsung_buds3fe_bud",
+   "device_generic_case"
+  ],
+  "SM-R510": [
+   "device_samsung_buds2pro_bud",
+   "device_generic_case"
+  ],
+  "SM-R530": [
+   "device_samsung_buds3_bud",
+   "device_generic_case"
+  ],
+  "SM-R540": [
+   "device_samsung_buds4_bud",
+   "device_generic_case"
+  ],
+  "SM-R630": [
+   "device_samsung_buds3pro_bud",
+   "device_generic_case"
+  ],
+  "SM-R640": [
+   "device_samsung_buds4pro_bud",
+   "device_generic_case"
+  ],
+  "SPTS04": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "SPTS04PRO": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "Sesh ANC": [
+   "device_skullcandy_sesh_bud",
+   "device_generic_case"
+  ],
+  "Sesh ANC Active": [
+   "device_skullcandy_sesh_active_bud",
+   "device_generic_case"
+  ],
+  "Smokin' Buds 360": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "Smokin' Buds 360H": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "Smokin' Buds 360S": [
+   "device_skullcandy_smokin_buds_bud",
+   "device_generic_case"
+  ],
+  "SonoFlow QC30": [
+   "device_1more_sonoflow_qc30_bud",
+   null
+  ],
+  "Soundcore A1": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "Soundcore A3i": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "Soundcore Dot 3i": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "Soundcore Liberty 2": [
+   "device_soundcore_lib3pro_bud",
+   "device_soundcore_lib3pro_case"
+  ],
+  "Soundcore Liberty 4": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "Soundcore Liberty Air 2": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "Soundcore Liberty Air2": [
+   "device_soundcore_liberty_bud",
+   "device_soundcore_liberty_case"
+  ],
+  "Soundcore Life A1": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "Soundcore Life A3i": [
+   "device_soundcore_a3i_bud",
+   "device_soundcore_a3i_case"
+  ],
+  "Soundcore Life Dot 3i": [
+   "device_soundcore_dot_bud",
+   "device_generic_case"
+  ],
+  "Soundcore Life NC": [
+   "device_soundcore_q30_bud",
+   null
+  ],
+  "Soundcore Life Note 3i": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "Soundcore Life P3i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "Soundcore Life Q20+": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "Soundcore Note 3i": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "Soundcore P3i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "Soundcore Sleep A10": [
+   "device_soundcore_sleep_bud",
+   "device_soundcore_sleep_case"
+  ],
+  "Soundcore Sleep A20": [
+   "device_soundcore_sleep_bud",
+   "device_soundcore_sleep_case"
+  ],
+  "Soundcore Sport X10": [
+   "device_soundcore_x20_bud",
+   "device_soundcore_x20_case"
+  ],
+  "Soundcore VR P10": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "T2": [
+   "device_popclip_bud",
+   "device_generic_case"
+  ],
+  "T28": [
+   "device_sonic_bud",
+   "device_generic_case"
+  ],
+  "T28Pro": [
+   "device_sonic_bud",
+   "device_generic_case"
+  ],
+  "T28_Pro": [
+   "device_sonic_bud",
+   "device_generic_case"
+  ],
+  "T57": [
+   "device_life_bud",
+   "device_life_case"
+  ],
+  "TS03WINGS2": [
+   "device_wings2_bud",
+   "device_wings2_case"
+  ],
+  "TW100": [
+   "device_earfun_free_s_bud",
+   "device_earfun_free_s_case"
+  ],
+  "TW101S": [
+   "device_earfun_free_s_bud",
+   "device_earfun_free_s_case"
+  ],
+  "TW200S": [
+   "device_earfun_air_bud",
+   "device_earfun_air_case"
+  ],
+  "TW201": [
+   "device_earfun_air_s_bud",
+   null
+  ],
+  "TW205": [
+   "device_earfun_air_life_bud",
+   null
+  ],
+  "TW210": [
+   "device_earfun_air_2_bud",
+   "device_earfun_air_2_case"
+  ],
+  "TW220": [
+   "device_earfun_air_2_nc_bud",
+   "device_earfun_air_2_nc_case"
+  ],
+  "TW220_VDL": [
+   "device_earfun_air_2_nc_bud",
+   "device_earfun_air_2_nc_case"
+  ],
+  "TW230": [
+   "device_earfun_air_pro_4i_bud",
+   "device_earfun_air_pro_4i_case"
+  ],
+  "TW300": [
+   "device_earfun_air_pro_2_bud",
+   null
+  ],
+  "TW306": [
+   "device_earfun_air_pro_sv_bud",
+   null
+  ],
+  "TW400": [
+   "device_earfun_free_pro_3_bud",
+   "device_earfun_free_pro_3_case"
+  ],
+  "TW500": [
+   "device_earfun_air_pro_3_bud",
+   "device_earfun_air_pro_3_case"
+  ],
+  "TW500_3072": [
+   "device_earfun_air_pro_3_bud",
+   "device_earfun_air_pro_3_case"
+  ],
+  "TW600": [
+   "device_earfun_air_pro_4_bud",
+   "device_earfun_air_pro_4_case"
+  ],
+  "TW700": [
+   "device_earfun_air_pro_4_plus_bud",
+   "device_earfun_air_pro_4_plus_case"
+  ],
+  "TW700AI": [
+   "device_earfun_air_pro_4_plus_bud",
+   "device_earfun_air_pro_4_plus_case"
+  ],
+  "TW800": [
+   "device_earfun_air_pro_4_plus_bud",
+   "device_earfun_air_pro_4_plus_case"
+  ],
+  "TWA01": [
+   "device_earfun_air_s_bud",
+   null
+  ],
+  "UA PROJECT ROCK": [
+   "device_jbl_overear_bud",
+   null
+  ],
+  "ULT WEAR": [
+   "device_sony_ult_bud",
+   null
+  ],
+  "WF-1000XM3": [
+   "device_sony_wfxm3_bud",
+   "device_generic_case"
+  ],
+  "WF-1000XM4": [
+   "device_sony_wfxm4_bud",
+   "device_generic_case"
+  ],
+  "WF-1000XM5": [
+   "device_sony_wfxm5_bud",
+   "device_generic_case"
+  ],
+  "WF-1000XM6": [
+   "device_sony_wfxm5_bud",
+   "device_generic_case"
+  ],
+  "WF-C500": [
+   "device_sony_c500_bud",
+   "device_generic_case"
+  ],
+  "WF-C510": [
+   "device_sony_c500_bud",
+   "device_generic_case"
+  ],
+  "WF-C700N": [
+   "device_sony_c700_bud",
+   "device_generic_case"
+  ],
+  "WF-C710N": [
+   "device_sony_c700_bud",
+   "device_generic_case"
+  ],
+  "WF-SP800N": [
+   "device_sony_sp800_bud",
+   "device_generic_case"
+  ],
+  "WH-1000XM2": [
+   "device_sony_xm4_bud",
+   null
+  ],
+  "WH-1000XM3": [
+   "device_sony_xm4_bud",
+   null
+  ],
+  "WH-1000XM4": [
+   "device_sony_xm4_bud",
+   null
+  ],
+  "WH-1000XM5": [
+   "device_sony_xm5_bud",
+   null
+  ],
+  "WH-1000XM6": [
+   "device_sony_xm5_bud",
+   null
+  ],
+  "WH-CH720N": [
+   "device_sony_ch720_bud",
+   null
+  ],
+  "WI-C100": [
+   "device_sony_neckband_bud",
+   null
+  ],
+  "WI-SP600N": [
+   "device_sony_neckband_bud",
+   null
+  ],
+  "WQ7034MXGoFree2": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "WQT7033": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "WUQIAIRLITE": [
+   "device_generic_bud",
+   "device_air4_case"
+  ],
+  "WUQIGoFree2J": [
+   "device_gofree2_bud",
+   "device_gofree2_case"
+  ],
+  "WUQIMINIHS": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "WuQi7034MXF2": [
+   "device_hook_bud",
+   "device_generic_case"
+  ],
+  "WuQiEngine4": [
+   "device_pod_bud",
+   "device_pod_case"
+  ],
+  "Z30": [
+   "device_1more_q21_bud",
+   "device_generic_case"
+  ],
+  "ZKLXAIR5LITE": [
+   "device_air5_lite_bud",
+   "device_air5_lite_case"
+  ],
+  "ZKLXBREEZY": [
+   "device_breezy_bud",
+   "device_breezy_case"
+  ],
+  "ZKLXCHASERS": [
+   "device_chasers_bud",
+   "device_generic_case"
+  ],
+  "ZKLXSPACEPRO": [
+   "device_space_pro_bud",
+   null
+  ],
+  "ZKLXT3PRO": [
+   "device_stem_bud",
+   "device_stem_case"
+  ],
+  "soundcore A30i": [
+   "device_soundcore_a30i_bud",
+   "device_soundcore_a30i_case"
+  ],
+  "soundcore AeroFit": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "soundcore AeroFit 2": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "soundcore AeroFit Pro": [
+   "device_soundcore_aerofit_bud",
+   "device_soundcore_aerofit_case"
+  ],
+  "soundcore C40i": [
+   "device_soundcore_clip_bud",
+   "device_generic_case"
+  ],
+  "soundcore H30i": [
+   "device_soundcore_h30i_bud",
+   null
+  ],
+  "soundcore K20i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "soundcore Life Note C": [
+   "device_soundcore_note_bud",
+   "device_soundcore_note_case"
+  ],
+  "soundcore Life Q20": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore Life Q20+ SE": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore P41i": [
+   "device_soundcore_stem_bud",
+   "device_soundcore_stem_case"
+  ],
+  "soundcore Q20": [
+   "device_soundcore_q20_bud",
+   null
+  ],
+  "soundcore R50i VI": [
+   "device_soundcore_pseries_bud",
+   "device_soundcore_pseries_case"
+  ],
+  "soundcore V30i": [
+   "device_soundcore_v30i_bud",
+   "device_soundcore_v30i_case"
+  ],
+  "soundcore V40i": [
+   "device_soundcore_v40i_bud",
+   "device_generic_case"
+  ]
+ },
+ "generic": {
+  "earbuds": [
+   "device_generic_bud",
+   "device_generic_case"
+  ],
+  "headphones": [
+   "device_generic_headphones_bud",
+   null
+  ],
+  "speaker": [
+   "device_generic_speaker_bud",
+   null
+  ]
+ }
+}

@@ -103,6 +103,9 @@ class BoseTest {
         assertEquals(BosePacket.get(BoseFunction.PRODUCT_INFO_BMAP_VERSION), start.first(), "the version first, as the QC35 and QC45 need")
         assertTrue(BosePacket.start(BoseFunction.AUDIO_MODES_GET_ALL) in start)
         assertTrue(start.all { BoseSession().allowed(it) })
+        // Bose's app, run against a virtual QC Ultra 2 (data/bose/emulator_vectors.json), opened with 00.01, 00.02 and 00.03 (GET).
+        val vectors = Json.parseToJsonElement(repoFile("data/bose/emulator_vectors.json").readText()).jsonObject.getValue("cases").jsonArray.map { it.jsonObject.getValue("frame").jsonPrimitive.content }
+        assertEquals(vectors, start.take(3).map { p -> p.bytes().joinToString("") { "%02x".format(it) } })
     }
 
     @Test
@@ -126,6 +129,127 @@ class BoseTest {
         assertEquals(true, (setting(s, "pause_taken_off") as Setting.Toggle).on)
         assertEquals(true, (setting(s, "auto_answer") as Setting.Toggle).on)
         assertTrue(s.replies.keys.none { it.startsWith("31.6") })
+    }
+
+    @Test
+    fun theOtherSwitchesOfBosesAppAreRowsOnceTheirReadAnswers() {
+        val s = BoseSession()
+        assertNull(setting(s, "bose_conversation_mode"))
+        s.receive(status(BoseFunction.SETTINGS_CONVERSATION_MODE, "01"))
+        s.receive(status(BoseFunction.SETTINGS_FLIP_TO_OFF, "00"))
+        s.receive(status(BoseFunction.SETTINGS_ALERTS, "02"))
+        assertEquals(Setting.Toggle("bose_conversation_mode", true), setting(s, "bose_conversation_mode"))
+        assertEquals(Setting.Toggle("bose_flip_to_off", false), setting(s, "bose_flip_to_off"))
+        assertEquals(Setting.Toggle("bose_alert_ringtone", false), setting(s, "bose_alert_ringtone"))
+        assertEquals(Setting.Toggle("bose_alert_haptics", true), setting(s, "bose_alert_haptics"))
+        assertNull(setting(s, "bose_head_gesture"), "not read, so not offered")
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_FLIP_TO_OFF, 1)), s.change(SettingChange.Toggle("bose_flip_to_off", true)))
+        // The two alert bits go in one byte, the other kept.
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_ALERTS, 3)), s.change(SettingChange.Toggle("bose_alert_ringtone", true)))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_ALERTS, 1)), s.change(SettingChange.Toggle("bose_alert_haptics", false)))
+        assertTrue(BosePacket.get(BoseFunction.SETTINGS_CONVERSATION_MODE) in BoseSession().start())
+    }
+
+    @Test
+    fun onHeadDetectionLeAudioVolumeControlAndTheTeamsButton() {
+        val s = BoseSession()
+        // On-head detection (Bose's SettingsOnHeadDetectionResponse): enabled and the three automatic actions exist, then which are on.
+        s.receive(status(BoseFunction.SETTINGS_ON_HEAD_DETECTION, "0f05"))
+        assertEquals(Setting.Toggle("bose_on_head", true), setting(s, "bose_on_head"))
+        assertEquals(Setting.Toggle("bose_on_head_play", true), setting(s, "bose_on_head_play"))
+        assertEquals(Setting.Toggle("bose_on_head_answer", false), setting(s, "bose_on_head_answer"))
+        assertEquals(Setting.Toggle("bose_on_head_transparency", true), setting(s, "bose_on_head_transparency"))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_ON_HEAD_DETECTION, 1, 7)), s.change(SettingChange.Toggle("bose_on_head_answer", true)))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_ON_HEAD_DETECTION, 0, 7)), s.change(SettingChange.Toggle("bose_on_head", false)))
+        s.receive(status(BoseFunction.SETTINGS_LE_AUDIO_CONTROL, "01"))
+        assertEquals(Setting.Toggle("bose_le_audio", true), setting(s, "bose_le_audio"))
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_LE_AUDIO_CONTROL, 0)), s.change(SettingChange.Toggle("bose_le_audio", false)))
+        // Volume control: touch now, buttons and touch exist.
+        s.receive(status(BoseFunction.SETTINGS_VOLUME_CONTROL, "0203"))
+        val v = setting(s, "bose_volume_control") as Setting.Choice
+        assertEquals("bose_volume_touch", v.value)
+        assertEquals(listOf("bose_volume_off", "bose_volume_buttons", "bose_volume_touch", "bose_volume_motion"), v.options)
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_VOLUME_CONTROL, 1)), s.change(SettingChange.Choice("bose_volume_control", "bose_volume_buttons")))
+        s.receive(status(BoseFunction.SETTINGS_TEAMS_BUTTON_MODE, "01"))
+        assertEquals("bose_teams_dedicated", (setting(s, "bose_teams_button") as Setting.Choice).value)
+        assertEquals(listOf(setGet(BoseFunction.SETTINGS_TEAMS_BUTTON_MODE, 0)), s.change(SettingChange.Choice("bose_teams_button", "bose_teams_combination")))
+    }
+
+    @Test
+    fun ultra2TouchControlsShowTheEnabledStateIndependentlyOfShortcut() {
+        val function = BoseFunction.SETTINGS_DISABLE_CAPTOUCH
+        val s = ultra2()
+        assertNull(setting(s, "bose_touch_controls"))
+        val shortcut = setting(s, "bose_button_128") as Setting.Choice
+        assertEquals("disabled", shortcut.value)
+
+        s.receive(status(function, "00"))
+        val off = Setting.Toggle("bose_touch_controls", false)
+        assertEquals(listOf(off, shortcut), s.groups.single { it.tab == SettingTab.CONTROLS && it.key == "touch" }.settings)
+        assertTrue(s.groups.none { group -> group.tab == SettingTab.DEVICE && group.settings.any { it.key == off.key } })
+        assertNull(setting(s, "bose_disable_touch"))
+        assertEquals(listOf(setGet(function, 1)), s.change(SettingChange.Toggle("bose_touch_controls", true)))
+        s.receive(status(function, "01"))
+        assertEquals(Setting.Toggle("bose_touch_controls", true), setting(s, "bose_touch_controls"))
+        assertEquals(shortcut, setting(s, "bose_button_128"))
+        assertEquals(listOf(setGet(function, 0)), s.change(SettingChange.Toggle("bose_touch_controls", false)))
+
+        val other = BoseSession()
+        other.receive(status(BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, "406201"))
+        other.receive(status(function, "01"))
+        assertNull(setting(other, "bose_touch_controls"))
+        assertEquals(Setting.Toggle("bose_disable_touch", true), setting(other, "bose_disable_touch"))
+        assertEquals(SettingTab.DEVICE, other.groups.single { group -> group.settings.any { it.key == "bose_disable_touch" } }.tab)
+        assertEquals(listOf(setGet(function, 0)), other.change(SettingChange.Toggle("bose_disable_touch", false)))
+    }
+
+    @Test
+    fun theHeadphoneVolumeAndTheFindChirp() {
+        val s = BoseSession()
+        assertNull(setting(s, "bose_volume"))
+        // Bose's AudioManagementVolumeResponse: the highest level, then the current one.
+        s.receive(status(BoseFunction.AUDIO_MANAGEMENT_VOLUME, "1008"))
+        assertEquals(Setting.Level("bose_volume", 8, 0, 16), setting(s, "bose_volume"))
+        assertEquals(listOf(setGet(BoseFunction.AUDIO_MANAGEMENT_VOLUME, 12)), s.change(SettingChange.Level("bose_volume", 12)))
+        // The chirp: bit 0 of the status is whether it sounds; the action begins it or ends it.
+        s.receive(status(BoseFunction.CONTROL_CHIRP, "00"))
+        assertEquals(Setting.Action("find", false), setting(s, "find"))
+        assertEquals(listOf(BosePacket.start(BoseFunction.CONTROL_CHIRP, 1)), s.change(SettingChange.Press("find")))
+        assertEquals(listOf(BosePacket.start(BoseFunction.CONTROL_CHIRP, 0)), s.change(SettingChange.Press("find")))
+    }
+
+    @Test
+    fun theStartModeTheRememberedModeAndTheAudioDelay() {
+        val s = BoseSession()
+        s.receive(status(BoseFunction.AUDIO_MODES_DEFAULT_MODE, "00"))
+        s.receive(status(BoseFunction.AUDIO_MODES_PERSISTENCE, "01"))
+        assertEquals(Setting.Toggle("bose_modes_persist", true), setting(s, "bose_modes_persist"))
+        assertEquals(listOf(setGet(BoseFunction.AUDIO_MODES_PERSISTENCE, 0)), s.change(SettingChange.Toggle("bose_modes_persist", false)))
+        // The delay: the current, the lowest and the highest, two bytes each, high byte first.
+        s.receive(status(BoseFunction.AUDIO_MANAGEMENT_LATENCY, "0064" + "0032" + "00c8"))
+        assertEquals(Setting.Level("bose_latency", 100, 50, 200), setting(s, "bose_latency"))
+        assertEquals(listOf(setGet(BoseFunction.AUDIO_MANAGEMENT_LATENCY, 0, 150)), s.change(SettingChange.Level("bose_latency", 150)))
+    }
+
+    @Test
+    fun theFitTestIsBosesFitQualityOnTheEarbudsThatHaveIt() {
+        val s = BoseSession()
+        assertNull(s.startFitTest(), "the model is not known yet")
+        s.receive(status(BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, "407200"))
+        assertTrue(s.state.hasFitTest, "the QC Ultra Earbuds")
+        val frames = s.startFitTest()!!
+        assertEquals(listOf(BosePacket.start(BoseFunction.CONTROL_FIT_QUALITY).bytes().toList()), frames.map { it.toList() })
+        assertTrue(s.allowed(BosePacket.start(BoseFunction.CONTROL_FIT_QUALITY)))
+        // Left: personalisation complete at the customisable level is a good fit; right: complete at another level is not.
+        s.receive(status(BoseFunction.CONTROL_FIT_QUALITY, "01000002"))
+        s.receive(status(BoseFunction.CONTROL_FIT_QUALITY, "02000001"))
+        assertEquals(io.github.omegadestroyer.pairfree.protocol.FitResult(io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.GOOD, io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.NOT_FIT), s.state.fit)
+        // An error (not worn) is no result.
+        s.receive(status(BoseFunction.CONTROL_FIT_QUALITY, "02010002"))
+        assertEquals(io.github.omegadestroyer.pairfree.protocol.FitResult.Fit.UNKNOWN, s.state.fit!!.right)
+        val headphones = BoseSession()
+        headphones.receive(status(BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, "400C00"))
+        assertNull(headphones.startFitTest())
     }
 
     @Test
@@ -243,5 +367,61 @@ class BoseTest {
         s.receive(status(BoseFunction.SETTINGS_ANR, "0100"))
         assertEquals(Setting.Choice("anr", "high", listOf("off", "low", "high", "wind")), setting(s, "anr"))
         assertEquals(listOf(setGet(BoseFunction.SETTINGS_ANR, 2)), s.change(SettingChange.Choice("anr", "wind")))
+    }
+
+    @Test
+    fun anEqBandWithItsRangeTheWrongWayRoundDoesNotBreakTheRows() {
+        val s = BoseSession()
+        // Bass with minimum 10 and maximum -10, then mid as Bose's devices send it.
+        s.receive(status(BoseFunction.SETTINGS_RANGE_CONTROL, "0af60000" + "f60a0201"))
+        assertNull(setting(s, "eq_bass"))
+        assertEquals(Setting.Level("eq_mid", 2, -10, 10), setting(s, "eq_mid"))
+    }
+
+    @Test
+    fun theQuietComfortEarbudsListOnlyBmapsOwnService() {
+        // the services of the connection report in issue #69: no standard serial port, Bose's BMAP service instead
+        val earbuds = listOf("00000000-deca-fade-deca-deafdecacaff", "0000110b-0000-1000-8000-00805f9b34fb", "2d064aa9-32b5-4970-865c-643742bd2862")
+        assertEquals("00000000-deca-fade-deca-deafdecacaff", BoseService.forServices(earbuds))
+        // a device with the standard port keeps it, even when it lists BMAP too, and so does one that lists neither
+        assertEquals(null, BoseService.forServices(earbuds + "00001101-0000-1000-8000-00805F9B34FB"))
+        assertEquals(null, BoseService.forServices(emptyList()))
+    }
+
+    @Test
+    fun theListOfPairedDevicesIsReadNamedAndManaged() {
+        // Issue #71, as Bose's app reads it: a byte with a bit per connected entry, then six bytes per device.
+        val s = BoseSession()
+        val phone = "001122334455"
+        val laptop = "66778899aabb"
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES, "01$phone$laptop"))
+        // each device whose name is not known is asked for
+        assertEquals(
+            listOf(BosePacket(BoseFunction.DEVICE_MANAGEMENT_INFO, BoseOperator.GET, phone.hexBytes()), BosePacket(BoseFunction.DEVICE_MANAGEMENT_INFO, BoseOperator.GET, laptop.hexBytes())),
+            s.takeOutbox(),
+        )
+        // flags: bit 0 connected, bit 1 this phone; two bytes, then the name (not a Bose product)
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_INFO, phone + "03" + "0000" + "50686f6e65"))
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_INFO, laptop + "00" + "0000" + "4c6170746f70"))
+        // the phone's own entry is never offered, the laptop can be connected and forgotten but not disconnected (it is not connected)
+        assertNull(setting(s, BoseSession.KEY_PEER_DISCONNECT))
+        assertEquals(Setting.Choice(BoseSession.KEY_PEER_CONNECT, null, listOf("Laptop")), setting(s, BoseSession.KEY_PEER_CONNECT))
+        assertEquals(Setting.Choice(BoseSession.KEY_PEER_DELETE, null, listOf("Laptop")), setting(s, BoseSession.KEY_PEER_DELETE))
+        // connect is 0 and the address, as Bose's DeviceManagementConnectStartPacket
+        assertEquals(
+            listOf(BosePacket(BoseFunction.DEVICE_MANAGEMENT_CONNECT, BoseOperator.START, ("00" + laptop).hexBytes())),
+            s.change(SettingChange.Choice(BoseSession.KEY_PEER_CONNECT, "Laptop")),
+        )
+        // a finished connection reads the list again
+        s.receive(BosePacket(BoseFunction.DEVICE_MANAGEMENT_CONNECT, BoseOperator.RESULT, laptop.hexBytes()))
+        assertEquals(listOf(BosePacket.get(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES)), s.takeOutbox())
+        s.receive(status(BoseFunction.DEVICE_MANAGEMENT_LIST_DEVICES, "03$phone$laptop"))
+        assertEquals(Setting.Choice(BoseSession.KEY_PEER_DISCONNECT, null, listOf("Laptop")), setting(s, BoseSession.KEY_PEER_DISCONNECT))
+        assertEquals(
+            listOf(BosePacket(BoseFunction.DEVICE_MANAGEMENT_DISCONNECT, BoseOperator.START, laptop.hexBytes())),
+            s.change(SettingChange.Choice(BoseSession.KEY_PEER_DISCONNECT, "Laptop")),
+        )
+        // the phone's own entry cannot be reached by a change
+        assertNull(s.change(SettingChange.Choice(BoseSession.KEY_PEER_DELETE, "Phone")))
     }
 }

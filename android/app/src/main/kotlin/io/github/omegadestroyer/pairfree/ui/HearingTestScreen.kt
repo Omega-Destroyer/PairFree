@@ -28,7 +28,7 @@ import io.github.omegadestroyer.pairfree.hearing.TonePlayer
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingEq
 import io.github.omegadestroyer.pairfree.protocol.hearing.HearingTable
 import io.github.omegadestroyer.pairfree.protocol.hearing.StaircaseTest
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlin.math.roundToInt
 
 /**
@@ -40,6 +40,8 @@ import kotlin.math.roundToInt
 internal fun HearingTestScreen(
     eq: EqState,
     table: HearingTable,
+    /** True on SOUNDPEATS, whose app's own merge onto the bands is kept; every other brand gets PairFree's interpolation. */
+    vendorMerge: Boolean,
     resultName: String,
     onApply: (name: String, gains: List<Int>) -> Unit,
     onClose: () -> Unit,
@@ -69,7 +71,7 @@ internal fun HearingTestScreen(
             step++
         }
     }
-    val c = Studio.colors
+    val c = Look.colors
     Column(
         Modifier
             .fillMaxSize()
@@ -78,14 +80,14 @@ internal fun HearingTestScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.hearing_test), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), close)
+            Text(stringResource(R.string.hearing_test), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), close)
         }
         when {
             !started -> {
                 Text(stringResource(R.string.hearing_test_intro), color = c.secondaryText)
                 if (busy) Text(stringResource(R.string.hearing_test_music), color = c.destructive)
-                StudioButton(
+                AppButton(
                     stringResource(R.string.hearing_test_start),
                     {
                         if (player.musicActive) {
@@ -103,11 +105,11 @@ internal fun HearingTestScreen(
             !test.finished -> {
                 val tone = test.current
                 Panel {
-                    Text(stringResource(R.string.hearing_test_tone, tone?.hz?.roundToInt() ?: 0), style = Studio.type.number)
+                    Text(stringResource(R.string.hearing_test_tone, tone?.hz?.roundToInt() ?: 0), style = Look.type.number)
                     LevelBar((test.progress * 100).toInt())
-                    Text(stringResource(R.string.hearing_test_listen), style = Studio.type.small, color = c.secondaryText)
+                    Text(stringResource(R.string.hearing_test_listen), style = Look.type.small, color = c.secondaryText)
                 }
-                StudioButton(
+                AppButton(
                     stringResource(R.string.hearing_test_heard),
                     {
                         player.stop()
@@ -119,17 +121,17 @@ internal fun HearingTestScreen(
                 )
             }
             else -> {
-                val gains = HearingEq.onBands(test.results, eq.layout.bands.map { it.hz }, eq.layout.userRangeDb)
+                val gains = (if (vendorMerge) HearingEq::onBands else HearingEq::interpolated)(test.results, eq.layout.bands.map { it.hz }, eq.layout.userRangeDb)
                 Text(stringResource(R.string.hearing_test_done), color = c.secondaryText)
                 Panel {
                     test.results.forEach { r ->
                         Row {
                             Text(stringResource(R.string.hearing_test_tone, r.hz.roundToInt()), Modifier.weight(1f))
-                            Text(stringResource(R.string.db, "%+d".format(r.gainDb.roundToInt())), style = Studio.type.number, color = c.accent)
+                            Text(stringResource(R.string.db, signed("%+d".format(r.gainDb.roundToInt()))), style = Look.type.number, color = c.accent)
                         }
                     }
                 }
-                StudioButton(
+                AppButton(
                     stringResource(R.string.hearing_test_apply, resultName),
                     {
                         onApply(resultName, gains)

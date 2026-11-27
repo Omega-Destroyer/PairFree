@@ -14,7 +14,7 @@
   "JBL Wave Buds 2",
   "JBL Wave Buds 3"
  ],
- "source": "Traced from JBL's own product render (Tune Buds 2, front), not in the repo.",
+ "source": "Traced from JBL's own product render (Tune Buds 2, front), not in the repo. Case traced from JBL's picture of the case (live_buds4_case_black.webp).",
  "bud": {
   "kind": "bud",
   "body": "95,232 108,232 121,235 136,243 151,255 193,253 217,257 236,264 252,275 268,298 275,324 275,338 271,357 256,381 241,394 228,401 211,405 181,407 109,406 92,400 76,389 62,373 54,354 50,333 52,315 48,289 52,269 61,253 75,240",
@@ -26,5 +26,7 @@
    319.5
   ]
  },
- "case": "generic"
+ "case": {
+  "outline": "47,326 52,296 64,264 80,238 102,213 156,170 227,120 267,98 307,84 341,81 384,87 484,114 528,131 549,147 568,172 583,203 592,235 595,274 590,315 577,353 557,387 497,457 446,508 406,534 385,543 361,549 313,549 264,539 172,505 136,489 109,473 81,448 70,434 58,410 48,373"
+ }
 }

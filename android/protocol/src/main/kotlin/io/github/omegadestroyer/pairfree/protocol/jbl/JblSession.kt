@@ -64,10 +64,15 @@ public class JblSession(initial: JblModel) {
     // Protocol 4: each mode's status and level, and whether ambient sound control is on.
     private val modeOn = mutableMapOf<Mode, Boolean>()
     private val modeLevel = mutableMapOf<Mode, Int>()
+    private var raceAncLevel: Int? = null
+    private var raceAaLevel: Int? = null
     private var ascOn: Boolean? = null
 
     // The settings beyond noise control, auto power-off and auto play/pause.
-    private var extras = JblExtras(initial)
+    private var extras = JblExtras(initial, { clock() }, { RaceEnv(chip, agentRight) })
+
+    /** The phone's local time, which the case's clock is set to when the channel opens (docs/jbl/PROTOCOL.md section 4.11). */
+    public var clock: () -> JblWallClock? = { null }
 
     /** The EQ the earbuds hold, once they report it (docs/jbl/PROTOCOL.md section 11); a write shows here at once. */
     public var eq: JblEqCurve? = null
@@ -116,6 +121,7 @@ public class JblSession(initial: JblModel) {
             // JBL's app tells the earbuds the host is a phone (host type 1) before it reads them.
             add(JblP4Packet.set(JblP4.FEATURE_HOST_TYPE to byteArrayOf(1)))
             add(JblP4Packet.get(p4Features()))
+            addAll(extras.kit.p4Start())
             addAll(eqReads())
             return@buildList
         }
@@ -158,6 +164,55 @@ public class JblSession(initial: JblModel) {
      * sent, as in JBL's app. Null on a model whose EQ PairFree does not write, or when there is nothing to send.
      */
     public fun eqWrite(preset: JblEqPreset?, gains: List<Float>): List<JblFrame>? = eqFrames(preset, gains)?.also { eqOut = it }
+
+    // ---- PersoniFi's hearing test (docs/jbl/PROTOCOL.md section 4.14) ----
+
+    /** True when the model has PersoniFi's test and PairFree can put its curve on the earbuds (the A2 and protocol 4 writes). */
+    public val personifiTest: Boolean
+        get() = extras.kit.personifi != null && model.eq?.path.let { it == JblEqSpec.Path.A2 || it == JblEqSpec.Path.A2_Q10 || it == JblEqSpec.Path.P4 || it == JblEqSpec.Path.CLUB || it == JblEqSpec.Path.AIROHA }
+
+    /** True on the open-fit models, whose 250 Hz tone the library does not get. */
+    public val personifiOpenFit: Boolean get() = JblHarmanKit.PERSONIFI_OPEN in model.extras
+
+    /** The frequency of the tone the earbuds have ready, once they said (the wizard waits for the one it asked for); null until then. */
+    public val personifiReadyHz: Int? get() = extras.kit.personifi?.confirmedHz
+
+    /** The hearing test's status as the earbuds last reported it: 1 on, 3 and 4 failed (a call, or the earbuds lost focus). */
+    public val personifiStatus: Int? get() = extras.kit.personifi?.testStatus
+
+    /** The test starts: the setup flow flag (the frames go out with [takeEqWrite]). */
+    public fun personifiBegin() { eqOut = extras.kit.personifi?.begin().orEmpty() }
+
+    /** A tone starts in one earbud. */
+    public fun personifiTone(left: Boolean, hz: Int) { eqOut = extras.kit.personifi?.tone(left, hz).orEmpty() }
+
+    /** The test is over or left: the hearing test mode and the flag off. */
+    public fun personifiEnd() { eqOut = extras.kit.personifi?.end().orEmpty() }
+
+    /**
+     * Puts [curve] on the earbuds as the app does after the test (`hh.c.Y0` with no keeping: category 201, A2 or protocol 4's EQ info), and turns PersoniFi on, as the
+     * app's own switch does. False when the model's EQ is not one of those.
+     */
+    public fun personifiApply(curve: JblPersonifi.Curve): Boolean {
+        if (!personifiTest) return false
+        val spec = model.eq ?: return false
+        val eqCurve = curve.eq()
+        if (spec.path == JblEqSpec.Path.AIROHA) {
+            // MmiStage_SetPersoniFiEQ: the band count, the left gain in hundredths of a dB (four bytes), each band's type, frequency, gain and Q in hundredths, and with 24 bands the right gain.
+            eqOut = listOf(RacePacket(JblRace.PERSONIFI_EQ_SET, JblPersonifiMode.raceEq(eqCurve))) + extras.kit.personifi?.change(SettingChange.Toggle(JblPersonifiMode.KEY, true)).orEmpty()
+            return true
+        }
+        if (spec.path == JblEqSpec.Path.CLUB) {
+            // ClubOneControl.setEQSettings2: the user's slot is picked (40), then the curve goes as the older 41 transfer in PersoniFi's category.
+            val raw = JblEq.write41(eqCurve, graphic = false, personify = true)
+            rawOut = raw.toSet()
+            eqOut = listOf(JblEq.preset40(JblEq41.USER_INDEX)) + raw + extras.kit.personifi?.change(SettingChange.Toggle(JblPersonifiMode.KEY, true)).orEmpty()
+            return true
+        }
+        val write: JblFrame = if (spec.path == JblEqSpec.Path.P4) JblEq.p4Write(eqCurve, keep = false) else JblEq.write(eqCurve, spec.path == JblEqSpec.Path.A2_Q10)
+        eqOut = listOf(write) + extras.kit.personifi?.change(SettingChange.Toggle(JblPersonifiMode.KEY, true)).orEmpty()
+        return true
+    }
 
     /** The frames of the last [eqWrite], once: the connection sends them as they are, since the 41 transfer's are not all frames. */
     public fun takeEqWrite(): List<JblFrame> = eqOut.also { eqOut = emptyList() }
@@ -452,6 +507,7 @@ public class JblSession(initial: JblModel) {
                 autoOffMinutes = p.u8(2) or (p.u8(3) shl 8)
             }
             JblStatus.AUTO_PLAY_PAUSE -> autoPlayPause = p.u8(1) != 0
+            JblStatus.SEAL_CHECK -> extras.kit.sealReply(p)
         }
     }
 
@@ -544,7 +600,7 @@ public class JblSession(initial: JblModel) {
         val reread = known.family != model.family || known.noise != model.noise
         val more = known.extras != model.extras || known.smartAudioVideo != model.smartAudioVideo || known.effects != model.effects
         model = known
-        if (more) extras = JblExtras(known)
+        if (more) extras = JblExtras(known, { clock() }, { RaceEnv(chip, agentRight) })
         if (reread) {
             outbox += start()
         } else if (more) {
@@ -568,13 +624,14 @@ public class JblSession(initial: JblModel) {
     }
 
     /** The shared noise control (off, noise cancelling, ambient sound) fits models with noise cancelling and Ambient Aware. */
-    private val sharedNoise: Boolean get() = Mode.ANC in model.modes && Mode.AMBIENT_AWARE in model.modes
+    public val sharedNoise: Boolean get() = Mode.ANC in model.modes && Mode.AMBIENT_AWARE in model.modes
 
     /** Every setting the model has beyond the shared screens. */
     public val groups: List<SettingGroup>
         get() = listOfNotNull(
             group("noise", SettingTab.HOME, noiseRows()),
             group("noise_adaptive", SettingTab.HOME, extras.adaptiveRows()),
+            group("noise_levels", SettingTab.HOME, levelRows()),
             group("sound", SettingTab.SOUND, extras.soundRows()),
             group("calls", SettingTab.DEVICE, extras.callRows()),
             group("other", SettingTab.DEVICE, otherRows()),
@@ -582,7 +639,45 @@ public class JblSession(initial: JblModel) {
             group("touch_left", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("left") else extras.touchRows("left")),
             group("touch_right", SettingTab.CONTROLS, if (model.airohaGestures != null) airohaTouchRows("right") else extras.touchRows("right")),
             group("touch_buttons", SettingTab.CONTROLS, p5Rows()),
-        )
+            group("function_buttons", SettingTab.CONTROLS, extras.buttonRows()),
+            group("dials", SettingTab.CONTROLS, extras.dialRows()),
+            group("touch_sensitivity", SettingTab.CONTROLS, extras.sensitivityRows()),
+        ) + extras.kit.groups()
+
+    /**
+     * The noise cancelling and Ambient Aware levels (docs/jbl/PROTOCOL.md section 4.17): eight steps, 0 to 7, each slider live only in its own mode as in JBL's app (`AscHaveAncLevelCard`,
+     * `AscStatusWithAncAndAaLevelCard`). Command 91's pairs 04 and A1 on the Harman models, the mode's own feature's level on protocol 4.
+     */
+    private fun levelRows(): List<Setting> = buildList {
+        if (!noiseKnown) return@buildList
+        val p4 = model.family == JblModel.Family.P4
+        val race = model.family == JblModel.Family.AIROHA
+        if (JblExtras.ANC_LEVEL in model.extras) (if (p4) modeLevel[Mode.ANC] else if (race) raceAncLevel else extras.ancLevel)?.takeIf { it in 0..LEVEL_STEPS }?.let { add(Setting.Level(ANC_LEVEL_KEY, it, 0, LEVEL_STEPS, mode == Mode.ANC)) }
+        if (JblExtras.AA_LEVEL in model.extras) (if (p4) modeLevel[Mode.AMBIENT_AWARE] else if (race) raceAaLevel else extras.aaLevel)?.takeIf { it in 0..LEVEL_STEPS }?.let { add(Setting.Level(AA_LEVEL_KEY, it, 0, LEVEL_STEPS, mode == Mode.AMBIENT_AWARE)) }
+    }
+
+    /** A level's write: only in its own mode, since the app's slider is off otherwise. */
+    private fun levelChange(change: SettingChange.Level): List<JblFrame>? {
+        val anc = change.key == ANC_LEVEL_KEY
+        val m = if (anc) Mode.ANC else Mode.AMBIENT_AWARE
+        if (mode != m || change.value !in 0..LEVEL_STEPS) return null
+        if (model.family == JblModel.Family.AIROHA) {
+            // `MmiStage_SetAncAaLevel`: the ANC command's 1E and the step in two bytes sets whichever of the two modes is on.
+            if (anc) raceAncLevel = change.value else raceAaLevel = change.value
+            readBacks += RacePacket.mmiGet(if (anc) JblRace.MMI_ANC else MMI_AA_LEVEL)
+            return listOf(RacePacket.of(JblRace.ANC, 0, RACE_ANC_LEVEL, change.value and 0xFF, change.value shr 8))
+        }
+        if (model.family != JblModel.Family.P4) {
+            readBacks += JblPacket.of(JblCommand.NOISE_MODES, 0x21)
+            return listOf(extras.levelWrite(anc, change.value))
+        }
+        val feature = P4_FEATURES.getValue(m)
+        modeLevel[m] = change.value
+        readBacks += JblP4Packet.get(listOf(feature))
+        val level = JblP4Packet.statusLevel(true, change.value)
+        // `WaveFlex3Control.setAncSetting`: the ambient sound control's status goes with the mode's feature; `General4Control.setAdvanceAnc` writes the feature alone.
+        return if (model.noise == JblModel.Noise.ASC) listOf(JblP4Packet.set(JblP4.FEATURE_AMBIENT_SOUND_CONTROL to JblP4Packet.statusLevel(true, JblP4.IGNORE_LEVEL), feature to level)) else listOf(JblP4Packet.set(feature to level))
+    }
 
     private fun noiseRows(): List<Setting> {
         if (!noiseKnown) return emptyList()
@@ -618,6 +713,7 @@ public class JblSession(initial: JblModel) {
         if (change is SettingChange.Choice && model.airohaGestures != null) {
             AIROHA_TOUCH_KEYS.entries.firstOrNull { it.value == change.key }?.let { return airohaTouch(it.key, change.option) }
         }
+        if (change is SettingChange.Level && (change.key == ANC_LEVEL_KEY || change.key == AA_LEVEL_KEY)) return levelChange(change)
         extras.change(change)?.let { out ->
             extras.readBack(change.key)?.let { readBacks += it }
             return out
@@ -828,6 +924,7 @@ public class JblSession(initial: JblModel) {
         add(RacePacket.of(JblRace.FIRMWARE, RACE_AGENT))
         addAll(raceBatteries())
         if (model.modes.isNotEmpty()) add(RacePacket.mmiGet(JblRace.MMI_ANC))
+        if (JblExtras.AA_LEVEL in model.extras) add(RacePacket.mmiGet(MMI_AA_LEVEL))
         addAll(extras.raceReads())
     }
 
@@ -844,6 +941,9 @@ public class JblSession(initial: JblModel) {
      * and relays of an Airoha PEQ write PairFree built itself are let through by [allowed].
      */
     private fun raceAllowed(p: RacePacket): Boolean = when {
+        // The case's clock: JBL's own Harman frame A7 through the passthrough, as the app writes it on connecting (section 4.13).
+        p.id == JblRace.HM_PASSTHROUGH -> p.payload.size >= 4 && (p.payload[0].toInt() and 0xFF) == 0xAA && ((p.payload[1].toInt() and 0xFF) == JblCommand.SYNC_TIME || JblLeAudio.allowed(p.payload))
+        p.id == JblRace.PERSONIFI_EQ_SET || p.id == JblRace.PERSONIFI_FLOW_SET || p.id == JblRace.PERSONIFI_STATUS_SET -> true
         p.id in JblRace.NEVER_SEND -> false
         p.id == JblRace.KEY_EVENT -> p.payload.size >= 2 && ((p.payload[0].toInt() and 0xFF) or ((p.payload[1].toInt() and 0xFF) shl 8)) in JblRace.KEY_EVENTS
         p.id in RACE_FIRMWARE_UPDATE -> p.id == JblRace.FIRMWARE || p.id == JblRace.AE_INFO
@@ -878,7 +978,12 @@ public class JblSession(initial: JblModel) {
             JblRace.NV_READ -> raceNv(d)
             JblRace.MMI_GET -> if (p.status == 0 && d.isNotEmpty()) {
                 when (p.module) {
-                    JblRace.MMI_ANC -> raceAnc(d.u8(0))
+                    // The filter, then the noise cancelling level in two bytes (`MmiStage_GetAncLevel`); module 7 holds the Ambient Aware level alone (`MmiStage_GetAaLevel`).
+                    JblRace.MMI_ANC -> {
+                        raceAnc(d.u8(0))
+                        if (d.size >= 3) raceAncLevel = d.u8(1) or (d.u8(2) shl 8)
+                    }
+                    MMI_AA_LEVEL -> if (d.size >= 2) raceAaLevel = d.u8(0) or (d.u8(1) shl 8)
                     JblRace.NOTIFY_AGENT_BATTERY -> {
                         if (d.size >= 2) agentRight = d.u8(1) == 1
                         raceBattery(RACE_AGENT, d.u8(0))
@@ -1253,6 +1358,12 @@ public class JblSession(initial: JblModel) {
         const val P4_STATUS16 = 0x8000
         const val P4_LEVEL16 = 0x7FFF
         const val SECONDS_PER_MINUTE = 60
+        /** The Airoha module that answers with the Ambient Aware level (`MmiStage_GetAaLevel`). */
+        const val MMI_AA_LEVEL = 7
+        private const val RACE_ANC_LEVEL = 0x1E
+        const val ANC_LEVEL_KEY = "jbl_anc_level"
+        const val AA_LEVEL_KEY = "jbl_aa_level"
+        const val LEVEL_STEPS = 7
         val P4_FEATURES = mapOf(Mode.ANC to JblP4.FEATURE_ANC, Mode.AMBIENT_AWARE to JblP4.FEATURE_AMBIENT_AWARE, Mode.TALK_THRU to JblP4.FEATURE_TALK_THRU)
         val P4_MODES = P4_FEATURES.entries.associate { it.value to it.key }
         val REPORTED_P4 = setOf(

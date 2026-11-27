@@ -1,0 +1,406 @@
+{
+  "_about": "Original running Sony Sound Connect outgoing setting frames against a synthetic peer. Not hardware validation. Replies are not retained here. See docs/sony/VIRTUAL_TESTING.md for the restricted capabilities and offline navigation intervention.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "com.sony.songpal.mdr",
+    "version": "13.3.0",
+    "apk_modified": false,
+    "hardware_tested": false,
+    "replies_synthetic": true,
+    "installed_apk_sha256": {
+      "base.apk": "58837826f5f145cd0ad9689a298d2bfe9702f4d51d6d4e67d41440175ec0892c",
+      "split_config.xxhdpi.apk": "4056f355442d04be2d344cd29cbaf4496a0384ef33376689204d76ba7ccf98de",
+      "split_config.arm64_v8a.apk": "66d2c16307e558703ec467a01f450c00827de72dd03b12ce31573216025ce05a",
+      "split_config.en.apk": "3296d9a5854f9f2498d87b4b0d6ee61fe611bfaa5b44ea91ffe30c9fd2d74898"
+    }
+  },
+  "cases": [
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060a0c0a0a0a0a",
+      "mdr_payload": "5801ff060a0c0a0a0a0a",
+      "frame": "3e0c010000000a5801ff060a0c0a0a0a0ab33c",
+      "captured_at": "2026-11-07T14:02:41.756802+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060a0a080a0a0a",
+      "mdr_payload": "5801ff060a0a080a0a0a",
+      "frame": "3e0c010000000a5801ff060a0a080a0a0aaf3c",
+      "captured_at": "2026-11-07T14:02:43.159417+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060a0a070a0a0a",
+      "mdr_payload": "5801ff060a0a070a0a0a",
+      "frame": "3e0c000000000a5801ff060a0a070a0a0aad3c",
+      "captured_at": "2026-11-07T14:02:43.267951+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060b0a0a0a0a0a",
+      "mdr_payload": "5801ff060b0a0a0a0a0a",
+      "frame": "3e0c000000000a5801ff060b0a0a0a0a0ab13c",
+      "captured_at": "2026-11-07T14:02:44.397860+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0a0a0a0a0a",
+      "mdr_payload": "5801ff060d0a0a0a0a0a",
+      "frame": "3e0c010000000a5801ff060d0a0a0a0a0ab43c",
+      "captured_at": "2026-11-07T14:02:44.674589+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011000",
+      "mdr_payload": "58011000",
+      "frame": "3e0c0100000004580110007a3c",
+      "captured_at": "2026-11-07T14:04:06.331859+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011100",
+      "mdr_payload": "58011100",
+      "frame": "3e0c0000000004580111007a3c",
+      "captured_at": "2026-11-07T14:04:26.843500+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011200",
+      "mdr_payload": "58011200",
+      "frame": "3e0c0100000004580112007c3c",
+      "captured_at": "2026-11-07T14:04:27.778785+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011300",
+      "mdr_payload": "58011300",
+      "frame": "3e0c0000000004580113007c3c",
+      "captured_at": "2026-11-07T14:04:28.717478+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011400",
+      "mdr_payload": "58011400",
+      "frame": "3e0c0100000004580114007e3c",
+      "captured_at": "2026-11-07T14:04:29.635498+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011500",
+      "mdr_payload": "58011500",
+      "frame": "3e0c0000000004580115007e3c",
+      "captured_at": "2026-11-07T14:04:30.587060+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011600",
+      "mdr_payload": "58011600",
+      "frame": "3e0c010000000458011600803c",
+      "captured_at": "2026-11-07T14:04:31.521607+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "011700",
+      "mdr_payload": "58011700",
+      "frame": "3e0c000000000458011700803c",
+      "captured_at": "2026-11-07T14:04:32.441725+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01a100",
+      "mdr_payload": "5801a100",
+      "frame": "3e0c01000000045801a1000b3c",
+      "captured_at": "2026-11-07T14:04:33.408541+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01a200",
+      "mdr_payload": "5801a200",
+      "frame": "3e0c00000000045801a2000b3c",
+      "captured_at": "2026-11-07T14:04:34.342443+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "010000",
+      "mdr_payload": "58010000",
+      "frame": "3e0c0100000004580100006a3c",
+      "captured_at": "2026-11-07T14:04:35.308720+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060a0b0a0a0a0a",
+      "mdr_payload": "5801ff060a0b0a0a0a0a",
+      "frame": "3e0c000000000a5801ff060a0b0a0a0a0ab13c",
+      "captured_at": "2026-11-07T14:04:45.919903+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "02000202010000",
+      "mdr_payload": "6802000202010000",
+      "frame": "3e0c01000000086802000202010000843c",
+      "captured_at": "2026-11-07T14:06:25.832597+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "02010202010000",
+      "mdr_payload": "6802010202010000",
+      "frame": "3e0c00000000086802010202010000843c",
+      "captured_at": "2026-11-07T14:06:26.825062+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "02100202010000",
+      "mdr_payload": "6802100202010000",
+      "frame": "3e0c01000000086802100202010000943c",
+      "captured_at": "2026-11-07T14:06:27.815761+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "0210020001000a",
+      "mdr_payload": "680210020001000a",
+      "frame": "3e0c0000000008680210020001000a9b3c",
+      "captured_at": "2026-11-07T14:06:27.847055+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "0211020001000a",
+      "mdr_payload": "680211020001000a",
+      "frame": "3e0c0100000008680211020001000a9d3c",
+      "captured_at": "2026-11-07T14:06:27.878704+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "0211020001010a",
+      "mdr_payload": "680211020001010a",
+      "frame": "3e0c0000000008680211020001010a9d3c",
+      "captured_at": "2026-11-07T14:06:37.227182+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "02100200010014",
+      "mdr_payload": "6802100200010014",
+      "frame": "3e0c00000000086802100200010014a53c",
+      "captured_at": "2026-11-07T14:06:38.228478+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "02110200010014",
+      "mdr_payload": "6802110200010014",
+      "frame": "3e0c01000000086802110200010014a73c",
+      "captured_at": "2026-11-07T14:06:38.258464+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "68",
+      "payload": "02110202010000",
+      "mdr_payload": "6802110202010000",
+      "frame": "3e0c00000000086802110202010000943c",
+      "captured_at": "2026-11-07T14:06:39.238352+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060a0c080a0a0a",
+      "mdr_payload": "5801ff060a0c080a0a0a",
+      "frame": "3e0c010000000a5801ff060a0c080a0a0ab13c",
+      "captured_at": "2026-11-07T14:06:56.627552+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060a0c070a0a0a",
+      "mdr_payload": "5801ff060a0c070a0a0a",
+      "frame": "3e0c000000000a5801ff060a0c070a0a0aaf3c",
+      "captured_at": "2026-11-07T14:06:56.721692+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060b0c070a0a0a",
+      "mdr_payload": "5801ff060b0c070a0a0a",
+      "frame": "3e0c000000000a5801ff060b0c070a0a0ab03c",
+      "captured_at": "2026-11-07T14:06:57.830122+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0c070a0a0a",
+      "mdr_payload": "5801ff060d0c070a0a0a",
+      "frame": "3e0c010000000a5801ff060d0c070a0a0ab33c",
+      "captured_at": "2026-11-07T14:06:58.109312+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0c07100a0a",
+      "mdr_payload": "5801ff060d0c07100a0a",
+      "frame": "3e0c010000000a5801ff060d0c07100a0ab93c",
+      "captured_at": "2026-11-07T14:07:20.920789+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0c07140a0a",
+      "mdr_payload": "5801ff060d0c07140a0a",
+      "frame": "3e0c000000000a5801ff060d0c07140a0abc3c",
+      "captured_at": "2026-11-07T14:07:21.124070+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0c0714040a",
+      "mdr_payload": "5801ff060d0c0714040a",
+      "frame": "3e0c000000000a5801ff060d0c0714040ab63c",
+      "captured_at": "2026-11-07T14:07:22.842836+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0c0714000a",
+      "mdr_payload": "5801ff060d0c0714000a",
+      "frame": "3e0c010000000a5801ff060d0c0714000ab33c",
+      "captured_at": "2026-11-07T14:07:23.045953+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0c07140010",
+      "mdr_payload": "5801ff060d0c07140010",
+      "frame": "3e0c010000000a5801ff060d0c07140010b93c",
+      "captured_at": "2026-11-07T14:07:24.770019+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0c07140014",
+      "mdr_payload": "5801ff060d0c07140014",
+      "frame": "3e0c000000000a5801ff060d0c07140014bc3c",
+      "captured_at": "2026-11-07T14:07:24.973556+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0507140014",
+      "mdr_payload": "5801ff060d0507140014",
+      "frame": "3e0c000000000a5801ff060d0507140014b53c",
+      "captured_at": "2026-11-07T14:07:26.708244+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0007140014",
+      "mdr_payload": "5801ff060d0007140014",
+      "frame": "3e0c010000000a5801ff060d0007140014b13c",
+      "captured_at": "2026-11-07T14:07:26.892345+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d000f140014",
+      "mdr_payload": "5801ff060d000f140014",
+      "frame": "3e0c010000000a5801ff060d000f140014b93c",
+      "captured_at": "2026-11-07T14:07:28.622699+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060d0014140014",
+      "mdr_payload": "5801ff060d0014140014",
+      "frame": "3e0c000000000a5801ff060d0014140014bd3c",
+      "captured_at": "2026-11-07T14:07:28.826753+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff060c0014140014",
+      "mdr_payload": "5801ff060c0014140014",
+      "frame": "3e0c000000000a5801ff060c0014140014bc3c",
+      "captured_at": "2026-11-07T14:07:30.298345+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff06040014140014",
+      "mdr_payload": "5801ff06040014140014",
+      "frame": "3e0c010000000a5801ff06040014140014b53c",
+      "captured_at": "2026-11-07T14:07:30.598115+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "model": "WH-1000XM3 / table set 1 synthetic capability profile",
+      "command": "58",
+      "payload": "01ff06000014140014",
+      "mdr_payload": "5801ff06000014140014",
+      "frame": "3e0c000000000a5801ff06000014140014b03c",
+      "captured_at": "2026-11-07T14:07:30.756076+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    }
+  ]
+}

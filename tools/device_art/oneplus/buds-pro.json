@@ -1,0 +1,28 @@
+{
+ "name": "OnePlus Buds 3 / OnePlus Buds 4 / OnePlus Buds Pro / OnePlus Buds Pro 2 / OnePlus Buds Pro 2R / OnePlus Buds Pro 2（轻享版） / OnePlus Buds Pro 3 / OnePlus Buds Pro 4",
+ "names": [
+  "OnePlus Buds 3",
+  "OnePlus Buds 4",
+  "OnePlus Buds Bohr",
+  "OnePlus Buds Pro",
+  "OnePlus Buds Pro 2",
+  "OnePlus Buds Pro 2R",
+  "OnePlus Buds Pro 2（轻享版）",
+  "OnePlus Buds Pro 3",
+  "OnePlus Buds Pro 4"
+ ],
+ "codes": [],
+ "source": "Traced from oneplus_buds_pro_3, the left bud (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": " The Buds 3 and 4 are grouped with the Pro: same stem form.",
+  "body": "239,78 252,79 264,85 286,106 292,101 304,106 314,116 317,124 313,144 301,153 281,155 278,147 261,152 244,148 240,150 240,159 255,228 251,235 238,239 231,237 227,231 208,150 206,129 211,109 224,87",
+  "axis": [
+   261.4,
+   158.7
+  ],
+  "accent": [
+   "244,180 244,200 242,216 239,227 236,231 233,227 231,216 229,200 228,180 229,161 231,144 233,133 236,130 239,133 242,144 244,161"
+  ]
+ },
+ "case": null
+}

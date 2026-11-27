@@ -1,0 +1,26 @@
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Bluetooth name:  QCY T13 ANC2
+Brand:           QCY
+Model:           QCY T13 ANC2 (vendor id 4776)
+Firmware:        0.1.0.2
+App:             PairFree 0.8.0
+OS:              Android 17 (API 37)
+Captured:        2026-11-12 00:49 UTC
+
+The last value of each item and characteristic PairFree read (item or name: value as hex):
+  target 5: 01 02
+  adv 10: 02
+  adv 5: 01
+  adv 12: 32
+  adv 0: 64 64 00
+  version: 30 2e 31 2e 30 2e 32
+  14: ff ff 00 00
+  battery: 64 64 00
+  10: 02
+  09: 02
+  16: 32
+

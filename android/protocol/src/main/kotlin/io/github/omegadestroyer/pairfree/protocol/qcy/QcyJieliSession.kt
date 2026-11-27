@@ -1,10 +1,14 @@
 package io.github.omegadestroyer.pairfree.protocol.qcy
 
+import io.github.omegadestroyer.pairfree.protocol.sortedByKey
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.GattEnvelope
+import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
+import io.github.omegadestroyer.pairfree.protocol.SettingTab
 
 /**
  * One connection to QCY earbuds on a JieLi chip (docs/qcy/PROTOCOL.md section 6). QCY's app talks to them
@@ -21,6 +25,10 @@ import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? = null) : QcyControl {
     private val inner = QcySession(model, advert)
     private val customOnly = model?.protocol == QcyProtocol.JIELI_CUSTOM
+    private val jieliNoise = model?.jieliNoise == true
+    private var keyTable: Map<Int, Int> = emptyMap()   // the touch controls as last read or written, key to QCY's action number
+    private var noiseMode: Int? = null                  // the mode byte of the last noise mode attribute
+    private var noiseRange: List<Int>? = null            // the last noise mode attribute after its mode byte: length, then the minimum, maximum and current gain
     private val parser = RcspParser()
     private var sn = 0
     private val outbox = mutableListOf<ByteArray>()
@@ -28,7 +36,15 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
     private val _replies = linkedMapOf<String, ByteArray>()
 
     override val state: EarbudState get() = inner.state
-    override val groups: List<SettingGroup> get() = inner.groups
+    override val groups: List<SettingGroup>
+        get() {
+            val groups = inner.groups
+            val strength = strengthRows()
+            if (strength.isEmpty()) return groups
+            // The noise group is missing while the shared control has no row of its own to show.
+            return if (groups.any { it.key == NOISE_GROUP }) groups.map { g -> if (g.key == NOISE_GROUP) g.copy(settings = g.settings + strength) else g }
+            else listOf(SettingGroup(NOISE_GROUP, SettingTab.HOME, strength)) + groups
+        }
     override val firmware: String? get() = inner.firmware
     override val replies: Map<String, ByteArray> get() = _replies + inner.replies
     override val service: String get() = JieliWire.SERVICE
@@ -40,25 +56,77 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
 
     private fun bit(type: Int): Int = 1 shl type
 
+    /** The read of JieLi's EQ setting: the public system information with the mask for attribute 4 (`CommandBuilder.buildGetEqValueCmd`). */
+    private fun sysGetEq(): ByteArray {
+        val mask = bit(JieliWire.SYS_EQ)
+        return frame(JieliWire.GET_SYS_INFO, byteArrayOf(JieliWire.SYS_PUBLIC.toByte(), (mask shr 24).toByte(), (mask shr 16).toByte(), (mask shr 8).toByte(), mask.toByte()))
+    }
+
+    /**
+     * The write of JieLi's EQ setting (`CommandBuilder.buildSetEqValueCmd`): attribute 4 with eleven bytes, the EQ type and a gain per band in signed whole dB,
+     * padded with zeros to ten bands. [characteristic] is what QCY's EQ characteristic would carry: the type, then the gains.
+     */
+    private fun sysSetEq(characteristic: ByteArray): ByteArray {
+        val data = ByteArray(11)
+        characteristic.copyInto(data, 0, 0, minOf(characteristic.size, 11))
+        return frame(JieliWire.SET_SYS_INFO, byteArrayOf(JieliWire.SYS_PUBLIC.toByte()) + RcspFrame.ltv(JieliWire.SYS_EQ, data))
+    }
+
     private fun advGet(mask: Int): ByteArray = frame(JieliWire.ADV_GET, byteArrayOf((mask shr 24).toByte(), (mask shr 16).toByte(), (mask shr 8).toByte(), mask.toByte()))
 
     /** On opening: what QCY's session asks for, its reads of the attributes in one. */
     override fun start(): List<ByteArray> = translate(inner.start(), opening = true)
 
-    override fun batteryRequests(): List<ByteArray> = translate(inner.batteryRequests())
+    /**
+     * The battery read, to send again now and then; on the older models, while no EQ has been reported, the EQ read goes with it: QCY's app reads it again when its EQ screen opens, and
+     * the first read at opening, among the others, may have been dropped (issue #75: a T13 ANC2 never showed an equalizer).
+     */
+    override fun batteryRequests(): List<ByteArray> = translate(inner.batteryRequests()) + if (!customOnly && inner.eq == null && model?.eq != null) listOf(sysGetEq()) else emptyList()
 
     override fun takeReadBacks(): List<ByteArray> = translate(inner.takeReadBacks())
 
-    override fun takeOutbox(): List<ByteArray> = outbox.toList().also { outbox.clear() }
+    override fun takeOutbox(): List<ByteArray> = outbox.toList().also { outbox.clear() } + translate(inner.takeOutbox())
+
+    override fun startFitTest(): List<ByteArray>? = inner.startFitTest()?.let(::translate)
 
     override fun set(command: Command, value: Int): List<ByteArray>? = inner.set(command, value)?.let(::translate)
 
-    override fun change(change: SettingChange): List<ByteArray>? = inner.change(change)?.let(::translate)
+    override fun change(change: SettingChange): List<ByteArray>? {
+        if (change is SettingChange.Level && change.key in STRENGTH_KEYS) return strengthWrite(change.value)
+        return inner.change(change)?.let(::translate)
+    }
 
-    /** The parametric EQ only: QCY's items in the custom command; JieLi's own EQ setting is not covered. */
-    override val eq: QcyEq? get() = inner.eq?.takeIf { inner.parametricOnly }
+    /**
+     * The strength of the noise mode in use, on the models whose panel gives that mode a slider (`strength`, the panel's `progress` 100): JieLi's current gain as a
+     * percent of the range the earbuds reported, as QCY's app sets it (`QCYConnectManager.setNoiseLevelPercent`: minimum + (maximum - minimum) * percent / 100).
+     */
+    private fun strengthRows(): List<Setting> {
+        val mode = strengthMode() ?: return emptyList()
+        val range = noiseRange ?: return emptyList()
+        val span = range[2] - range[1]
+        if (span <= 0) return emptyList()
+        return listOf(Setting.Level(if (mode.mode == "transparency") "transparency_strength" else "anc_scene_level", ((range[3] - range[1]) * 100 / span).coerceIn(0, 100), 0, 100))
+    }
 
-    override fun eqCustom(gains: List<Int>): List<ByteArray>? = inner.eqCustom(gains)?.takeIf { inner.parametricOnly }?.let(::translate)
+    private fun strengthMode(): QcyNoiseMode? = noiseMode?.let { m -> model?.anc?.firstOrNull { (m shl 16) in it.from..it.to }?.takeIf { it.strength } }
+
+    private fun strengthWrite(percent: Int): List<ByteArray>? {
+        if (!jieliNoise || strengthMode() == null) return null
+        val range = noiseRange ?: return null
+        val gain = range[1] + (range[2] - range[1]) * percent.coerceIn(0, 100) / 100
+        noiseRange = listOf(range[0], range[1], range[2], gain)
+        return listOf(noiseWrite(noiseMode ?: return null) ?: return null)
+    }
+
+    /**
+     * The parametric EQ, which travels as QCY's items in the custom command, and on the older models JieLi's own EQ setting (system information
+     * attribute 4, [sysGetEq] and [sysSetEq]), which carries what QCY's EQ characteristic does. The newer models keep only the parametric one.
+     */
+    override val eq: QcyEq? get() = inner.eq?.takeIf { inner.parametricOnly || !customOnly }
+
+    override fun eqCustom(gains: List<Int>): List<ByteArray>? = inner.eqCustom(gains)?.takeIf { inner.parametricOnly || !customOnly }?.let(::translate)
+
+    override fun eqPreset(name: String): List<ByteArray>? = inner.eqPreset(name)?.takeIf { inner.parametricOnly }?.let(::translate)
 
     /** The JieLi settings attribute that holds a QCY item on this model, or null when it goes in the custom command. */
     private fun attribute(item: Int): Int? = when (item) {
@@ -66,6 +134,7 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
         QcyItem.GAME_MODE -> JieliWire.ADV_WORK_MODE.takeUnless { customOnly }
         QcyItem.SLEEP_MODE -> JieliWire.ADV_SLEEP_MODE.takeUnless { customOnly }
         QcyItem.BALANCE -> JieliWire.ADV_BALANCE   // on every JieLi model (BtRcspOpImpl.setVolumeBalance)
+        QcyItem.ANC_SETTING -> JieliWire.ADV_NOISE_MODE.takeIf { jieliNoise }   // the control panel's older noise screen: JieLi's own noise mode
         else -> null
     }
 
@@ -93,11 +162,25 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
                         if (customOnly) out += request(QcyItem.VERSION)
                     }
                     QcyWire.BATTERY_SHORT -> if (customOnly) out += request(QcyItem.BATTERY) else mask = mask or bit(JieliWire.ADV_BATTERY)
+                    QcyWire.KEYS_SHORT -> if (customOnly) out += request(QcyItem.KEY_FUNCTION) else mask = mask or bit(JieliWire.ADV_KEY_SETTINGS)
+                    QcyWire.EQ_SHORT -> if (!customOnly) out += sysGetEq()
                 }
+                continue
+            }
+            if (o.short == QcyWire.KEYS_SHORT) {
+                out += keyWrites(o.value)
+                continue
+            }
+            if (o.short == QcyWire.EQ_SHORT) {
+                if (!customOnly) out += sysSetEq(o.value)
                 continue
             }
             if (o.short != QcyWire.COMMAND_SHORT) continue
             for (entry in QcyPacket.parse(o.value)) {
+                if (jieliNoise && entry.item == QcyItem.ANC_SETTING && entry.value.size >= 3) {
+                    noiseWrite(entry.u8(0))?.let { out += it }
+                    continue
+                }
                 if (entry.item == QcyItem.REQUEST && entry.value.isNotEmpty()) {
                     val type = attribute(entry.u8(0))
                     if (type != null) mask = mask or bit(type) else out += custom(entry)
@@ -111,6 +194,32 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
         if (opening) tracked = mask
         if (mask != 0) out += advGet(mask)
         return out
+    }
+
+    /**
+     * The touch controls QCY's session wrote as a whole table, as the keys that changed: a new JieLi device takes one key and action in
+     * the custom command (item 2B), an older one the JieLi key settings attribute with the earbud, the gesture and the action
+     * (QCY's action 0 is 127 there), as QCY's app writes (JLDeviceImpl.setBtnClickFunction).
+     */
+    private fun keyWrites(table: ByteArray): List<ByteArray> {
+        val next = (0 until table.size / 2).associate { (table[it * 2].toInt() and 0xFF) to (table[it * 2 + 1].toInt() and 0xFF) }
+        val out = next.filter { (k, a) -> keyTable[k] != a }.map { (k, a) ->
+            if (customOnly) {
+                custom(QcyEntry(QcyItem.KEY_FUNCTION, byteArrayOf(k.toByte(), a.toByte())))
+            } else {
+                val side = if (k % 2 == 1) 1 else 2
+                frame(JieliWire.ADV_SET, RcspFrame.ltv(JieliWire.ADV_KEY_SETTINGS, byteArrayOf(side.toByte(), ((k + 1) / 2).toByte(), (if (a == 0) KEY_NONE else a).toByte())))
+            }
+        }
+        keyTable = keyTable + next
+        return out
+    }
+
+    /** A noise mode (the panel's number: 1 on, 2 off, 3 transparency) as JieLi's noise mode attribute, with the gains the earbuds last reported (NoiseMode.toData). */
+    private fun noiseWrite(mode: Int): ByteArray? {
+        val range = noiseRange ?: return null
+        fun two(v: Int) = byteArrayOf((v shr 8).toByte(), v.toByte())
+        return frame(JieliWire.ADV_SET, RcspFrame.ltv(JieliWire.ADV_NOISE_MODE, byteArrayOf(mode.toByte(), range[0].toByte()) + two(range[1]) + two(range[2]) + two(range[3])))
     }
 
     /** The firmware version from JieLi's target info: only that attribute, so not the earbuds' address. */
@@ -134,6 +243,9 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
             in JieliWire.NEVER_SEND -> false
             JieliWire.CUSTOM -> QcyPacket.parse(f.payload).none { it.item in QcyItem.NEVER_SEND }
             JieliWire.ADV_SET -> RcspFrame.attributes(f.payload).keys.all { it in WRITABLE }
+            // The only system information PairFree reads or writes is the EQ attribute of the public function, as QCY's app does.
+            JieliWire.GET_SYS_INFO -> f.payload.size == 5 && (f.payload[0].toInt() and 0xFF) == JieliWire.SYS_PUBLIC && f.payload.copyOfRange(1, 5).contentEquals(byteArrayOf(0, 0, 0, bit(JieliWire.SYS_EQ).toByte()))
+            JieliWire.SET_SYS_INFO -> f.payload.size == 14 && (f.payload[0].toInt() and 0xFF) == JieliWire.SYS_PUBLIC && RcspFrame.attributes(f.payload.copyOfRange(1, f.payload.size)).keys == setOf(JieliWire.SYS_EQ)
             else -> f.opcode in SENT
         }
     }
@@ -148,8 +260,13 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
                 // on the older models read the attributes again when the earbuds ask for it (C4), as QCY's app does.
                 if (f.wantsAnswer) outbox += GattEnvelope.write(JieliWire.WRITE_SHORT, RcspFrame.answer(f).bytes())
                 if (f.opcode == JieliWire.CUSTOM) changed = items(f.payload) || changed
+                if (f.opcode == JieliWire.SYS_INFO_AUTO_UPDATE) changed = systemInfo(f.payload) || changed
                 if (f.opcode == JieliWire.ADV_REQUEST_OPERATION && !customOnly && tracked != 0) outbox += advGet(tracked)
                 continue
+            }
+            // What the earbuds said to the read or write of the EQ setting, kept for the device report whatever it was: older QCY models' EQ has not been seen answering yet (issue #75).
+            if (f.opcode == JieliWire.GET_SYS_INFO || f.opcode == JieliWire.SET_SYS_INFO) {
+                _replies["sys ${if (f.opcode == JieliWire.GET_SYS_INFO) "read" else "write"} status ${f.status}"] = f.payload.copyOf(minOf(f.payload.size, 16))
             }
             if (f.status != 0) continue
             when (f.opcode) {
@@ -162,6 +279,7 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
                     changed = inner.receive(GattEnvelope.received(QcyWire.VERSION_SHORT, version.encodeToByteArray())) || changed
                 }
                 JieliWire.ADV_GET -> changed = attributes(RcspFrame.attributes(f.payload)) || changed
+                JieliWire.GET_SYS_INFO -> changed = systemInfo(f.payload) || changed
                 JieliWire.CUSTOM -> changed = items(f.payload) || changed
             }
         }
@@ -180,11 +298,28 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
             when (e.item) {
                 QcyItem.BATTERY -> changed = inner.receive(GattEnvelope.received(QcyWire.BATTERY_SHORT, e.value)) || changed
                 QcyItem.VERSION -> changed = inner.receive(GattEnvelope.received(QcyWire.VERSION_SHORT, e.value)) || changed
+                QcyItem.KEY_FUNCTION -> {
+                    keyTable = keyTable + (0 until e.value.size / 2).associate { e.u8(it * 2) to e.u8(it * 2 + 1) }
+                    rest += e
+                }
                 else -> rest += e
             }
         }
         if (rest.isNotEmpty()) changed = inner.receive(GattEnvelope.received(QcyWire.SETTINGS_SHORT, QcyPacket.build(*rest.toTypedArray()))) || changed
         return changed
+    }
+
+    /**
+     * System information as the earbuds sent it, after a read or on their own: the function, then attributes. Only the EQ (attribute 4: the type and ten gains)
+     * is used; it is the content of QCY's EQ characteristic (`ParseHelper.convertToEqInfo`, then `EQDataBean`).
+     */
+    private fun systemInfo(payload: ByteArray): Boolean {
+        if (payload.size < 2 || (payload[0].toInt() and 0xFF) != JieliWire.SYS_PUBLIC) return false
+        val eq = RcspFrame.attributes(payload.copyOfRange(1, payload.size))[JieliWire.SYS_EQ]?.takeIf { it.isNotEmpty() } ?: return false
+        _replies["sys ${JieliWire.SYS_EQ}"] = eq.copyOf()
+        // A short value (no gains) is the type alone: QCY's app fills the gains with zeros.
+        val value = if (eq.size >= 11) eq else eq.copyOf(11)
+        return inner.receive(GattEnvelope.received(QcyWire.EQ_SHORT, value))
     }
 
     /** JieLi's settings attributes as the QCY items QCY's session reads. */
@@ -197,6 +332,27 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
             when (type) {
                 JieliWire.ADV_BATTERY -> changed = inner.receive(GattEnvelope.received(QcyWire.BATTERY_SHORT, v.copyOf(3))) || changed
                 JieliWire.ADV_WORK_MODE -> entries += QcyEntry(QcyItem.GAME_MODE, byteArrayOf(if (v[0] == WORK_GAME) 1 else 2))
+                JieliWire.ADV_NOISE_MODE -> if (jieliNoise) {
+                    // Mode, the length of what follows, then the minimum, maximum and current gain in two bytes each (NoiseMode.parseData).
+                    fun two(at: Int) = if (at + 1 < v.size) ((v[at].toInt() and 0xFF) shl 8) or (v[at + 1].toInt() and 0xFF) else 0
+                    val length = if (v.size > 1) v[1].toInt() and 0xFF else 0
+                    noiseMode = v[0].toInt() and 0xFF
+                    noiseRange = listOf(length, two(2), two(4), two(6))
+                    entries += QcyEntry(QcyItem.ANC_SETTING, byteArrayOf(v[0], 0, 0))
+                }
+                JieliWire.ADV_KEY_SETTINGS -> {
+                    // Triples of earbud (1 left, 2 right), gesture (1 tap, 2 double, 3 triple, 4, 5 hold) and action (127 is none), as QCY's key numbers.
+                    val unsorted = mutableMapOf<Int, Int>()
+                    for (at in 0 until v.size / 3) {
+                        val side = v[at * 3].toInt() and 0xFF
+                        val gesture = v[at * 3 + 1].toInt() and 0xFF
+                        val action = v[at * 3 + 2].toInt() and 0xFF
+                        if (side in 1..2 && gesture in 1..5) unsorted[gesture * 2 - 2 + side] = if (action == KEY_NONE) 0 else action
+                    }
+                    val table = unsorted.sortedByKey()
+                    keyTable = keyTable + table
+                    entries += QcyEntry(QcyItem.KEY_FUNCTION, table.flatMap { (k, a) -> listOf(k.toByte(), a.toByte()) }.toByteArray())
+                }
                 JieliWire.ADV_IN_EAR -> entries += QcyEntry(QcyItem.IN_EAR, byteArrayOf(v[0]))
                 JieliWire.ADV_SLEEP_MODE -> entries += QcyEntry(QcyItem.SLEEP_MODE, byteArrayOf(v[0]))
                 JieliWire.ADV_BALANCE -> entries += QcyEntry(QcyItem.BALANCE, byteArrayOf(v[0]))
@@ -209,9 +365,12 @@ public class QcyJieliSession(override val model: QcyModel?, advert: QcyAdvert? =
     private companion object {
         const val WORK_NORMAL: Byte = 1
         const val WORK_GAME: Byte = 2
+        const val KEY_NONE = 127
+        const val NOISE_GROUP = "noise"
+        val STRENGTH_KEYS = setOf("anc_scene_level", "transparency_strength")
 
         /** The settings attributes PairFree writes. */
-        val WRITABLE = setOf(JieliWire.ADV_IN_EAR, JieliWire.ADV_WORK_MODE, JieliWire.ADV_SLEEP_MODE, JieliWire.ADV_BALANCE)
+        val WRITABLE = setOf(JieliWire.ADV_IN_EAR, JieliWire.ADV_WORK_MODE, JieliWire.ADV_SLEEP_MODE, JieliWire.ADV_BALANCE, JieliWire.ADV_KEY_SETTINGS, JieliWire.ADV_NOISE_MODE)
 
         /** The other commands PairFree sends. */
         val SENT = setOf(JieliWire.GET_TARGET_INFO, JieliWire.ADV_GET)

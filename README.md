@@ -1,259 +1,185 @@
-# PairFree
+# PairFree: open-source app for earbuds and headphones, on Android and Windows
 
-PairFree aims to be one app for the settings of nearly any earbuds and headphones. It
-replaces heavy, brand-specific apps with a light, fast one that talks to your earbuds
-directly over Bluetooth.
+PairFree is a free, open-source app that controls wireless earbuds and headphones of many brands from one place, on **Android and on Windows**. It
+is an alternative to the Soundcore, Bose Music, JBL Headphones, Sony | Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio (SOUNDPEATS), QCY,
+1MORE, EarFun, Melomania (Cambridge Audio), Sennheiser Smart Control, Jabra Sound+, Skullcandy and HeyMelody (OnePlus and OPPO) apps, and a way to change AirPods
+and Pixel Buds settings on Android: noise cancelling, the equalizer, touch controls and more, with no account and no internet.
+
+## Now on Windows
+
+**Almost none of these earbuds and headphones has an app for Windows.** Their settings (noise cancelling, the equalizer, touch controls) can only be
+changed from a phone, and a PC is left with plain Bluetooth audio. PairFree for Windows changes that: one small portable program, no installer, that
+does what the Android app does for the same earbuds, in a window made for a mouse, with a tray icon for the battery and quick switches.
+[Everything about it is on its page](docs/WINDOWS.md).
+
+## Get it
+
+| | |
+|---|---|
+| **Android** 12 or later | [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) or the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest) (the same signed APK) |
+| **Windows** 10 or 11, 64-bit | `PairFree.exe` from the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest). Put it anywhere and run it. |
+
+Latest release: v0.18.0. Your earbuds must be paired in the phone's or PC's Bluetooth settings first. A few brands need a newer Android:
+AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel
+([AirPods and Beats](docs/devices/apple.md)); they are not on Windows.
 
 ## Why PairFree
 
-- **No account.** Nothing to sign up for or log in to.
-- **No internet.** The app does not have the internet permission, so it cannot go online.
-- **Nothing leaves your phone** unless you share it yourself, such as a device report or an
-  equalizer profile. No ads, no analytics, no crash reports, no cloud backup of your
-  settings.
-- **One app to rule them all.** Every brand gets the same screens, so one app replaces a
-  drawer full of vendor apps.
-- **Few permissions.** Bluetooth, to talk to earbuds you have already paired, and
-  notifications for the optional status notification. For JBL and QCY models alone, finding
-  nearby devices, asked for only when you open one: they take their settings over Bluetooth LE,
-  and may have to be looked for that way. PairFree tells Android it never uses that for your
-  location. No location, no contacts.
-- **Small and quick.** About 3 MB, with no login and no server to wait for.
-- **Open source.** GPL-3.0. Every protocol is documented in this repo with tests, so anyone
-  can check what the app sends to their earbuds.
-- **Reproducible builds.** The published APK can be rebuilt from the source and checked byte
-  for byte, apart from the signature.
+- **No account, no internet.** Nothing to sign up for. The Android app does not even have the internet permission.
+- **Nothing leaves your phone or PC** unless you share it yourself, such as a device report or an equalizer profile. No ads, no analytics, no crash
+  reports. (The Windows program asks once whether it may look for updates on GitHub, and does nothing else online.)
+- **One app instead of a drawer full of them.** Every brand gets the same screens.
+- **Light and quick.** About 6 MB on Android and 16 MB on Windows, with no login and no server to wait for.
+- **Open source** (GPL-3.0), with every protocol documented and tested, and reproducible builds.
+- **Your look.** Four are built in, and they follow through the screens, the device drawings and the widget (below).
 - **Your equalizer, as files.** Save your own curves, and export and share them.
-- **Grows with its users.** Anyone can help add a new model by sending in a device report
-  (see [Help add your model](#help-add-your-model)).
 
 ## What it controls
 
 Each model shows only what it has:
 
 - Battery for each earbud and the case.
-- Noise control: off, noise cancelling, transparency or ambient sound, with their scenes and
-  levels.
+- Noise control: off, noise cancelling, transparency or ambient sound, with their scenes and levels.
 - The equalizer: the brand's presets, your own curves and saved profiles.
 - Touch controls: what each tap and hold does on each earbud, and turning touch off.
 - Game mode, two devices at once, LDAC and LE Audio.
-- The ear tip fit test, find my earbuds, voice prompts and water drain.
-- Settings only one brand has, such as each Galaxy Bud's ambient sound level, voice detect,
-  Sony's speak-to-chat and DSEE upscaling, Bose's listening modes, JBL's TalkThru, or the
-  AirPods' Conversation Awareness.
-- A status notification with the battery and buttons for noise control and game mode, in
-  place of Google's Fast Pair notification if you like.
+- The ear tip fit test and a seal check, find my earbuds, voice prompts and water drain.
+- Hearing tests that turn what you hear into an equalizer curve, and an A/B sound finder that tunes a curve by asking which of two sounds you prefer.
+- Settings only one brand has, such as Sony's speak-to-chat, Bose's listening modes, JBL's TalkThru or the AirPods' Conversation Awareness.
 
-PairFree needs Android 12 or later. AirPods need Android 17, or one of the few phones on
-Android 16 that already open their settings channel ([AirPods and Beats](docs/devices/apple.md)).
-
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS,
-Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its CMF brand), Google, QCY, 1MORE or EarFun. It was called SoundPeter until version 0.1.3, when it was still an app for
-SOUNDPEATS earbuds alone.
+## On Android
 
 <p>
-  <img src="docs/screenshots/home.png" width="250" alt="Home: battery for each earbud and the case, noise control and scenes, the sound profile, and quick switches">
-  <img src="docs/screenshots/sound.png" width="250" alt="Sound: the 10-band equalizer with a saved profile">
-  <img src="docs/screenshots/sound-preset.png" width="250" alt="Sound: one of the official presets">
-  <img src="docs/screenshots/controls.png" width="250" alt="Controls: what each tap and hold does, per earbud">
-  <img src="docs/screenshots/device.png" width="250" alt="Device: connection, the ear tip fit test, voice prompts">
-  <img src="docs/screenshots/fit-test.png" width="250" alt="Fit test: a good fit on both earbuds">
+  <img src="docs/screenshots/android-home.png" width="250" alt="Home: battery for each earbud and the case, noise control and scenes, the sound profile and quick switches">
+  <img src="docs/screenshots/android-sound.png" width="250" alt="Sound: the equalizer with a saved profile">
 </p>
 
-Screenshots with a SOUNDPEATS H3, using replies recorded from real earbuds.
+Home shows the battery and the quick switches; Sound is the equalizer. Controls (touch controls) and Device (the earbuds' own settings, the tests and the
+report) are the other two tabs. Screenshots with a SOUNDPEATS H3, using replies recorded from real earbuds.
 
-## Status
+Outside the app, a **home screen widget** and a **status notification** switch noise control and equalizer profiles without opening it:
 
-Early, and growing one brand at a time. Most models have not been tried on real earbuds yet.
-Their support comes from other open-source projects that worked out each brand's protocol,
-and from reports their owners send in. Each brand's page shows which models have been tried.
+<p>
+  <img src="docs/screenshots/widget.png" width="400" alt="The home screen widget: the battery and buttons for noise control and equalizer profiles">
+  <img src="docs/screenshots/notification.png" width="400" alt="The status notification: the battery and buttons for noise control and game mode">
+</p>
 
-| Piece                 | State |
-|-----------------------|-------|
-| Android app           | Released (v0.7.2) for SOUNDPEATS, Soundcore, Galaxy Buds, Sony, Bose, JBL, AirPods and Beats, Nothing and CMF, Google Pixel Buds, QCY, 1MORE, EarFun. |
-| Tried on real earbuds | By the project's owner: SOUNDPEATS H3 and Air5 Pro+, Soundcore Space A40. From users' device reports: SOUNDPEATS C30 and TRUEFREE Clip C10, Soundcore AeroClip, Q20i and Sleep A20, JBL Live Buds 3, Google Pixel Buds Pro. The table below is kept up to date from each brand's page. |
-| Protocols             | One document, data set and test suite per brand, in `docs/<brand>/` and `data/<brand>/` |
-| iOS and Windows apps  | Planned, after Android |
-| Firmware update       | Planned for Qualcomm-based models, opt-in |
+## On Windows
+
+<p>
+  <img src="docs/screenshots/windows-home.png" width="420" alt="PairFree on Windows, Home: battery, noise control and quick switches">
+  <img src="docs/screenshots/windows-sound.png" width="420" alt="PairFree on Windows, Sound: the equalizer with its graph and profiles">
+</p>
+
+The same screens and the same earbuds' settings, laid out for a window: a sidebar for the tabs, a draggable equalizer graph, and a tray icon with the
+battery and a menu for noise control and equalizer profiles. Settings live in one readable file, `PairFree.toml`, beside the program. It needs Windows 10
+(version 1809) or 11 and the earbuds paired in Windows' Bluetooth settings; every brand is there except AirPods and the Beats on Apple's chips, which
+Windows gives programs no way to reach. See [PairFree for Windows](docs/WINDOWS.md).
+
+## Looks
+
+The screens, the device drawings and the widget follow the look you choose: Studio (dark, the default), Studio Light, **Material You** (your phone's own
+colours; on Windows, its accent colour) and **Sketchbook** (hand-drawn). A new look is one file added by pull request ([docs/LOOKS.md](docs/LOOKS.md)).
+
+<p>
+  <img src="docs/screenshots/look-studio-light.png" width="250" alt="The Studio Light look">
+  <img src="docs/screenshots/look-material-you.png" width="250" alt="The Material You look">
+  <img src="docs/screenshots/look-sketchbook.png" width="250" alt="The Sketchbook look">
+</p>
+
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its
+CMF brand), Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, OnePlus or OPPO.
 
 ## Supported brands
 
-Each brand has a page listing every model PairFree knows and what works on each.
+Each brand has a page listing every model PairFree knows and what works on each. Most models have not been tried on real earbuds yet: their support
+comes from the brands' own apps, other open-source projects and the reports of people who own them, and each page says which ones have been tried.
 
 <!-- devices-summary:start (generated by tools/device_pages.py; do not edit) -->
 | Brand | Models | Tried on real earbuds |
 |-------|--------|-----------------------|
-| [SOUNDPEATS](docs/devices/soundpeats.md) | 88 | Air5 Pro+, C30, H3, TRUEFREE Clip C10 |
-| [Soundcore (Anker)](docs/devices/soundcore.md) | 66 | AeroClip, Q20I, Sleep A20, Space A40 |
+| [SOUNDPEATS](docs/devices/soundpeats.md) | 88 | Air5 Pro+, C30, H3, T3 Pro, TRUEFREE Clip C10 |
+| [Soundcore (Anker)](docs/devices/soundcore.md) | 83 | AeroClip, P30i, R50i NC, Q20I, Sleep A20, Space A40 |
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
-| [Sony](docs/devices/sony.md) | 24 | — |
+| [Sony](docs/devices/sony.md) | 24 | WF-1000XM5, WF-1000XM6 |
 | [Bose](docs/devices/bose.md) | 22 | — |
 | [JBL](docs/devices/jbl.md) | 112 | Live Buds 3 |
-| [AirPods and Beats](docs/devices/apple.md) | 30 | — |
-| [Nothing and CMF](docs/devices/nothing.md) | 19 | — |
+| [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Pro 3 |
+| [Nothing and CMF](docs/devices/nothing.md) | 19 | Nothing Ear |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
-| [QCY](docs/devices/qcy.md) | 171 | — |
-| [1MORE](docs/devices/1more.md) | 39 | — |
+| [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY MeloBuds Pro, QCY T13 ANC2 |
+| [1MORE](docs/devices/1more.md) | 48 | — |
 | [EarFun](docs/devices/earfun.md) | 26 | — |
-| **Total: 12 brands** | **618** | **10 tried** |
+| [Cambridge Audio](docs/devices/cambridge.md) | 8 | — |
+| [OnePlus and OPPO](docs/devices/oneplus.md) | 53 | OnePlus Buds 4 |
+| [Sennheiser](docs/devices/sennheiser.md) | 28 | Momentum 5 Wireless |
+| [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
+| [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
+| **Total: 17 brands** | **846** | **22 tried** |
 <!-- devices-summary:end -->
-
-**LDAC on Samsung phones:** turning LDAC on in PairFree makes the earbuds offer it, but the phone picks
-the codec. Samsung phones can also need LDAC turned on for the earbuds in their own Bluetooth settings
-(tap the gear next to the earbuds); other phones may have a similar switch. PairFree reminds you when you turn
-LDAC on: [details](docs/devices/soundpeats.md#ldac-on-samsung-phones).
-
-## What is in the repo
-
-Each brand has its own folders, named after the brand: `docs/<brand>/`, `data/<brand>/`,
-`assets/devices/<brand>/` and `tools/device_art/<brand>/`.
-
-| Path                      | What it is                                                        |
-|---------------------------|-------------------------------------------------------------------|
-| `docs/DESIGN.md`          | The app design: requirements, the Studio look, screens            |
-| `docs/UPSTREAM.md`        | Where the brands' own apps or recordings differ from other open-source projects |
-| `docs/devices/`           | One page per brand: every model PairFree knows and what works on each |
-| `docs/<brand>/PROTOCOL.md` | The brand's protocol: transport, frames, commands, EQ and more  |
-| `data/<brand>/commands.json` | The brand's command table in machine-readable form. Apps load or mirror this. |
-| `data/<brand>/devices.json` | Known models and their per-model details                        |
-| `data/<brand>/test_vectors.json` | Frames every implementation must reproduce byte for byte   |
-| `data/<brand>/reports/`   | Device reports and recordings from real earbuds, one file per model and firmware |
-| `data/soundpeats/qcy_commands.json` | The separate protocol for the SOUNDPEATS Capsule3 Pro   |
-| `data/soundcore/eq_presets.json`, `button_actions.json` | Soundcore EQ presets and touch actions, from OpenSCQ30 |
-| `data/samsung/messages.json` | The Galaxy Buds message table, from GalaxyBudsClient          |
-| `data/sony/functions.json`, `eq_presets.json` | What Sony earbuds list they have, and Sony's EQ presets, from Sony's app |
-| `data/bose/commands.json` | Bose's BMAP function table, from Bose's app                      |
-| `data/jbl/commands.json`  | The Harman commands PairFree uses with JBL models, from JBL's app |
-| `data/apple/commands.json` | Apple's accessory protocol as PairFree uses it with AirPods, from LibrePods |
-| `data/nothing/commands.json` | Nothing's command table, from Nothing X                      |
-| `data/pixel/commands.json` | The Pixel Buds' transports, settings and EQ presets, from Google's Pixel Buds app |
-| `data/qcy/commands.json`  | QCY's Bluetooth LE service and packet items, from QCY's app       |
-| `data/1more/commands.json` | 1MORE's command table, from 1MORE's app                          |
-| `data/earfun/commands.json`, `eq_presets.json` | EarFun's two command sets and its EQ presets, from EarFun's app |
-| `tools/probe.py`          | Read-only probe for SOUNDPEATS earbuds. Asks them what they support. |
-| `tools/import_eq_capture.py` | Turns the equalizer part of a recording from PeatsAudio into a model's EQ data. |
-| `tools/import_openscq30.py` | Refreshes the Soundcore model list from a local copy of OpenSCQ30. |
-| `tools/import_galaxybudsclient.py` | Refreshes the Galaxy Buds model list from a local copy of GalaxyBudsClient. |
-| `tools/import_1more_list.py` | Rewrites the 1MORE model list from a saved copy of 1MORE's product list. It fetches nothing. |
-| `tools/device_pages.py`   | Writes the tables on the device pages and the summary above, with `gen_models_table.py` (SOUNDPEATS), `gen_soundcore_table.py` (Soundcore), `gen_samsung_table.py` (Samsung), `gen_sony_table.py` (Sony), `gen_bose_table.py` (Bose), `gen_jbl_table.py` (JBL), `gen_apple_table.py` (AirPods and Beats), `gen_nothing_table.py` (Nothing and CMF), `gen_pixel_table.py` (Pixel Buds), `gen_qcy_table.py` (QCY) and `gen_1more_table.py` (1MORE), `gen_earfun_table.py` (EarFun). |
-| `tools/fetch_server_data.py` | Owner-only research tool for SoundPEATS' server. The server now refuses it (authentication), so it gets nothing. |
-| `tools/test_*.py`         | Tests for the tools and the data files. No hardware needed.       |
-| `assets/devices/<brand>/` | Vector drawings of each model's earbud and case, per look         |
-| `tools/gen_device_art.py` | Generates those drawings. Edit the shapes there, not the SVG files. |
-| `tools/device_art/<brand>/` | Traced outlines for each model, read by `gen_device_art.py`     |
-| `android/`                | The Android app. `protocol/` is the protocol core, `app/` the app. |
 
 ## Help add your model
 
-One report from someone who owns a model adds it to its brand's page
-([Supported brands](#supported-brands)) for everyone. There are three ways to make one. The
-first, a recording of the brand's own app, gives the most.
+Own earbuds or headphones that are not marked as tried? One report from you adds your model for everyone. A **device report** is a short text listing what your
+earbuds say they can do and what they answered, with serial numbers and addresses hidden. It lets the project confirm your model works, correct settings that
+differ, and credit you in [CONTRIBUTORS.md](CONTRIBUTORS.md).
+
+**To send one:**
+
+1. Connect your earbuds in PairFree and open the **Device** tab.
+2. Tap **Copy device report**.
+3. [Open a new issue](https://github.com/Omega-Destroyer/PairFree/issues/new) and paste it. Say what worked and what did not.
+
+If PairFree cannot connect, the connect screen has **Copy connection report**: paste that instead.
 
 ### Record from the official app
 
-This gathers everything in one go, from the brand's own app: PeatsAudio (or SOUNDPEATS) for
-SOUNDPEATS earbuds, Soundcore for Soundcore earbuds, Galaxy Wearable for Galaxy Buds, Sound
-Connect for Sony earbuds and headphones, Nothing X for Nothing and CMF (not yet Bose, JBL, AirPods, Beats, QCY, 1MORE or EarFun: see their pages). It records what that app
-reads from your earbuds and what it sends when you change a setting, which shows exactly how PairFree should set it, and adds PairFree's own device report. On
-SOUNDPEATS earbuds it also gets the equalizer curves and presets. It takes about ten minutes
-on your phone, with no computer.
+Want to help more? If the brand's own app works with your earbuds, PairFree can record what that app sends when you change a setting, which shows exactly how
+to set it. In PairFree, open the Device tab and tap **Record from the official app**; it walks you through it in about ten minutes, with no computer. It reads
+the Bluetooth log only on your phone and the report it makes has no names or addresses. **Do not attach the Android bug report itself to the issue**: issues
+are public, and a bug report holds far more than Bluetooth messages.
 
-In PairFree, open the Device tab and tap **Record from the official app** (or the button on
-the Sound tab). It walks you through it:
+## Translating PairFree
 
-1. Turn on Developer options and set **Bluetooth HCI snoop log** to **Enabled**.
-2. In the official app, open each screen once. Then change each setting you want PairFree to
-   learn, one at a time and a few seconds apart, and note what you changed. On SOUNDPEATS
-   earbuds, also run PeatsAudio's fit test if it has one, and tap SOUNDPEATS Classic and
-   every other EQ preset once.
-3. Take a bug report from Developer options (**Take bug report**, then **Full report**).
-   **It takes several minutes, and Android shows nothing while it works: wait for the
-   notification that says it is ready.** Then tap it and share it to PairFree.
-4. On SOUNDPEATS earbuds, name each EQ curve PairFree found. Tap **Send on GitHub**, and
-   write in the report what you changed in the official app, in order.
+PairFree's text is in one file, and a translation is a copy of it with the texts changed; the app then offers the language by itself. A partial translation works:
+what it lacks shows in English. See [docs/TRANSLATING.md](docs/TRANSLATING.md).
 
-PairFree reads the bug report only on your phone and keeps nothing but the messages
-exchanged with your earbuds. The report you send has no names or addresses: it shows only
-the messages PairFree knows, with the earbuds' address and serial number masked, and of the
-others little more than their number and size. Afterwards, turn the snoop log off and
-delete the bug report. **Do not attach the bug report itself to the issue:** issues are public,
-and a bug report holds far more than Bluetooth messages (your accounts, apps, places and the like).
-If the project needs more than PairFree's report, it will ask in the issue.
+## For developers
 
-### Copy device report
+How it is built, what is in the repository, running the tests and the PC probe: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). The design is in
+[docs/DESIGN.md](docs/DESIGN.md) and each brand's protocol in `docs/<brand>/PROTOCOL.md`.
 
-Quicker, and no official app needed, but it holds only what the earbuds report: no
-equalizer curves, and nothing of how the official app changes a setting. Connect the earbuds in PairFree,
-tap **Copy device report** on the Device tab, and paste it into a new issue. It lists every
-setting PairFree can read and what the earbuds answered. On Soundcore earbuds it holds the
-earbuds' whole state reply, with the serial number masked, which checks the model's row in
-the [Soundcore table](docs/devices/soundcore.md#all-models). On Galaxy Buds it holds their
-whole state, as bytes and as PairFree read it, for the
-[Samsung table](docs/devices/samsung.md#all-models). On Sony earbuds and headphones it lists the
-functions they report and the last message of each kind they sent, for the
-[Sony table](docs/devices/sony.md#all-models). On Bose headphones and earbuds it lists the
-product, the firmware and each read's last answer, for the [Bose table](docs/devices/bose.md#all-models),
-and on JBL's the same for the [JBL table](docs/devices/jbl.md#all-models). On AirPods and Beats it lists
-the model number, firmware, battery and the settings they reported, for the
-[AirPods and Beats table](docs/devices/apple.md#all-models). On Nothing and CMF earbuds and headphones it
-lists the product, the firmware and each read's last answer, for the
-[Nothing and CMF table](docs/devices/nothing.md#all-models), and on Pixel Buds the model, the firmware and
-each setting's last answer, for the [Pixel Buds table](docs/devices/pixel.md#all-models). On QCY earbuds it lists the model the
-earbuds advertise, the firmware and the last value of each setting PairFree read, for the
-[QCY table](docs/devices/qcy.md#all-models). On 1MORE earbuds and headphones it lists the model, the
-firmware and each read's last answer, for the [1MORE table](docs/devices/1more.md#all-models), and on
-EarFun's the same for the [EarFun table](docs/devices/earfun.md#all-models).
+## Brand websites
 
-### Probe from a PC
+<!-- site-links:start (generated by tools/gen_site.py; do not edit) -->
+Each brand also has a page on the [web site](https://omega-destroyer.github.io/PairFree/):
 
-The same information as Copy device report, for SOUNDPEATS earbuds, from a PC with Bluetooth
-and Python 3.9 or newer.
-
-1. Pair the earbuds with the PC.
-2. Close PeatsAudio on your phone. Only one client can hold the connection.
-3. Run:
-
-   ```
-   python tools/probe.py --mac AA:BB:CC:DD:EE:FF
-   ```
-
-   On Windows, if the earbuds show up as a COM port:
-
-   ```
-   pip install pyserial
-   python tools/probe.py --port COM5
-   ```
-
-4. Open a device report issue and paste the output.
-
-The probe only sends read commands. It does not change any setting.
-
-## Running the tests
-
-```
-python -m unittest discover -s tools -v
-```
-
-The Android protocol module runs the same test vectors. It needs JDK 17 or newer and
-the Android SDK; Android Studio brings both.
-
-```
-cd android
-./gradlew :protocol:test
-```
-
-## Ground rules
-
-- No decompiled code, vendor SDKs, firmware images or server keys in this repo.
-  Everything here is written from the protocol description.
-- Commands that reset, reboot or flash the earbuds are never sent without an
-  explicit confirmation from the person holding them.
+- [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/)
+- [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/)
+- [Open-source Bose app (a Bose Music alternative)](https://omega-destroyer.github.io/PairFree/open-source-bose-app/)
+- [Open-source JBL Headphones app alternative](https://omega-destroyer.github.io/PairFree/open-source-jbl-app/)
+- [Open-source Sony headphones app (a Sound Connect alternative)](https://omega-destroyer.github.io/PairFree/open-source-sony-app/)
+- [Open-source Galaxy Buds app (without Galaxy Wearable)](https://omega-destroyer.github.io/PairFree/open-source-galaxy-buds-app/)
+- [Open-source AirPods app for Android (noise control and settings)](https://omega-destroyer.github.io/PairFree/open-source-airpods-beats-app/)
+- [Open-source Nothing X app alternative (Nothing Ear and CMF Buds)](https://omega-destroyer.github.io/PairFree/open-source-nothing-app/)
+- [Open-source Pixel Buds app (for Android phones that are not Pixels)](https://omega-destroyer.github.io/PairFree/open-source-pixel-buds-app/)
+- [Open-source QCY app alternative](https://omega-destroyer.github.io/PairFree/open-source-qcy-app/)
+- [Open-source 1MORE app alternative](https://omega-destroyer.github.io/PairFree/open-source-1more-app/)
+- [Open-source EarFun app alternative (EarFun Audio)](https://omega-destroyer.github.io/PairFree/open-source-earfun-app/)
+- [Open-source Cambridge Audio Melomania app alternative](https://omega-destroyer.github.io/PairFree/open-source-cambridge-app/)
+- [Open-source Sennheiser Smart Control alternative](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/)
+- [Open-source Jabra Sound+ alternative](https://omega-destroyer.github.io/PairFree/open-source-jabra-app/)
+- [Open-source Skullcandy app alternative](https://omega-destroyer.github.io/PairFree/open-source-skullcandy-app/)
+- [Open-source HeyMelody alternative for OnePlus and OPPO earbuds](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/)
+<!-- site-links:end -->
 
 ## Credits
 
 - [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) by Kyle Scheuing (GPL-3.0-or-later): the
   Soundcore protocol, model list and per-model features that PairFree's Soundcore support is
   ported from. Code ported from it says so where it is.
+- [FFmpeg](https://ffmpeg.org) (LGPL-2.1-or-later), whose SBC encoder (from BlueZ's SBC codec) PairFree's
+  mono SBC encoder for the Soundcore Sleep A30's sounds is ported from (`SbcEncoder.kt`).
 - [GalaxyBudsClient](https://github.com/timschneeb/GalaxyBudsClient) by Tim Schneeberger (GPLv3):
   the Galaxy Buds protocol, model list, per-model features and state layouts that PairFree's
   Samsung support is ported from. Code ported from it says so where it is.
@@ -289,7 +215,7 @@ cd android
   app.
 - [Quicky](https://github.com/hui1601/Quicky) by hui1601: QCY's product list and the features of each
   model, and its protocol notes. Facts only; it has no licence, and none of its code is in PairFree.
-- [IBM Plex](https://github.com/IBM/plex) fonts (SIL Open Font License 1.1).
+- [IBM Plex](https://github.com/IBM/plex) fonts, and for the Sketchbook look [Fredoka](https://github.com/hafontia/Fredoka-One) and [Nunito](https://github.com/googlefonts/nunito) (all SIL Open Font License 1.1).
 
 ## License
 
@@ -299,3 +225,7 @@ GNU General Public License, version 3 or (at your option) any later version
 The Galaxy Buds code in `android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/samsung/`
 is ported from GalaxyBudsClient, which is licensed under version 3 of the GPL only, so those
 files are GPL-3.0-only. The app built with them is shared under version 3.
+
+The app uses one library besides AndroidX and Kotlin: [hiddenapibypass](https://github.com/LSPosed/AndroidHiddenApiBypass) by LSPosed (Apache-2.0),
+which lets it open the AirPods' Bluetooth channel on phones where Android hides the needed socket (see the note under the
+[AirPods and Beats table](docs/devices/apple.md)).

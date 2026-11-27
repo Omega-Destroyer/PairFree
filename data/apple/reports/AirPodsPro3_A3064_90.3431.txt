@@ -1,0 +1,36 @@
+PairFree device report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help check
+this model. It holds no serial number, address or other personal data.
+
+Brand:           Apple (AirPods or Beats)
+Model:           AirPods Pro 3 (model number A3064)
+Firmware:        90.3431000025000000.6807
+App:             PairFree 0.9.1
+OS:              Android 17 (API 37, Google, build CP3A.261005.005)
+Captured:        2026-11-11 10:33 UTC
+
+Battery (count, then component, 01, level, status, 01 each), as hex:
+  03 04 01 64 02 01 02 01 64 02 01 08 01 00 04 01
+Settings the AirPods reported (control command id: value, as hex):
+  0d: 02
+  18: 00
+  17: 00
+  25: 01
+  23: 00
+  1f: 50 50
+  24: 00 03
+  28: 02
+  26: 02
+  29: 02
+  2c: 02
+  2f: 00
+  33: 00
+  2e: 64
+  30: 01
+  1b: 02
+  35: 02
+  3e: 02
+  37: 00
+  38: 52
+  3b: 01

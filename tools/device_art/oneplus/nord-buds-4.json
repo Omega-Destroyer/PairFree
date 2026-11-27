@@ -1,0 +1,25 @@
+{
+ "name": "OnePlus Flow Buds / OnePlus Nord Buds 4 / OnePlus Nord Buds 4 Pro",
+ "names": [
+  "OnePlus Flow Buds",
+  "OnePlus Nord Buds 4",
+  "OnePlus Nord Buds 4 Pro",
+  "OnePlus Nord Buds Einstein 2",
+  "OnePlus Nord Buds Laplace 4",
+  "OnePlus Nord Buds ohm EX"
+ ],
+ "codes": [],
+ "source": "Traced from oneplus_nord_buds_4_pro, the left bud (the maker's own product image, found by image search), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "216,147 251,149 268,155 281,164 294,178 303,193 309,209 311,229 306,254 298,272 287,286 265,305 261,311 260,454 257,469 250,481 240,489 225,494 210,494 197,491 185,484 178,476 173,464 171,450 170,347 167,344 140,337 121,323 104,298 98,270 101,253 108,237 131,212 155,179 183,159",
+  "axis": [
+   204.5,
+   320.7
+  ],
+  "accent": [
+   "216,258 215,282 213,302 209,316 204,320 200,316 196,302 194,282 193,258 194,234 196,214 200,200 204,196 209,200 213,214 215,234"
+  ]
+ },
+ "case": "generic"
+}

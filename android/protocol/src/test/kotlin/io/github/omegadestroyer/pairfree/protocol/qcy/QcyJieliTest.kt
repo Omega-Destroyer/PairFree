@@ -9,6 +9,7 @@ import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -36,7 +37,11 @@ class QcyJieliTest {
     @Test
     fun framesAsJieLisSdkPacksThem() {
         // Ask for the battery attribute: command with an answer wanted, opcode C1, length 5, sn 0, mask 1.
-        val battery = QcyJieliSession(t13).batteryRequests().single()
+        // While no EQ has been reported, the EQ read goes with each battery read (issue #75).
+        val polled = QcyJieliSession(t13).batteryRequests()
+        assertEquals(2, polled.size)
+        val battery = polled.first()
+        assertEquals(JieliWire.GET_SYS_INFO, RcspParser().feed(GattEnvelope.out(polled.last())!!.value).single().opcode)
         assertEquals("fedcbac0c1000500" + "00000001" + "ef", hex(GattEnvelope.out(battery)!!.value))
         // An answer: status, then sn, then the payload; split across notifications and after stray bytes.
         val bytes = RcspFrame(command = false, wantsAnswer = false, opcode = JieliWire.ADV_GET, sn = 7, payload = "0400bc602b".hexBytes()).bytes()
@@ -63,7 +68,9 @@ class QcyJieliTest {
         // Game mode and sleep are JieLi attributes on this model, asked for with the battery and balance in one read.
         val adv = start.last()
         assertEquals(JieliWire.ADV_GET, adv.opcode)
-        val mask = (1 shl JieliWire.ADV_BATTERY) or (1 shl JieliWire.ADV_WORK_MODE) or (1 shl JieliWire.ADV_SLEEP_MODE) or (1 shl JieliWire.ADV_BALANCE)
+        // On this model the touch controls (attribute 2) and the noise mode (attribute 11) are JieLi's too.
+        val mask = (1 shl JieliWire.ADV_BATTERY) or (1 shl JieliWire.ADV_WORK_MODE) or (1 shl JieliWire.ADV_SLEEP_MODE) or (1 shl JieliWire.ADV_BALANCE) or
+            (1 shl JieliWire.ADV_KEY_SETTINGS) or (1 shl JieliWire.ADV_NOISE_MODE)
         assertEquals(mask, hex(adv.payload).toInt(16))
         assertTrue(start.all { s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, it.bytes())) })
         // The answer: left 60 % charging, right 96 %, case 43 %; game mode on (work mode 2), sleep on, balance centred.
@@ -87,6 +94,66 @@ class QcyJieliTest {
         val outbox = s.takeOutbox().map(::frame)
         assertEquals(RcspFrame.answer(ask), outbox.first())
         assertEquals(mask, hex(outbox.last().payload).toInt(16))
+    }
+
+    @Test
+    fun theButtonsAndTheNoiseModeOfAnOlderPanel() {
+        // QCY's panel for the T13 ANC2 (issue #35) has the older button screen and noise screen. Buttons: JieLi's key settings attribute, triples of
+        // earbud (1 left, 2 right), gesture (1 tap, 2 double, 3 triple, 5 hold) and action (127 none); noise: mode, then the length and three gains.
+        val s = QcyJieliSession(t13)
+        s.start()
+        val keys = "01" + "01" + "01" + "02" + "01" + "7f" + "01" + "02" + "03" + "02" + "02" + "04"
+        val noise = "01" + "06" + "0000" + "0064" + "0032"
+        assertTrue(s.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_KEY_SETTINGS, keys.hexBytes()) + RcspFrame.ltv(JieliWire.ADV_NOISE_MODE, noise.hexBytes()))))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertEquals("play_pause", rows["touch_single_left"])
+        assertEquals("none", rows["touch_single_right"])
+        assertEquals("next", rows["touch_double_left"])
+        // One change is one key: earbud 2, gesture 2, action 2 (previous).
+        val write = frame(s.change(SettingChange.Choice("touch_double_right", "previous"))!!.single())
+        assertEquals(JieliWire.ADV_SET, write.opcode)
+        assertEquals("0402020202", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        // Action none goes as 127.
+        assertEquals("040201017f", hex(frame(s.change(SettingChange.Choice("touch_single_left", "none"))!!.single()).payload))
+        // The noise: the earbuds report mode 1 (cancelling); off is mode 2, written with the gains they reported.
+        assertEquals(Command.ANC_MODE.labels.entries.first { it.value == "anc" }.key, s.state.number(Command.ANC_MODE))
+        val off = frame(s.set(Command.ANC_MODE, Command.ANC_MODE.labels.entries.first { it.value == "off" }.key)!!.single())
+        assertEquals(JieliWire.ADV_SET, off.opcode)
+        assertEquals("090b" + "02" + "06" + "0000" + "0064" + "0032", hex(off.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, off.bytes())))
+    }
+
+    @Test
+    fun theNoiseStrengthOfThePanelsThatListIt() {
+        // The DT10's panel gives ANC on and transparency a strength slider (`progress` 100); QCY's app writes the gain as minimum + (maximum - minimum) * percent / 100
+        // (setNoiseLevelPercent). The T13 ANC2's panel has none. Built from the panel and QCY's code, not recorded.
+        val dt10 = QcyModels.of(18289)!!
+        val s = QcyJieliSession(dt10)
+        s.start()
+        s.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_NOISE_MODE, ("01" + "06" + "0000" + "0064" + "0032").hexBytes())))
+        val row = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Level>().single { it.key == "anc_scene_level" }
+        assertEquals(50, row.value)
+        val write = frame(s.change(SettingChange.Level("anc_scene_level", 80))!!.single())
+        assertEquals("090b" + "01" + "06" + "0000" + "0064" + "0050", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        assertEquals(80, s.groups.flatMap { it.settings }.filterIsInstance<Setting.Level>().single { it.key == "anc_scene_level" }.value)
+        val none = QcyJieliSession(t13)
+        none.start()
+        none.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_NOISE_MODE, ("01" + "06" + "0000" + "0064" + "0032").hexBytes())))
+        assertTrue(none.groups.flatMap { it.settings }.none { it.key == "anc_scene_level" })
+        assertNull(none.change(SettingChange.Level("anc_scene_level", 80)))
+    }
+
+    @Test
+    fun theButtonsOfANewerJieLiModelAreItsKeyItem() {
+        // A newer model reads and writes one key at a time as QCY's item 2B (JLDeviceImpl.setBtnClickFunction): key, then action.
+        val s = QcyJieliSession(ht16)
+        assertTrue(s.start().map { hex(frame(it).payload) }.contains("fe012b"))
+        assertTrue(s.receive(answer(JieliWire.CUSTOM, "2b0c010102010301040105010601".hexBytes())))
+        val write = frame(s.change(SettingChange.Choice("touch_single_left", "next"))!!.single())
+        assertEquals(JieliWire.CUSTOM, write.opcode)
+        assertEquals("2b020103", hex(write.payload))
     }
 
     @Test
@@ -152,5 +219,66 @@ class QcyJieliTest {
         assertFalse(s.allowed(cmd(JieliWire.ADV_SET, "0501" + "41424344")), "renaming the earbuds")
         assertTrue(s.allowed(cmd(JieliWire.ADV_SET, "020801")))
         assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.request(QcyItem.GAME_MODE))), "QCY's own characteristic is not JieLi's")
+    }
+
+    /** The older JieLi models' EQ (issue #35): JieLi's own EQ setting, system information attribute 4, as QCY's app reads and writes it (JLDeviceImpl). */
+    @Test
+    fun theEqOfAnOlderJieLiModelIsJieLisSystemInformation() {
+        val s = QcyJieliSession(t13)
+        val start = s.start().map(::frame)
+        // The read: the public function (FF) and the mask for attribute 4.
+        val read = start.single { it.opcode == JieliWire.GET_SYS_INFO }
+        assertEquals("ff00000010", hex(read.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, read.bytes())))
+        assertEquals(null, s.eq, "nothing shown before the earbuds answer")
+        // The answer: type 0xFF (a custom curve) and ten gains in whole dB.
+        val gains = "00020300fe0100000000"
+        s.receive(answer(JieliWire.GET_SYS_INFO, byteArrayOf(JieliWire.SYS_PUBLIC.toByte()) + RcspFrame.ltv(JieliWire.SYS_EQ, ("ff" + gains).hexBytes())))
+        val eq = s.eq!!
+        assertTrue(eq.custom)
+        assertEquals(listOf(0, 2, 3, 0, -2, 1, 0, 0, 0, 0), eq.gains)
+        // A curve of the user's own: type FF, the gains, padded to ten bands; and it is read back after.
+        val write = frame(s.eqCustom(listOf(1, 2, 3, 4, 5, -1, -2, -3, -4, -5))!!.single())
+        assertEquals(JieliWire.SET_SYS_INFO, write.opcode)
+        assertEquals("ff" + "0c" + "04" + "ff" + "0102030405fffefdfcfb", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        assertEquals(JieliWire.GET_SYS_INFO, s.takeReadBacks().map(::frame).single().opcode)
+        // The earbuds' own notice of a change shows too.
+        val notice = RcspFrame(command = true, wantsAnswer = false, opcode = JieliWire.SYS_INFO_AUTO_UPDATE, sn = 9, payload = byteArrayOf(JieliWire.SYS_PUBLIC.toByte()) + RcspFrame.ltv(JieliWire.SYS_EQ, ("02" + "00".repeat(10)).hexBytes()))
+        s.receive(GattEnvelope.received(JieliWire.NOTIFY_SHORT, notice.bytes()))
+        assertFalse(s.eq!!.custom, "a preset's type is not a curve PairFree knows")
+        // Nothing else of the system information goes out: another function, another attribute, or a different mask.
+        fun allowed(opcode: Int, payload: String) = s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, RcspFrame(command = true, wantsAnswer = true, opcode = opcode, sn = 1, payload = payload.hexBytes()).bytes()))
+        assertFalse(allowed(JieliWire.SET_SYS_INFO, "00" + "0c04ff" + "00".repeat(10)), "another function")
+        assertFalse(allowed(JieliWire.SET_SYS_INFO, "ff" + "0c05ff" + "00".repeat(10)), "another attribute")
+        assertFalse(allowed(JieliWire.GET_SYS_INFO, "ff" + "00000001"), "another mask")
+        assertFalse(allowed(JieliWire.FUNCTION, "00"))
+        // The newer models take no JieLi EQ setting: theirs is QCY's parametric item.
+        val newer = QcyJieliSession(ht16)
+        assertTrue(newer.start().map(::frame).none { it.opcode == JieliWire.GET_SYS_INFO })
+    }
+
+    /** A hold the panel does not list is offered when the earbuds' own key table reports the hold keys (issue #35: the T13 ANC2's report holds keys 9 and 10). */
+    @Test
+    fun aHoldTheEarbudsReportIsOfferedEvenWhenThePanelDoesNotListIt() {
+        assertFalse("hold" in t13.touch!!.gestures, "the T13 ANC2's panel lists three gestures")
+        val s = QcyJieliSession(t13)
+        s.start()
+        // Triples of earbud, gesture (1 tap, 5 hold) and action: the report's hold keys are 07 on the left and 0a (noise control) on the right.
+        val keys = "010101" + "020101" + "010507" + "02050a"
+        s.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_KEY_SETTINGS, keys.hexBytes())))
+        val rows = s.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().associate { it.key to it.value }
+        assertTrue("touch_hold_left" in rows && "touch_hold_right" in rows, rows.keys.toString())
+        assertEquals("noise_control", rows["touch_hold_right"])
+        // The write is the key settings attribute with gesture 5, as for the other gestures.
+        val write = frame(s.change(SettingChange.Choice("touch_hold_left", "play_pause"))!!.single())
+        assertEquals(JieliWire.ADV_SET, write.opcode)
+        assertEquals("0402" + "0105" + "01", hex(write.payload))
+        assertTrue(s.allowed(GattEnvelope.write(JieliWire.WRITE_SHORT, write.bytes())))
+        // Without hold keys in the earbuds' table, no hold row.
+        val plain = QcyJieliSession(t13)
+        plain.start()
+        plain.receive(answer(JieliWire.ADV_GET, RcspFrame.ltv(JieliWire.ADV_KEY_SETTINGS, ("010101" + "020101").hexBytes())))
+        assertTrue(plain.groups.flatMap { it.settings }.none { it.key.startsWith("touch_hold") })
     }
 }

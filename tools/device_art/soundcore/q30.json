@@ -1,6 +1,7 @@
 {
  "name": "Soundcore Life Q30",
  "names": [
+  "Soundcore Life NC",
   "Soundcore Life Q30",
   "Soundcore Life Q35",
   "Soundcore Life Tune",
@@ -11,7 +12,9 @@
   "A3027",
   "A3028",
   "A3029",
-  "A3030"
+  "A3030",
+  "A3201",
+  "Soundcore Life NC"
  ],
  "source": "Traced from a Life Q30 retail studio photo; not in the repo.",
  "bud": {

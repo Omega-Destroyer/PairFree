@@ -28,11 +28,18 @@ class QcyFinder(private val adapter: BluetoothAdapter, private val log: ((String
     suspend fun find(address: String): Found? {
         val scanner = adapter.bluetoothLeScanner ?: return null
         val result = CompletableDeferred<Found?>()
+        // An advert without batteries is kept only in case no other comes (QcyAdvert.hasBattery); the senders are counted for the report.
+        var withoutBattery: Found? = null
+        val senders = HashSet<String>()
         val callback = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, scan: ScanResult) {
                 val data = scan.scanRecord?.getManufacturerSpecificData(company) ?: return
                 val advert = QcyAdvert.parse(data) ?: return
-                if (advert.matches(address)) result.complete(Found(scan.device, advert))
+                if (!advert.matches(address)) return
+                synchronized(senders) {
+                    if (senders.add(scan.device.address) && !advert.hasBattery) log?.invoke("advert without batteries (earbuds in their case?), looking for another")
+                    if (advert.hasBattery) result.complete(Found(scan.device, advert)) else if (withoutBattery == null) withoutBattery = Found(scan.device, advert)
+                }
             }
 
             override fun onScanFailed(errorCode: Int) {
@@ -45,14 +52,20 @@ class QcyFinder(private val adapter: BluetoothAdapter, private val log: ((String
         log?.invoke("scanning for QCY earbuds")
         scanner.startScan(filters, settings, callback)
         return try {
-            withTimeoutOrNull(SCAN_MS) { result.await() }
+            withTimeoutOrNull(SCAN_MS) { result.await() } ?: synchronized(senders) { withoutBattery }
         } finally {
             try {
                 scanner.stopScan(callback)
             } catch (_: IllegalStateException) {
                 // Bluetooth went off meanwhile.
             }
-        }.also { log?.invoke(if (it == null) "scan found nothing" else "scan found vendor id ${it.advert.vendorId}") }
+        }.also {
+            val from = synchronized(senders) { senders.size }
+            log?.invoke(
+                if (it == null) "scan found nothing"
+                else "scan found vendor id ${it.advert.vendorId}, ${if (it.advert.hasBattery) "with" else "without"} batteries ($from sender${if (from == 1) "" else "s"} of its adverts)",
+            )
+        }
     }
 
     companion object {

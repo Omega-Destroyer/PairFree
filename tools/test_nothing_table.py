@@ -31,7 +31,7 @@ class NothingTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.data["devices"]), s["models"])
-        self.assertEqual([], s["tested"], "no Nothing model tried with PairFree yet")
+        self.assertEqual(["Nothing Ear"], s["tested"], "the Nothing Ear, from a user's device report (issue #41)")
 
     def test_rows(self):
         b184 = self.row("B184")

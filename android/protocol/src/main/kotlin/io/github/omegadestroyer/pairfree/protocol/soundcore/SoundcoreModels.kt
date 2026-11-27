@@ -12,7 +12,7 @@ public object SoundcoreModels {
 
     /**
      * The model the earbuds' vendor service UUID names: `A3936` from
-     * `0cf12d31-fac3-4553-bd80-d6832e7b3936`. Null for any other UUID. The UUID ends in `b` and four hex digits:
+     * `0cf12d31-fac3-4553-bd80-d6832e7b3936`. Null for any other UUID. The UUID ends in `b` (or `c`, the AeroClip Special's `7c3388`, A3388P42 in the app's registry) and four hex digits:
      * the model number on the A3116 and A3936, and in the Soundcore app (2.9.9) also ids such as `392B` for a variant
      * of the A3926, which a model lists in [SoundcoreLayout.vendorIds]. An id no model lists names itself (`A392B`).
      */
@@ -20,7 +20,7 @@ public object SoundcoreModels {
         val u = uuid.lowercase()
         if (u.length != 36 || !u.startsWith(SoundcoreWire.VENDOR_SERVICE_PREFIX)) return null
         val suffix = u.substring(SoundcoreWire.VENDOR_SERVICE_PREFIX.length)
-        if (suffix.length != 5 || suffix[0] != 'b' || !suffix.drop(1).all { it in '0'..'9' || it in 'a'..'f' }) return null
+        if (suffix.length != 5 || suffix[0] !in "bc" || !suffix.drop(1).all { it in '0'..'9' || it in 'a'..'f' }) return null
         val id = suffix.drop(1).uppercase()
         return SoundcoreLayout.ALL.firstOrNull { id in it.vendorIds }?.model ?: "A$id"
     }
@@ -32,7 +32,16 @@ public object SoundcoreModels {
     public fun fromName(name: String): String? {
         val n = name.trim()
         if (n.isEmpty()) return null
-        return SOUNDCORE_MODEL_TABLE.firstOrNull { m -> m.names.any { it.equals(n, ignoreCase = true) } }?.code
+        SOUNDCORE_MODEL_TABLE.firstOrNull { m -> m.names.any { it.equals(n, ignoreCase = true) } }?.code?.let { return it }
+        // A name the app's list holds without the maker's word (Liberty Buds 2) or with it (Soundcore Liberty Buds 2, Anker Liberty Buds 2), whatever the spacing (issue #76).
+        val key = nameKey(n)
+        return SOUNDCORE_MODEL_TABLE.firstOrNull { m -> m.names.any { nameKey(it) == key } }?.code
+    }
+
+    private fun nameKey(name: String): String {
+        var s = name.trim().lowercase()
+        for (word in listOf("soundcore", "anker")) if (s.startsWith(word)) s = s.removePrefix(word)
+        return s.filter { it.isLetterOrDigit() }
     }
 
     /** True for a Soundcore vendor service UUID, whatever model it names. */

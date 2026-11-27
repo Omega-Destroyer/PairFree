@@ -45,7 +45,7 @@ These came from the owner and are not up for trade.
   alone, `BLUETOOTH_SCAN` with `neverForLocation` (owner, 2026-10-15): most JBL models take
   their settings over Bluetooth LE, and when their LE side does not answer on the paired
   address, the only way to find it is its advert (`docs/jbl/PROTOCOL.md` section 3). It is
-  asked for only when the user opens a JBL model, the scan lasts at most 10 s and keeps
+  asked for only when the user opens a JBL model (and, since the owner's 2026-11-15 answer that Bluetooth LE may be used for any vendor whenever its app needs it, a Sennheiser model that Smart Control opens only over LE), the scan lasts at most 10 s and keeps
   nothing, and connecting goes ahead without it where the direct way works. The owner allowed the
   same for QCY on 2026-10-18 ("still related to a Bluetooth permission"): QCY's earbuds are
   controlled over Bluetooth LE, and their advert names both the model and the LE side to connect to
@@ -55,10 +55,18 @@ These came from the owner and are not up for trade.
 
 ## Looks
 
-The app ships with one look for now: Studio. More looks can be added later as
-skins. A look is a skin: a palette, a pair of fonts, a shape language and a set of
-device drawings. Every look uses the same screens, the same layout and the same
+The app ships with four looks (owner, 2026-11-16): Studio, the default; Studio Light; Material
+You; and Sketchbook. A look is a skin: a palette, a pair of fonts, a shape language and a way of
+drawing the devices. Every look uses the same screens, the same layout and the same
 features. A feature never exists in one look only.
+
+A look is one file, `data/looks/<id>.json`, and the build lists what the folder holds, so a
+look is added by pull request as a translation is (`docs/LOOKS.md`). No screen holds a colour,
+a font or a corner of its own: they come from the look (`ui/theme/Look.kt`), the device
+drawings are re-inked in it (`ui/DeviceDrawing.kt`), and the home screen widget and the
+notification's accent follow it (`widget/WidgetLook.kt`). The look is chosen on the connect
+screen and on the Device tab, beside the language. A look with a dark and a light palette
+follows the phone's dark mode.
 
 ### Studio
 
@@ -84,10 +92,23 @@ Dark, precise, made to feel like audio equipment.
   amber text for secondary ones.
 - Device drawings: thin technical line art, 1.5 px stroke, with dashed centre lines.
 
-### Sketchbook (parked)
+### Studio Light
 
-Not being built for now. The owner chose to work on Studio only. The values are
-kept here in case it comes back as a second skin.
+Studio on paper: the same fonts, hairlines and line drawings, light. Values in
+`data/looks/studio-light.json`; the amber is darkened to `#8A5A00` so text in it passes 4.5:1.
+
+### Material You
+
+The phone's own colours (Android 12's wallpaper palette, read as system colours; the Material
+library is not used), the phone's font, 20 px and 12 px corners, panels without outlines, labels
+in sentence case. Dark and light, following the phone. Values in `data/looks/material-you.json`.
+
+### Sketchbook
+
+Owner, 2026-11-16: the fourth look, and the first that changes shapes and drawings and not only
+colours (`docs/LOOKS.md`, A look that changes more than colours). Values in
+`data/looks/sketchbook.json`, from the table below; panels are the card colour, dialogs white,
+tracks and dividers the soft shadow colour.
 
 Light, friendly, hand-drawn.
 
@@ -110,7 +131,11 @@ Light, friendly, hand-drawn.
   soft shadow colour.
 - Selected state: teal fill with white text for primary choices, peach fill with a
   raised shadow for secondary ones.
-- Device drawings: cartoon outlines with flat colour fills offset from the line.
+- Device drawings: cartoon outlines with flat colour fills offset from the line. They are the
+  same traced shapes as Studio's, drawn in the cartoon style by the app (`ui/DeviceDrawing.kt`):
+  no centre lines, lines half again as heavy, the teal tint set 2.5 units off each shape, accents in peach.
+- As built: corners differ by 30 % of their radius (14 px panels, 10 px controls); the hard shadow
+  is 3 px, under panels, buttons and chosen chips; small labels are in sentence case.
 
 ### Rules for every look
 
@@ -121,6 +146,9 @@ Light, friendly, hand-drawn.
 
 ## Screens
 
+These are the phone's screens. The Windows and macOS apps show the same things in a layout made for a window and a mouse:
+`docs/DESKTOP.md`, section 2.
+
 Four tabs along the bottom: Home, Sound, Controls, Device. One more screen shows
 when nothing is connected.
 
@@ -130,6 +158,10 @@ when nothing is connected.
 - Every paired device PairFree supports, of any brand (SoundPEATS, Soundcore, ...), each
   with a Connect button. The user picks a device, never a brand: PairFree works out the
   brand and model by itself (owner, 2026-10-13).
+- A Language button, when the app has more than one language built in: the language's own name on it, and a list of
+  the built-in languages to pick from, each by its own name, with "Same as the phone" first. The same button is on the
+  screen that asks for Bluetooth access, before this one, and on the Device tab (owner, 2026-11-12;
+  `docs/TRANSLATING.md`). The screens are drawn again in the chosen language at once.
 - A button that opens the system Bluetooth settings.
 - One line: "No account. No internet. Nothing leaves this phone."
 
@@ -138,6 +170,12 @@ when nothing is connected.
 Everything here fits without scrolling on a 390 by 844 screen.
 
 1. Model name and connection state. A button to switch earbuds.
+   Under it, only while PairFree's channel is open and the phone is not playing through the earbuds
+   (connected but not Android's active output, or not connected for sound at all; issue #48): a panel
+   saying so, with "Use for sound on this phone", which asks Android to connect and play through them
+   (`AudioLinks.useForSound`; nothing goes to the earbuds). After a tap it also offers Bluetooth
+   settings, for a phone that refuses or where nothing comes of it. It stays hidden whenever PairFree
+   cannot tell (LE Audio, an output whose address Android hides).
 2. Battery for left, case and right, each with a drawing, a percentage and a bar. Headphones
    and speakers report one battery: it shows once, named and drawn as the product, with a
    generic headphones or speaker drawing until the model has its own (owner, 2026-10-14).
@@ -155,6 +193,19 @@ Everything here fits without scrolling on a 390 by 844 screen.
    on earbuds that have it.
 
 ### Sound (equalizer)
+
+**Graphic equalizer for any brand (2026-11-10, owner's request).** The Sound tab's graph, draggable bands, preset list and saved profiles are not
+SoundPEATS-only: they are drawn from an `EqTarget`. A session or adapter that implements `BandEq` (`protocol/BandEq.kt`) gets all of it through one
+generic target (`eq/BandEqTarget.kt`) and one opener (`eq/EqOpener.kt`: every brand is an `EqSource`, built in one `when`, with a key that says when the
+screen must be opened again and a function that reads what the earbuds hold). `BandEq` takes any number of bands, which is what the earbuds or the model
+report (three for Nothing's filters, five named bands for the Pixel Buds, nine for Galaxy Buds, ten for 1MORE and JBL, whatever a QCY or Sony model
+lists, six on OnePlus and OPPO), and states only where a brand differs, each with a default: names for bands instead of frequencies
+(`eqBandLabels`), the presets' curves where they are known and so drawn (`eqPresetGains`), the bands a preset-only model's profile lists use, a Stock
+profile, whether the EQ is put back on connecting, whether the writes are confirmed, whether the earbuds report their custom curve.
+OnePlus and OPPO implement it in their session; QCY, 1MORE, Nothing, Galaxy Buds and the Pixel Buds through adapters in `eq/BrandBandEqs.kt`, and Sony, JBL, Soundcore and EarFun in `eq/VendorBandEqs.kt` (2026-11-10, branch `feature/band-eq-brands`; checked by building and by the protocol tests only, not on a screen). What those four needed was one more flag, `eqReportsState` (EarFun's earbuds cannot report their EQ); the rest was already a default: Sony's queued messages are the frames (`SonyBandEq.encode`), JBL's calibration and three write families stay in its session, Soundcore's HearID block is passed on from the latest state. Still on their own targets: SoundPEATS and its Capsule (master gain, preamp, the model's base curve, bands that differ from preset to preset), which are the table-driven origin the generic screen was modelled on. **Update, same day:** SoundPEATS and the Capsule moved too, through `CurveBandEq` (`protocol/CurveBandEqs.kt`): the generic now carries a base curve (`eqBaseBands`: frequency, Q and base gain per band), fixed bands, a master gain, complete presets of their own (`eqPresetBands`) and a preamp, and the screen's "which profile is on the earbuds" test compares curves instead of one brand's payloads. A brand with a whole-curve parametric write drops in by giving a layout and a `writeCurve`. `CurveBandEqTest` checks every SoundPEATS model's layout and frames against the model table's own.
+
+**Fit test (2026-11-10).** `protocol/FitTest.kt`: a session whose earbuds run the test themselves implements `FitTest`; the brand's driver names it (`BrandDriver.fitTest`, `brands/`). Which brands have one, and which hearing tests exist, is in `docs/FIT_AND_HEARING_TESTS.md`.
+
 
 - Profile chips: built-in presets, the user's saved profiles, and New.
 - A response graph:
@@ -176,6 +227,13 @@ The band count and frequencies are data, not layout. The screen must work with
 whatever the connected model needs. The labels above are the official app's
 generic custom layout. The H3's is 50, 160, 350, 800, 1.6k, 2.8k, 4.6k, 8k, 12k and
 17k, from -6 to +6 dB in whole dB.
+
+Gain steps (owner, 2026-11-13): the gains are in dB and move in the step the earbuds' wire takes, which the brand's `BandEq` states
+(`eqGainStepDb`): half a dB for SOUNDPEATS (the layout's frames carry hundredths of a dB), Soundcore models whose values are tenths of a dB,
+Nothing and CMF (the filters' gains are floats), the Pixel Buds (Google's own sliders move in halves) and Melomania Connect (tenths of a dB on
+the wire); a whole dB for every other brand, whose wire holds whole units or whose half steps are not known. The slider, the buttons and
+a drag on the graph move by that step; a saved profile or an imported file with halves on a whole-dB brand is rounded to the step. A hearing
+test or the A/B finder works in whole dB.
 
 The gains on screen are the user's, on top of the model's base curve, the way the
 official app does it, so 0 dB on every band is the earbuds' own tuning (the Stock
@@ -345,6 +403,14 @@ the project" and a button), and when a bug report is shared to the app.
   serial number are masked, bodies marked private (Soundcore's list of known devices and
   its serial number) and firmware-update messages are left out, and a message PairFree
   does not know shows at most four bytes, too few for an address, a name or a key.
+- Soundcore transfer recordings also retain at most four preview bytes of unknown framed
+  messages, with packet counts, payload sizes and first/last times. Different payloads are not
+  merged merely because their previews match. Bulk data shows first/last samples and totals.
+  Bare RFCOMM data is counted only after a valid Soundcore frame identified that channel, and
+  exports no raw prefix. A CRC-checked sleep-audio container header can add technical fields,
+  omitting its filename, identifier and audio. Alarm schedules, clock synchronization and known
+  sleep-history messages are private. These diagnostics do not identify an unknown command as
+  an upload, and do not claim to reconstruct the transferred file.
 - A phone keeps one Bluetooth log for hours, through Bluetooth being turned off and on,
   so the recording starts when the user opened this screen (remembered for up to three
   hours), or else just before an official app last connected (PeatsAudio's last firmware
@@ -368,6 +434,24 @@ the project" and a button), and when a bug report is shared to the app.
 - A maintainer saves it under `data/soundpeats/reports/`, where `tools/gen_models_table.py` reads
   its settings, and turns its equalizer into the model's `eq` entry and test vectors with
   `tools/import_eq_capture.py`, which checks every value against the bytes.
+
+## Languages
+
+All text is in one file, `res/values/strings.xml`; a translation is that file under `res/values-<code>/`, and an entry it
+lacks shows in English. The app lists the languages that are built in (the build makes the list from those folders) and
+follows the phone unless the user picks one. Android 13 and later keep the choice (it also shows under the phone's
+per-app language setting); on Android 12 PairFree keeps it and applies it to every context it draws text from, the
+notification and the widget included. EQ preset names are shown through the file too: the words PairFree gives and the
+vendors' own wording, in two generated sections, so a translator finds them in one place and may leave the vendors'
+wording as it is. Reports (device, connection, recording) stay in English in every language: they are read by the
+maintainers and by the project's tools. Details: `docs/TRANSLATING.md`.
+
+Right-to-left languages (Persian so far, then Arabic, Hebrew, Urdu) mirror the whole screen by themselves. What does not
+mirror, on purpose (`ui/Direction.kt`, `Physical`; first review by a Persian-speaking tester, issue #44): the left earbud stays
+on the left and the right one on the right (battery card, fit test, the Controls picker, the find buttons), and whatever runs
+from low to high going right: sliders with their minus and plus buttons, the equalizer's curve and its band buttons. Row
+arrows point the way forward (`Chevron` flips). A number with a sign (`+2`) carries an invisible left-to-right mark so the sign
+stays in front; a language's own file decides the percent sign's place and whether the units show.
 
 ## Behaviour
 
@@ -421,7 +505,10 @@ first guess. `names` in `data/identify.json` is the test corpus, and every detec
   does not keep trying to open the channel to earbuds that are not connected (owner's report,
   2026-10-23: it stayed on Connecting after the earbuds went into their case).
 - Buttons, each only on earbuds that have it: the noise mode, which steps to the next (off,
-  cancelling, transparency, round again), and game mode. They are real buttons in the
+  cancelling, transparency, round again; only the modes the model has, issue #66), and game mode. **Configurable** (issue #72, owner 2026-11-24):
+  on the Device tab, under Status notification, each of the two buttons is set per pair of earbuds to the noise mode, nothing, or any
+  switch the earbuds offered while connected (`WidgetToggles`: the shared switches by command, and each brand's own rows); the
+  second is game mode by default. They are real buttons in the
   notification's own layout, so the noise mode works even while the notification is
   collapsed, where Android hides ordinary action buttons (owner's test on One UI 8,
   2026-10-14); expanded, game mode joins it. On models that offer game mode only with LDAC off
@@ -458,7 +545,47 @@ first guess. `names` in `data/identify.json` is the test corpus, and every detec
 Planned, not yet designed:
 
 - A quick settings tile that cycles the noise mode.
-- A home screen widget.
+
+### Widget (owner, 2026-11-07)
+
+A home screen widget from 1x1 to 4x2 cells. Each size shows its first buttons; the widget has eight in all, slots 1 to 4 the
+first row and 5 to 8 the second (1x1: slot 1; 2x1: 1-2; 3x1: 1-3; 4x1: 1-4; 2x2: 1, 2, 5, 6; 4x2: all).
+
+- **A button** is empty, a noise choice, a noise toggle, an EQ profile or an EQ toggle. A noise choice is a mode (off,
+  cancelling, transparency) with an optional fixed sub-mode, such as Cancelling in its Adaptive scene: a tap sets the mode and
+  then that sub-mode and nothing else. A toggle steps only through the choices the user ticked, in the order ticked (Off then
+  Cancelling in Adaptive, for example); with none of its choices on, it starts at the first. An EQ profile is a preset, Stock or
+  one of the user's saved curves. **A setting** (issue #72, owner 2026-11-24) is any switch the earbuds offered while connected (the shared switches
+  by command and each brand's own switch rows: `WidgetSlot.Toggle`, `ToggleKeys`): a tap turns it the other way, and the button is filled while it is on. The setup
+  lists them once the earbuds have connected. **Use for sound** (issue #48, owner 2026-11-18) asks Android to play through these earbuds, the same request as the Sound card's button on Home; it needs no channel to the
+  earbuds and no sound link, so it works while they are only paired, and its button is never dimmed.
+- **Several earbuds:** one widget keeps a layout of buttons for each pair of paired earbuds and shows the layout of whichever is
+  connected: the pair the channel is open to, else one the phone has connected for sound, else the last one shown, dimmed.
+- **Setup** lists the paired earbuds PairFree can control, like the connect screen; a tap opens one pair's eight buttons. Nothing
+  connects. The choices come from the tables compiled into the app (`WidgetOptions`) and the user's saved EQ curves: noise
+  control for 11 of the 12 brands (Bose has none on the shared control), SOUNDPEATS' modes and scenes from the server's feature
+  lists (`data/soundpeats/devices.json`), and the EQ presets of every brand that has them offline except Sony and QCY. Sub-modes
+  a choice can fix: SOUNDPEATS' scenes and transparency levels, Samsung's cancelling level (low, high), Nothing's cancelling
+  strengths, QCY's scenes (or, with one scene, its strength steps) and transparency strength steps, 1MORE's cancelling strengths
+  and transparency kinds, EarFun's cancelling modes and sub-modes and its transparency modes. What the tables cannot say (the
+  seven SOUNDPEATS models with no server list, Sony's and Apple's noise control, Sony's and QCY's EQ) comes from what the
+  earbuds showed while connected (`WidgetCache`), and the setup says "some choices appear after these earbuds have connected
+  once" until then. Pixel's "Last saved" EQ preset appears the same way.
+- **Which button is current** is drawn from what the earbuds last showed while connected (`WidgetNoise`: their mode, scene
+  and level, and the brand rows a button can fix), not from the channel, which is closed most of the time; so a button
+  stays lit between taps, and a toggle's label names the choice the earbuds are on. A change made on the earbuds themselves while PairFree is
+  closed shows once they next connect to it. Earbuds that are not connected dim their buttons, and a tap on them only redraws the widget. The buttons keep their tap, since
+  Android's sound connection (what counts as connected) follows the Bluetooth link by some seconds with no broadcast PairFree hears,
+  so after each connect or disconnect the widget redraws several times over 25 s (`PairFreeWidget.refreshSoon`).
+- **On connect** the widget acts as the app does: when earbuds that have buttons on a widget connect (the same Bluetooth
+  broadcast as the status notification, so from the background it needs the companion link), `WidgetService` opens the channel,
+  waits for what the earbuds report, opens the EQ so the one this phone last set goes back on them (SOUNDPEATS earbuds cannot
+  say what they hold), and lets go after a few seconds. The buttons then show what was read.
+- **A tap** starts `WidgetService`, a foreground service (a short notification), because the channel is closed when PairFree is
+  not open: it opens the channel, sets the noise choice or selects the EQ profile (`EqOpener`, shared with the Sound tab), keeps the channel open 6.5 s, past the connection's read-back at 3 s,
+  for the write and its read-back, and lets the channel go unless the screens or the status notification hold it
+  (`Hub.widget`). Tapping earbuds other than the ones connected switches the channel to them.
+- Sub-mode words are the Controls tab's (`optionLabel`); an option it has no words for shows its key, spaced.
 
 ## Device drawings
 
@@ -480,7 +607,9 @@ Planned, not yet designed:
   covers; models that look alike share one. 1MORE's earbuds are traced from the line drawings
   1MORE's app shows for each model, filled in, with the touch area as the accent. A model code
   that is also a SoundPEATS firmware code (1MORE's S32) is left to the Bluetooth name.
-- Headphones are drawn whole; ear hooks and clips as one earbud.
+- Headphones are drawn whole; ear hooks and clips as one earbud. Neckbands too (they trace as a loop of cable).
+- Accents (amber) mark one or two features a viewer would pick out: a logo plate, an LED, a speaker grille, a stem's sensor
+  strip; a touch surface is outlined as a panel. They are placed by hand, as fractions of the traced body, from the render.
 - Models without art of their own, or a part no photo shows clearly, use a generic
   earbud or case. The app picks drawings by Bluetooth name, then firmware code.
 - Drawings show the product's general shape. They do not reproduce logos.
@@ -494,10 +623,9 @@ Planned, not yet designed:
 
 ## Still open
 
-- A light version of Studio.
 - Which side the Air5 Pro+ drawing shows. It has not been checked against the L/R
   marking on a real pair.
-- Widget and tile designs.
+- Tile design (the widget is in Widget above; it takes the chosen look's colours, `widget/WidgetLook.kt`).
 - The EQ of every model other than the H3 and Air5 Pro+, until someone records it
   (Record from the official app above).
 - Hearing tests: SOUNDPEATS' is built (owner, 2026-11-04; docs/soundpeats/PROTOCOL.md section 13). The other brands'

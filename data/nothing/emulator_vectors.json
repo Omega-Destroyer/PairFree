@@ -1,0 +1,197 @@
+{
+  "_about": "Actual outgoing original vendor-app frames captured against synthetic Bluetooth peers. No physical earbud or acoustic validation. Replies and pairing material remain outside the repository. See VIRTUAL_TESTING.md for interventions and limitations.",
+  "source": {
+    "date": "2026-11-07",
+    "package": "com.nothing.smartcenter",
+    "version": "package: name='com.nothing.smartcenter' versionCode='3041503' versionName='3.4.15' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+    "apk_modified": false,
+    "device_virtual": true,
+    "replies_synthetic": true,
+    "hardware_tested": false,
+    "android": "37.0 Google APIs userdebug x86_64 with ARM64 translation",
+    "installed_apk_sha256": {
+      "base.apk": "a618f6640480896ab13765918777e0415734c1ada8653ca7c0b82b16675388a5",
+      "split_config.arm64_v8a.apk": "6e085f2bf5a7e1e4f9d44cbdb7e1fe73af45d706fb3dbb3e75ff1c2c4e683a2b",
+      "split_config.en.apk": "dcf81e520d7281101c8244d78e536e74e086abdc37ff58b93849515847e5f83e",
+      "split_config.xxhdpi.apk": "3ab19840a773aad59ba62353876128f5b60704cddffced2beef180fbcadb3b3a"
+    }
+  },
+  "cases": [
+    {
+      "command": "f00a",
+      "payload": "9bb8ee6a",
+      "frame": "5560010af00400079bb8ee6ae460",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:35:24.340911+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00f",
+      "payload": "010700",
+      "frame": "5560010ff003001c010700fc1b",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:35:43.766770+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f010",
+      "payload": "0300",
+      "frame": "55600110f002000403003758",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:36:15.936134+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f010",
+      "payload": "0200",
+      "frame": "55600110f002000502006708",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:36:17.794880+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f010",
+      "payload": "0100",
+      "frame": "55600110f0020006010097f8",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:36:19.688318+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f010",
+      "payload": "0000",
+      "frame": "55600110f00200070000c7a8",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:36:21.450818+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f010",
+      "payload": "0500",
+      "frame": "55600110f00200080500f4fb",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:36:23.196802+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00a",
+      "payload": "f5b8ee6a",
+      "frame": "5560010af004001ef5b8ee6ae54a",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:36:54.438510+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f003",
+      "payload": "0102010208",
+      "frame": "55600103f005002a01020102081522",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:37:30.777482+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f003",
+      "payload": "010201020b",
+      "frame": "55600103f005002c010201020b5545",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:37:33.014243+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f003",
+      "payload": "0102010209",
+      "frame": "55600103f005002e0102010209d566",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:37:35.283290+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00a",
+      "payload": "62b9ee6a",
+      "frame": "5560010af004000362b9ee6a74fc",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:38:43.901025+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00f",
+      "payload": "010100",
+      "frame": "5560010ff0030018010100fe8b",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:38:55.832784+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00f",
+      "payload": "010300",
+      "frame": "5560010ff0030019010300fe17",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:06.425570+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00f",
+      "payload": "010200",
+      "frame": "5560010ff003001a010200ffc3",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:07.887527+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00f",
+      "payload": "010400",
+      "frame": "5560010ff003001b010400fd9f",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:09.362802+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f00f",
+      "payload": "010500",
+      "frame": "5560010ff003001c010500fd7b",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:10.343784+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f040",
+      "payload": "01",
+      "frame": "55600140f001001d0158f2",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:38.677797+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f040",
+      "payload": "02",
+      "frame": "55600140f001001e021803",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:39.677610+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f004",
+      "payload": "010100",
+      "frame": "55600104f0030021010100b3a4",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:53.584487+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f004",
+      "payload": "010101",
+      "frame": "55600104f00300220101017220",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:39:54.598098+00:00",
+      "evidence": "vendor_app_bluetooth_tx"
+    },
+    {
+      "command": "f041",
+      "payload": "030000c0c0010000803f000075443333333f02000040c0008054453333333f000000c04000000c43cdcc4c3f000000000000000000",
+      "frame": "55600141f035000d030000c0c0010000803f000075443333333f02000040c0008054453333333f000000c04000000c43cdcc4c3f000000000000000000c2b9",
+      "model": "Ear (2) / B155",
+      "captured_at": "2026-11-07T05:42:30.435170+00:00",
+      "evidence": "original_callback_invoked"
+    }
+  ]
+}

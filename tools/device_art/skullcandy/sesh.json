@@ -1,0 +1,19 @@
+{
+ "name": "Sesh ANC",
+ "names": [
+  "Sesh ANC"
+ ],
+ "codes": [
+  "Sesh ANC"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_sesh_anc_black, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "201,40 209,42 227,62 254,113 290,215 295,242 294,266 225,319 190,337 178,341 162,341 139,332 116,352 84,364 60,364 38,355 18,340 6,319 4,294 12,266 26,246 46,233 66,226 89,225 92,223 97,201 105,187 115,177 134,167 140,158 141,145 134,91 139,69 149,59",
+  "axis": [
+   149.4,
+   202.1
+  ]
+ },
+ "case": "generic"
+}

@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.protocol.qcy
 
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.GattEnvelope
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -92,6 +93,21 @@ class QcyTest {
     }
 
     @Test
+    fun theSettingsAPanelPicksFromAList() {
+        // The panel rows of type 1000 (cmdid 46 music mode, 51 touch sensitivity): the earbuds report one value byte, the panel names each.
+        val v200 = QcySession(QcyModels.of(16818))
+        v200.receive(settings("ff03" + "2e0103"))
+        val mode = setting(v200, "qcy_music_mode") as Setting.Choice
+        assertEquals("gaming", mode.value)
+        assertEquals(listOf("music", "gaming", "movie"), mode.options)
+        assertEquals("ff032e0104", packet(v200.change(SettingChange.Choice("qcy_music_mode", "movie"))))
+        val c30 = QcySession(QcyModels.of(19794))
+        c30.receive(settings("ff03" + "330134"))
+        assertEquals("high", (setting(c30, "qcy_touch_sensitivity") as Setting.Choice).value)
+        assertEquals("ff0333012d", packet(c30.change(SettingChange.Choice("qcy_touch_sensitivity", "normal"))))
+    }
+
+    @Test
     fun switchesAndWearing() {
         val s = n70()
         for (r in n70.getValue("replies").jsonArray.map { it.jsonObject }) s.receive(settings(r.str("bytes")))
@@ -116,7 +132,7 @@ class QcyTest {
         val reads = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.READ }.map { it.short }
         assertEquals(listOf(QcyWire.VERSION_SHORT, QcyWire.BATTERY_SHORT, QcyWire.SETTINGS_SHORT, QcyWire.KEYS_SHORT, QcyWire.EQ_SHORT), reads)
         val asked = start.map { GattEnvelope.out(it)!! }.filter { it.operation == GattEnvelope.WRITE }.map { QcyPacket.parse(it.value).single().u8(0) }
-        assertEquals(listOf(QcyItem.TONE_VOLUME, QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.POWER_MANAGER, QcyItem.MULTI_EQ_2), asked)
+        assertEquals(listOf(QcyItem.TONE_VOLUME, QcyItem.ANC_SETTING, QcyItem.GAME_MODE, QcyItem.WIND_DETECTION, QcyItem.SLEEP_MODE, QcyItem.LDAC, QcyItem.MULTIPOINT, QcyItem.BALANCE, QcyItem.POWER_MANAGER, QcyItem.MULTI_EQ_2, QcyItem.MAX_EQ_COUNT), asked)
         val s = n70()
         assertTrue(start.all(s::allowed))
         assertFalse(s.allowed(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(QcyItem.FACTORY_RESET))))
@@ -159,6 +175,10 @@ class QcyTest {
         assertEquals(a.str("other"), advert.otherAddress)
         assertEquals(listOf(60, 96, 43), listOf(advert.left, advert.right, advert.case))
         assertTrue(advert.matches(a.str("other").lowercase()))
+        assertTrue(advert.hasBattery)
+        // Earbuds in their case: no earbud's battery (0, or over 100), as QCY's Devicebind.isNoBattery; the case's own does not count.
+        val inCase = a.str("bytes").hexBytes().also { it[5] = 0; it[6] = 0x80.toByte() }
+        assertFalse(QcyAdvert.parse(inCase)!!.hasBattery)
         assertNull(QcyAdvert.parse(ByteArray(10)))
         // The advert's battery shows before anything is read; the battery characteristic replaces it.
         val s = QcySession(QcyModels.of(advert.vendorId), advert)
@@ -233,6 +253,25 @@ class QcyTest {
         assertEquals("QCY MeloBuds N70", QcyModels.model("5D45")?.names?.single())
     }
 
+    @Test
+    fun thePanelPresetsThatSitOnTheModelsBandsAreCurves() {
+        // 2026-11-12: QCY's control panels list each preset's gains (dB per band); 108 models have presets on their own bands.
+        val devices = load("devices.json").getValue("devices").jsonArray.map { it.jsonObject }
+        var withCurves = 0
+        for (d in devices) {
+            val spec = QcyModels.of(d.getValue("vendor_id").jsonPrimitive.int)?.eq ?: continue
+            val json = d["eq"]?.jsonObject?.get("preset_gains")?.jsonArray.orEmpty()
+            assertEquals(json.size, spec.presetGains.size, d.getValue("name").toString())
+            for ((name, gains) in spec.presetGains) {
+                assertEquals(spec.bands, gains.size, name)
+            }
+            if (spec.presetGains.isNotEmpty()) withCurves++
+        }
+        assertEquals(108, withCurves)
+        val era = QcyModels.ALL.first { it.eq?.presetGains?.isNotEmpty() == true }.eq!!
+        assertEquals(10, era.presetGains.values.first().size)
+    }
+
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
 
     @Test
@@ -250,6 +289,131 @@ class QcyTest {
         assertEquals("ff1a2218" + "ffe0fc" + "1f009001640000" + "e803e0fc8d0001" + "803e2003460002", hex(GattEnvelope.out(w)!!.value))
         assertTrue(s.allowed(w))
         assertEquals("ff03fe0122", hex(GattEnvelope.out(s.takeReadBacks().single())!!.value))
+    }
+
+    @Test
+    fun aParametricPresetGoesOutAsQcysAppWritesIt() {
+        // 2026-11-24: the N70's panel lists "Default" with bands of its own (QCY's id 1, master gain -12 dB, six bands); QCY's app writes it as the parametric EQ under that id
+        // and pads the earbuds' ten slots with empty bands (frequency 0, gain 0, Q 0, type 255). Built from the panel and QCY's code, not recorded.
+        val s = QcySession(QcyModels.of(23877))
+        assertNull(s.eqPreset("Default"), "before the earbuds have answered for their parametric EQ")
+        s.receive(settings("ff4b2249" + "080000" + (1..10).joinToString("") { le(100 * it) + le(0) + le(100) + "01" }))
+        assertNull(s.eqPreset("No such preset"))
+        val w = s.eqPreset("Default")!!.single()
+        val bands = "c8007cfc46000284039cff460002f00ac800780002342144fd5e0102581b9cff780003983a38ff900102"
+        val empty = "000000000000" + "ff"
+        assertEquals("ff4b2249" + "01" + "50fb" + bands + empty.repeat(4), hex(GattEnvelope.out(w)!!.value))
+        assertTrue(s.allowed(w))
+        assertEquals("ff03fe0122", hex(GattEnvelope.out(s.takeReadBacks().single())!!.value))
+        assertTrue(QcyModels.of(23877)!!.eq!!.paramPresets.any { it.name == "Default" && it.id == 1 && it.masterDb == -12.0 && it.bands.size == 6 })
+    }
+
+    private fun le(v: Int) = "%02x%02x".format(v and 0xFF, (v shr 8) and 0xFF)
+
+    @Test
+    fun theFitTestIsItem11() {
+        // 2026-11-24, from QCY's app 4.0.7 (CompactnessActivityEarphone, setCompactnessEnable): 01 01 01 starts it, the earbuds answer item 11 with a status (2: a result), then the
+        // left and the right result (3 good, 1 or 2 poor, else failed), and the app turns it off. Not recorded; 20 models' panels have "Fit detection".
+        val s = QcySession(QcyModels.of(23872))
+        assertEquals(20, QcyModels.ALL.count { it.fitTest })
+        assertNull(QcySession(QcyModels.ALL.first { !it.fitTest }).startFitTest(), "a model without the screen")
+        s.receive(settings("ff0511030000" + "00"))
+        assertTrue(s.state.hasFitTest && s.state.fitSound)
+        val w = s.startFitTest()!!.single()
+        assertEquals("ff051103010101", hex(GattEnvelope.out(w)!!.value))
+        assertTrue(s.allowed(w))
+        s.receive(settings("ff051103010203"))
+        assertNull(s.state.fit, "status 1 is the test running, not a result")
+        s.receive(settings("ff051103020302"))
+        assertEquals(FitResult(FitResult.Fit.GOOD, FitResult.Fit.NOT_FIT), s.state.fit)
+        assertEquals("ff051103000000", hex(GattEnvelope.out(s.takeOutbox().single())!!.value))
+        s.receive(settings("ff051103020900"))
+        assertEquals(FitResult(FitResult.Fit.UNKNOWN, FitResult.Fit.UNKNOWN), s.state.fit)
+        // A JieLi model sends the same item inside JieLi's custom command.
+        val jl = QcyJieliSession(QcyModels.of(QcyModels.ALL.first { it.fitTest && it.protocol != QcyProtocol.QCY }.vendorId))
+        assertTrue(jl.startFitTest()!!.isNotEmpty())
+    }
+
+    @Test
+    fun theFitSoundIsPairFreesOwnAndShapedLikeQcys() {
+        val rate = 16000
+        val a = QcyFitSound.make(rate, 5)
+        assertEquals(rate * 5, a.size)
+        assertTrue(a.contentEquals(QcyFitSound.make(rate, 5)), "the same every time")
+        val rms = kotlin.math.sqrt(a.sumOf { (it * it).toDouble() } / a.size)
+        assertEquals(QcyFitSound.RMS, rms, 0.01)
+        assertTrue(a.maxOf { kotlin.math.abs(it) } <= QcyFitSound.PEAK + 1e-6)
+        // Power in a band by a plain DFT over one second at 1 Hz steps (the 50-Hz-and-up bands only need every tenth bin).
+        val one = DoubleArray(rate) { a[it].toDouble() }
+        fun power(hz: Int): Double {
+            var re = 0.0
+            var im = 0.0
+            for (i in one.indices) {
+                val w = 2 * kotlin.math.PI * hz * i / rate
+                re += one[i] * kotlin.math.cos(w)
+                im -= one[i] * kotlin.math.sin(w)
+            }
+            return re * re + im * im
+        }
+        val low = (10..100 step 5).sumOf { power(it) }
+        val high = (4100..7900 step 100).sumOf { power(it) }
+        assertTrue(low > high * 50, "mostly below 100 Hz: $low against $high")
+    }
+
+    @Test
+    fun thePersonalisedListeningTest() {
+        // 2026-11-24, from QCY's app 4.0.7 (CustomEQEdit2Activity, BeepTool2, getMaxGain, setSideEQData); 8 models' panels have it. Built from the code, not recorded.
+        val spec = QcyModels.of(23872)!!.eq!!.personal!!
+        assertEquals(8, spec.bands.size)
+        assertEquals(63, spec.bands.first().hz)
+        assertEquals(-65.3, spec.bands.first().db)
+        assertEquals(8, QcyModels.ALL.count { it.eq?.personal != null })
+        // Two bands: the tone's level and how a band settles.
+        val two = QcyPersonal(listOf(QcyPersonal.Band(63, 0.7, 2, 2.0, -65.3), QcyPersonal.Band(1000, 0.7, 2, 2.0, -86.9)), 4.0, emptyList())
+        val test = QcyPersonalTest(two)
+        assertEquals(-55.3, test.toneDb, 1e-9, "gain 2 is 10 dB above the reference")
+        test.heard()
+        test.heard()
+        assertEquals(0, test.gain)
+        test.heard()
+        assertEquals(-2, test.gain, "two steps at a time below 500 Hz once the gain is 0 or less")
+        assertEquals(-70.3, test.toneDb, 1e-9)
+        test.heard()
+        assertEquals(-4, test.gain)
+        test.heard()
+        assertEquals(0, test.band, "heard once at -4: not settled")
+        test.heard()
+        assertEquals(1, test.band)
+        assertEquals(-4, test.left[0])
+        // Not heard: a step up each time, settled by two failures at 6.
+        repeat(4) { test.notHeard() }
+        assertEquals(6, test.gain)
+        test.notHeard()
+        assertEquals(1, test.band)
+        test.notHeard()
+        assertEquals(0, test.band)
+        assertEquals(1, test.ear)
+        assertEquals(6, test.left[1])
+        assertFalse(test.finished)
+        // The right ear in a hurry: hear it at once at the lowest gain.
+        repeat(2) {
+            repeat(10) { test.notHeard() }
+        }
+        assertTrue(test.finished)
+        // The frames: item 46 then 47 under index 11, eight bands of seven bytes (hertz, gain, Q, type), and a master gain.
+        val frames = QcyModels.of(23872)!!.eq!!.personal!!.let { QcyPersonalTest(it).frames() }
+        assertEquals(2, frames.size)
+        val left = GattEnvelope.out(frames[0])!!.value
+        assertEquals(QcyItem.MULTI_EQ_LEFT, left[2].toInt() and 0xFF)
+        assertEquals(3 + 8 * 7, left[3].toInt() and 0xFF)
+        assertEquals(11, left[4].toInt())
+        assertEquals(QcyItem.MULTI_EQ_RIGHT, GattEnvelope.out(frames[1])!!.value[2].toInt() and 0xFF)
+        assertTrue(frames.all { QcySession(QcyModels.of(23872)).allowed(it) })
+        assertEquals("ff03450101", hex(GattEnvelope.out(QcyPersonal.testMode(true))!!.value))
+        // The master gain: one band raised 8 dB at 63 Hz peaks at 8.5 dB, over the panel's 4, so the master is -10 + (4 - 8.5).
+        val master = two.maxGain(listOf(QcyParamPreset.Band(63, 8.0, 0.7, 2)))
+        assertEquals(-14.5, master, 0.05)
+        assertEquals(-10.0, two.maxGain(listOf(QcyParamPreset.Band(63, 0.0, 0.7, 2))), 1e-9, "flat: the last master gain")
     }
 
     @Test

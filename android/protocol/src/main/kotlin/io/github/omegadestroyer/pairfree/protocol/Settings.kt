@@ -23,11 +23,19 @@ public sealed interface Setting {
      */
     public data class Choice(override val key: String, val value: String?, val options: List<String>) : Setting
 
-    /** A whole step from [min] to [max]. */
-    public data class Level(override val key: String, val value: Int, val min: Int, val max: Int) : Setting
+    /** A whole step from [min] to [max]. Not [enabled] while another setting rules it out (the screens grey it out). */
+    public data class Level(override val key: String, val value: Int, val min: Int, val max: Int, val enabled: Boolean = true) : Setting
 
     /** A button; [active] while what it started is still going, when pressing it again stops it. */
     public data class Action(override val key: String, val active: Boolean = false) : Setting
+
+    /**
+     * A line of text the user types (a broadcast code), at most [maxLength] characters. The screens send it as a [SettingChange.Choice] whose option is the text.
+     */
+    public data class Text(override val key: String, val value: String, val maxLength: Int) : Setting
+
+    /** A read-only device value, such as a sensor reading. */
+    public data class Information(override val key: String, val value: String) : Setting
 }
 
 /** A change to a [Setting] from the screens. */

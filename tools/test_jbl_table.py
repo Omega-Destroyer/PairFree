@@ -40,7 +40,7 @@ class JblTable(unittest.TestCase):
         self.assertEqual("Bluetooth LE", flex2["Connection"])
         self.assertEqual(
             "noise cancelling, Ambient Aware, TalkThru, auto power-off, Smart Audio &amp; Video, voice prompts, balance, VoiceAware, SafeSound, "
-            "3D spatial sound, sound effect, audio limiter, Find My Buds, touch controls, adaptive noise cancelling, auto compensation, equalizer",
+            "3D spatial sound, sound effect, audio limiter, Find My Buds, touch controls, adaptive noise cancelling, auto compensation, ear tips, Auracast listening, PersoniFi (the hearing test and its switch), noise cancelling level, leakage compensation, ear canal compensation, equalizer",
             flex2["Settings"],
         )
         self.assertIn("JblTray", flex2["Status"])
@@ -111,7 +111,8 @@ class JblData(unittest.TestCase):
             self.assertIn(number, race["never_send"], "NV key writes, relays to the other earbud and analytics are never sent")
         # NV key writes, reloads, key map writes and relays are named for the Airoha PEQ and gesture writes alone, which
         # PairFree builds itself as JBL's app sends them (owner, 2026-11-04 and 2026-11-05).
-        self.assertEqual({"0A01", "0A09", "0A0A", "0D01"}, set(race["commands"].values()) & set(race["never_send"]))
+        # 0093 passes Harman frames through; only the clock frame A7 is let through (JblSession.raceAllowed).
+        self.assertEqual({"0093", "0A01", "0A09", "0A0A", "0D01"}, set(race["commands"].values()) & set(race["never_send"]))
         self.assertEqual({"00A8", "00A9"}, set(race["key_events"].values()), "the only key events: Smart Audio & Video's")
 
     def test_vectors(self):

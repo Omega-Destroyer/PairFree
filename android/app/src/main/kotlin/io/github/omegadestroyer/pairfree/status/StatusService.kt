@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.status
 
+import io.github.omegadestroyer.pairfree.Languages
+import io.github.omegadestroyer.pairfree.look.Looks
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -32,7 +34,12 @@ import io.github.omegadestroyer.pairfree.protocol.BatteryLevel
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.blockedByLdac
-import io.github.omegadestroyer.pairfree.ui.modelOf
+import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.brands.modelOf
+import io.github.omegadestroyer.pairfree.protocol.Setting
+import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys
+import io.github.omegadestroyer.pairfree.widget.WidgetLabels
 import io.github.omegadestroyer.pairfree.ui.numberOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,13 +83,15 @@ class StatusService : Service() {
         }
     }
 
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(Languages.wrap(newBase))
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_SHOW -> show(intent.getStringExtra(EXTRA_ADDRESS))
-            ACTION_NEXT_NOISE -> nextNoise()
-            ACTION_GAME_MODE -> toggleGameMode()
+            ACTION_NEXT_NOISE -> runButton(1)
+            ACTION_GAME_MODE -> runButton(2)
             ACTION_DISMISSED -> putBack()
             ACTION_STOP -> {
                 val address = intent.getStringExtra(EXTRA_ADDRESS)
@@ -154,10 +163,11 @@ class StatusService : Service() {
     private suspend fun watch() {
         val hub = hub
         var retries = 0
-        combine(hub.connection.status, hub.connection.state) { s, st -> s to st }.collect { (status, state) ->
+        combine(hub.connection.status, hub.connection.state, hub.connection.settings) { s, st, groups -> Triple(s, st, groups) }.collect { (status, state, groups) ->
             val current = device ?: return@collect
             when (status) {
-                is LinkStatus.Idle -> stop()
+                // Not on to the lines below: they would post a notification again after stop() took it down.
+                is LinkStatus.Idle -> return@collect stop()
                 is LinkStatus.Connected -> {
                     retries = 0
                     if (status.device.address != current.address) {
@@ -179,7 +189,7 @@ class StatusService : Service() {
                 }
                 else -> Unit
             }
-            val notification = StatusNotification.build(this, device, state, status)
+            val notification = StatusNotification.build(this, device, state, status, groups)
             val key = key(notification)
             if (key != shown) {
                 shown = key
@@ -206,23 +216,45 @@ class StatusService : Service() {
         }
     }
 
-    /** Off, cancelling, transparency, and round again, in the order the Home tab shows them. */
-    private fun nextNoise() {
+    /** What button [n] is set to for these earbuds (issue 72): the noise modes, a switch, or nothing. */
+    private fun runButton(n: Int) {
+        val earbuds = device ?: return
+        when (val action = StatusSettings(hub.prefs).button(earbuds.address, n)) {
+            StatusSettings.NOISE -> nextNoise(earbuds)
+            StatusSettings.NONE -> Unit
+            else -> flip(action, earbuds)
+        }
+    }
+
+    /** Off, cancelling, transparency, and round again, in the order the Home tab shows them; only the modes the model has (issue 66: the Dime Evo has no noise cancelling). */
+    private fun nextNoise(earbuds: Paired) {
         val connection = hub.connection
         if (connection.status.value !is LinkStatus.Connected) return
-        val order = listOf("off", "anc", "transparency").map { numberOf(Command.ANC_MODE, it) }
+        val offered = try {
+            Brands[earbuds.brand].noiseOffline(earbuds)?.map { it.mode }?.distinct()?.takeIf { it.size >= 2 }
+        } catch (_: RuntimeException) {
+            null
+        }
+        val order = (offered ?: listOf("off", "anc", "transparency")).map { numberOf(Command.ANC_MODE, it) }
         val now = order.indexOf(connection.state.value.number(Command.ANC_MODE))
         connection.set(Command.ANC_MODE, order[(now + 1) % order.size])
     }
 
-    private fun toggleGameMode() {
+    /** Turns the switch [key] ([ToggleKeys]) the other way: a shared one by its command, a brand's by its row. */
+    private fun flip(key: String, earbuds: Paired) {
         val connection = hub.connection
+        if (connection.status.value !is LinkStatus.Connected) return
         val state = connection.state.value
-        val on = state.switch(Command.GAME_MODE) ?: return
-        val earbuds = device ?: return
-        // The official app offers game mode on some models only with LDAC off; nor does PairFree. Off always works.
-        if (!on && state.blockedByLdac(Command.GAME_MODE, modelOf(earbuds, state))) return
-        connection.set(Command.GAME_MODE, if (on) 0 else 1)
+        val command = ToggleKeys.commandOf(key)
+        if (command != null) {
+            val on = state.switch(command) ?: return
+            // The official app offers game mode on some models only with LDAC off; nor does PairFree. Off always works.
+            if (!on && state.blockedByLdac(command, modelOf(earbuds, state))) return
+            connection.set(command, if (on) 0 else 1)
+            return
+        }
+        val row = connection.settings.value.flatMap { it.settings }.firstOrNull { it.key == key } as? Setting.Toggle ?: return
+        if (row.enabled) connection.changeSetting(SettingChange.Toggle(key, !row.on))
     }
 
     private fun stop() {
@@ -323,6 +355,10 @@ class StatusService : Service() {
 class ConnectionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val device = IntentCompat.getParcelableExtra(intent, BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java) ?: return
+        // The home screen widget shows the buttons of whichever earbuds are connected.
+        io.github.omegadestroyer.pairfree.widget.PairFreeWidget.requestRefresh(context)
+        io.github.omegadestroyer.pairfree.widget.PairFreeWidget.refreshSoon(context)
+        if (intent.action == BluetoothDevice.ACTION_ACL_CONNECTED) io.github.omegadestroyer.pairfree.widget.WidgetService.syncIfWanted(context, device.address)
         when (intent.action) {
             BluetoothDevice.ACTION_ACL_CONNECTED -> StatusService.startIfWanted(context, device.address, fromBackground = true)
             BluetoothDevice.ACTION_ACL_DISCONNECTED -> StatusService.stop(context, device.address)
@@ -338,7 +374,7 @@ internal object StatusNotification {
      * tapping it steps to the next mode. Expanded, game mode has a button too. Tapping
      * elsewhere opens PairFree.
      */
-    fun build(context: Context, device: Paired?, state: EarbudState, status: LinkStatus): Notification = with(context) {
+    fun build(context: Context, device: Paired?, state: EarbudState, status: LinkStatus, groups: List<io.github.omegadestroyer.pairfree.protocol.SettingGroup> = emptyList()): Notification = with(context) {
         val title = device?.name ?: getString(R.string.app_name)
         val connected = status is LinkStatus.Connected
         val line = when (status) {
@@ -346,14 +382,29 @@ internal object StatusNotification {
             is LinkStatus.Reconnecting -> getString(R.string.status_reconnecting)
             else -> getString(R.string.status_connecting)
         }
-        val noise = noiseName(state)?.takeIf { connected && state.supports(Command.ANC_MODE) }
-        val game = state.switch(Command.GAME_MODE)?.takeIf { connected }
-        // As on the Home tab: some models offer game mode only with LDAC off (ldac_excludes). Turning
-        // it off stays possible, in case it was turned on with LDAC on anyway.
-        val gameBlocked = game == false && device != null && state.blockedByLdac(Command.GAME_MODE, modelOf(device, state))
+        // What the two buttons do for these earbuds (issue 72): the noise modes, a switch the earbuds offer, or nothing.
+        val settings = StatusSettings(hub.prefs)
+        val first = device?.let { settings.button(it.address, 1) } ?: StatusSettings.NOISE
+        val second = device?.let { settings.button(it.address, 2) } ?: ToggleKeys.keyOf(Command.GAME_MODE)
+        val switches = if (connected) ToggleKeys.offered(state, groups) { true }.toMap() else emptyMap()
+        fun switchLabel(key: String): String? = switches[key]?.let { on -> getString(if (on) R.string.status_toggle_on else R.string.status_toggle_off, WidgetLabels.toggle(context, key)) }
+        val noiseName = noiseName(state)?.takeIf { connected && state.supports(Command.ANC_MODE) }
+        val noise = when (first) {
+            StatusSettings.NOISE -> noiseName
+            StatusSettings.NONE -> null
+            else -> switchLabel(first)
+        }
+        // The second button is game mode by default, as it was: some models offer game mode only with LDAC off (ldac_excludes); turning it off stays possible.
+        val game = when (second) {
+            StatusSettings.NOISE -> noiseName
+            StatusSettings.NONE -> null
+            else -> if (second == ToggleKeys.keyOf(Command.GAME_MODE)) state.switch(Command.GAME_MODE)?.takeIf { connected }?.let { if (it) getString(R.string.status_game_is_on) else getString(R.string.status_game_is_off) } else switchLabel(second)
+        }
+        val gameBlocked = second == ToggleKeys.keyOf(Command.GAME_MODE) && state.switch(Command.GAME_MODE) == false && connected && device != null && state.blockedByLdac(Command.GAME_MODE, modelOf(device, state))
         val nextNoise = action(context, StatusService.ACTION_NEXT_NOISE)
         val toggleGame = action(context, StatusService.ACTION_GAME_MODE)
 
+        val look = Looks.chosen(context)
         val small = RemoteViews(packageName, R.layout.status_notification).apply {
             setTextViewText(R.id.status_title, title)
             setTextViewText(R.id.status_battery, line)
@@ -362,7 +413,7 @@ internal object StatusNotification {
         val big = RemoteViews(packageName, R.layout.status_notification_big).apply {
             setTextViewText(R.id.status_title, title)
             setTextViewText(R.id.status_battery, line)
-            noiseButton(this, noise, nextNoise, getString(R.string.status_noise_button, noise ?: ""))
+            noiseButton(this, noise, nextNoise, if (first == StatusSettings.NOISE) getString(R.string.status_noise_button, noise ?: "") else noise ?: "")
             if (game == null) {
                 setViewVisibility(R.id.status_game, View.GONE)
             } else if (gameBlocked) {
@@ -372,7 +423,7 @@ internal object StatusNotification {
                 setFloat(R.id.status_game, "setAlpha", DIMMED)
             } else {
                 setViewVisibility(R.id.status_game, View.VISIBLE)
-                setTextViewText(R.id.status_game, getString(if (game) R.string.status_game_is_on else R.string.status_game_is_off))
+                setTextViewText(R.id.status_game, game)
                 setOnClickPendingIntent(R.id.status_game, toggleGame)
             }
             setViewVisibility(R.id.status_buttons, if (noise == null && game == null) View.GONE else View.VISIBLE)
@@ -381,6 +432,8 @@ internal object StatusNotification {
         val open = PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
         NotificationCompat.Builder(context, StatusService.CHANNEL)
             .setSmallIcon(R.drawable.ic_status)
+            // The look's accent on the icon. The rest stays in the system's own notification styles, which every look sits on.
+            .setColor(look.palette(Looks.night(context)).accent.resolve(context))
             // The plain title and text stay for screen readers, the lock screen and the status bar's summaries.
             .setContentTitle(title)
             .setContentText(listOfNotNull(line, noise).joinToString("  ·  "))
@@ -395,7 +448,7 @@ internal object StatusNotification {
             .setShowWhen(false)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-            .addExtras(Bundle().apply { putString(SHOWS, listOf(title, line, noise, game, gameBlocked).joinToString("|")) })
+            .addExtras(Bundle().apply { putString(SHOWS, listOf(title, line, noise, game, gameBlocked, look.id).joinToString("|")) })
             .build()
     }
 

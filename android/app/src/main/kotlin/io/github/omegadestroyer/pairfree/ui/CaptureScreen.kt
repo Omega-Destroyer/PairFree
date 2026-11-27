@@ -42,7 +42,7 @@ import io.github.omegadestroyer.pairfree.capture.CaptureResult
 import io.github.omegadestroyer.pairfree.protocol.CurveMatch
 import io.github.omegadestroyer.pairfree.protocol.EqCapture
 import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -79,8 +79,8 @@ internal fun CaptureScreen(capture: Capture, actions: CaptureActions, connectedC
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.capture_title), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), actions::closeCapture)
+            Text(stringResource(R.string.capture_title), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), actions::closeCapture)
         }
         Privacy()
         when (capture) {
@@ -98,8 +98,8 @@ private fun Privacy() {
     val context = LocalContext.current
     Panel {
         Label(stringResource(R.string.capture_privacy_title))
-        Text(stringResource(R.string.capture_privacy), style = Studio.type.small, color = Studio.colors.secondaryText)
-        StudioButton(
+        Text(stringResource(R.string.capture_privacy), style = Look.type.small, color = Look.colors.secondaryText)
+        AppButton(
             stringResource(R.string.capture_source),
             {
                 try {
@@ -115,7 +115,7 @@ private fun Privacy() {
 
 @Composable
 private fun Guide(onChoose: () -> Unit) {
-    val c = Studio.colors
+    val c = Look.colors
     Text(stringResource(R.string.capture_intro), color = c.secondaryText)
     Panel {
         val steps = listOf(
@@ -130,23 +130,23 @@ private fun Guide(onChoose: () -> Unit) {
         )
         steps.forEachIndexed { i, step ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("${i + 1}", Modifier.width(20.dp), style = Studio.type.heading, color = c.accent)
+                Text("${i + 1}", Modifier.width(20.dp), style = Look.type.heading, color = c.accent)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(step))
                     // Android shows nothing while it builds the bug report, so people think it failed.
                     if (step == R.string.capture_step_report) {
-                        Text(stringResource(R.string.capture_step_report_wait), style = Studio.type.body.copy(fontWeight = FontWeight.Bold))
+                        Text(stringResource(R.string.capture_step_report_wait), style = Look.type.body.copy(fontWeight = FontWeight.Bold))
                     }
                 }
             }
         }
     }
-    StudioButton(stringResource(R.string.capture_choose), onChoose, Modifier.fillMaxWidth(), primary = true)
+    AppButton(stringResource(R.string.capture_choose), onChoose, Modifier.fillMaxWidth(), primary = true)
 }
 
 @Composable
 private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: String?, onChoose: () -> Unit) {
-    val c = Studio.colors
+    val c = Look.colors
     val context = LocalContext.current
     val problem = when (val result = done.result) {
         CaptureResult.NoBluetoothLog -> R.string.capture_no_log
@@ -156,7 +156,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
     }
     if (problem != null) {
         Panel { Text(stringResource(problem), color = c.destructive) }
-        StudioButton(stringResource(R.string.capture_choose), onChoose, Modifier.fillMaxWidth(), primary = true)
+        AppButton(stringResource(R.string.capture_choose), onChoose, Modifier.fillMaxWidth(), primary = true)
         return
     }
 
@@ -174,13 +174,13 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
             val model = Models.find(f.substringBefore('_'), null)?.names?.firstOrNull()
             Text(if (model != null) "$model ($f)" else stringResource(R.string.capture_new_model, f))
             val settings = done.reads.firstOrNull { it.firmware?.text == f }?.replies?.size ?: 0
-            Text(pluralStringResource(R.plurals.capture_settings_read, settings, settings), style = Studio.type.small, color = c.secondaryText)
+            Text(pluralStringResource(R.plurals.capture_settings_read, settings, settings), style = Look.type.small, color = c.secondaryText)
         }
         if (done.hasSoundpeats) {
             val included = connectedCode != null && firmware.any { it.substringBefore('_') == connectedCode }
             Text(
                 stringResource(if (included) R.string.capture_own_report else R.string.capture_own_report_missing),
-                style = Studio.type.small,
+                style = Look.type.small,
                 color = c.secondaryText,
             )
         }
@@ -189,13 +189,13 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
             Text(
                 pluralStringResource(R.plurals.capture_vendor_messages, earbuds.fromApp, earbuds.fromApp) + ", " +
                     pluralStringResource(R.plurals.capture_vendor_replies, earbuds.fromEarbuds, earbuds.fromEarbuds),
-                style = Studio.type.small,
+                style = Look.type.small,
                 color = c.secondaryText,
             )
             val sent = earbuds.sent.joinToString(", ") { (name, times) -> if (times > 1) "$name ($times)" else name }
-            if (sent.isNotEmpty()) Text(stringResource(R.string.capture_vendor_sent, sent), style = Studio.type.small, color = c.secondaryText)
+            if (sent.isNotEmpty()) Text(stringResource(R.string.capture_vendor_sent, sent), style = Look.type.small, color = c.secondaryText)
         }
-        if (done.vendor.isNotEmpty()) Text(stringResource(R.string.capture_vendor_hint), style = Studio.type.small, color = c.secondaryText)
+        if (done.vendor.isNotEmpty()) Text(stringResource(R.string.capture_vendor_hint), style = Look.type.small, color = c.secondaryText)
     }
     // The log holds hours of earlier traffic; the recording starts where the user opened this screen.
     val since = done.since
@@ -203,11 +203,11 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
         Text(
             if (since != null) stringResource(R.string.capture_since, clock(since)) else stringResource(R.string.capture_whole_log),
             Modifier.weight(1f),
-            style = Studio.type.small,
+            style = Look.type.small,
             color = c.secondaryText,
         )
         if (since != null || done.wholeLog) {
-            StudioButton(
+            AppButton(
                 stringResource(if (done.wholeLog) R.string.capture_show_recording else R.string.capture_show_all),
                 { actions.showWholeLog(!done.wholeLog) },
             )
@@ -233,7 +233,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
 
     val ready = done.ready
     val clipLabel = stringResource(R.string.capture_title)
-    StudioButton(
+    AppButton(
         stringResource(R.string.capture_send),
         {
             val report = actions.captureReport()
@@ -250,7 +250,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
         primary = true,
         enabled = ready,
     )
-    StudioButton(
+    AppButton(
         stringResource(R.string.capture_share),
         {
             val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, actions.captureReport())
@@ -261,10 +261,10 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
     )
     Text(
         stringResource(if (copied) R.string.capture_copied else if (ready) R.string.capture_send_hint else R.string.capture_name_first),
-        style = Studio.type.small,
+        style = Look.type.small,
         color = c.secondaryText,
     )
-    Text(stringResource(R.string.capture_step_cleanup), style = Studio.type.small, color = c.secondaryText)
+    Text(stringResource(R.string.capture_step_cleanup), style = Look.type.small, color = c.secondaryText)
 
     naming?.let { index ->
         val options = remember { nameOptions() }
@@ -304,7 +304,7 @@ private fun Done(done: Capture.Done, actions: CaptureActions, connectedCode: Str
 
 @Composable
 private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, match: CurveMatch?, sameAs: Int?, showFirmware: Boolean, onClick: () -> Unit) {
-    val c = Studio.colors
+    val c = Look.colors
     val time = remember(write.timeMicros) { clock(write.timeMicros) }
     Row(
         Modifier
@@ -314,14 +314,14 @@ private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, match: 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text("$number", Modifier.width(24.dp), style = Studio.type.heading, color = c.accent)
+        Text("$number", Modifier.width(24.dp), style = Look.type.heading, color = c.accent)
         Column(Modifier.weight(1f)) {
             when {
                 name != null -> Text(name)
                 match is CurveMatch.Custom -> Text(stringResource(R.string.capture_custom_curve), color = c.label)
                 match != null -> Text(stringResource(R.string.capture_left_out), color = c.label)
                 // A curve PairFree does not know: the one that needs the user.
-                else -> Text(stringResource(R.string.capture_needs_name), color = c.accent, style = Studio.type.heading)
+                else -> Text(stringResource(R.string.capture_needs_name), color = c.accent, style = Look.type.heading)
             }
             val details = listOfNotNull(
                 time,
@@ -333,7 +333,7 @@ private fun WriteRow(number: Int, write: EqCapture.Write, name: String?, match: 
                 sameAs?.let { stringResource(R.string.capture_same_as, it) },
                 write.firmware?.code?.takeIf { showFirmware },
             )
-            Text(details.joinToString(" · "), style = Studio.type.small, color = c.secondaryText)
+            Text(details.joinToString(" · "), style = Look.type.small, color = c.secondaryText)
         }
         MiniCurve(write, Modifier.width(72.dp).height(28.dp))
         Chevron()
@@ -347,7 +347,7 @@ private fun clock(timeMicros: Long): String =
 /** The write's gains against log frequency: enough to tell one curve from another. */
 @Composable
 private fun MiniCurve(write: EqCapture.Write, modifier: Modifier) {
-    val color = Studio.colors.accent
+    val color = Look.colors.accent
     val bands = remember(write) { write.bands.sortedBy { it.hz } }
     Canvas(modifier) {
         if (bands.size < 2) return@Canvas

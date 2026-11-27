@@ -1,0 +1,332 @@
+{
+  "source": "com/jabra/moments/jabralib/headset/settings/constants/SdkSettingDefinitions.java",
+  "settings": [
+    {
+      "setting": "ANC",
+      "guid": "032952cb-cbf7-4732-87f6-06b53191bde6"
+    },
+    {
+      "setting": "ANC_WITH_HEARTHROUGH",
+      "guid": "9baf14e5-6f98-4d17-bac8-d657c15e83d0"
+    },
+    {
+      "setting": "AUDIO_ANNOUCEMENTS",
+      "guid": "db141881-ee69-468a-b800-0cd467cf9485"
+    },
+    {
+      "setting": "AUDIO_ANNOUNCEMENT_BOOM_ARM",
+      "guid": "0683343d-4899-4d49-a291-2d34bbfc29a3"
+    },
+    {
+      "setting": "AUTOMATIC_VOLUME_ADJUSTMENT",
+      "guid": "16a34299-3b67-438a-95a2-1a65f8506f2f"
+    },
+    {
+      "setting": "AUTO_ANSWER_CALL",
+      "guid": "469d2e31-b3c4-4fd4-94cc-5c96001bcf6d"
+    },
+    {
+      "setting": "AUTO_ANSWER_CALL2",
+      "guid": "bf3096d0-a950-4274-9dbf-b6ac905e3a58"
+    },
+    {
+      "setting": "AUTO_ANSWER_CALL_BOOM_ARM",
+      "guid": "50e08f91-93da-4515-8bec-d5f11c69446e"
+    },
+    {
+      "setting": "AUTO_MUTE_CALL",
+      "guid": "9e1a31f3-ebec-4c72-a5bc-ab9c0b561731"
+    },
+    {
+      "setting": "AUTO_MUTE_CALL_BOOM_ARM",
+      "guid": "364abd41-2d3a-4afd-baa7-c772e7c544ac"
+    },
+    {
+      "setting": "AUTO_PAUSE_MUSIC_MOTION_SENSOR",
+      "guid": "8a45e437-b99c-4398-ba8b-b6a640124551"
+    },
+    {
+      "setting": "AUTO_PAUSE_MUSIC_ON_EAR_DETECTION",
+      "guid": "4b1105b5-c9e9-4f1f-aa3b-17582bbc55a0"
+    },
+    {
+      "setting": "AUTO_PAUSE_MUSIC_TRUE_WIRELESS",
+      "guid": "229d1fd1-5016-40a8-9675-d80134e984bc"
+    },
+    {
+      "setting": "AUTO_REJECT_CALL",
+      "guid": "86f039e5-d0ea-4565-999a-4104c9c78842"
+    },
+    {
+      "setting": "AUTO_SLEEP",
+      "guid": "419276ca-500a-44e0-bad0-71af881d91e5"
+    },
+    {
+      "setting": "BUTTON_SOUNDS",
+      "guid": "5f7a9b26-4419-45db-933d-4e1f57b2a656"
+    },
+    {
+      "setting": "CONNECTION_MODE",
+      "guid": "39ac9897-7188-4513-bed8-70b1e02b6a41"
+    },
+    {
+      "setting": "CURRENT_LANGUAGE",
+      "guid": "78a58e27-2c76-4d2c-bc9a-60cf22239009"
+    },
+    {
+      "setting": "DISABLE_READOUT_CALLER_ID",
+      "guid": "dbff4edc-c7ad-4bc5-a25f-b0cbdf983bce"
+    },
+    {
+      "setting": "ENABLE_EARCUP_MICROPHONE",
+      "guid": "0d53170a-f767-42e7-9e15-ae9f31517f64"
+    },
+    {
+      "setting": "HEARTHROUGH_FOR_MONO",
+      "guid": "be819452-8e17-4402-a2bf-8c6ef1268931"
+    },
+    {
+      "setting": "HEAR_THROUGH",
+      "guid": "c8053d14-7091-4b9f-bc5a-e281f5b23c06"
+    },
+    {
+      "setting": "HEAR_THROUGH_LEVEL",
+      "guid": "0f6fb976-1467-46d3-a8b0-4ec2394df112"
+    },
+    {
+      "setting": "HEAR_THROUGH_MODE",
+      "guid": "f18df68b-41a0-496c-a9fd-3ff33233c04d"
+    },
+    {
+      "setting": "IN_CALL_AUDIO",
+      "guid": "8db4f65b-06ca-45ff-9014-66ccece452c0"
+    },
+    {
+      "setting": "IN_CALL_AUDIO2",
+      "guid": "1a665ee8-3532-4872-85a9-053312e41019"
+    },
+    {
+      "setting": "IN_CALL_BUSY_LIGHT",
+      "guid": "e7c8fdaa-13c0-4e03-b43c-e774ab87b4b2"
+    },
+    {
+      "setting": "IN_CALL_BUSY_LIGHT2",
+      "guid": "bed07174-7977-4629-b1c6-f5326af3d8bd"
+    },
+    {
+      "setting": "MICROPHONE_QUALITY_INDICATOR",
+      "guid": "5371a561-f9f2-42bd-bf1e-5c2ce3665bb7"
+    },
+    {
+      "setting": "MULTI_VIBRATION",
+      "guid": "2247d8b0-2162-456d-9fd5-5b28bffad900"
+    },
+    {
+      "setting": "MUTE_REMINDER_TONE",
+      "guid": "c00b56a2-fc1e-4657-b838-27710a1a74a6"
+    },
+    {
+      "setting": "ON_HEAD_DETECTION",
+      "guid": "8b395329-7ada-4d67-87c5-77a365df7646"
+    },
+    {
+      "setting": "OPTIMIZE_CALL",
+      "guid": "a4d33889-8080-4e68-aaa6-57254507a96a"
+    },
+    {
+      "setting": "PAIRING_LIST",
+      "guid": "5b54a328-4ad2-4775-a058-5630163b1bd4"
+    },
+    {
+      "setting": "READOUT_GENERAL",
+      "guid": "f3eb79ed-4130-412e-aaff-ab70cfaf0f6d"
+    },
+    {
+      "setting": "RENAMING_HEADSET",
+      "guid": "743c3c26-cdd5-4362-be18-db6442837fc1"
+    },
+    {
+      "setting": "SIDE_TONE",
+      "guid": "178ffba0-3bcb-4e5f-8fb6-ab75074851dc"
+    },
+    {
+      "setting": "SIDE_TONE_LEVEL",
+      "guid": "25c579a1-feb3-4593-a363-0011d56778ee"
+    },
+    {
+      "setting": "SMART_BUTTON",
+      "guid": "3b30c223-7752-408b-b3f4-71a3a9971324"
+    },
+    {
+      "setting": "SPEED_DIAL_NUMBER",
+      "guid": "43370f50-cecb-4248-bd34-435c8665b2d5"
+    },
+    {
+      "setting": "VIBRATION",
+      "guid": "c1d77bcc-6c07-4893-a51e-c5bd55059ccb"
+    },
+    {
+      "setting": "VOICE_CONTROL_FOR_CALLS",
+      "guid": "cdc80e45-b5c8-4e0d-a407-0f9cfc084d03"
+    },
+    {
+      "setting": "WAKE_WORD",
+      "guid": "730cab83-1647-45d8-ab47-e7ff87968146"
+    },
+    {
+      "setting": "WIND_MODE",
+      "guid": "0ba1155b-c316-4ed9-8f3a-bc1d2d3170f0"
+    },
+    {
+      "setting": "IncomingContext_LEFT_BUTTON_TAP",
+      "guid": "53a683b6-e1dd-4e3b-b44e-31373a0b228d"
+    },
+    {
+      "setting": "IncomingContext_LEFT_BUTTON_DOUBLE_TAP",
+      "guid": "9e48e6f2-de38-4612-920c-18af1a90ed83"
+    },
+    {
+      "setting": "IncomingContext_LEFT_BUTTON_TRIPLE_TAP",
+      "guid": "e2fa5312-a84e-45c9-b71a-cec79ef4ff8f"
+    },
+    {
+      "setting": "IncomingContext_RIGHT_BUTTON_TAP",
+      "guid": "1f09ca0b-0796-4cbd-8714-5f1230f6549e"
+    },
+    {
+      "setting": "IncomingContext_RIGHT_BUTTON_DOUBLE_TAP",
+      "guid": "22a5524c-a53d-4da6-9b79-0c2a468616eb"
+    },
+    {
+      "setting": "IncomingContext_RIGHT_BUTTON_TRIPLE_TAP",
+      "guid": "0ddb052b-b7ce-44dd-a158-28d4f5254eda"
+    },
+    {
+      "setting": "MediaContext_LEFT_BUTTON_TAP",
+      "guid": "9d39d6b4-7846-4ef0-b4fb-ca396a640c87"
+    },
+    {
+      "setting": "MediaContext_LEFT_BUTTON_DOUBLE_TAP",
+      "guid": "799934eb-89b2-487c-be98-67accada648a"
+    },
+    {
+      "setting": "MediaContext_LEFT_BUTTON_TRIPLE_TAP",
+      "guid": "4a368e21-a206-4ee9-b66b-287a06f2a042"
+    },
+    {
+      "setting": "MediaContext_RIGHT_BUTTON_TAP",
+      "guid": "57e50636-0be0-421b-9c4a-d3b74138478c"
+    },
+    {
+      "setting": "MediaContext_RIGHT_BUTTON_DOUBLE_TAP",
+      "guid": "5239dd6e-18da-40e9-8a12-bcd5dd90a5d3"
+    },
+    {
+      "setting": "MediaContext_RIGHT_BUTTON_TRIPLE_TAP",
+      "guid": "44bd390a-cb58-4f3d-bd62-3b33188dd017"
+    },
+    {
+      "setting": "OngoingContext_LEFT_BUTTON_TAP",
+      "guid": "84aaeeaf-48b3-4213-8fc8-aaa55a11ed35"
+    },
+    {
+      "setting": "OngoingContext_LEFT_BUTTON_DOUBLE_TAP",
+      "guid": "c190268d-6674-44ad-81c6-2555d906fa29"
+    },
+    {
+      "setting": "OngoingContext_LEFT_BUTTON_TRIPLE_TAP",
+      "guid": "ca6ead0d-30df-4538-aa24-dd4e72f9eedd"
+    },
+    {
+      "setting": "OngoingContext_RIGHT_BUTTON_TAP",
+      "guid": "66fc0730-0393-4a75-8f10-4ced66bddd53"
+    },
+    {
+      "setting": "OngoingContext_RIGHT_BUTTON_DOUBLE_TAP",
+      "guid": "c14b8e67-cb5d-4fbe-a1cb-1753ec8716b6"
+    },
+    {
+      "setting": "OngoingContext_RIGHT_BUTTON_TRIPLE_TAP",
+      "guid": "d74f35e4-a43a-456a-90c8-fbc782538eaa"
+    }
+  ],
+  "note": "GUIDs identify downloaded setting forms, not Bluetooth command numbers. No model availability is implied.",
+  "option_codes": {
+    "VALUE_ANC_OFF": 0,
+    "VALUE_ANC_ON": 1,
+    "VALUE_ANC_WITH_HEARTHROUGH_ANC": 1,
+    "VALUE_ANC_WITH_HEARTHROUGH_HT_MODE_MIX": 3,
+    "VALUE_ANC_WITH_HEARTHROUGH_HT_MODE_ON": 2,
+    "VALUE_ANC_WITH_HEARTHROUGH_OFF": 0,
+    "VALUE_AUDIO_ANNOUCEMENTS_OFF": 2,
+    "VALUE_AUDIO_ANNOUCEMENTS_TONES": 0,
+    "VALUE_AUDIO_ANNOUCEMENTS_VOICE": 1,
+    "VALUE_AUDIO_ANNOUNCEMENT_BOOM_ARM_OFF": 2,
+    "VALUE_AUDIO_ANNOUNCEMENT_BOOM_ARM_TONES": 0,
+    "VALUE_AUDIO_ANNOUNCEMENT_BOOM_ARM_VOICE": 1,
+    "VALUE_AUTOMATIC_VOLUME_ADJUSTMENT_OFF": 0,
+    "VALUE_AUTOMATIC_VOLUME_ADJUSTMENT_ON": 1,
+    "VALUE_AUTO_ANSWER_CALL_BOOM_ARM_OFF": 0,
+    "VALUE_AUTO_ANSWER_CALL_BOOM_ARM_ON": 1,
+    "VALUE_AUTO_ANSWER_CALL_OFF": 0,
+    "VALUE_AUTO_ANSWER_CALL_ON": 1,
+    "VALUE_AUTO_MUTE_CALL_BOOM_ARM_OFF": 0,
+    "VALUE_AUTO_MUTE_CALL_BOOM_ARM_ON": 1,
+    "VALUE_AUTO_MUTE_CALL_OFF": 0,
+    "VALUE_AUTO_MUTE_CALL_ON": 1,
+    "VALUE_AUTO_PAUSE_MUSIC_MOTION_SENSOR_OFF": 0,
+    "VALUE_AUTO_PAUSE_MUSIC_MOTION_SENSOR_ON": 1,
+    "VALUE_AUTO_PAUSE_MUSIC_ON_EAR_DETECTION_OFF": 0,
+    "VALUE_AUTO_PAUSE_MUSIC_ON_EAR_DETECTION_ON": 1,
+    "VALUE_AUTO_PAUSE_MUSIC_TRUE_WIRELESS_OFF": 1,
+    "VALUE_AUTO_PAUSE_MUSIC_TRUE_WIRELESS_ON": 0,
+    "VALUE_AUTO_REJECT_CALL_OFF": 0,
+    "VALUE_AUTO_REJECT_CALL_ON": 1,
+    "VALUE_BUTTON_SOUNDS_OFF": 0,
+    "VALUE_BUTTON_SOUNDS_ON": 255,
+    "VALUE_CONNECTION_MODE_OFF": 0,
+    "VALUE_CONNECTION_MODE_ON": 1,
+    "VALUE_DISABLE_READOUT_CALLER_ID_OFF": 0,
+    "VALUE_DISABLE_READOUT_CALLER_ID_ON": 1,
+    "VALUE_ENABLE_EARCUP_MICROPHONE_OFF": 0,
+    "VALUE_ENABLE_EARCUP_MICROPHONE_ON": 1,
+    "VALUE_HEARTHROUGH_FOR_MONO_OFF": 0,
+    "VALUE_HEARTHROUGH_FOR_MONO_ON": 1,
+    "VALUE_HEAR_THROUGH_MODE_MIX": 0,
+    "VALUE_HEAR_THROUGH_MODE_ON": 1,
+    "VALUE_HEAR_THROUGH_OFF": 0,
+    "VALUE_HEAR_THROUGH_ON": 1,
+    "VALUE_IN_CALL_AUDIO_DEFAULT": 0,
+    "VALUE_IN_CALL_AUDIO_ENHANCE_BASS": 1,
+    "VALUE_IN_CALL_AUDIO_ENHANCE_TREBBLE": 2,
+    "VALUE_IN_CALL_BUSY_LIGHT_OFF": 0,
+    "VALUE_IN_CALL_BUSY_LIGHT_ON": 1,
+    "VALUE_MICROPHONE_QUALITY_INDICATOR_OFF": 0,
+    "VALUE_MICROPHONE_QUALITY_INDICATOR_ON": 3,
+    "VALUE_MULTI_VIBRATION_INCOMING_CALL": 2,
+    "VALUE_MULTI_VIBRATION_OFF": 0,
+    "VALUE_MULTI_VIBRATION_ON": 1,
+    "VALUE_MUTE_REMINDER_TONE_OFF": 0,
+    "VALUE_MUTE_REMINDER_TONE_ON": 20,
+    "VALUE_ON_HEAD_DETECTION_OFF": 0,
+    "VALUE_ON_HEAD_DETECTION_ON": 1,
+    "VALUE_OPTIMIZE_CALL_QUALITY_OFF": 0,
+    "VALUE_OPTIMIZE_CALL_QUALITY_ON": 1,
+    "VALUE_READOUT_GENERAL_OFF": 0,
+    "VALUE_READOUT_GENERAL_ON": 1,
+    "VALUE_SIDE_TONE_OFF": 1,
+    "VALUE_SIDE_TONE_ON": 0,
+    "VALUE_SMART_BUTTON_NO_FUNCTION": 0,
+    "VALUE_SMART_BUTTON_PLAY_PAUSE": 20,
+    "VALUE_SMART_BUTTON_SPEED_DIAL": 12,
+    "VALUE_SMART_BUTTON_VOICE_ASSISTANT": 19,
+    "VALUE_VIBRATION_OFF": 0,
+    "VALUE_VIBRATION_ON": 1,
+    "VALUE_VOICE_CONTROL_FOR_CALLS_OFF": 0,
+    "VALUE_VOICE_CONTROL_FOR_CALLS_ON": 1,
+    "VALUE_WAKE_WORD_OFF": 0,
+    "VALUE_WAKE_WORD_ON": 1,
+    "VALUE_WIND_MODE_OFF": 0,
+    "VALUE_WIND_MODE_ON": 1
+  }
+}

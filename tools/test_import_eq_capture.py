@@ -62,10 +62,12 @@ class ImportEqCaptureTest(unittest.TestCase):
 
     def test_clip_c10_recording_keeps_truefrees_curve_fixed(self):
         # append_after_classic: TRUEFREE's eight bands go first in every curve, then the user's eight. The first recording
-        # (issue #9) only showed the reset, with its fifth band at 100 Hz; the second, a custom curve, put the fifth slider
-        # at 1 kHz, so the entry has that and keeps the reset as the preset "TRUEFREE Classic".
+        # (issue #9) only showed the reset, with its fifth band at 100 Hz, and its preset names were on the wrong curves;
+        # the second, a custom curve, put the fifth slider at 1 kHz; the third (2026-11-05) has every preset on its own
+        # name, so the entry has its presets, the reset as the preset "TRUEFREE Classic", and the 1 kHz fifth band. The
+        # third's last curve, Adaptive EQ, is the user's own hearing-test result, not a preset.
         model = next(m for m in self.devices if m.get("firmware_code") == "T2")
-        out = imp.build((DATA / "reports" / "T2_0.5.5_recording.txt").read_text(encoding="utf-8"))
+        out = imp.build((DATA / "reports" / "T2_0.5.5_recording_3.txt").read_text(encoding="utf-8"))
         self.assertEqual(out["missing"], [])
         eq = out["eq"]
         self.assertEqual(len(eq["fixed_bands"]), 8)
@@ -73,10 +75,10 @@ class ImportEqCaptureTest(unittest.TestCase):
         classic = {"name": "TRUEFREE Classic", "bands": eq["fixed_bands"] + [
             {"hz": b["hz"], "q": b["q"], "gain_db": b["base_gain_db"]} for b in eq["bands"]]}
         eq["bands"][4]["hz"] = 1000
-        eq["presets"].insert(0, classic)
+        eq["presets"] = [classic] + [p for p in eq["presets"] if not p["name"].startswith("Adaptive EQ")]
         self.assertEqual(eq, model["eq"])
-        custom = imp.build((DATA / "reports" / "T2_0.5.5_recording_custom.txt").read_text(encoding="utf-8"))
-        self.assertEqual(custom["missing"], [])
+        for older in ("T2_0.5.5_recording.txt", "T2_0.5.5_recording_custom.txt"):
+            self.assertEqual(imp.build((DATA / "reports" / older).read_text(encoding="utf-8"))["missing"], [])
 
     def test_report_pasted_without_indents_in_a_code_block(self):
         text = report("S5", self.vectors, "S5_20250605_V0.4.9")

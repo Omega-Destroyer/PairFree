@@ -1,0 +1,25 @@
+{
+ "name": "Momentum True Wireless 3",
+ "names": [
+  "MOMENTUM TW 3",
+  "MTW3",
+  "MTW3 Black",
+  "MTW3 Graphite",
+  "MTW3 White",
+  "Momentum True Wireless 3"
+ ],
+ "codes": [],
+ "source": "Traced from the render Smart Control Plus bundles (mtw3, black, the left bud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "211,49 250,52 265,57 278,66 288,80 296,106 321,116 329,124 334,134 335,154 332,163 324,174 311,182 297,185 283,183 269,174 246,176 227,174 210,168 193,153 183,138 179,127 176,101 178,74 182,65 190,56 198,52",
+  "axis": [
+   255.7,
+   117.1
+  ],
+  "accent": [
+   "239,93 237,100 233,105 226,109 218,110 210,109 203,105 198,100 197,93 198,87 203,81 210,77 218,76 226,77 233,81 237,87"
+  ]
+ },
+ "case": "generic"
+}

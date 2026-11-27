@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,11 +40,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.omegadestroyer.pairfree.AppViewModel
 import io.github.omegadestroyer.pairfree.R
-import io.github.omegadestroyer.pairfree.bluetooth.Brand
+import io.github.omegadestroyer.pairfree.brands.Brands
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.capture.Capture
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 
 @Composable
 fun PairFreeApp(vm: AppViewModel = viewModel()) {
@@ -60,7 +59,7 @@ fun PairFreeApp(vm: AppViewModel = viewModel()) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(Studio.colors.background)
+            .background(Look.colors.background)
             .safeDrawingPadding(),
     ) {
         val current = status
@@ -89,17 +88,19 @@ private fun PermissionScreen(onResult: (Boolean) -> Unit) {
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
     ) {
-        Text(stringResource(R.string.permission_title), style = Studio.type.title)
-        Text(stringResource(R.string.permission_body), color = Studio.colors.secondaryText)
-        StudioButton(
+        Text(stringResource(R.string.permission_title), style = Look.type.title)
+        Text(stringResource(R.string.permission_body), color = Look.colors.secondaryText)
+        AppButton(
             stringResource(R.string.permission_allow),
             { launcher.launch(Manifest.permission.BLUETOOTH_CONNECT) },
             Modifier.fillMaxWidth(),
             primary = true,
         )
+        LanguageButton(Modifier.fillMaxWidth())
+        LookButton(Modifier.fillMaxWidth())
         if (denied) {
-            Text(stringResource(R.string.permission_denied), color = Studio.colors.secondaryText)
-            StudioButton(
+            Text(stringResource(R.string.permission_denied), color = Look.colors.secondaryText)
+            AppButton(
                 stringResource(R.string.permission_settings),
                 {
                     context.startActivity(
@@ -133,22 +134,22 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Image(
-            painterResource(R.drawable.device_h3_case),
+            deviceArtPainter(R.drawable.device_h3_case),
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .size(width = 150.dp, height = 120.dp),
         )
-        Text(stringResource(R.string.connect_title), style = Studio.type.title)
-        Text(stringResource(R.string.connect_hint), style = Studio.type.small, color = Studio.colors.secondaryText)
+        Text(stringResource(R.string.connect_title), style = Look.type.title)
+        Text(stringResource(R.string.connect_hint), style = Look.type.small, color = Look.colors.secondaryText)
         failure(status)?.let { message ->
             Panel {
-                Text(message, color = Studio.colors.destructive)
+                Text(message, color = Look.colors.destructive)
                 // What PairFree tried, for any brand, so a failure can be looked into (issue #3).
                 vm.connectionReport()?.let { report ->
                     var copied by remember(status) { mutableStateOf(false) }
                     val label = stringResource(R.string.copy_connection_report)
-                    StudioButton(
+                    AppButton(
                         label,
                         {
                             context.getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText(label, report))
@@ -156,7 +157,7 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
                         },
                         Modifier.fillMaxWidth(),
                     )
-                    if (copied) Text(stringResource(R.string.connection_report_copied), style = Studio.type.small, color = Studio.colors.secondaryText)
+                    if (copied) Text(stringResource(R.string.connection_report_copied), style = Look.type.small, color = Look.colors.secondaryText)
                 }
             }
         }
@@ -166,7 +167,7 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
             else -> Panel {
                 for (device in paired) {
                     PairedRow(device, connecting = (status as? LinkStatus.Connecting)?.device == device) {
-                        val needsScan = (device.brand == Brand.JBL || device.brand == Brand.QCY) &&
+                        val needsScan = Brands[device.brand].needsScan(device) &&
                             ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
                         if (needsScan) {
                             opening = device
@@ -178,7 +179,9 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
                 }
             }
         }
-        StudioButton(
+        LanguageButton(Modifier.fillMaxWidth())
+        LookButton(Modifier.fillMaxWidth())
+        AppButton(
             stringResource(R.string.bluetooth_settings),
             { context.startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS)) },
             Modifier.fillMaxWidth(),
@@ -186,8 +189,8 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
         Text(
             stringResource(R.string.privacy_line),
             Modifier.fillMaxWidth(),
-            style = Studio.type.small,
-            color = Studio.colors.label,
+            style = Look.type.small,
+            color = Look.colors.label,
             textAlign = TextAlign.Center,
         )
     }
@@ -196,29 +199,13 @@ private fun NotConnectedScreen(vm: AppViewModel, status: LinkStatus) {
 @Composable
 private fun PairedRow(device: Paired, connecting: Boolean, onConnect: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(device.name, Modifier.weight(1f), style = Studio.type.heading)
+        Text(device.name, Modifier.weight(1f), style = Look.type.heading)
         if (connecting) {
             Label(stringResource(R.string.connecting))
         } else {
-            StudioButton(stringResource(R.string.connect), onConnect)
+            AppButton(stringResource(R.string.connect), onConnect)
         }
     }
-}
-
-/** The brand's own app, which holds the earbuds' control channel while it is open. Names, so not translated. */
-private fun officialApp(brand: Brand): String = when (brand) {
-    Brand.SOUNDPEATS -> "PeatsAudio or SOUNDPEATS"
-    Brand.SOUNDCORE -> "Soundcore"
-    Brand.SAMSUNG -> "Galaxy Wearable"
-    Brand.SONY -> "Sony | Sound Connect"
-    Brand.BOSE -> "Bose"
-    Brand.JBL -> "JBL Headphones"
-    Brand.NOTHING -> "Nothing X"
-    Brand.PIXEL -> "Pixel Buds"
-    Brand.QCY -> "QCY"
-    Brand.ONEMORE -> "1MORE"
-    Brand.EARFUN -> "EarFun Audio"
-    Brand.APPLE -> ""
 }
 
 @Composable
@@ -226,16 +213,18 @@ private fun failure(status: LinkStatus): String? {
     if (status !is LinkStatus.Failed) return null
     val name = status.device.name
     return when (status.reason) {
-        LinkStatus.Reason.COULD_NOT_OPEN -> when (status.device.brand) {
-            // AirPods have no official app on Android to close (issue #3).
-            Brand.APPLE -> stringResource(R.string.failed_could_not_open_airpods, name)
-            else -> stringResource(R.string.failed_could_not_open, name, officialApp(status.device.soldAs ?: status.device.brand))
+        LinkStatus.Reason.COULD_NOT_OPEN -> {
+            // The brand's own app holds the channel while it is open; AirPods have none on Android to close (issue #3).
+            val officialApp = Brands[status.device.soldAs ?: status.device.brand].officialApp
+            if (Brands[status.device.brand].officialApp.isEmpty()) stringResource(R.string.failed_could_not_open_airpods, name)
+            else stringResource(R.string.failed_could_not_open, name, officialApp)
         }
         LinkStatus.Reason.LOST -> stringResource(R.string.failed_lost, name)
         LinkStatus.Reason.BLUETOOTH_OFF -> stringResource(R.string.failed_bluetooth_off)
         LinkStatus.Reason.NO_PERMISSION -> stringResource(R.string.failed_no_permission)
         LinkStatus.Reason.NO_SCAN_PERMISSION -> stringResource(R.string.failed_no_scan_permission, name)
         LinkStatus.Reason.NEEDS_NEWER_ANDROID -> stringResource(R.string.failed_needs_newer_android, name)
+        LinkStatus.Reason.HIDDEN_BY_ANDROID -> stringResource(R.string.failed_hidden_by_android, name)
         LinkStatus.Reason.NOT_FOUND -> stringResource(R.string.failed_not_found, name)
     }
 }

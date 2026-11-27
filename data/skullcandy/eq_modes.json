@@ -1,0 +1,323 @@
+{
+  "_about": "Skullcandy 5.0.6: the equalizer modes each product offers and the number each is sent as, by tools/import_skullcandy_eq_modes.py from SKDYEqualizerModeUtils.valueForFeature (a number 1 to 7 picks a preset the earbuds hold; 101 and up the custom curves; the Crusher 1080 ANC's 16 to 18 are its Bose modes). `modes` is keyed by the app's enum name.",
+  "modes": {
+    "crusherANC": {
+      "musicMode": 0,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 1
+    },
+    "crusherEvo": {
+      "musicMode": 0,
+      "podcastMode": 1,
+      "movieMode": 2,
+      "customEqualizerMode": 3
+    },
+    "indyANC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "indyFuel": {
+      "musicMode": 0,
+      "podcastMode": 1,
+      "movieMode": 2
+    },
+    "indyFuelRC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "indyEvo": {
+      "musicMode": 0,
+      "podcastMode": 1,
+      "movieMode": 2
+    },
+    "indyEvoRC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "pushUltra": {
+      "musicMode": 0,
+      "podcastMode": 1,
+      "movieMode": 2
+    },
+    "jibTrueXT2": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "dime2": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "dimeXT2": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "dimeEvo": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "dime360": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "seshANC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "mod": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "riffWireless2": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "plyr": {
+      "musicMode": 2,
+      "podcastMode": 3,
+      "movieMode": 4,
+      "supremeSoundMode": 1,
+      "fpsMode": 5,
+      "rpgMode": 7,
+      "mmoMode": 6,
+      "customEqualizerMode": 101
+    },
+    "slyrProXbox": {
+      "musicMode": 2,
+      "podcastMode": 3,
+      "movieMode": 4,
+      "supremeSoundMode": 1,
+      "fpsMode": 5,
+      "rpgMode": 7,
+      "mmoMode": 6,
+      "customEqualizerMode": 101
+    },
+    "slyrPro": {
+      "musicMode": 2,
+      "podcastMode": 3,
+      "movieMode": 4,
+      "supremeSoundMode": 1,
+      "fpsMode": 5,
+      "rpgMode": 7,
+      "mmoMode": 6,
+      "customEqualizerMode": 101
+    },
+    "hanc": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "tanc": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "iconANC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "aviatorANC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "bassBoostMode": 4,
+      "customEqualizerMode": 101
+    },
+    "hesh360": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "hesh540ANC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "crusherPlyr": {
+      "musicMode": 4,
+      "supremeSoundMode": 1,
+      "fpsMode": 2,
+      "rpgMode": 3,
+      "customEqualizerMode": 101,
+      "customEqualizerMode2": 102,
+      "customEqualizerMode3": 103,
+      "customEqualizerMode4": 104
+    },
+    "crusherPlyrXbox": {
+      "musicMode": 4,
+      "supremeSoundMode": 1,
+      "fpsMode": 2,
+      "rpgMode": 3,
+      "customEqualizerMode": 101,
+      "customEqualizerMode2": 102,
+      "customEqualizerMode3": 103,
+      "customEqualizerMode4": 104
+    },
+    "crusher540Active": {
+      "musicMode": 0,
+      "podcastMode": 1,
+      "movieMode": 2,
+      "customEqualizerMode": 3
+    },
+    "push720open": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "icon180": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "push540Open": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "crusherEvoRC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "crusher540ActiveRC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "crusher720": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "crusher1080ANC": {
+      "musicMode": 16,
+      "podcastMode": 17,
+      "movieMode": 18,
+      "customEqualizerMode": 0
+    },
+    "pushActive": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "grind": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "grindFuel": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "rail": {
+      "musicMode": 1,
+      "podcastMode": 3,
+      "bassBoostMode": 2,
+      "customEqualizerMode": 101
+    },
+    "railANC": {
+      "musicMode": 1,
+      "podcastMode": 3,
+      "bassBoostMode": 2,
+      "customEqualizerMode": 101
+    },
+    "crusherANC2": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "movieMode": 3,
+      "customEqualizerMode": 101
+    },
+    "method360ANC": {
+      "musicMode": 1,
+      "podcastMode": 3,
+      "bassBoostMode": 2,
+      "customEqualizerMode": 101
+    },
+    "method540ANC": {
+      "musicMode": 1,
+      "podcastMode": 3,
+      "bassBoostMode": 2,
+      "customEqualizerMode": 101
+    },
+    "session360": {
+      "signatureSoundMode": 1,
+      "outdoorMode": 2,
+      "indoorMode": 3,
+      "customEqualizerMode": 101
+    },
+    "session540": {
+      "signatureSoundMode": 1,
+      "outdoorMode": 2,
+      "indoorMode": 3,
+      "customEqualizerMode": 101
+    },
+    "session720": {
+      "signatureSoundMode": 1,
+      "outdoorMode": 2,
+      "indoorMode": 3,
+      "customEqualizerMode": 101
+    },
+    "session900": {
+      "signatureSoundMode": 1,
+      "outdoorMode": 2,
+      "indoorMode": 3,
+      "customEqualizerMode": 101
+    },
+    "dime540ANC": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "smokingBuds360Hanger": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    },
+    "smokingBuds360Stick": {
+      "musicMode": 1,
+      "podcastMode": 2,
+      "bassBoostMode": 3,
+      "customEqualizerMode": 101
+    }
+  }
+}

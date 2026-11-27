@@ -1,7 +1,10 @@
 package io.github.omegadestroyer.pairfree.protocol.qcy
 
+import io.github.omegadestroyer.pairfree.protocol.sortedByKey
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.GattEnvelope
 import io.github.omegadestroyer.pairfree.protocol.PowerActions
@@ -46,6 +49,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     private var keys: Map<Int, Int>? = null
     private var graphic: Pair<Int, List<Int>>? = null   // the EQ characteristic: its type, then a gain per band in dB
     private var parametric: QcyParametric? = null
+    private var maxEq: Int? = null                      // item 44: the most bands the earbuds take (QCY's app trims a longer EQ to it)
 
     init {
         advert?.let { battery(byteArrayOf(raw(it.left), raw(it.right), raw(it.case))) }
@@ -64,6 +68,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         if (model?.eq != null) {
             add(GattEnvelope.read(QcyWire.EQ_SHORT))
             add(request(QcyItem.MULTI_EQ_2))
+            if (model?.eq?.paramPresets.orEmpty().isNotEmpty()) add(request(QcyItem.MAX_EQ_COUNT))
         }
     }
 
@@ -85,6 +90,33 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
     private fun request(item: Int) = GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.request(item))
 
     private fun command(item: Int, vararg value: Int) = GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.of(item, *value))
+
+    /**
+     * The ear tip fit test (item 11, "Fit detection" in the panel; read from QCY's app 4.0.7, `CompactnessActivityEarphone` and `QCYConnectManager.setCompactnessEnable`):
+     * 01 01 01 starts it, 00 00 00 ends it. The phone plays a sound while the earbuds measure ([EarbudState.fitSound]); the earbuds answer item 11 with a status (2 is a
+     * result), then the left and the right result.
+     */
+    override fun startFitTest(): List<ByteArray>? {
+        if (model?.fitTest != true) return null
+        state = state.copy(fit = null)
+        return listOf(command(QcyItem.FIT_TEST, 1, 1, 1))
+    }
+
+    private fun fitResult(v: ByteArray) {
+        if (v.size < 3 || v[0].toInt() != 2) return
+        fun fit(b: Byte) = when (b.toInt()) {
+            3 -> FitResult.Fit.GOOD
+            1, 2 -> FitResult.Fit.NOT_FIT
+            else -> FitResult.Fit.UNKNOWN
+        }
+        state = state.copy(fit = FitResult(fit(v[1]), fit(v[2])))
+        // QCY's app turns the test off once it has its result.
+        outbox += command(QcyItem.FIT_TEST, 0, 0, 0)
+    }
+
+    private val outbox = mutableListOf<ByteArray>()
+
+    override fun takeOutbox(): List<ByteArray> = outbox.toList().also { outbox.clear() }
 
     /** The battery read, to send again now and then. */
     override fun batteryRequests(): List<ByteArray> = listOf(GattEnvelope.read(QcyWire.BATTERY_SHORT))
@@ -148,6 +180,8 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
             QcyItem.BATTERY -> battery(e.value)
             QcyItem.VERSION -> version(e.value)
             QcyItem.KEY_FUNCTION -> keys = (0 until e.value.size / 2).associate { e.u8(it * 2) to e.u8(it * 2 + 1) }
+            QcyItem.FIT_TEST -> fitResult(e.value)
+            QcyItem.MAX_EQ_COUNT -> maxEq = e.u8(0).takeIf { it > 0 }
             QcyItem.MULTI_EQ_2 -> QcyParametric.parse(e.value, typed = true)?.let { parametric = it }
             QcyItem.MULTI_EQ -> QcyParametric.parse(e.value, typed = false)?.let { parametric = it }
             else -> values[e.item] = e.value.copyOf()
@@ -176,6 +210,26 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
             val (type, gains) = graphic ?: return null
             return QcyEq(spec.freqs, gains, custom = type == EQ_CUSTOM, maxDb = spec.maxDb)
         }
+
+    /**
+     * One of the model's parametric presets (`preset_params`), written as QCY's app writes it (`QCYConnectManager.setEQWtihQFG`): the earbuds' own EQ item, the preset's
+     * `id` as the EQ index where the panel gives one (else QCY's custom index), the panel's master gain (else minus the highest gain), and the preset's bands, padded with
+     * empty ones to the slots the earbuds reported. Null for a name that is not one, before the earbuds have answered for their parametric EQ, and for a preset with more
+     * bands than the earbuds have slots.
+     */
+    override fun eqPreset(name: String): List<ByteArray>? {
+        val preset = model?.eq?.paramPresets?.firstOrNull { it.name == name } ?: return null
+        val p = parametric ?: return null
+        if (preset.bands.size > maxOf(p.slots, p.bands.size) || preset.bands.size > (maxEq ?: Int.MAX_VALUE)) return null
+        val bands = preset.bands.map { QcyParametric.Band(it.hz, hundredths(it.gainDb), hundredths(it.q), if (p.item == QcyItem.MULTI_EQ_2) it.type else null) }
+        val master = preset.masterDb?.let(::hundredths) ?: -(preset.bands.maxOf { it.gainDb }.coerceAtLeast(0.0).let(::hundredths))
+        val next = p.copy(index = preset.id?.takeIf { it in 1..126 } ?: EQ_CUSTOM, masterHundredths = master, bands = bands)
+        parametric = next
+        readBacks += request(p.item)
+        return listOf(GattEnvelope.write(QcyWire.COMMAND_SHORT, QcyPacket.build(QcyEntry(p.item, next.bytes()))))
+    }
+
+    private fun hundredths(v: Double): Int = (if (v < 0) v * 100 - 0.5 else v * 100 + 0.5).toInt()
 
     /** True while the EQ PairFree knows is the parametric one, which travels as QCY's items. */
     internal val parametricOnly: Boolean get() = parametric != null
@@ -270,11 +324,11 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         on(QcyItem.WEARING)?.let { out[Command.IN_EAR_DETECTION] = Value.Switch(it) }
         on(QcyItem.LDAC)?.let { out[Command.LDAC] = Value.Switch(it) }
         on(QcyItem.MULTIPOINT)?.let { out[Command.MULTIPOINT] = Value.Switch(it) }
-        state = state.copy(values = out)
+        state = state.copy(values = out, fitTest = model?.fitTest == true, fitSound = model?.fitTest == true)
     }
 
     /** Off, cancelling and transparency on the shared control, where the model has all three (or is not known). */
-    private val sharedNoise: Boolean
+    public val sharedNoise: Boolean
         get() = model == null || listOf(OFF, CANCELLING, TRANSPARENCY).all { model.mode(it) != null }
 
     /** Every setting the earbuds have, grouped by heading and tab. */
@@ -298,7 +352,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
                     toggle(QcyItem.LED_MODE, "led"),
                     timerRow(),
                     promptVolumeRow(),
-                ),
+                ) + choiceRows(),
             ),
             group(PowerActions.GROUP, SettingTab.DEVICE, listOfNotNull(Setting.Action(PowerActions.POWER_OFF).takeIf { model?.sleepTimer == true })),
         ) + touchGroups()
@@ -311,6 +365,20 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         val v = values[QcyItem.TONE_VOLUME] ?: return null
         val max = if (v.size >= 2 && v[1].toInt() and 0xFF > 0) v[1].toInt() and 0xFF else PROMPT_MAX
         return Setting.Level(PROMPT_KEY, (v[0].toInt() and 0xFF).coerceIn(0, max), 0, max)
+    }
+
+    /** The settings the panel picks from a list: the value byte the earbuds reported, by the option's name. */
+    private fun choiceRows(): List<Setting.Choice> = model?.settings.orEmpty().filter { it.options.isNotEmpty() }.mapNotNull { s ->
+        val v = values[s.item]?.firstOrNull()?.toInt()?.and(0xFF) ?: return@mapNotNull null
+        Setting.Choice(CHOICE_PREFIX + s.setting, s.options.firstOrNull { it.first == v }?.second, s.options.map { it.second })
+    }
+
+    private fun choice(key: String, option: String): ByteArray? {
+        val s = model?.settings.orEmpty().firstOrNull { CHOICE_PREFIX + it.setting == key } ?: return null
+        val v = s.options.firstOrNull { it.second == option }?.first ?: return null
+        values[s.item] = byteArrayOf(v.toByte())
+        readBacks += request(s.item)
+        return command(s.item, v)
     }
 
     private fun toggle(item: Int, key: String): Setting.Toggle? = on(item)?.let { Setting.Toggle(key, it) }
@@ -366,7 +434,10 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         val options = touch.actions.filter { a -> touch.table.containsValue(a) }
         if (options.size < 2 || form != Form.EARBUDS) return emptyList()
         return listOf("left", "right").mapNotNull { side ->
-            val rows = touch.gestures.mapNotNull { g ->
+            // A hold the panel does not list is offered when the earbuds' own key table has the hold keys: their firmware reports it (the T13 ANC2, issue #35),
+            // and the write is the same as for the other gestures; the read-back shows what the earbuds took.
+            val gestures = touch.gestures + listOf("hold").filter { "hold" !in touch.gestures && QcyKeys.KEYS.filterValues { it.startsWith("hold_") }.keys.any { table.containsKey(it) } }
+            val rows = gestures.mapNotNull { g ->
                 val key = QcyKeys.KEYS.entries.firstOrNull { it.value == "${g}_$side" }?.key ?: return@mapNotNull null
                 val action = table[key] ?: return@mapNotNull null
                 Setting.Choice("touch_${g}_$side", touch.table[action] ?: "other", options)
@@ -498,6 +569,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
                     }
                     change.key.startsWith("touch_") -> touch(change.key, change.option) ?: return null
                     change.key == TIMER_KEY -> timer(change.option) ?: return null
+                    change.key.startsWith(CHOICE_PREFIX) -> choice(change.key, change.option) ?: return null
                     else -> return null
                 }
             }
@@ -517,7 +589,7 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         val gestureSide = key.removePrefix("touch_")
         val id = QcyKeys.KEYS.entries.firstOrNull { it.value == gestureSide }?.key ?: return null
         val action = (model?.touch?.table ?: QcyKeys.ACTIONS).entries.firstOrNull { it.value == option }?.key ?: return null
-        val next = (table + (id to action)).toSortedMap()
+        val next = (table + (id to action)).sortedByKey()
         keys = next
         readBacks += GattEnvelope.read(QcyWire.KEYS_SHORT)
         return GattEnvelope.write(QcyWire.KEYS_SHORT, next.flatMap { (k, a) -> listOf(k.toByte(), a.toByte()) }.toByteArray())
@@ -557,6 +629,8 @@ public class QcySession(override val model: QcyModel?, advert: QcyAdvert? = null
         )
 
         /** Brand switches by their key. */
+        private const val CHOICE_PREFIX = "qcy_"
+
         private val TOGGLES = mapOf(
             "spatial_audio" to QcyItem.SPATIAL_AUDIO, "dynamic_eq" to QcyItem.ADAPTIVE_EQ, "adaptive_volume" to QcyItem.ADAPTIVE_VOLUME,
             "sleep_mode" to QcyItem.SLEEP_MODE, "wind_detection" to QcyItem.WIND_DETECTION, "led" to QcyItem.LED_MODE,
@@ -580,14 +654,22 @@ public data class QcyEq(val freqs: List<Int>, val gains: List<Int>, val custom: 
  * then per band its frequency (Hz), gain and Q (hundredths, signed for gains), each two bytes low first, and on
  * item 22 a filter type.
  */
-public data class QcyParametric(val item: Int, val index: Int, val masterHundredths: Int, val bands: List<Band>) {
+public data class QcyParametric(val item: Int, val index: Int, val masterHundredths: Int, val bands: List<Band>, val slots: Int = 0) {
     public data class Band(val hz: Int, val gainHundredths: Int, val qHundredths: Int, val type: Int?)
+
+    /** Items 22 and the left and right ones (46, 47) carry a filter type after each band. */
+    private fun typedItem(): Boolean = item == QcyItem.MULTI_EQ_2 || item == QcyItem.MULTI_EQ_LEFT || item == QcyItem.MULTI_EQ_RIGHT
 
     public fun bytes(): ByteArray {
         val out = mutableListOf(index, masterHundredths and 0xFF, (masterHundredths shr 8) and 0xFF)
         for (b in bands) {
             out += listOf(b.hz and 0xFF, (b.hz shr 8) and 0xFF, b.gainHundredths and 0xFF, (b.gainHundredths shr 8) and 0xFF, b.qHundredths and 0xFF, (b.qHundredths shr 8) and 0xFF)
-            if (item == QcyItem.MULTI_EQ_2) out += (b.type ?: 0)
+            if (typedItem()) out += (b.type ?: 0)
+        }
+        // The slots the earbuds reported beyond these hold nothing: QCY's app sends them as empty bands (frequency 0, gain 0, Q 0, type 255).
+        repeat(slots - bands.size) {
+            repeat(6) { out += 0 }
+            if (typedItem()) out += 255
         }
         return ByteArray(out.size) { out[it].toByte() }
     }
@@ -603,7 +685,7 @@ public data class QcyParametric(val item: Int, val index: Int, val masterHundred
                 Band(u16(at), s16(at + 2), u16(at + 4), if (typed) v[at + 6].toInt() and 0xFF else null)
             }.filter { it.hz > 0 }
             if (bands.isEmpty()) return null
-            return QcyParametric(if (typed) QcyItem.MULTI_EQ_2 else QcyItem.MULTI_EQ, v[0].toInt() and 0xFF, s16(1), bands)
+            return QcyParametric(if (typed) QcyItem.MULTI_EQ_2 else QcyItem.MULTI_EQ, v[0].toInt() and 0xFF, s16(1), bands, (v.size - 3) / size)
         }
     }
 }

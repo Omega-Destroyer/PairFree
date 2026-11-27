@@ -1,0 +1,19 @@
+{
+ "name": "Sesh ANC Active",
+ "names": [
+  "Sesh ANC Active"
+ ],
+ "codes": [
+  "Sesh ANC Active"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_sesh_anc_active, the left bud of the pair), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "113,25 131,26 148,31 160,37 171,47 180,62 187,81 190,107 189,137 197,141 225,147 233,153 278,210 302,246 312,266 317,297 314,316 308,334 288,362 272,375 256,383 230,389 209,389 184,383 167,374 150,359 125,331 77,296 50,259 37,235 32,220 33,195 41,162 52,137 45,115 52,82 61,60 75,42 93,30",
+  "axis": [
+   174.7,
+   207.4
+  ]
+ },
+ "case": "generic"
+}

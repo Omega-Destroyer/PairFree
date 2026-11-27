@@ -1,5 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.apple
 
+import io.github.omegadestroyer.pairfree.protocol.sortedValues
+
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -238,7 +240,7 @@ public class AppleSession {
 
     private fun choiceRow(key: String, id: Int): Setting? {
         if (id !in _controls) return null
-        return Setting.Choice(key, choice(id), AppleControl.VALUES.getValue(id).toSortedMap().values.toList())
+        return Setting.Choice(key, choice(id), AppleControl.VALUES.getValue(id).sortedValues())
     }
 
     private fun group(key: String, tab: SettingTab, settings: List<Setting>) = settings.takeIf { it.isNotEmpty() }?.let { SettingGroup(key, tab, it) }
@@ -310,6 +312,11 @@ public class AppleSession {
             ancNumber("anc") -> MODE_ANC
             ancNumber("transparency") -> MODE_TRANSPARENCY
             else -> return null
+        }
+        // AirPods refuse Off (an error beep, as a user's AirPods Pro 3 showed, issue #3) unless their "Allow Off" setting is on, and the Pro 3 does not
+        // report that setting at all: the same switch as the iOS Noise Control setting, so Off turns it on first, as picking Off there does.
+        if (mode == MODE_OFF && switch(AppleControl.ALLOW_OFF) != true) {
+            return listOf(write(AppleControl.ALLOW_OFF, AppleWire.ON), write(AppleControl.LISTENING_MODE, mode))
         }
         return listOf(write(AppleControl.LISTENING_MODE, mode))
     }

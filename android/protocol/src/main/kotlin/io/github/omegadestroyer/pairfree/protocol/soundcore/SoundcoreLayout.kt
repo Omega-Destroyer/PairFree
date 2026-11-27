@@ -7,6 +7,65 @@ import io.github.omegadestroyer.pairfree.protocol.VendorRecording
 public data class SoundcoreField(val name: String, val size: Int, val optional: Boolean = false)
 
 /**
+ * One piece of the fixed body a tag-length-value reply is turned into (docs/soundcore/PROTOCOL.md section 14). The newest Soundcore models answer
+ * `01 01` with `tag, length, value` records instead of a fixed layout, and pack several switches into the bits of one value. A layout with
+ * [SoundcoreLayout.tlv] lists the pieces in the order its `state` fields take them; [tag] is the record, [at] the byte of its value.
+ */
+public data class SoundcoreTlv(val tag: Int, val at: Int, val op: Op = Op.BYTES, val size: Int = 1, val bit: Int = 0) {
+    public enum class Op {
+        /** [size] bytes as they are. */
+        BYTES,
+
+        /** One byte: 1 when bit [bit] of the byte is set, else 0. */
+        BIT,
+
+        /** One byte: the low four bits. */
+        LOW,
+
+        /** One byte: the high four bits. */
+        HIGH,
+
+        /** The touch control's two bytes (with both earbuds in, then with one) as one byte, high nibble the second: the layout OpenSCQ30's buttons read. */
+        PACK,
+
+        /** One byte: the low four bits moved up and 0xF below, as the app's noise mode write holds the manual level. */
+        LEVEL,
+
+        /** One byte: its two nibbles swapped (the Space 2's noise mode write holds the levels the other way round from its reply). */
+        SWAP,
+    }
+
+    /** The bytes this piece adds to the body, from the record's [value] (null when the reply has no such record). */
+    internal fun take(value: ByteArray?): ByteArray {
+        fun v(i: Int): Int = (value?.getOrNull(i)?.toInt() ?: 0) and 0xFF
+        return when (op) {
+            Op.BYTES -> ByteArray(size) { value?.getOrNull(at + it) ?: 0 }
+            Op.BIT -> byteArrayOf(((v(at) shr bit) and 1).toByte())
+            Op.LOW -> byteArrayOf((v(at) and 0xF).toByte())
+            Op.HIGH -> byteArrayOf((v(at) shr 4).toByte())
+            Op.PACK -> byteArrayOf((((v(at + 1) and 0xF) shl 4) or (v(at) and 0xF)).toByte())
+            Op.LEVEL -> byteArrayOf((((v(at) and 0xF) shl 4) or 0xF).toByte())
+            Op.SWAP -> byteArrayOf((((v(at) and 0xF) shl 4) or (v(at) shr 4)).toByte())
+        }
+    }
+
+    internal companion object {
+        /** The records of a tag-length-value [body]: tag, length, value, from the first byte; a record that runs past the end stops the reading. */
+        fun records(body: ByteArray): Map<Int, ByteArray> {
+            val out = LinkedHashMap<Int, ByteArray>()
+            var i = 0
+            while (i + 1 < body.size) {
+                val end = i + 2 + (body[i + 1].toInt() and 0xFF)
+                if (end > body.size) break
+                out[body[i].toInt() and 0xFF] = body.copyOfRange(i + 2, end)
+                i = end
+            }
+            return out
+        }
+    }
+}
+
+/**
  * A battery level's scale, as OpenSCQ30 gives it: out of [max] steps, where the model reports each level
  * as level - [offset] (OpenSCQ30's level_offset: "if 1, 0 will represent 1"), so it sends 0 to max - offset
  * and percent = (value + offset) * 100 / max. A max of 100 is a percentage.
@@ -45,6 +104,12 @@ public class SoundcoreLayout(
     public val features: Set<String> = emptySet(),
     /** Other ids the model's vendor service may end in, such as `392B` for a variant of the A3926 (devices.json vendor_ids). */
     public val vendorIds: Set<String> = emptySet(),
+    /** For a model that answers in tag-length-value records: how its reply becomes the body [fields] describe. */
+    public val tlv: List<SoundcoreTlv> = emptyList(),
+    /** The records of a tag-length-value reply that hold serial numbers or addresses: their values are hidden in a report. */
+    public val tlvPrivate: Set<Int> = emptySet(),
+    /** The command that asks for and carries the state: [SoundcoreCommand.STATE], or the model's own (the Life NC's `01 09`). */
+    public val stateCommand: Int = SoundcoreCommand.STATE,
 ) {
     /** The bytes every reply has; optional fields come after them. */
     public val minSize: Int = fields.filterNot { it.optional }.sumOf { it.size }
@@ -78,7 +143,12 @@ public class SoundcoreLayout(
 }
 
 /** A state reply read with its model's [SoundcoreLayout]. Fields the model or its firmware does not send read as null. */
-public class SoundcoreState private constructor(public val layout: SoundcoreLayout, private val body: ByteArray) {
+public class SoundcoreState private constructor(
+    public val layout: SoundcoreLayout,
+    private val body: ByteArray,
+    /** The reply as the earbuds sent it; the body is the same for a fixed layout. */
+    private val raw: ByteArray = body,
+) {
     /** The reply's length in bytes. */
     public val size: Int get() = body.size
 
@@ -89,7 +159,7 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
     public fun with(name: String, value: ByteArray): SoundcoreState {
         val (at, size) = layout.locate(name) ?: return this
         if (value.size != size || at + size > body.size) return this
-        return SoundcoreState(layout, body.copyOf().also { value.copyInto(it, at) })
+        return SoundcoreState(layout, body.copyOf().also { value.copyInto(it, at) }, raw)
     }
 
     /** A field's first byte, or null when the model or this reply does not send it. */
@@ -152,6 +222,7 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
 
     /** The reply as hex, with the serial numbers' bytes shown as XX: they can carry the earbuds' Bluetooth address. */
     public fun reportHex(): String {
+        if (layout.tlv.isNotEmpty()) return reportHexTlv()
         val hidden = listOf("serial", "case_serial").mapNotNull(layout::locate).map { (at, size) -> at until at + size }
         // Also anything that looks like a serial number (12 or more hex digits as text, which holds the earbuds'
         // address), for models whose layout does not locate it: a report goes into a public issue.
@@ -176,9 +247,28 @@ public class SoundcoreState private constructor(public val layout: SoundcoreLayo
         }
     }
 
+    /** A tag-length-value reply as hex: the records that hold serial numbers and addresses, and anything serial-like, shown as XX. */
+    private fun reportHexTlv(): String {
+        val hide = BooleanArray(raw.size)
+        var i = 0
+        while (i + 1 < raw.size) {
+            val end = i + 2 + (raw[i + 1].toInt() and 0xFF)
+            if (end > raw.size) break
+            if ((raw[i].toInt() and 0xFF) in layout.tlvPrivate) for (j in i + 2 until end) hide[j] = true
+            i = end
+        }
+        val serialLike = VendorRecording.masked(raw, null, serials = true)
+        return raw.indices.joinToString(" ") { k -> if (hide[k] || serialLike[k]) "XX" else (raw[k].toInt() and 0xFF).toString(16).padStart(2, '0') }
+    }
+
     public companion object {
-        public fun parse(layout: SoundcoreLayout, body: ByteArray): SoundcoreState? =
-            if (body.size >= layout.minSize) SoundcoreState(layout, body.copyOf()) else null
+        public fun parse(layout: SoundcoreLayout, body: ByteArray): SoundcoreState? {
+            if (layout.tlv.isEmpty()) return if (body.size >= layout.minSize) SoundcoreState(layout, body.copyOf()) else null
+            val records = SoundcoreTlv.records(body)
+            if (records.isEmpty()) return null
+            val normalised = layout.tlv.fold(ByteArray(0)) { all, item -> all + item.take(records[item.tag]) }
+            return SoundcoreState(layout, normalised, body.copyOf())
+        }
 
         private fun isVersion(s: String): Boolean = s.length == 5 && s[2] == '.' && s.removeRange(2, 3).all { it in '0'..'9' }
     }

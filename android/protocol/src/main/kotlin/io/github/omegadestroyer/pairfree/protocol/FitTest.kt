@@ -1,6 +1,20 @@
 package io.github.omegadestroyer.pairfree.protocol
 
 /**
+ * A session whose earbuds have an ear tip fit test (docs/DESIGN.md, Device): the earbuds run the test themselves, and the result lands in
+ * [EarbudState.fit]. The shared fit test screen and the connection need nothing else, so a brand offers the test by implementing this and setting
+ * [EarbudState.fitTest] for the models that have it. SOUNDPEATS' Qualcomm models are the exception: their test is a GAIA feature and noise control
+ * goes off around it, which the connection does itself.
+ */
+public interface FitTest {
+    /** What the screens show now; the connection publishes it after the start frames go out. */
+    public val state: EarbudState
+
+    /** The frames that start the test, or null when these earbuds do not have one. Clears the last result. */
+    public fun startFitTest(): List<ByteArray>?
+}
+
+/**
  * The result of an ear tip fit test (docs/soundpeats/PROTOCOL.md section 11): one byte per earbud in a
  * notification on the GAIA fit feature. The H3 sends `01 01` with both earbuds in the ears
  * (PeatsAudio: a good fit), `02 02` with both on a desk ("Not fit"), and `01 02` with only

@@ -15,7 +15,7 @@ PairFree yet.
 - **QCY's product list and control panels**, which QCY's app downloads from QCY's server, as
   [Quicky](https://github.com/hui1601/Quicky) by hui1601 dumped them. Quicky has no licence, so it gives
   facts only. Its protocol notes, read from a QCY HT07's traffic, agree with QCY's app.
-  - `data/qcy/devices.json` keeps the 171 entries Quicky files as earphones; watches, speakers and the
+  - `data/qcy/devices.json` keeps the 171 entries Quicky files as earphones, plus the 23 earphones and headsets QCY's own product list (fetched 2026-11-04) holds and Quicky's does not, among them the newer QCY T13 Pro, vendor id 32887, `jieli_custom` (`tools/import_qcy_panels.py`, GitHub issue #28); watches, speakers and the
     one accessory are left out (the owner's choice, 2026-10-18).
   - Quicky left out the numbers QCY's control panels attach to touch actions and switch writes, and
     the EQ presets' values. So the touch actions are matched by name to Quicky's function table, and
@@ -64,6 +64,17 @@ earbuds by scanning (`BleScanManager`):
   address (either earbud's), then connects to that device. Scanning needs `BLUETOOTH_SCAN`, which the
   owner allowed for QCY on 2026-10-18, as for JBL. It is asked for only when a QCY device is opened,
   declared `neverForLocation`, and the scan ends when the earbuds are found.
+- **Which advert (2026-11-20, issue #67):** QCY's app takes the LE side's address only from an advert that carries
+  an earbud's battery (`EarphoneListManager.updateDeviceBleMac` skips `Devicebind.isNoBattery()`, both earbuds 0 or
+  over 100), and keeps the latest one. PairFree takes an advert with a battery, one without only when no other came
+  in the scan, and scans again after a connection that fails, since the LE address can change.
+- **How it connects** (`QCYConnectManager.connectBLE(mac, z)` = `connectBLE(mac, 3, 10000, z)`, over BluetoothKit's
+  `BleConnectRequest` and `BleConnectWorker`): `connectGatt` with no auto-connect over LE to the scanned device,
+  then a high connection priority; 10 s for each connection and three retries 1 s apart; service discovery 20 s,
+  retried three times; notifications subscribed; and only then an MTU of 512 asked for (`BleChangeMTURequest`).
+  PairFree does the same (`EnvelopeGattLink`). Until 0.17.0 it connected once with 10 s and asked for the MTU before
+  discovery: the MeloBuds Pro of issue #67 (Xiaomi phone, Android 16) never answered that one connection, while the
+  same model answered every read on an Android 17 phone (issue #64).
 - **PeatsAudio's company id:** PeatsAudio's copy of the library notes the company id as `0x522C`,
   but QCY's app uses `0x521C` (`BuildConfig.CompanyID`).
 
@@ -104,6 +115,11 @@ that item, and the earbuds then report it on `1002`. They also report changes ma
 | `2D` | Spatial audio | 01 on, 02 off |
 | `40` | Adaptive volume | 01 on, 02 off |
 | `FE` | Request | the item to report |
+
+**List-picking rows (2026-11-13):** panel rows of type 1000 or 111 that give a list: the music mode (item `2E`, cmdid 46: music `01`, gaming `03`, movie `04`; four models) and the touch
+sensitivity (cmdid 51, so item `33`: normal `2D`, medium `26`, high `34`; eight models; QCY's panel says it takes effect after a restart). The value is one byte, read with the request item and
+written as the item with that byte; item `33` is newer than 4.0.7's `DataBean`, so its layout is the panel's (`hasValue`, keys as hex bytes), not code read. `tools/import_qcy_panels.py --choices` adds them.
+The newer 4.2.1 is packed (six readable classes), which keeps Head Control (80), AI scene noise cancelling (84), spatial audio v2 (91) and gaming v2 (74) unread.
 
 **Switch values:** QCY's app sends each switch's on and off bytes as the model's control panel gives
 them. Quicky did not keep those bytes. OpenQCY uses 01 on, 02 off for every switch, and so does
@@ -208,12 +224,17 @@ The earbuds' own commands that want an answer get one: status 0 and their sequen
 Every JieLi model's noise values in QCY's control panels are packed ones (section 5), which QCY's app
 sends only as item `17`.
 
-**Never sent:** reboot `E7`, function `0E` and system info `08` writes, system operations `C5` (factory
-reset among them), the attributes PairFree does not write (the name among them), and QCY's never-sent
+**Never sent:** reboot `E7`, function `0E`, every system info `08` write except the EQ attribute (section 7), system operations `C5` (factory
+reset among them), every advanced-info attribute but the settings PairFree offers (the name, `ADV_DEVICE_NAME`, is never written: renaming is left out on purpose, owner 2026-11-04), and QCY's never-sent
 items (section 3) inside the custom command.
 
-**Left out:** the touch controls (no JieLi model's panel in Quicky lists them) and the EQ, which the
-older models take through JieLi's own EQ setting and the newer ones as items `20` and `22`.
+**Built 2026-11-13 (issue #35):** the touch controls and the noise control of the older panel screens. Quicky's list has none, but QCY's own panels do: 61 JieLi models' panels have the button screen as type 1 (left and right, single, double and triple touch, each action with its byte, `ANC mode` is `0A`), and four have the noise screen as type 11 (`ancindex` 1 on, 2 off, 3 transparency). QCY's app sets a key on a new JieLi device as the custom command `2B 02 <key> <action>` (`JLDeviceImpl.setBtnClickFunction`; odd keys left, even right: 1 and 2 touch, 3 and 4 double, 5 and 6 triple, 9 and 10 hold) and on an old one as the JieLi advanced-info attribute 2 with three bytes (action 0 sent as 127); the noise mode goes through JieLi's own noise mode command (`setCurrentNoiseMode`). `tools/import_qcy_panels.py --keys` reads them (touch and its `extra_actions`, since the panel gives its own byte for an action the standard table lacks: ANC mode is `0A` on some models and `0B` on others, take a picture `08`; and `jieli_noise` with each mode packed as `ancindex << 16`) and `QcyJieliSession` sends them: a key as the custom command `2B` with the key and the action on the newer models, as the key settings attribute (2: earbud, gesture 1 to 5, action) on the older ones, and the noise mode as attribute 11 (the mode, then the length and the minimum, maximum and current gain the earbuds last reported, two bytes each, high first: `NoiseMode.toData`); **the noise strength slider (2026-11-24)** is built for the two models whose panel gives a mode one (`progress` 100: the DT10 and the T13 ANC; `strength` on the mode in `data/qcy/devices.json`, `tools/import_qcy_panels.py --strength`): QCY's app writes the gain as the minimum plus the range times the percent over 100 in the noise mode attribute (`QCYConnectManager.setNoiseLevelPercent`), and `QcyJieliSession` offers it as a 0 to 100 level of the mode in use. 106 models gained their buttons, four their noise control. Not tried on real earbuds. The EQ is the older models' JieLi setting and the newer ones' items `20` and `22`.
+
+**Hold the panel does not list (2026-11-15, issue #35).** A model's panel lists the gestures QCY's app shows (`touch.gestures`), and the T13 ANC2's lists three. Its earbuds'
+own key table, in the user's report of 0.12.0 (`2B: ... 09 07 0a 0a`), holds keys 9 and 10, the left and right hold (gesture 5 of the key settings attribute), with
+actions `07` and `0a` (noise control). PairFree therefore offers a hold row for any model whose earbuds report a hold key, with the panel's own action list, and writes it as
+it writes the other gestures; the read-back shows what the earbuds took. This goes past QCY's app (the panel is the app's own limit), on the firmware's evidence;
+if a firmware ignores the write, the row reads back its old value. `QcyJieliTest.aHoldTheEarbudsReportIsOfferedEvenWhenThePanelDoesNotListIt` pins it.
 
 ## 7. EQ
 
@@ -231,21 +252,35 @@ panels are QCY's server data. PairFree asks for both on connecting and uses the 
   the user's own as type `FF` with the gains in dB (`CustomEQLayout`), plus the panel's `basedb`, which is 0
   in the panels QCY's app bundles for when it is offline (`controlpan_default`, `controlpan_jl`) and in most
   of its other bundled panels (−5 in two); Quicky did not keep it, so PairFree adds nothing.
-- **Presets** are curves in the panels. QCY's app writes them with their gains in tenths of a dB, so what the
-  earbuds take there is unclear, and PairFree offers no presets: only Stock (every band at 0) and curves of
-  the user's own. A characteristic that reports a preset's type counts as an EQ PairFree does not know.
+- **Presets** are curves in the panels (`sys_eq`: a name, a gain in dB per band, and for the parametric ones their own frequencies, Qs and filter types). QCY's app
+  keeps a preset's gains in tenths of a dB (`SysEQSeted`: the panel's `eqs` times 10 into a byte array) and the earbuds' EQ characteristic carries whole dB, so what the
+  earbuds take for a preset is not settled. **Since 2026-11-12** PairFree offers the 108 models' presets that sit on the model's own bands (`eq.preset_gains` in
+  `data/qcy/devices.json`, from `tools/import_qcy_panels.py --presets`) as curves: selecting one writes its gains, rounded to whole dB, through the same write as the user's
+  own curve. **The presets with bands of their own are built (2026-11-24)**: 87 models' panels list them (`eq.preset_params`: each preset's frequencies, gains, Qs and filter types
+  from `iitType`, 255 where the panel gives none, its `id` where it has one and its `mastergain`; 540 presets). QCY's app writes one as the parametric EQ
+  (`QCYConnectManager`, the task behind `setEQData`: a preset with an `id` goes under that EQ index with the panel's master gain; `QCYHeadsetClient.setEQWtihQFG2Type` lays out the
+  bytes: the EQ index, the master gain in hundredths, then seven bytes a band, hertz, gain and Q in hundredths, each low byte first, and the type), and pads the bands up to the
+  slots the earbuds reported with empty ones (frequency 0, gain 0, Q 0, type 255). `QcySession.eqPreset` does the same: the earbuds' own EQ item, the preset's `id` as the index (else
+  QCY's custom index 255), the panel's master gain (else minus the highest gain) and the slots padded; it needs the earbuds' parametric answer first and refuses a preset with more bands than slots. The
+  Sound tab draws such a preset on its own bands (`BandEq.eqPresetBands`). Presets that sit on the model's own bands stay curves. Two presets that share a name on one model keep the first. Not tried on any earbuds. A characteristic that reports a preset's type is shown as an EQ whose curve is unknown.
 - **Range and bands:** each model's band count, frequencies and range are in `data/qcy/devices.json` (`eq`);
   the parametric EQ uses the bands the earbuds report.
 - **JieLi models:** the newer ones take items `22` and `20` in the custom command, so the parametric EQ
-  goes there too. The older ones take JieLi's own EQ setting (system info `08`), which PairFree does not send.
+  goes there too. The older ones take JieLi's own EQ setting, which is the same bytes as the EQ characteristic carried in RCSP's system
+  information (**built 2026-11-15, issue #35**; read from QCY's app 4.0.7: `JLDeviceImpl.getEQInfo` and `setEQ`, `CommandBuilder.buildGetEqValueCmd` and
+  `buildSetEqValueCmd`, `ParseHelper.convertToEqInfo`): the read is opcode `07` with the public function `FF` and the 4-byte mask `00 00 00 10` (attribute 4);
+  the answer, and the earbuds' own notice (opcode `09`), hold the function and attribute 4: the EQ type and ten gains in signed whole dB (`FF` a curve of the
+  user's own; QCY's app sends a preset as its type with the gains `7F`). The write is opcode `08`, function `FF`, attribute 4 with eleven bytes: the type, then ten gains
+  padded with zeros. It is the only system information write PairFree sends (`QcyJieliSession.allowed`); `QcyJieliTest.theEqOfAnOlderJieLiModelIsJieLisSystemInformation`
+  pins the bytes. Presets go as curves like on the other models. Not tried on earbuds.
 
 None of this has been tried with PairFree; the N70's parametric EQ is OpenQCY's.
 
-## 8. Not yet
+## 8. Built later, and what is open
 
-- **EQ:** QCY's presets, and the older JieLi models' EQ (section 7).
-- **Fit test (`11`):** no model's control panel in Quicky's dump gives it a command (one lists "Fit
-  detection" with none).
+- **EQ presets:** QCY's presets are built (the curves on the model's own bands 2026-11-12, the ones with bands of their own 2026-11-24, section 7); the older JieLi models' EQ was built 2026-11-15.
+- **Fit test (`11`), built 2026-11-24 (`QcySession.startFitTest`, `QcyFitSound`):** the 20 saved panels that carry "Fit detection" (type 110, cmdid 17, `CMDID_COMPACTNESS`) are `fit_test` in `data/qcy/devices.json` (`tools/import_qcy_panels.py --fit`). Read from QCY's app (`CompactnessActivityEarphone`, `QCYConnectManager.setCompactnessEnable`, `CompactnessDataBean`): it turns the test on with item `11` and the value `01 01 01` (off is `00 00 00`), as the custom command on JieLi models and as `FF 05 11 03 ...` on the settings characteristic otherwise, and plays its own sound through the phone while the earbuds measure; the earbuds answer item `11` with a status (2 is a result), then the left and right result: 3 good fit, 2 or 1 poor fit, anything else the test failed. PairFree sends the same, shows the result on the shared fit test screen and sends the off value once a result is in. The sound is QCY's `res/raw/compactness.m4a` (AAC, 16 kHz, 20 seconds repeating a 5-second pattern, read with an AAC decoder outside the repo on 2026-11-24): its power sits low (about 56 % below 100 Hz, 11 % from 100 to 500 Hz, 8 % from 500 to 1200 Hz, 18 % from 1.2 to 4 kHz, 2 % above) at 0.12 RMS; the clip is not shipped, and PairFree plays noise of its own with that spectrum and level (`QcyFitSound`, made from a fixed seed). Whether the earbuds' measurement accepts a sound that is not QCY's clip is not known: a user's report settles it. Not tried on earbuds.
+- **The personalised listening test, built 2026-11-24 (`QcyPersonal`, `QcyPersonalTest`, `QcyPersonalScreen`; items `45`, `46` and `47`, `CUSTOM_EQ_TEST`, `MULTI_EQ_LEFT` and `MULTI_EQ_RIGHT`; `eq.personal` in `data/qcy/devices.json` from `tools/import_qcy_panels.py --presets`):** 8 models' panels (vendor ids 23872, 23874, 23877, 23879, 23880, 23881, 23883 and 23884) carry `individuation_eq` ("Personalized listening experience", id 11: eight bands from 63 Hz to 8 kHz, each with a reference level `soundDB`). QCY's app (`CustomEQEdit2Activity`) turns item `45` on, plays a tone per band to each ear in turn (`BeepTool2`), has the user raise it until it is just heard, works each ear's curve out and writes them as the left and right parametric EQs (`QCYConnectManager.setSideEQData` through `setEQWtihQFGLeft` and `Right`, the same layout as item `22`). Read in full from QCY's app 4.0.7 and ported: item `45` goes on (one byte) when the test starts and off when the screen closes; each band's tone is a steady sine of amplitude 10^(dB/20) of full scale in one earbud (`BeepTool2`), dB being the band's `soundDB` plus 5 for each step of gain (gain 0 is the reference; below 500 Hz a negative gain counts half as many, rounded toward zero); gains start at the panel's 2 and move one step at a time within -8 to 8 (two below 500 Hz when going quieter from 0 or less, or louder from below 0); a band is settled when the user hears it twice at -4 (up to 500 Hz) or -2 (above) or lower, hears it again at an unchanged gain, or fails to hear it twice at 6 or more; the screen asks band by band, left earbud first. The curves go out as items `46` (left) and `47` (right) in the layout of item `22` (EQ index 11, the master gain in hundredths, seven bytes a band: hertz, gain, Q, type) with the test's gains; the master gain is `QCYConnectManager.getMaxGain`: the test bands and the panel's preset 1 as peaking filters (RBJ) at 44.1 kHz added up in dB from 20 Hz to 20 kHz, the highest point plus half a dB set against the panel's `volumelevel` (4) and the last master gain, -10 when none is known (the earbuds' own last one is left out of the sum). QCY's app keeps the two curves on the phone and sends them again when the personalised preset is chosen in its list; the earbuds hold what was written and the phone keeps nothing. The media volume stays where the user has it, as in QCY's app; how far the tones' levels hold through another phone's output is for a user's report to show. Item `44` (`MAX_EQ_COUNT`) is read on the models that have parametric presets, and a preset with more bands than it says stays off the list of sends. Not tried on earbuds.
 - **Voice language (`19`):** named in QCY's tables, but QCY's app never writes it.
 
 **Prompt volume (`1D`, since the 2026-11-03 audit):** read on every model, since which have it is on QCY's

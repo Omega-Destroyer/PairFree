@@ -20,6 +20,7 @@ class ModelsTest {
             assertEquals(json.str("firmware_code"), model.code)
             assertEquals(json.getValue("names").jsonArray.map { it.jsonPrimitive.content }, model.names, model.code)
             assertEquals(json.str("family"), model.family, model.code)
+            assertEquals(json["touch_disable_inverted"]?.jsonPrimitive?.content == "true", model.touchInverted, model.code)
             val excludes = json["ldac_excludes"]?.jsonArray?.map { Command.valueOf(it.jsonPrimitive.content.uppercase()) }
             assertEquals(excludes.orEmpty().toSet(), model.ldacExcludes, model.code)
             assertEquals(json["ldac_or_multipoint"]?.jsonPrimitive?.boolean ?: false, model.ldacOrMultipoint, model.code)
@@ -27,6 +28,10 @@ class ModelsTest {
             assertEquals(confirmed.orEmpty().toSet(), model.confirmed, model.code)
             assertTrue(model.confirmed.all { it.perModel }, "${model.code} confirms a command that is not per_model")
             assertEquals(json["fit_keeps_anc"]?.jsonPrimitive?.boolean ?: false, model.fitKeepsAnc, model.code)
+            val noise = json["features"]?.jsonObject?.get("noise")?.jsonArray?.map { it.jsonObject }?.map { m ->
+                NoiseModeInfo(m.int("mode"), m.getValue("scenes").jsonArray.map { it.jsonPrimitive.content.toInt() })
+            } ?: if (json["features"] != null) emptyList() else null
+            assertEquals(noise, model.noiseModes, model.code)
             val eq = json["eq"]?.jsonObject
             if (eq == null) {
                 assertNull(model.eq, model.code)
@@ -44,6 +49,21 @@ class ModelsTest {
                 assertEquals(presets, layout.presets, model.code)
             }
         }
+    }
+
+    @Test
+    fun noiseControlFollowsTheServersFeatureList() {
+        fun modes(code: String) = Models.find(code, null)!!.noiseModes!!.associate { it.mode to it.scenes }
+        // H3 and Air5 Pro+: off, cancelling with four scenes, transparency with two levels.
+        assertEquals(mapOf(0 to emptyList<Int>(), 1 to listOf(17, 18, 19, 20), 2 to listOf(1, 2)), modes("S5"))
+        assertEquals(modes("S5"), modes("S2"))
+        // The C30 lists the three modes and no scenes.
+        assertEquals(mapOf(0 to emptyList<Int>(), 1 to emptyList<Int>(), 2 to emptyList<Int>()), modes("S22"))
+        // A model without noise control is known to have none; a model the server had no list for is not known.
+        assertEquals(emptyList<NoiseModeInfo>(), Models.ALL.first { it.noiseModes?.isEmpty() == true }.noiseModes)
+        assertNull(Models.find("T2", null)!!.noiseModes)
+        // LE Audio is offered where the server's list has it.
+        assertTrue(Command.LE_AUDIO in Models.find("S1", null)!!.confirmed)
     }
 
     @Test

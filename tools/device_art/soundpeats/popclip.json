@@ -1,0 +1,21 @@
+{
+ "name": "SoundPEATS POP Clip2",
+ "names": [
+  "SOUNDPEATS POP Clip",
+  "SOUNDPEATS POP Clip2",
+  "TRUEFREE Clip C10"
+ ],
+ "source": "Traced from SOUNDPEATS' product picture (POP Clip2, the left bud; the POP Clip and TRUEFREE Clip C10 are clip-on buds too), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "92,119 114,121 135,129 160,144 179,161 186,164 198,164 225,153 244,149 263,149 277,152 291,160 308,176 326,207 329,224 328,247 322,262 304,286 279,314 262,328 247,337 224,346 211,368 197,382 169,396 152,397 130,393 111,382 98,368 89,353 85,335 87,301 84,291 55,250 38,213 33,185 35,169 42,152 50,140 62,130 76,123",
+  "holes": [
+   "83,155 99,156 114,161 130,172 147,191 148,211 134,237 129,258 110,254 85,228 73,209 68,192 68,173 73,161"
+  ],
+  "axis": [
+   181.0,
+   258.4
+  ]
+ },
+ "case": "generic"
+}

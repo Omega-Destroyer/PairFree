@@ -1149,6 +1149,28 @@
         "1006ff881e3cfda80ccc",
         "1007ff8848a8fe5c2800",
         "1008ff885bc2fe202ccc",
+        "1009ff8800ba00780ccc",
+        "100aff88017700780ccc",
+        "100bff8802ee00780ccc",
+        "100cff8805dc003c0ccc",
+        "100dff880bb800000ccc",
+        "100eff88177000000ccc",
+        "100fff882ee000000ccc",
+        "1010ff885dc000000ccc"
+      ]
+    },
+    {
+      "model": "T2",
+      "preset": "Bass weakening",
+      "payloads": [
+        "1001ff88009600000e66",
+        "1002ff88010e00060b33",
+        "1003ff8803a2ff101000",
+        "1004ff880708ffc41000",
+        "1005ff88122a00b41800",
+        "1006ff881e3cfda80ccc",
+        "1007ff8848a8fe5c2800",
+        "1008ff885bc2fe202ccc",
         "1009ff8800baff880ccc",
         "100aff880177ff880ccc",
         "100bff8802eeff880ccc",
@@ -1161,7 +1183,7 @@
     },
     {
       "model": "T2",
-      "preset": "Bass weakening",
+      "preset": "Rock",
       "payloads": [
         "1001ff88009600000e66",
         "1002ff88010e00060b33",
@@ -1183,7 +1205,7 @@
     },
     {
       "model": "T2",
-      "preset": "Rock",
+      "preset": "Popularity",
       "payloads": [
         "1001ff88009600000e66",
         "1002ff88010e00060b33",
@@ -1205,7 +1227,7 @@
     },
     {
       "model": "T2",
-      "preset": "Popularity",
+      "preset": "Electronic",
       "payloads": [
         "1001ff88009600000e66",
         "1002ff88010e00060b33",
@@ -1227,7 +1249,7 @@
     },
     {
       "model": "T2",
-      "preset": "Electronic",
+      "preset": "Ballad",
       "payloads": [
         "1001ff88009600000e66",
         "1002ff88010e00060b33",
@@ -1249,7 +1271,7 @@
     },
     {
       "model": "T2",
-      "preset": "Ballad",
+      "preset": "Classical",
       "payloads": [
         "1001ff88009600000e66",
         "1002ff88010e00060b33",
@@ -1267,28 +1289,6 @@
         "100eff881770ffc40ccc",
         "100fff882ee0ff880ccc",
         "1010ff885dc0ff4c0ccc"
-      ]
-    },
-    {
-      "model": "T2",
-      "preset": "Classical",
-      "payloads": [
-        "1001ff88009600000e66",
-        "1002ff88010e00060b33",
-        "1003ff8803a2ff101000",
-        "1004ff880708ffc41000",
-        "1005ff88122a00b41800",
-        "1006ff881e3cfda80ccc",
-        "1007ff8848a8fe5c2800",
-        "1008ff885bc2fe202ccc",
-        "1009ff880177ff101800",
-        "100aff8802eeff101800",
-        "100bff8805dcff101800",
-        "100cff880960ff101800",
-        "100dff880e10ff4c1800",
-        "100eff881770ff4c1800",
-        "100fff882ee0ff4c1800",
-        "1010ff884650ff4c1800"
       ]
     },
     {

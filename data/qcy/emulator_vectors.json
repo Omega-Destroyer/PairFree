@@ -1,0 +1,18 @@
+{
+  "description": "Original QCY app startup reads for virtual N70 with synthetic discovery metadata and local navigation; no settings writes or real device verification. See docs/qcy/VIRTUAL_TESTING.md.",
+  "model": "QCY MeloBuds N70",
+  "vendor_id": 23877,
+  "app_version": "4.0.7",
+  "package": "com.qcymall.googleearphonesetup",
+  "apk_sha256": "bd41c8d37278fb0b6fabc459a0c8e2f5fc2f85e1574103ab8d59a0365e80e109",
+  "gatt_service": "0000a001-0000-1000-8000-00805f9b34fb",
+  "outgoing_query_characteristic": "00001001-0000-1000-8000-00805f9b34fb",
+  "outgoing_queries": [
+    "ff03fe0116",
+    "ff03fe0144"
+  ],
+  "characteristics_read": [
+    "000b",
+    "000d"
+  ]
+}

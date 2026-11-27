@@ -97,14 +97,14 @@ model it has to be probed.
 | Reset custom keys        |         | `03 AC` | no payload                                                 |
 | Prompt volume            | `03 19` | `03 20` | 0 to 100                                                   |
 | Auto shutdown            | `03 6E` | `03 6F` | minutes: 5, 10, 30, 60, 120, or 0 for never                |
-| Voice prompt language    | `03 21` | `03 22` | 0 en, 1 zh, 2 de, 3 ja, 4 fr, 5 es, 6 it                   |
+| Voice prompt language    | `03 21` | `03 22` | 0 en, 1 zh, 2 de, 3 ja, 4 fr, 5 es, 6 it. Marked deprecated in SOUNDPEATS 2.5.3 (feature code FSN999, which none of the 81 models' feature lists holds); PairFree reads it but offers it only where a model lists it under `confirmed` (none does since 2026-11-24: a T3 Pro, which answers the read, bootlooped after a language change, issue #74) |
 | Dynamic EQ               | `03 31` | `03 32` | 0 off, 1 on                                                |
 | Dynamic bass             | `03 3C` | `03 3D` | 0 off, 1 on                                                |
 | Movie mode               | `03 27` | `03 28` | 0 off, 1 on                                                |
 | Spatial audio            | `03 57` | `03 58` | 0 off, 1 on; mode via `03 59` (1 byte)                     |
 | Panoramic sound          | `03 29` | `03 30` | 0 normal, 1 music, 2 movie                                 |
 | Dolby                    | `03 48` | `03 49` | 0 off, 1 on; mode via `03 54` (1 byte)                     |
-| Dolby support hint       |         | `03 62` | 0 if the phone supports Dolby, 1 if not. Sent only to `S7` (Clip1). |
+| Dolby support hint       |         | `03 62` | 0 if the phone supports Dolby, 1 if not. PeatsAudio 1.9.45 sends it only to `S7` (Clip1); SOUNDPEATS 2.5.3 was seen sending `03 62 00` to an H3 (`S5`) in an emulator run (`VIRTUAL_TESTING.md`), so the restriction does not hold for 2.5.3. PairFree does not send it. |
 | Adaptive volume          | `03 46` | `03 47` | 0 off, 1 on                                                |
 | Personalized volume      | `03 40` | `03 41` | reply bytes 1, 3, 5 carry the three values                 |
 | Left / right ear volume  | `03 42` / `03 43` | `03 44` / `03 45` | 0 to 100 (marked deprecated in the app)  |
@@ -459,6 +459,32 @@ gives firmware 0.1.8 and EQ `0E 02` at 40 Hz to 12 kHz, while the H3 uses `0E 01
 17 kHz (section 11). So neither app holds per-model features or EQ curves offline. The demo
 model list is the one used in section 5.2.
 
+### 8.2 The feature lists (fetched 2026-11-07)
+
+SOUNDPEATS 2.5.3 asks `GET devices/firmware/{otaCode}/versions/{otaVersion}/features` for the settings a model shows. The
+owner fetched it with their own account (`E:\Buildsesearch\soundpeats-toolsetch_features.py`, one request every
+3.5 s; the version asked for is the one the app's update check names as latest, else one from a device report) for 81 of
+the 88 models. `tools/import_soundpeats_features.py` keeps, per model in `data/soundpeats/devices.json`, the firmware
+version, the feature codes and noise control's modes with their scene codes. Nothing else of the reply is kept. These are
+the app's offers, not tests on earbuds; models with a `reports` entry are the exception.
+
+- **Not fetched:** seven models of PairFree's table are not in the server's current model list (`ota/pairDataList`), so nothing was asked for them: `JULI3025Lite2`, `JL6973D8C1`, `HILISTENING`, `S32`, `T28Pro`, `WuQi7034MXF2` and the Clip C10 (`T2`; the feature list for its recorded firmware 0.5.5 answers "device firmware configuration does not exist"). They stay unknown (`Model.noiseModes` is null); the earbuds' replies tell.
+- **Noise control (`FSN08`):** 27 models list it, 54 do not (known to have none: `noiseModes` is empty). The modes are
+  the `own` values of its children (0 off, 1 cancelling, 2 transparency); the scenes under cancelling are `ANC_LEVEL`
+  codes and those under transparency `TRANSPARENCY_LEVEL` codes. Shapes found: off, cancelling and transparency with no
+  scenes (19 models, the C30 among them); cancelling scenes 17, 18, 19, 20 and transparency levels 1, 2 (the H3, the
+  Air5 Pro+ and one more); the same with scene 22, anti-wind (the Air6 Pro and two more); off and cancelling only (the
+  Air4); and on the Air5 off and cancelling each with levels 1 to 5.
+- **`FSN09` Concentration mode** (the Chasers) names `03 10` and `03 11`, the ANC command, with values 0 and 1: as `FSN34`
+  in section 9, a plain switch on the ANC command. PairFree reads that reply as a noise mode.
+- **LE Audio (`FSN10`):** the Air5 Pro, Air6 Pro and Aura Nebula list it, so `le_audio` is among their `confirmed`
+  commands (section 3's `per_model` rule). The Air5 Pro+'s list has none, though its entry was confirmed on hardware;
+  the entry stays.
+- **Features the app already has a command for:** all the others (`FSN01` to `FSN07`, `FSN11` to `FSN15`, `FSN17` to
+  `FSN21`, `FSN24`, `FSN26`). `FSN24` (disable touch hit) names the same `03 12`/`03 13` as `FSN02`.
+- **No command in the reply:** `FSN27` Scheduled shutdown (two models; `auto_shutdown` `03 6E` exists), `FSN28` Smart
+  assistant (one) and `FSN05` Gesture controls (the custom-key screens).
+
 ## 9. Model-specific behaviour found in code
 
 - Right-battery smoothing: if right reads 5 or more above left and is under 99, the
@@ -482,8 +508,10 @@ model list is the one used in section 5.2.
   case, `BT5107`, `BS519W2D`, `Air3Pro`, `BS390RB`, `WQT7033`, `QCC3040`, `BS343RB`,
   `BT5106-3040`, `T28Pro`, `T28`, `T57`, `ATS3019DK12`, `OPERA03`, `OPERA05`, `HILISTENING`,
   `FREELITE` or `JULIRUNFREE`. `AIR3DELUXEHSW53D` is no longer in the list. It inverts the
-  state it shows; how it writes the switch was not traced. `touch_disable_inverted` in
-  `data/soundpeats/devices.json` marks these models; PairFree does not act on it yet.
+  state it shows (`TouchInversionUtil.invertIfNeeded`, used by `HomeViewModel.disabledTouchState`), and the repository then sends whatever boolean it is given as
+  command `03 13` (787); the UI caller of that setter is not in the readable decompile, so that the write is inverted too is inferred (an app that showed the
+  switch inverted and wrote it as shown would flip back on every tap). Since 2026-11-12 `touch_disable_inverted` in `data/soundpeats/devices.json` marks these models
+  (`Model.touchInverted`) and the Controls tab reads and writes the switch inverted for them; not tried on any of those earbuds.
 - `S9`: when a feature that conflicts with EQ is turned off, the app does not put
   the previous EQ back. On every other model it does.
 - `S22`: see section 3.1.
@@ -901,8 +929,12 @@ From a user's recording (GitHub issue #9, 2026-10-31; report
   100 Hz. The user's second recording (issue #9, `T2_0.5.5_recording_custom.txt`) settles the
   custom screen: +6 dB on its 1 kHz slider went out as band 13 at 1 kHz, Q 1.8. So the sliders
   are 62 Hz to 8 kHz with 1 kHz fifth, and PairFree offers TRUEFREE Classic as a preset, sent
-  as recorded. Seven presets send their own eight at Q 0.8 on the slider frequencies;
-  Classical moves all eight (125 Hz to 6 kHz, Q 1.5).
+  as recorded. The eight other presets send their own eight at Q 0.8 on the slider frequencies.
+  The user's third recording (2026-11-05, `T2_0.5.5_recording_3.txt`) corrected the presets: the first
+  recording had put the names on the wrong curves (its "Bass enhance" cut the bass, and its "Classical", at 125 Hz
+  to 6 kHz and Q 1.5, was a hearing-test result), and its eight presets were taken from it up to PairFree 0.7.2.
+  The recording's last curve, Adaptive EQ, is a hearing-test result of the user's own: 125, 250, 500, 800, 1200,
+  2000, 4000 and 6000 Hz at Q 1.5 after TRUEFREE's eight (section 13).
 
 ## 12. Codecs (A2DP), and LDAC on Samsung phones
 

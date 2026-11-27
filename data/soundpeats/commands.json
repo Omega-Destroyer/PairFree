@@ -249,7 +249,9 @@
         "4": "fr",
         "5": "es",
         "6": "it"
-      }
+      },
+      "per_model": true,
+      "note": "Not offered unless a model lists it under confirmed: the official app marks this command deprecated (feature code FSN999) and none of the 81 models' feature lists holds it, and a user's T3 Pro, which answers this read, bootlooped after a language change (issue #74; whether PairFree sent it is not known): the newer models take their prompt languages as language packs, and a language the earbuds do not hold may be what stops them."
     },
     {
       "id": "dynamic_eq",

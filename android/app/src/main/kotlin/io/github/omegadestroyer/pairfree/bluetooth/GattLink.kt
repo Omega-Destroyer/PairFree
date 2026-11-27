@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothStatusCodes
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresPermission
+import io.github.omegadestroyer.pairfree.brands.GattChannel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
@@ -41,7 +42,12 @@ class GattLink(
     private val rawPreamble: ByteArray? = null,
     /** The service and its characteristics: Harman's, or [AIROHA]'s. */
     private val uuids: Uuids = HARMAN,
-) : ControlLink {
+    /** Sennheiser's Bluetooth LE bonding (docs/sennheiser/PROTOCOL.md section 6), for a device that is not bonded yet: null for every other brand. */
+    private val pairing: Pairing? = null,
+) : GattChannel {
+    /** The characteristic Sennheiser's pairing steps are written to, and the encrypted one whose read provokes the bond. */
+    class Pairing(val characteristic: UUID, val encrypted: UUID)
+
     /** A command service: its UUID, the characteristic the device notifies on, the one PairFree writes to, and the MTU asked for. */
     class Uuids(val service: UUID, val notify: UUID, val write: UUID, val mtu: Int)
 
@@ -55,11 +61,13 @@ class GattLink(
     @Volatile private var closed = false
 
     /** The MTU the phone and device agreed on; 23 (the least) until they do. */
-    @Volatile var mtu: Int = MIN_MTU
+    @Volatile override var mtu: Int = MIN_MTU
         private set
 
     /** Where the opening sequence is: through the raw characteristic's extra steps, or the main subscription. */
-    private enum class Phase { RAW_SUBSCRIBE, RAW_WRITE, NOTIFY_SUBSCRIBE }
+    private enum class Phase { RAW_SUBSCRIBE, RAW_WRITE, NOTIFY_SUBSCRIBE, PAIR_RESET, PAIR_USER, PAIR_WAIT }
+    private var commandService: android.bluetooth.BluetoothGattService? = null
+    private val main = android.os.Handler(android.os.Looper.getMainLooper())
     private var phase = Phase.NOTIFY_SUBSCRIBE
 
     private val callback = object : BluetoothGattCallback() {
@@ -82,7 +90,9 @@ class GattLink(
 
         @Suppress("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            val service = gatt.getService(uuids.service)
+            // The product's service holds the command characteristics; Sennheiser's models list more than one service that may.
+            val service = gatt.getService(uuids.service)?.takeIf { it.getCharacteristic(uuids.notify) != null } ?: gatt.services.firstOrNull { it.getCharacteristic(uuids.notify) != null && it.getCharacteristic(uuids.write) != null }
+            commandService = service
             val notify = service?.getCharacteristic(uuids.notify)
             val w = service?.getCharacteristic(uuids.write)
             if (status != BluetoothGatt.GATT_SUCCESS || notify == null || w == null) {
@@ -95,16 +105,11 @@ class GattLink(
             if (rawNotify && raw != null) {
                 phase = Phase.RAW_SUBSCRIBE
                 if (!subscribe(gatt, raw!!)) subscribeNotify(gatt)
+            } else if (pairing != null && device.bondState != BluetoothDevice.BOND_BONDED) {
+                startPairing(gatt)
             } else {
                 subscribeNotify(gatt)
             }
-        }
-
-        @Suppress("MissingPermission")
-        private fun subscribeNotify(gatt: BluetoothGatt) {
-            phase = Phase.NOTIFY_SUBSCRIBE
-            val notify = gatt.getService(uuids.service)?.getCharacteristic(uuids.notify)
-            if (notify == null || !subscribe(gatt, notify)) fail("could not subscribe")
         }
 
         override fun onDescriptorWrite(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int) {
@@ -112,12 +117,24 @@ class GattLink(
                 // The raw steps are best-effort: carry on even if they are refused, so the main channel still opens.
                 Phase.RAW_SUBSCRIBE -> if (rawPreamble != null && raw != null && writeRaw(gatt)) phase = Phase.RAW_WRITE else subscribeNotify(gatt)
                 Phase.NOTIFY_SUBSCRIBE -> if (status == BluetoothGatt.GATT_SUCCESS) ready.complete(Unit) else fail("subscribe refused (status $status)")
-                Phase.RAW_WRITE -> Unit
+                Phase.RAW_WRITE, Phase.PAIR_RESET, Phase.PAIR_USER, Phase.PAIR_WAIT -> Unit
             }
         }
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
-            if (characteristic.uuid == RAW && phase == Phase.RAW_WRITE) subscribeNotify(gatt) else written.trySend(status)
+            when {
+                characteristic.uuid == RAW && phase == Phase.RAW_WRITE -> subscribeNotify(gatt)
+                // Sennheiser's steps: reset the earbuds' pairing state, then ask for the user's action (the buttons), then wait for the bond.
+                phase == Phase.PAIR_RESET && characteristic.uuid == pairing?.characteristic -> {
+                    phase = Phase.PAIR_USER
+                    main.postDelayed({ if (!closed) writePairing(gatt, PAIRING_USER_ACTION) }, 200)
+                }
+                phase == Phase.PAIR_USER && characteristic.uuid == pairing?.characteristic -> {
+                    phase = Phase.PAIR_WAIT
+                    waitForBond(gatt, System.currentTimeMillis())
+                }
+                else -> written.trySend(status)
+            }
         }
 
         @Suppress("MissingPermission")
@@ -144,6 +161,50 @@ class GattLink(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || (characteristic.uuid != uuids.notify && characteristic.uuid != RAW)) return
             @Suppress("DEPRECATION")
             characteristic.value?.let { incoming.trySend(it.copyOf()) }
+        }
+    }
+
+    @Suppress("MissingPermission")
+    private fun subscribeNotify(gatt: BluetoothGatt) {
+        phase = Phase.NOTIFY_SUBSCRIBE
+        val notify = commandService?.getCharacteristic(uuids.notify)
+        if (notify == null || !subscribe(gatt, notify)) fail("could not subscribe")
+    }
+
+    @Suppress("MissingPermission")
+    private fun startPairing(gatt: BluetoothGatt) {
+        val p = pairing ?: return subscribeNotify(gatt)
+        log?.invoke("gatt: not bonded, starting Sennheiser's pairing steps")
+        phase = Phase.PAIR_RESET
+        if (!writePairing(gatt, PAIRING_RESET)) subscribeNotify(gatt)
+    }
+
+    @Suppress("MissingPermission")
+    private fun writePairing(gatt: BluetoothGatt, code: Int): Boolean {
+        val p = pairing ?: return false
+        val c = gatt.services.firstNotNullOfOrNull { it.getCharacteristic(p.characteristic) } ?: return false
+        val frame = byteArrayOf(code.toByte())
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            gatt.writeCharacteristic(c, frame, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT) == BluetoothStatusCodes.SUCCESS
+        } else {
+            @Suppress("DEPRECATION")
+            c.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            @Suppress("DEPRECATION")
+            (c.setValue(frame) && gatt.writeCharacteristic(c))
+        }
+    }
+
+    /** Reads the encrypted characteristic every second, as the app does, which makes Android pair; carries on once the device is bonded, or fails after a minute. */
+    @Suppress("MissingPermission")
+    private fun waitForBond(gatt: BluetoothGatt, since: Long) {
+        if (closed) return
+        when {
+            device.bondState == BluetoothDevice.BOND_BONDED -> subscribeNotify(gatt)
+            System.currentTimeMillis() - since > BOND_MS -> fail("not bonded after a minute: hold the earbuds' buttons as the app asks")
+            else -> {
+                pairing?.let { p -> gatt.services.firstNotNullOfOrNull { it.getCharacteristic(p.encrypted) }?.let { gatt.readCharacteristic(it) } }
+                main.postDelayed({ waitForBond(gatt, since) }, 1000)
+            }
         }
     }
 
@@ -177,7 +238,7 @@ class GattLink(
         try {
             if (closed) throw IOException("closed")
             gatt = device.connectGatt(context, false, callback, BluetoothDevice.TRANSPORT_LE) ?: throw IOException("connectGatt failed")
-            withTimeoutOrNull(CONNECT_MS) { ready.await() } ?: throw IOException("no answer over LE")
+            withTimeoutOrNull(if (pairing != null) CONNECT_MS + BOND_MS else CONNECT_MS) { ready.await() } ?: throw IOException("no answer over LE")
         } catch (e: Throwable) {
             close()
             throw e
@@ -239,6 +300,11 @@ class GattLink(
 
         /** How long an LE connection may take before PairFree gives up on it. */
         const val CONNECT_MS = 10_000L
+
+        /** Sennheiser's pairing steps (the app's `RESET_REQ` and `USER_ACTION_REQUIRED_REQ`) and how long the bonding may take. */
+        private const val PAIRING_RESET = 0
+        private const val PAIRING_USER_ACTION = 1
+        private const val BOND_MS = 60_000L
 
         private const val WRITE_MS = 3_000L
         private const val MIN_MTU = 23

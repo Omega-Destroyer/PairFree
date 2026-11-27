@@ -43,12 +43,16 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     private var connection: Int? = null
     private var autoplay: Int? = null
     private var sleepDetection: Boolean? = null
+    private var sleepMode: Int? = null
+    private var voiceEnhancement: Boolean? = null
     private var dualDevice: Boolean? = null
     private var hotWord: Boolean? = null
     private var spatial: Boolean? = null
     private var doubleClick: Int? = null
     private var tripleClick: Int? = null
     private var custom: ByteArray? = null
+    private var touchLock: Boolean? = null
+    private var longTouch: ByteArray? = null
     private var earReturn: Boolean? = null
     private var earReturnDepth: Int? = null
     private var volumeLimit: Int? = null
@@ -65,9 +69,16 @@ public class OneMoreSession(public val model: OneMoreModel?) {
 
     private fun nextSequence(): Int = sequence.also { sequence = (sequence + 1) % OneMoreFrame.SEQUENCE_WRAP }
 
-    /** The reads on opening the channel: those 1MORE's app sends, for what the model has. */
+    /**
+     * The frames on opening the channel: the handshake, then the reads 1MORE's app sends, for what the model has. The app
+     * sends `004D 01` as soon as the serial channel is up and starts its reads when the answer says success
+     * (HeadsetActivity, DispatcherKt; seen sent by the app to a virtual Aero, docs/1more/VIRTUAL_TESTING.md). PairFree
+     * does not wait for the answer: the sender gives each frame its reply time, and the reads go on if it does not come,
+     * since whether real firmware insists on the handshake is not known.
+     */
     public fun start(): List<OneMoreFrame> = buildList {
         val m = model
+        add(frame(OneMoreCommand.HANDSHAKE, 1))
         add(frame(OneMoreCommand.GET_BINAURAL_INFO))
         if (modes.isNotEmpty()) add(frame(OneMoreCommand.GET_LISTEN_MODE))
         if (m == null) return@buildList
@@ -76,7 +87,11 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         if (m.spatialAudio) add(frame(OneMoreCommand.GET_SPATIAL_AUDIO))
         if (m.autoplay) add(frame(OneMoreCommand.GET_AUTOPLAY))
         if (m.sleepDetection) add(frame(OneMoreCommand.GET_SLEEP_DETECTION))
+        if (m.sleepMode) add(frame(OneMoreCommand.GET_EQ_MODE))
+        if (m.voiceEnhancement) add(frame(OneMoreCommand.GET_VOCAL_ENHANCEMENT))
         if (m.hotWord) add(frame(OneMoreCommand.GET_HOT_WORD))
+        if (m.touchLock) add(frame(OneMoreCommand.GET_TOUCH_DISABLE))
+        if (m.longTouch.isNotEmpty()) add(frame(OneMoreCommand.GET_LONG_TOUCH))
         when (m.touch) {
             TOUCH_EACH -> add(frame(OneMoreCommand.GET_ALL_CUSTOM))
             TOUCH_BOTH -> {
@@ -111,13 +126,13 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     /** True when [reply] answers [sent]: the earbuds answer with the same command. */
     public fun answers(sent: OneMoreFrame, reply: OneMoreFrame): Boolean = reply.fromEarbuds && reply.command == sent.command
 
-    /** False for what PairFree never sends: the handshake, the AI licence read, and deleting or uploading music. */
+    /** False for what PairFree never sends: the AI licence read, and deleting or uploading music. */
     public fun allowed(frame: OneMoreFrame): Boolean = !frame.fromEarbuds && frame.command !in OneMoreCommand.NEVER_SEND
 
     /** Applies one frame from the earbuds. Returns true when [state] or [groups] changed. */
     public fun receive(frame: OneMoreFrame): Boolean {
         if (!frame.fromEarbuds) return false
-        val before = state to groups
+        val before = Triple(state, groups, eq)
         val p = frame.payload
         val read = READ_OF[frame.command]
         if (read != null) {
@@ -128,7 +143,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             if (p.isNotEmpty()) reply(frame.command, p)
         }
         refresh()
-        return (state to groups) != before
+        // The EQ counts too: the Sound tab follows it, and it changes without the rows changing (the preset and the curve arrive in their own replies).
+        return Triple(state, groups, eq) != before
     }
 
     private fun reply(command: Int, p: ByteArray) {
@@ -141,9 +157,13 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.GET_SPATIAL_AUDIO -> spatial = v == ON
             OneMoreCommand.GET_AUTOPLAY -> autoplay = v
             OneMoreCommand.GET_SLEEP_DETECTION -> sleepDetection = v == ON
+            OneMoreCommand.GET_EQ_MODE -> if (v in SLEEP_MODES) sleepMode = v
+            OneMoreCommand.GET_VOCAL_ENHANCEMENT -> voiceEnhancement = v == ON
             OneMoreCommand.GET_HOT_WORD -> hotWord = v == ON
             OneMoreCommand.GET_DOUBLE_CLICK -> doubleClick = v
             OneMoreCommand.GET_TRIPLE_CLICK -> tripleClick = v
+            OneMoreCommand.GET_TOUCH_DISABLE -> touchLock = v == ON
+            OneMoreCommand.GET_LONG_TOUCH -> if (p.size >= 2) longTouch = p.copyOf(2)
             OneMoreCommand.GET_ALL_CUSTOM -> if (p.size >= CUSTOM_GESTURES) custom = p.copyOf(CUSTOM_GESTURES)
             OneMoreCommand.GET_EAR_RETURN -> earReturn = v == ON
             OneMoreCommand.GET_EAR_RETURN_DEPTH -> earReturnDepth = v
@@ -245,13 +265,15 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             val byte = presetSound
             val gains = m.eqBands?.let { b -> eqRaw?.mapIndexed { i, r -> db(b, i, r) } }
             if (byte == null && gains == null) return null
-            val custom = byte != null && ONEMORE_PRESET_SOUNDS[byte] == CUSTOM_PRESET || byte == null && m.eqPresets.isEmpty()
+            val custom = byte != null && presetTable()[byte] == CUSTOM_PRESET || byte == null && m.eqPresets.isEmpty()
             return OneMoreEq(m.eqPresets.firstOrNull { presetByte(it) == byte }, custom, gains)
         }
 
     /** The byte for preset sound [name]; SOUND BY LUCA, on the HQ60, goes as acoustic's (getStyleCmd). */
     private fun presetByte(name: String): Int? =
-        if (name == LUCA) presetByte(ACOUSTIC) else ONEMORE_PRESET_SOUNDS.entries.firstOrNull { it.value == name }?.key
+        if (name == LUCA) presetByte(ACOUSTIC) else presetTable().entries.firstOrNull { it.value == name }?.key
+
+    private fun presetTable(): Map<Int, String> = if (model?.eqClassic == true) ONEMORE_PRESET_SOUNDS_CLASSIC else ONEMORE_PRESET_SOUNDS
 
     /** The frames that put preset sound [name] on the earbuds: its byte, as 1MORE's app sends it (DefaultSoundActivity.getStyleCmd). */
     public fun eqPreset(name: String): List<OneMoreFrame>? {
@@ -265,7 +287,9 @@ public class OneMoreSession(public val model: OneMoreModel?) {
     /**
      * The frames that put the custom curve [gains] (whole dB from -3 to 3, one per band) on the earbuds, every band
      * in one write as 1MORE's app resets the curve (CustomSoundActivity.reset): per band 01, the raw gain, the
-     * frequency and the Q, two bytes each, high first.
+     * frequency and the Q, two bytes each, high first. On a model with preset sounds the custom preset sound (`0069 0C`) goes
+     * first unless the earbuds already hold it: the app sends it when its user chooses Custom, before the curve is edited
+     * (virtual Aero run, docs/1more/VIRTUAL_TESTING.md).
      */
     public fun eqCustom(gains: List<Int>): List<OneMoreFrame>? {
         val b = model?.eqBands ?: return null
@@ -276,15 +300,27 @@ public class OneMoreSession(public val model: OneMoreModel?) {
         for (i in b.hz.indices) payload += listOf(1, raws[i] shr 8, raws[i] and 0xFF, b.hz[i] shr 8, b.hz[i] and 0xFF, b.q[i] shr 8, b.q[i] and 0xFF)
         eqRead()?.let { readBacks += it }
         readBacks += frame(OneMoreCommand.GET_PRESET_SOUND)
-        return listOf(frame(OneMoreCommand.SET_EQ_PARAMETERS, *payload.toIntArray()))
+        val customByte = ONEMORE_PRESET_SOUNDS.entries.firstOrNull { it.value == CUSTOM_PRESET }?.key
+        val choose = customByte != null && model?.eqPresets.orEmpty().isNotEmpty() && presetSound != customByte
+        if (choose) presetSound = customByte
+        return listOfNotNull(
+            if (choose) frame(OneMoreCommand.SET_PRESET_SOUND, customByte!!) else null,
+            frame(OneMoreCommand.SET_EQ_PARAMETERS, *payload.toIntArray()),
+        )
     }
 
     /** The cancelling and transparency modes the model has, in 1MORE's app's order. */
     private val cancellingModes: List<String> get() = CANCELLING.keys.filter { it in modes }
     private val transparencyModes: List<String> get() = TRANSPARENCY.keys.filter { it in modes }
 
+    /** The cancelling strengths the `noise_strength` row offers (the home screen widget fixes one), where the model has several. */
+    public val strengths: List<String> get() = if (cancellingModes.size > 1) cancellingModes.mapNotNull { STRENGTH[it] } else emptyList()
+
+    /** The transparency kinds the `transparency_mode` row offers, where the model has several. */
+    public val transparencyKinds: List<String> get() = if (transparencyModes.size > 1) transparencyModes.mapNotNull { AMBIENT[it] } else emptyList()
+
     /** Off, cancelling and transparency on the shared control, where the model has all three. */
-    private val sharedNoise: Boolean get() = "off" in modes && cancellingModes.isNotEmpty() && transparencyModes.isNotEmpty()
+    public val sharedNoise: Boolean get() = "off" in modes && cancellingModes.isNotEmpty() && transparencyModes.isNotEmpty()
 
     /** Every setting the earbuds have, grouped by heading and tab. */
     public val groups: List<SettingGroup>
@@ -292,9 +328,10 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             val m = model
             return listOfNotNull(
                 group("noise", SettingTab.HOME, noiseRows()),
-                group("sound", SettingTab.SOUND, listOfNotNull(spatial?.takeIf { m?.spatialAudio == true }?.let { Setting.Toggle("spatial_audio", it) })),
+                // spatial audio and the connection mode sit on the Home tab, where Life's home page puts them (issue #58)
+                group("sound", SettingTab.HOME, listOfNotNull(spatial?.takeIf { m?.spatialAudio == true }?.let { Setting.Toggle("spatial_audio", it) })),
                 group(
-                    "connection", SettingTab.DEVICE,
+                    "connection", SettingTab.HOME,
                     listOfNotNull(
                         connection?.takeIf { m != null && m.connection.isNotEmpty() }?.let { v ->
                             Setting.Choice("connection_mode", CONNECTION[v], listOf(STANDARD) + CONNECTION.values.filter { it in m!!.connection })
@@ -306,6 +343,8 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                     listOfNotNull(
                         autoplay?.takeIf { m?.autoplay == true }?.let { Setting.Choice("smart_playback", AUTOPLAY[it], AUTOPLAY.values.toList()) },
                         sleepDetection?.takeIf { m?.sleepDetection == true }?.let { Setting.Toggle("sleep_detection", it) },
+                        sleepMode?.takeIf { m?.sleepMode == true }?.let { Setting.Choice("sound_mode", SLEEP_MODES[it], SLEEP_MODES.values.toList()) },
+                        voiceEnhancement?.takeIf { m?.voiceEnhancement == true }?.let { Setting.Toggle("voice_enhancement", it) },
                         hotWord?.takeIf { m?.hotWord == true }?.let { Setting.Toggle("voice_command", it) },
                         earReturn?.takeIf { m?.earReturn == true }?.let { on ->
                             Setting.Choice("ear_return", LEVELS[if (on) earReturnDepth ?: LEVEL_LOW else LEVEL_OFF], LEVELS.values.toList())
@@ -346,6 +385,10 @@ public class OneMoreSession(public val model: OneMoreModel?) {
      */
     private fun touchGroups(): List<SettingGroup> {
         val m = model ?: return emptyList()
+        return touchActions(m)
+    }
+
+    private fun touchActions(m: OneMoreModel): List<SettingGroup> {
         return when (m.touch) {
             TOUCH_EACH -> {
                 val c = custom ?: return emptyList()
@@ -362,6 +405,14 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                     listOfNotNull(
                         doubleClick?.let { Setting.Choice("touch_double_whole", BOTH_ACTIONS[it] ?: OTHER, BOTH_ACTIONS.values.toList()) },
                         tripleClick?.let { Setting.Choice("touch_triple_whole", BOTH_ACTIONS[it] ?: OTHER, BOTH_ACTIONS.values.toList()) },
+                        longTouch?.takeIf { m.longTouch.isNotEmpty() }?.let { b ->
+                            val options = m.longTouch.mapNotNull { STRENGTH[it] }
+                            Setting.Choice("touch_hold_left", LONG_TOUCH[b.u8(0)] ?: OTHER, options)
+                        },
+                        longTouch?.takeIf { m.longTouch.isNotEmpty() }?.let { b ->
+                            Setting.Choice("touch_hold_right", LONG_TOUCH[b.u8(1)] ?: OTHER, m.longTouch.mapNotNull { STRENGTH[it] })
+                        },
+                        touchLock?.takeIf { m.touchLock }?.let { Setting.Toggle("touch_lock", it) },
                     ),
                 ),
             )
@@ -428,10 +479,20 @@ public class OneMoreSession(public val model: OneMoreModel?) {
                         readBacks += frame(OneMoreCommand.GET_SPATIAL_AUDIO)
                         listOf(frame(OneMoreCommand.SET_SPATIAL_AUDIO, b))
                     }
+                    "touch_lock" -> {
+                        touchLock = on
+                        readBacks += frame(OneMoreCommand.GET_TOUCH_DISABLE)
+                        listOf(frame(OneMoreCommand.SET_TOUCH_DISABLE, b))
+                    }
                     "sleep_detection" -> {
                         sleepDetection = on
                         readBacks += frame(OneMoreCommand.GET_SLEEP_DETECTION)
                         listOf(frame(OneMoreCommand.SET_SLEEP_DETECTION, b))
+                    }
+                    "voice_enhancement" -> {
+                        voiceEnhancement = on
+                        readBacks += frame(OneMoreCommand.GET_VOCAL_ENHANCEMENT)
+                        listOf(frame(OneMoreCommand.SET_VOCAL_ENHANCEMENT, b))
                     }
                     "voice_command" -> {
                         hotWord = on
@@ -478,6 +539,12 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             readBacks += frame(OneMoreCommand.GET_LIGHT_COLOR)
             listOf(frame(OneMoreCommand.SET_LIGHT_COLOR, v))
         }
+        "sound_mode" -> {
+            val v = SLEEP_MODES.entries.firstOrNull { it.value == option }?.key ?: return null
+            sleepMode = v
+            readBacks += frame(OneMoreCommand.GET_EQ_MODE)
+            listOf(frame(OneMoreCommand.SET_EQ_MODE, v))
+        }
         "smart_playback" -> {
             val v = AUTOPLAY.entries.firstOrNull { it.value == option }?.key ?: return null
             autoplay = v
@@ -503,6 +570,14 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             volumeLimit = v
             readBacks += frame(OneMoreCommand.GET_MAX_SOUND_LIMIT)
             listOf(frame(OneMoreCommand.SET_MAX_SOUND_LIMIT, v))
+        }
+        "touch_hold_left", "touch_hold_right" -> {
+            val v = LONG_TOUCH.entries.firstOrNull { it.value == option }?.key ?: return null
+            val b = (longTouch ?: byteArrayOf(v.toByte(), v.toByte())).copyOf()
+            b[if (key == "touch_hold_left") 0 else 1] = v.toByte()
+            longTouch = b
+            readBacks += frame(OneMoreCommand.GET_LONG_TOUCH)
+            listOf(frame(OneMoreCommand.SET_LONG_TOUCH, b.u8(0), b.u8(1)))
         }
         "touch_double_whole", "touch_triple_whole" -> {
             val v = BOTH_ACTIONS.entries.firstOrNull { it.value == option }?.key ?: return null
@@ -588,8 +663,12 @@ public class OneMoreSession(public val model: OneMoreModel?) {
 
         /** One earbud's actions (clickMonaural) and the order 1MORE's app lists them in; some models lack the assistant (6). */
         private val EACH_ACTIONS = mapOf(0 to "none", 1 to "next", 2 to "previous", 3 to "volume_down", 4 to "volume_up", 5 to "play_pause", 6 to "voice_assistant")
+        private val LONG_TOUCH = mapOf(1 to "high", 2 to "low", 4 to "wind")
         private val EACH_ORDER = listOf(2, 1, 3, 4, 5, 6, 0)
         private const val EACH_ASSISTANT = 6
+
+        /** The music (0) and sleep (1) modes (HeadsetActivity: sendSppSetEQMode). */
+        private val SLEEP_MODES = linkedMapOf(0 to "music_mode", 1 to "sleep_mode")
 
         /** Both earbuds' actions (clickBinaural). */
         private val BOTH_ACTIONS = linkedMapOf(1 to "play_pause", 2 to "previous_next", 3 to "volume", 4 to "voice_assistant", 0 to "none")
@@ -603,9 +682,13 @@ public class OneMoreSession(public val model: OneMoreModel?) {
             OneMoreCommand.SET_AUTOPLAY to OneMoreCommand.GET_AUTOPLAY,
             OneMoreCommand.SET_SLEEP_DETECTION to OneMoreCommand.GET_SLEEP_DETECTION,
             OneMoreCommand.SET_HOT_WORD to OneMoreCommand.GET_HOT_WORD,
+            OneMoreCommand.SET_EQ_MODE to OneMoreCommand.GET_EQ_MODE,
+            OneMoreCommand.SET_VOCAL_ENHANCEMENT to OneMoreCommand.GET_VOCAL_ENHANCEMENT,
             OneMoreCommand.SET_DOUBLE_CLICK to OneMoreCommand.GET_DOUBLE_CLICK,
             OneMoreCommand.SET_TRIPLE_CLICK to OneMoreCommand.GET_TRIPLE_CLICK,
             OneMoreCommand.SET_CUSTOM to OneMoreCommand.GET_ALL_CUSTOM,
+            OneMoreCommand.SET_TOUCH_DISABLE to OneMoreCommand.GET_TOUCH_DISABLE,
+            OneMoreCommand.SET_LONG_TOUCH to OneMoreCommand.GET_LONG_TOUCH,
             OneMoreCommand.SET_EAR_RETURN to OneMoreCommand.GET_EAR_RETURN,
             OneMoreCommand.SET_EAR_RETURN_DEPTH to OneMoreCommand.GET_EAR_RETURN_DEPTH,
             OneMoreCommand.SET_MAX_SOUND_LIMIT to OneMoreCommand.GET_MAX_SOUND_LIMIT,

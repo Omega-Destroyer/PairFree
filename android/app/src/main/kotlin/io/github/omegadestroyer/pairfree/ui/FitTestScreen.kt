@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,7 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,8 +37,10 @@ import io.github.omegadestroyer.pairfree.bluetooth.Paired
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.FitResult
+import io.github.omegadestroyer.pairfree.hearing.TonePlayer
 import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.ui.theme.Studio
+import io.github.omegadestroyer.pairfree.protocol.qcy.QcyFitSound
+import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
 /**
@@ -77,7 +80,20 @@ internal fun FitTestScreen(
         timedOut = true
     }
     val art = deviceArt(state.firmware?.code, device.name)
-    val c = Studio.colors
+    val c = Look.colors
+    // QCY's earbuds measure against a sound the phone plays while the test runs (QcyFitSound); it stops with the test or when the screen closes.
+    val context = LocalContext.current
+    val player = remember { TonePlayer(context) }
+    val playing = testing && state.fitSound
+    DisposableEffect(playing) {
+        if (playing) {
+            val rate = FIT_SOUND_RATE
+            player.playLoop(QcyFitSound.make(rate, FIT_SOUND_SECONDS), rate)
+        } else {
+            player.stop()
+        }
+        onDispose { player.stop() }
+    }
 
     Column(
         Modifier
@@ -87,22 +103,24 @@ internal fun FitTestScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.fit_test), Modifier.weight(1f), style = Studio.type.title)
-            StudioButton(stringResource(R.string.capture_close), onClose)
+            Text(stringResource(R.string.fit_test), Modifier.weight(1f), style = Look.type.title)
+            AppButton(stringResource(R.string.capture_close), onClose)
         }
         Text(stringResource(R.string.fit_test_intro), color = c.secondaryText)
         if (ancOn || (testing && switchingAnc)) {
-            Text(stringResource(R.string.fit_anc_note), style = Studio.type.small, color = c.secondaryText)
+            Text(stringResource(R.string.fit_anc_note), style = Look.type.small, color = c.secondaryText)
         }
 
         Panel {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Earbud(R.string.left, art.bud, mirrored = false, result?.left, testing, Modifier.weight(1f))
-                Earbud(R.string.right, art.bud, mirrored = true, result?.right, testing, Modifier.weight(1f))
+            Physical {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Earbud(R.string.left, art.bud, mirrored = false, result?.left, testing, Modifier.weight(1f))
+                    Earbud(R.string.right, art.bud, mirrored = true, result?.right, testing, Modifier.weight(1f))
+                }
             }
             if (testing) {
                 LevelBar((progress.value * 100).toInt())
-                Text(stringResource(R.string.fit_testing), style = Studio.type.small, color = c.secondaryText)
+                Text(stringResource(R.string.fit_testing), style = Look.type.small, color = c.secondaryText)
             }
         }
 
@@ -114,7 +132,7 @@ internal fun FitTestScreen(
             timedOut && run > 0 -> Text(stringResource(R.string.fit_no_result), color = c.destructive)
         }
 
-        StudioButton(
+        AppButton(
             stringResource(if (run == 0) R.string.fit_start else R.string.fit_again),
             {
                 timedOut = false
@@ -130,11 +148,11 @@ internal fun FitTestScreen(
 }
 
 @Composable
-private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: FitResult.Fit?, testing: Boolean, modifier: Modifier) {
-    val c = Studio.colors
+private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: FitResult.Fit?, testing: Boolean, modifier: Modifier) = Reading {
+    val c = Look.colors
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Image(
-            painterResource(drawing),
+            deviceArtPainter(drawing),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,9 +167,13 @@ private fun Earbud(@StringRes side: Int, drawing: Int, mirrored: Boolean, fit: F
             fit == FitResult.Fit.UNKNOWN -> stringResource(R.string.fit_unknown) to c.secondaryText
             else -> stringResource(R.string.fit_not_tested) to c.label
         }
-        Text(text, style = Studio.type.heading, color = color, textAlign = TextAlign.Center)
+        Text(text, style = Look.type.heading, color = color, textAlign = TextAlign.Center)
     }
 }
+
+/** The sound QCY's earbuds measure against: 5 seconds, which loop ([QcyFitSound]). */
+private const val FIT_SOUND_RATE = 16_000
+private const val FIT_SOUND_SECONDS = 5
 
 /** The H3 reported about 9 s after Start. */
 private const val TEST_MS = 9_000L

@@ -619,7 +619,7 @@ def traced_brand(brand):
 # Apple's store renders), JBL from JBL's, Samsung from GalaxyBudsClient's (github.com/
 # timschneeb/GalaxyBudsClient, GPLv3), Sony, Bose, Soundcore, Nothing and QCY from each brand's
 # own, and 1MORE from the drawings and photos its app shows for each model.
-TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy", "1more"]
+TRACED = ["apple", "jbl", "samsung", "sony", "bose", "soundcore", "nothing", "qcy", "1more", "pixel", "earfun", "cambridge", "sennheiser", "oneplus", "jabra", "skullcandy"]
 TRACED_DEVICES = {b: traced_brand(b) for b in TRACED}
 
 # brand: (its drawings, the assets/devices/<subdir>, the drawable name prefix). SoundPEATS
@@ -717,6 +717,27 @@ write(KT,
     f"internal val GENERIC_HEADPHONES_ART: DeviceArt = {art_ref(SOUNDPEATS_DEVICES, '', 'generic-headphones')}\n"
     f"internal val GENERIC_SPEAKER_ART: DeviceArt = {art_ref(SOUNDPEATS_DEVICES, '', 'generic-speaker')}\n",
 )
+
+# The same lookup for the desktop build (docs/DESKTOP.md), as drawing names: desktop/shell's build turns this and the drawables
+# into its own table. Written beside the Android one, so a change to a model's drawings reaches both.
+_REF = re.compile(r"DeviceArt\(R\.drawable\.(\w+), (?:R\.drawable\.(\w+)|null)\)")
+
+
+def _names(ref):
+    m = _REF.fullmatch(ref)
+    return [m.group(1), m.group(2)]
+
+
+write(_ROOT / "data" / "device_art_index.json", json.dumps({
+    "_about": "Which drawings (android/app/src/main/res/drawable/<name>.xml) each model uses: [earbud or product, case or null], by lower-case Bluetooth name and by per-brand code. Written by tools/gen_device_art.py; the desktop build reads it.",
+    "by_name": {n: _names(v) for n, v in sorted(by_name.items())},
+    "by_code": {c: _names(v) for c, v in sorted(by_code.items())},
+    "generic": {
+        "earbuds": _names(art_ref(SOUNDPEATS_DEVICES, "", "generic")),
+        "headphones": _names(art_ref(SOUNDPEATS_DEVICES, "", "generic-headphones")),
+        "speaker": _names(art_ref(SOUNDPEATS_DEVICES, "", "generic-speaker")),
+    },
+}, indent=1, ensure_ascii=False) + "\n")
 
 if ARGS.sheet:
     def big(s, w):

@@ -1,0 +1,21 @@
+{
+ "name": "Dime Evo / DIME 540 ANC",
+ "names": [
+  "DIME 540 ANC",
+  "Dime Evo"
+ ],
+ "codes": [
+  "DIME 540 ANC",
+  "Dime Evo"
+ ],
+ "source": "Traced from the render Skullcandy's app bundles (product_render_dime_evo, the left bud of the pair; the Dime 540 ANC, which the app shows no render of, shares it), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "153,22 179,24 207,35 227,49 256,80 270,87 275,84 278,61 288,54 320,49 343,48 379,54 399,65 411,78 419,97 427,129 429,158 424,174 409,194 385,212 355,226 327,233 316,229 303,210 298,206 278,212 264,222 245,251 258,291 258,314 253,335 245,349 234,361 220,370 206,374 187,375 170,372 139,361 123,348 31,166 21,137 20,112 24,94 32,76 42,64 56,56 95,46 127,28",
+  "axis": [
+   224.6,
+   198.8
+  ]
+ },
+ "case": "generic"
+}

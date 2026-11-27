@@ -263,7 +263,7 @@
       "freqPeak": 980.0,
       "qPeak": 0.7,
       "freqHigh": 3400.0,
-      "qHigh": 1.0
+      "qHigh": 0.7
      },
      "bass_boost": false,
      "spatial_audio": false,
@@ -365,7 +365,7 @@
       "freqPeak": 980.0,
       "qPeak": 0.7,
       "freqHigh": 3400.0,
-      "qHigh": 1.0
+      "qHigh": 0.7
      },
      "advanced_eq": true,
      "bass_boost": false,
@@ -874,7 +874,8 @@
    "crc": true,
    "activate": true,
    "head_tracking": false,
-   "configs": [
+   "reports": ["data/nothing/reports/B171_1.0.1.56.txt"],
+      "configs": [
     {
      "anc": [
       "high",
@@ -1127,7 +1128,8 @@
        ],
        "default": null
       }
-     ]
+     ],
+     "call_transparency": true
     }
    ]
   },
@@ -2923,7 +2925,8 @@
        ],
        "default": null
       }
-     ]
+     ],
+     "power_off_time": true
     }
    ]
   }

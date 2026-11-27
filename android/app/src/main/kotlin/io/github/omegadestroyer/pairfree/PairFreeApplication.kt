@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree
 
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
@@ -15,29 +16,28 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import io.github.omegadestroyer.pairfree.bluetooth.AudioLinks
-import io.github.omegadestroyer.pairfree.bluetooth.Brand
+import io.github.omegadestroyer.pairfree.brands.Brands
+import io.github.omegadestroyer.pairfree.bluetooth.AndroidTransport
 import io.github.omegadestroyer.pairfree.bluetooth.EarbudsConnection
+import io.github.omegadestroyer.pairfree.bluetooth.androidPlatform
 import io.github.omegadestroyer.pairfree.bluetooth.LinkStatus
 import io.github.omegadestroyer.pairfree.bluetooth.Paired
+import io.github.omegadestroyer.pairfree.eq.EqOpener
+import io.github.omegadestroyer.pairfree.eq.PrefsTextStore
 import io.github.omegadestroyer.pairfree.eq.Equalizer
+import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Identify
-import io.github.omegadestroyer.pairfree.protocol.Maker
-import io.github.omegadestroyer.pairfree.protocol.Models
-import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
-import io.github.omegadestroyer.pairfree.protocol.jbl.JblModels
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingModels
-import io.github.omegadestroyer.pairfree.protocol.nothing.NothingWire
-import io.github.omegadestroyer.pairfree.protocol.onemore.OneMoreModels
-import io.github.omegadestroyer.pairfree.protocol.pixel.PixelModels
-import io.github.omegadestroyer.pairfree.protocol.pixel.PixelTransport
-import io.github.omegadestroyer.pairfree.protocol.qcy.Capsule
-import io.github.omegadestroyer.pairfree.protocol.qcy.QcyModels
-import io.github.omegadestroyer.pairfree.protocol.samsung.SamsungModels
-import io.github.omegadestroyer.pairfree.protocol.sony.SonyModels
-import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import io.github.omegadestroyer.pairfree.widget.PairFreeWidget
+import io.github.omegadestroyer.pairfree.widget.WidgetCache
+import io.github.omegadestroyer.pairfree.widget.WidgetNoise
+import io.github.omegadestroyer.pairfree.widget.WidgetToggles
+import io.github.omegadestroyer.pairfree.brands.modelOf
+import io.github.omegadestroyer.pairfree.protocol.offers
+import io.github.omegadestroyer.pairfree.protocol.widget.ToggleKeys
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
@@ -45,8 +45,24 @@ import java.util.TimeZone
 
 /** The app process; it holds the [Hub] the screens and the status notification share. */
 class PairFreeApplication : Application() {
+    override fun attachBaseContext(base: Context) = super.attachBaseContext(Languages.wrap(base))
+
     val hub: Hub by lazy { Hub(this) }
+
+    /** Dark mode or the wallpaper changed: a look that follows the phone's colours gets its widgets drawn again (widget/WidgetLook.kt). */
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        io.github.omegadestroyer.pairfree.widget.PairFreeWidget.refreshAll(this)
+    }
 }
+
+/** What the home screen widget follows: the channel, the earbuds' state and rows, and the EQ. */
+private data class WidgetInputs(
+    val status: LinkStatus,
+    val state: EarbudState,
+    val groups: List<io.github.omegadestroyer.pairfree.protocol.SettingGroup>,
+    val eq: io.github.omegadestroyer.pairfree.eq.EqState?,
+)
 
 /** The process's [Hub]. */
 val Context.hub: Hub get() = (applicationContext as PairFreeApplication).hub
@@ -65,8 +81,8 @@ class Hub(private val app: Application) {
     /** Debug builds log every frame to Logcat under the tag `PairFree`; release builds log nothing. */
     val connection = EarbudsConnection(
         scope,
-        adapter,
-        context = app,
+        AndroidTransport(app, adapter),
+        androidPlatform(),
         log = if (app.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) { line -> Log.d(LOG_TAG, line) } else null,
         assistantIsGoogle = ::assistantIsGoogle,
     )
@@ -86,10 +102,14 @@ class Hub(private val app: Application) {
     val audio = AudioLinks(app, adapter)
 
     /** EQ profiles and the current EQ, kept on the phone; changes go out over [connection]. */
-    val equalizer = Equalizer(prefs, scope) { frames -> connection.sendEq(frames) }
+    val equalizer = Equalizer(PrefsTextStore(prefs), scope, { frames -> connection.sendEq(frames) }, { app.getString(R.string.eq_imported_name) })
+
+    /** Opens [equalizer] for the connected earbuds of any brand; the Sound tab and the home screen widget share it. */
+    val eqOpener = EqOpener(connection, equalizer, scope)
 
     private var screensVisible = false
     private var notificationHolds = false
+    private var widgetHolds = false
 
     /** The screens are on view, or not: they need the channel only while they are. */
     fun screens(visible: Boolean) {
@@ -103,8 +123,14 @@ class Hub(private val app: Application) {
         releaseIfUnused()
     }
 
+    /** The home screen widget holds the channel while it applies a tap, or lets it go. */
+    fun widget(holds: Boolean) {
+        widgetHolds = holds
+        releaseIfUnused()
+    }
+
     private fun releaseIfUnused() {
-        if (!screensVisible && !notificationHolds) connection.disconnect()
+        if (!screensVisible && !notificationHolds && !widgetHolds) connection.disconnect()
     }
 
     fun hasPermission(): Boolean =
@@ -126,34 +152,9 @@ class Hub(private val app: Application) {
                 val name = d.name ?: d.address
                 val uuids = d.uuids.orEmpty().map { it.uuid.toString() }
                 // The brand first (Identify, data/identify.json), then that brand's own code picks the model and the
-                // service to open; a brand's earbuds it cannot control (Sony's LE side, 1MORE's Tuya
-                // models, EarFun's on other chips) drop out there.
-                when (Identify.maker(name, uuids)) {
-                    Maker.SOUNDCORE -> SoundcoreModels.identify(name, uuids)?.let { Paired(d.address, name, Brand.SOUNDCORE, it.service, it.model) }
-                    Maker.SAMSUNG -> SamsungModels.identify(name, uuids)?.let {
-                        Paired(d.address, name, Brand.SAMSUNG, it.serviceUuid, it.model, SamsungModels.deviceIdIn(uuids))
-                    }
-                    Maker.SONY -> SonyModels.identify(name, uuids)?.let { Paired(d.address, name, Brand.SONY, it.service, it.model?.name) }
-                    Maker.BOSE -> Paired(d.address, name, Brand.BOSE)
-                    Maker.JBL -> JblModels.fromName(name)?.let { Paired(d.address, name, Brand.JBL, model = it.name) }
-                    Maker.APPLE -> Paired(d.address, name, Brand.APPLE)
-                    Maker.NOTHING -> Paired(d.address, name, Brand.NOTHING, NothingWire.SERVICE_UUID, NothingModels.fromName(name)?.productId)
-                    // The service the earbuds list picks the transport, else the model their name gives (docs/pixel/PROTOCOL.md section 1).
-                    Maker.PIXEL -> {
-                        val known = PixelModels.fromName(name)
-                        val transport = PixelModels.transportOf(uuids) ?: known?.transport ?: PixelTransport.MAESTRO
-                        Paired(d.address, name, Brand.PIXEL, PixelModels.serviceFor(transport), known?.deviceType?.toString())
-                    }
-                    // QCY's model is known for sure from the advert's vendor id, once PairFree looks for it (docs/qcy/PROTOCOL.md).
-                    Maker.QCY -> Paired(d.address, name, Brand.QCY, model = QcyModels.fromName(name).singleOrNull()?.code)
-                    Maker.ONEMORE -> OneMoreModels.identify(name)?.let { Paired(d.address, name, Brand.ONEMORE, model = it.name) }
-                    // EarFun's models on chips whose protocol PairFree does not cover yet drop out (docs/earfun/PROTOCOL.md section 9).
-                    Maker.EARFUN -> EarfunModels.fromName(name)?.takeIf { it.covered }?.let { Paired(d.address, name, Brand.EARFUN, model = it.name) }
-                    // The QCY-built Capsule3 Pro runs on QCY's protocol, under SOUNDPEATS' name (docs/soundpeats/PROTOCOL.md section 10).
-                    Maker.SOUNDPEATS -> Models.find(null, name)?.takeIf { Capsule.of(it) }?.let { Paired(d.address, name, Brand.QCY, model = it.code, soldAs = Brand.SOUNDPEATS) }
-                        ?: if (Models.isSupported(name)) Paired(d.address, name) else null
-                    null -> null
-                }
+                // service to open ([io.github.omegadestroyer.pairfree.brands.BrandSpec.paired]); a brand's earbuds it cannot
+                // control (Sony's LE side, 1MORE's Tuya models, EarFun's on other chips) drop out there.
+                Identify.maker(name, uuids)?.let { Brands[it].paired(d.address, name, uuids) }
             }
             .sortedBy { it.name }
     }
@@ -199,6 +200,23 @@ class Hub(private val app: Application) {
                     openSince?.let { start -> storeOwnSession(start, snoopClockMs()) }
                     openSince = null
                 }
+            }
+        }
+    }
+
+    init {
+        // The home screen widget follows the earbuds and their state, and remembers what connected earbuds show that the tables
+        // do not give (docs/DESIGN.md, Widget).
+        scope.launch {
+            combine(connection.status, connection.state, connection.settings, equalizer.state) { status, state, groups, eq -> WidgetInputs(status, state, groups, eq) }.collect { (status, state, groups, eq) ->
+                if (status is LinkStatus.Connected) {
+                    val device = status.device
+                    WidgetCache.record(prefs, device, state, eq.takeIf { equalizer.openFor == device.address })
+                    WidgetNoise.record(prefs, device.address, state, groups)
+                    val model = modelOf(device, state)
+                    WidgetToggles.record(prefs, device.address, ToggleKeys.offered(state, groups) { state.offers(it, model) })
+                }
+                PairFreeWidget.requestRefresh(app, scope)
             }
         }
     }

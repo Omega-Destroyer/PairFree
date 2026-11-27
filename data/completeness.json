@@ -788,9 +788,28 @@
       "models": [
         "JBL Tour Pro 3 (20F2, serial channel, Airoha AB1585)"
       ],
-      "status": "open",
-      "what": "On a Tour Pro 3 the firmware reads 255.255.255 for a moment after a setting changes, and after some change the screens showed only the Speak to chat switch even after restarting the app; the cause is to be found in JblSession and JblHarmanKitRace (a read-back or reload that replaces the state with an empty one).",
-      "reported": "issue #1 (comments of 2026-11-26, device report from 0.18.0)"
+      "status": "needs-report",
+      "what": "On a Tour Pro 3 the screens showed only the Speak to chat switch after some change, even after restarting the app (issue #1). The 255.255.255 firmware shown for a moment is fixed (FF FF FF is ignored).",
+      "reported": "issue #1 (comments of 2026-11-26, device report from 0.18.0)",
+      "needs": "A device report copied while only Speak to chat shows (PairFree 0.18.1 or later), and which setting was changed just before.",
+      "read": [
+        {
+          "path": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/jbl/JblSession.kt",
+          "what": "productIdIs replaces the model, and with it the extra rows, whenever a reply names another known product id; the saved report (product 20F2) was taken while the screens worked, so it does not show what the earbuds sent when they broke"
+        },
+        {
+          "path": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/jbl/JblExtras.kt",
+          "what": "each row shows only once its read answered, so rows missing after a restart mean the earbuds stopped answering those reads"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "android/protocol/src/main/kotlin/io/github/omegadestroyer/pairfree/protocol/jbl",
+          "glob": "JblSession\\.kt$",
+          "pattern": "fun productIdIs",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "soundcore-ldac-switch-does-nothing",

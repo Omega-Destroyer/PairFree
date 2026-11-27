@@ -576,11 +576,17 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   `stateCommand` in `devices.json`), returns its whole state in a frame with no checksum (the level 0 to 5, the vibration switch, the custom button
   function, the volume limit's switch and value 0 to 16, the firmware as four characters, the serial and the name); the writes are `01 82`, `01 84` and
   `01 85`. Its equalizer is read and set by index (`02 01`, `02 81`) and its presets are in a native screen, so none is offered.
-  **Switch bits of the tag-length-value models** (records 25 to 27). Re-read on 2026-11-27 from the restored method bodies (the 2026-11-19 unpacker run): the Liberty Buds 2,
-  AeroClip 2, AeroClip 2 Pro, Space 2 Pro and Space 2 Pro Max show the settings their more screen lists and PairFree knows the write for (wear detection, two devices, the tones,
-  auto power off, game mode and LDAC where their screens have them). Still to read and build, open in `data/completeness.json`: the Liberty Buds 2's press sensitivity and fit
-  test, the AeroClip 2's volume balance, the AeroClip 2 Pro's easy chat, the Space 2 Pro pair's voice prompt, AI chat and call noise switches, and the Sleep Earbuds 4 pair's call
-  alert; and the Liberty 5 Pro pair (D1203, D1204), for which the unpacked app has neither a parser nor a more screen class.
+  **Switches of the tag-length-value models** (records 25 to 27; read from the restored method bodies on 2026-11-27). Each model shows what its settings
+  screen (`<code>MoreDataProvider`) lists. On the models whose command service says `d6` (D1102, D1105, D1203, D1204, D1206, D1406, D1407; the Liberty 5 Pro
+  pair is the app's A3956 and A3956X code) the app writes a switch as its bit in these records and 1 or 0: `41 87 <bit> <on>` for the tones of record 26
+  (0 touch tone, 1 low battery, 2 power off, 3 in-ear, 4 connect, 6 ambient sound) and `41 88 <bit> <on>` for record 27 (1 game mode, 2 LDAC, 8 wear
+  detection, 14 easy chat, 29 sound field rendering, 56 incoming call noise reduction, 57 voice input enhancement; 3 two devices on D1203 and D1204 only,
+  the others keep `0B 84`). PairFree 0.18.0 and earlier sent these models the older commands (`01 81`, `01 83`, `01 87`, `01 8C`, `01 FF`, `10 82`).
+  Also read and built: the Liberty Buds 2's press sensitivity (`04 85`, 0 low to 2 high, record 58, firmware 1.77 to 1.99 and 2.77 to 2.99) and the fit
+  test of it and the Liberty 5 Pro pair (`09 01`); the AeroClip 2 pair's balance (`10 8C`, 100 plus -6 to 6, record 60); the Space 2 Pro pair's voice prompt
+  screen (its two switches are the ambient sound prompt and the low battery tone); and the Sleep Earbuds 4 pair's tones, which are the Sleep A30's
+  switches (`10 75`, `10 77`, `10 9E`, `10 9F`; call alert is record 27 bit 23). None of this has been tried on earbuds.
+  Open in `data/completeness.json`: the Space 2 Pro pair's AI chat page and the Liberty 5 Pro pair's and Sleep Earbuds' case channels.
   - **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
   from the first byte (`ParseCommonCmdUtils.a`) and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns
   the records into the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and
@@ -594,8 +600,11 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   automation, wind, 0, multi-scene, 0), seven on the Liberty 5 Pro pair (mode, automation, transparency option, two level bytes as reported, two
   multi-scene bytes), six on the Space 2 pair. Offered: the Liberty Buds 2's and the Liberty 5 Pro pair's noise mode and touch controls, the AeroClip 2's
   touch controls (triple tap: white noise) and dual connections, the AeroClip 2 Pro's touch controls (its own action list), the Space 2 pair's noise
-  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the
-  sleep sounds and playback records (31 to 33, 81, 106) of the Sleep Earbuds 4, and the case's own channels (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
+  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. The Space 2
+  Pro pair's buttons are records 72 (the noise button: one press, two presses; written with `04 8C`, 255 nothing or 7 powerful bass) and 73 (the
+  multi-function button held: `04 61`, the phone's assistant, nap mode or nothing; the app's own assistant, translation and recording need the Soundcore app
+  and are left out). Still open in `data/completeness.json`: the Sleep Earbuds' sleep sounds (records 31 to 33, 81, 106) and the cases' own channels
+  (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
 - **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
   triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
   write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The

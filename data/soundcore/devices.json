@@ -4590,7 +4590,8 @@
       "extra_features": [
         "find_device",
         "touch_tone",
-        "auto_power_off_long"
+        "auto_power_off_long",
+        "indexed_switches"
       ],
       "names": [
         "soundcore AeroClip 2 Pro"
@@ -4662,6 +4663,22 @@
         [
           "auto_power_off",
           2
+        ],
+        [
+          "power_off_tone",
+          1
+        ],
+        [
+          "connect_tone",
+          1
+        ],
+        [
+          "easy_chat",
+          1
+        ],
+        [
+          "volume_balance",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35: the app builds the AeroClip 2 Pro with D1105AnalysisService and D1105CmdService (constructed with its code; neither branches on it), so its records and touch writes are the AeroClip 2's. Its data source lists other actions: translate, ask or answer and recording besides the playback ones, and no white noise. Only the touch controls and the equalizer are offered. The battery's scale is not in the parser. Not tried on the earbuds. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): touch_tone, low_battery_prompt, in_ear_tone, wearing_detection, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
@@ -4889,6 +4906,29 @@
           25,
           0,
           2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          4
+        ],
+        [
+          27,
+          1,
+          "bit",
+          6
+        ],
+        [
+          60,
+          0,
+          1
         ]
       ],
       "tlv_private": [
@@ -4903,7 +4943,8 @@
       "model": "D1105",
       "extra_features": [
         "find_device",
-        "auto_power_off_long"
+        "auto_power_off_long",
+        "indexed_switches"
       ],
       "names": [
         "Anker AeroClip 2"
@@ -4968,6 +5009,10 @@
         [
           "auto_power_off",
           2
+        ],
+        [
+          "volume_balance",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the game mode (its command is not read), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): low_battery_prompt, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
@@ -5113,6 +5158,11 @@
           25,
           0,
           2
+        ],
+        [
+          60,
+          0,
+          1
         ]
       ],
       "tlv_private": [
@@ -5474,6 +5524,13 @@
     },
     {
       "model": "D1203",
+      "extra_features": [
+        "find_device",
+        "touch_tone",
+        "auto_power_off_durations",
+        "indexed_switches",
+        "indexed_dual_connections"
+      ],
       "names": [
         "soundcore Liberty 5 Pro"
       ],
@@ -5499,7 +5556,17 @@
         ["sound_modes", 7],
         ["eq_index", 2],
         ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        ["hear_id_time", 4],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["wearing_detection", 1],
+        ["easy_chat", 1],
+        ["sound_field", 1],
+        ["voice_pickup", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["in_ear_tone", 1],
+        ["auto_power_off", 2]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5534,7 +5601,17 @@
         [38, 1, 1],
         [11, 0, 2],
         [51, 1, 1],
-        [51, 2, 4]
+        [51, 2, 4],
+        [27, 0, "bit", 2],
+        [27, 0, "bit", 3],
+        [27, 1, "bit", 0],
+        [27, 1, "bit", 6],
+        [27, 3, "bit", 5],
+        [27, 7, "bit", 1],
+        [26, 0, "bit", 0],
+        [26, 0, "bit", 1],
+        [26, 0, "bit", 3],
+        [25, 0, 2]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5569,6 +5646,13 @@
     },
     {
       "model": "D1204",
+      "extra_features": [
+        "find_device",
+        "touch_tone",
+        "auto_power_off_durations",
+        "indexed_switches",
+        "indexed_dual_connections"
+      ],
       "names": [
         "soundcore Liberty 5 Pro Max"
       ],
@@ -5594,7 +5678,17 @@
         ["sound_modes", 7],
         ["eq_index", 2],
         ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        ["hear_id_time", 4],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["wearing_detection", 1],
+        ["easy_chat", 1],
+        ["sound_field", 1],
+        ["voice_pickup", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["in_ear_tone", 1],
+        ["auto_power_off", 2]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro Max and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5629,7 +5723,17 @@
         [38, 1, 1],
         [11, 0, 2],
         [51, 1, 1],
-        [51, 2, 4]
+        [51, 2, 4],
+        [27, 0, "bit", 2],
+        [27, 0, "bit", 3],
+        [27, 1, "bit", 0],
+        [27, 1, "bit", 6],
+        [27, 3, "bit", 5],
+        [27, 7, "bit", 1],
+        [26, 0, "bit", 0],
+        [26, 0, "bit", 1],
+        [26, 0, "bit", 3],
+        [25, 0, 2]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5814,6 +5918,10 @@
         [
           "auto_power_off",
           2
+        ],
+        [
+          "press_sensitivity",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: the more screen (D1206MoreDataProvider, restored by the 2026-11-19 unpacker run) lists wear detection, two devices, the wear, touch and low battery tones, press sensitivity (firmware 1.77 to 1.99 and 2.77 to 2.99), the sound mode, the fit test, auto power off and find. Records 25 to 27 give all of them but press sensitivity; game mode is on the main screen.",
@@ -6036,6 +6144,11 @@
           25,
           0,
           2
+        ],
+        [
+          58,
+          0,
+          "opt"
         ]
       ],
       "tlv_private": [
@@ -6120,7 +6233,9 @@
         "ambient_sound_mode_cycle_adaptive",
         "find_device",
         "touch_tone",
-        "auto_power_off_durations"
+        "auto_power_off_durations",
+        "indexed_switches",
+        "press_sensitivity_3"
       ]
     },
     {
@@ -6200,7 +6315,11 @@
     },
     {
       "model": "D1302",
-      "extra_features": ["find_device"],
+      "extra_features": ["find_device",
+"d1301_noise_canceling_prompt",
+"d1301_listening_mode_prompt",
+"d1301_auto_power_off_prompt",
+"d1301_incoming_calls_during_bluetooth_mode"],
       "names": [
         "Anker Sleep Earbuds 4 Pro"
       ],
@@ -6225,7 +6344,11 @@
         ["case_battery", 1],
         ["buttons", 4],
         ["touch_tone", 1],
-        ["low_battery_prompt", 1]
+        ["low_battery_prompt", 1],
+        ["noise_canceling_prompt", 1],
+        ["listening_mode_prompt", 1],
+        ["auto_power_off_prompt", 1],
+        ["incoming_calls_during_bluetooth", 1]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1302AnalysisService.e1 and D1302CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -6246,7 +6369,11 @@
         [26, 0, "bit",
           0],
         [26, 0, "bit",
-          1]
+          1],
+        [26, 0, "bit", 6],
+        [26, 0, "bit", 5],
+        [26, 0, "bit", 2],
+        [27, 2, "bit", 7]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -6265,7 +6392,11 @@
     },
     {
       "model": "D1303",
-      "extra_features": ["find_device"],
+      "extra_features": ["find_device",
+"d1301_noise_canceling_prompt",
+"d1301_listening_mode_prompt",
+"d1301_auto_power_off_prompt",
+"d1301_incoming_calls_during_bluetooth_mode"],
       "names": [
         "Anker Sleep Earbuds 4"
       ],
@@ -6290,7 +6421,11 @@
         ["case_battery", 1],
         ["buttons", 4],
         ["touch_tone", 1],
-        ["low_battery_prompt", 1]
+        ["low_battery_prompt", 1],
+        ["noise_canceling_prompt", 1],
+        ["listening_mode_prompt", 1],
+        ["auto_power_off_prompt", 1],
+        ["incoming_calls_during_bluetooth", 1]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1303AnalysisService.e1 and D1303CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -6311,7 +6446,11 @@
         [26, 0, "bit",
           0],
         [26, 0, "bit",
-          1]
+          1],
+        [26, 0, "bit", 6],
+        [26, 0, "bit", 5],
+        [26, 0, "bit", 2],
+        [27, 2, "bit", 7]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -6453,6 +6592,22 @@
         [
           "auto_power_off",
           2
+        ],
+        [
+          "ambient_sound_prompt",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "nc_double_press",
+          1
+        ],
+        [
+          "mfb_long_press",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
@@ -6545,6 +6700,28 @@
           25,
           0,
           2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          6
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          72,
+          1,
+          "opt"
+        ],
+        [
+          73,
+          0,
+          "opt"
         ]
       ],
       "tlv_private": [
@@ -6555,7 +6732,8 @@
         "table": "d1406"
       },
       "extra_features": [
-        "auto_power_off_long"
+        "auto_power_off_long",
+        "indexed_switches"
       ]
     },
     {
@@ -6617,6 +6795,26 @@
         [
           "auto_power_off",
           2
+        ],
+        [
+          "ambient_sound_prompt",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "call_noise",
+          1
+        ],
+        [
+          "nc_double_press",
+          1
+        ],
+        [
+          "mfb_long_press",
+          1
         ]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
@@ -6709,6 +6907,34 @@
           25,
           0,
           2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          6
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          27,
+          7,
+          "bit",
+          0
+        ],
+        [
+          72,
+          1,
+          "opt"
+        ],
+        [
+          73,
+          0,
+          "opt"
         ]
       ],
       "tlv_private": [
@@ -6719,7 +6945,8 @@
         "table": "d1406"
       },
       "extra_features": [
-        "auto_power_off_long"
+        "auto_power_off_long",
+        "indexed_switches"
       ]
     }
   ]

@@ -16,8 +16,11 @@ public data class SoundcoreTlv(val tag: Int, val at: Int, val op: Op = Op.BYTES,
         /** [size] bytes as they are. */
         BYTES,
 
-        /** One byte: 1 when bit [bit] of the byte is set, else 0. */
+        /** One byte: 1 when bit [bit] of the byte is set, else 0; [ABSENT] when the reply has no such byte. */
         BIT,
+
+        /** One byte as it is, or [ABSENT] when the reply has no such byte. */
+        OPTIONAL,
 
         /** One byte: the low four bits. */
         LOW,
@@ -40,7 +43,8 @@ public data class SoundcoreTlv(val tag: Int, val at: Int, val op: Op = Op.BYTES,
         fun v(i: Int): Int = (value?.getOrNull(i)?.toInt() ?: 0) and 0xFF
         return when (op) {
             Op.BYTES -> ByteArray(size) { value?.getOrNull(at + it) ?: 0 }
-            Op.BIT -> byteArrayOf(((v(at) shr bit) and 1).toByte())
+            Op.BIT -> byteArrayOf(if (value == null || at >= value.size) ABSENT.toByte() else ((v(at) shr bit) and 1).toByte())
+            Op.OPTIONAL -> byteArrayOf(value?.getOrNull(at) ?: ABSENT.toByte())
             Op.LOW -> byteArrayOf((v(at) and 0xF).toByte())
             Op.HIGH -> byteArrayOf((v(at) shr 4).toByte())
             Op.PACK -> byteArrayOf((((v(at + 1) and 0xF) shl 4) or (v(at) and 0xF)).toByte())
@@ -50,6 +54,9 @@ public data class SoundcoreTlv(val tag: Int, val at: Int, val op: Op = Op.BYTES,
     }
 
     internal companion object {
+        /** What a switch the reply does not hold reads as, so it is not shown as off. */
+        const val ABSENT: Int = 0xFF
+
         /** The records of a tag-length-value [body]: tag, length, value, from the first byte; a record that runs past the end stops the reading. */
         fun records(body: ByteArray): Map<Int, ByteArray> {
             val out = LinkedHashMap<Int, ByteArray>()
@@ -173,7 +180,7 @@ public class SoundcoreState private constructor(
     /** A one-byte switch, such as gaming_mode or ldac; null when the model, or its firmware, does not have it. */
     public fun flag(name: String): Boolean? {
         layout.minFirmware[name]?.let { min -> if (firmwares.isEmpty() || firmwares.any { it < min }) return null }
-        return u8(name)?.let { it != 0 }
+        return u8(name)?.takeIf { it != SoundcoreTlv.ABSENT }?.let { it != 0 }
     }
 
     /** Battery levels in percent. [batteryReading] keeps the model's own steps. */

@@ -336,7 +336,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
                 (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
             val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
-            // A model that answers in tag-length-value records: [tag, at, size] bytes, [tag, at, "bit", n], or [tag, at, "lo" | "hi" | "pack" | "level"].
+            // A model that answers in tag-length-value records: [tag, at, size] bytes, [tag, at, "bit", n], or [tag, at, "opt" | "lo" | "hi" | "pack" | "level"].
             @Suppress("UNCHECKED_CAST")
             val tlvItems = d["tlv"] as List<List<Any?>>?
             val tlv = if (tlvItems == null) "" else tlvItems.joinToString(", ", ", tlv = listOf(", ")") { item ->
@@ -346,6 +346,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 when (kind) {
                     is Number -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BYTES, ${kind.toInt()})"
                     "bit" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BIT, 1, ${(item[3] as Number).toInt()})"
+                    "opt" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.OPTIONAL)"
                     "lo" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.LOW)"
                     "hi" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.HIGH)"
                     "pack" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.PACK)"

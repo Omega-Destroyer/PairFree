@@ -187,6 +187,15 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_nc_double_press" -> t("setting_sc_nc_double_press")
+        "sc_mfb_hold" -> t("setting_sc_mfb_hold")
+        "sc_volume_balance" -> t("setting_sc_volume_balance")
+        "sc_power_off_tone" -> t("setting_sc_power_off_tone")
+        "sc_connect_tone" -> t("setting_sc_connect_tone")
+        "sc_easy_chat" -> t("setting_sc_easy_chat")
+        "sc_sound_field" -> t("setting_sc_sound_field")
+        "sc_call_noise" -> t("setting_sc_call_noise")
+        "sc_voice_pickup" -> t("setting_sc_voice_pickup")
         "sc_in_ear_tone" -> t("setting_sc_in_ear_tone")
         "sc_bass_up" -> t("setting_sc_bass_up")
         "sc_spatial_audio" -> t("setting_sc_spatial_audio")
@@ -759,6 +768,8 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun settingNote(key: String): String? = when (key) {
+        "sc_easy_chat" -> t("setting_sc_easy_chat_note")
+        "sc_call_noise" -> t("setting_sc_call_noise_note")
         "bose_default_mode" -> t("setting_bose_default_mode_note")
         "bose_modes_persist" -> t("setting_bose_modes_persist_note")
         "bose_latency" -> t("setting_bose_latency_note")
@@ -1000,7 +1011,16 @@ class SettingWords(private val strings: DesktopStrings) {
             "assistant" -> "setting_ca_assistant"
             else -> "action_none"
         })
+        key == "sc_nc_double_press" || key == "sc_mfb_hold" -> t(when (option) {
+            "bass" -> "setting_sc_action_bass"
+            "assistant" -> "setting_ca_assistant"
+            "nap" -> "setting_sc_action_nap"
+            else -> "action_none"
+        })
         key == "sc_press_sensitivity" -> t(when (option) {
+            "low" -> "setting_sc_press_low"
+            "medium" -> "setting_sc_press_medium"
+            "high" -> "setting_sc_press_high"
             "softest" -> "setting_sc_press_softest"
             "soft" -> "setting_sc_press_soft"
             "normal" -> "setting_sc_press_normal"
@@ -1503,6 +1523,11 @@ class SettingWords(private val strings: DesktopStrings) {
                 value > middle -> t("setting_balance_right", value - middle)
                 else -> t("setting_balance_middle")
             }
+        }
+        "sc_volume_balance" -> when {
+            value < 0 -> t("setting_balance_left", -value)
+            value > 0 -> t("setting_balance_right", value)
+            else -> t("setting_balance_middle")
         }
         "balance" -> {
             val middle = max / 2

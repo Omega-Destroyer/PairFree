@@ -339,6 +339,7 @@ public class BoseSession : FitTest {
     }
 
     private val hasFitTest: Boolean get() = model?.name in FIT_MODELS
+    private val isUltra2Headphones: Boolean get() = productId == 0x4082
 
     override fun startFitTest(): List<ByteArray>? {
         if (!hasFitTest) return null
@@ -368,7 +369,13 @@ public class BoseSession : FitTest {
                     ),
             ),
             group("find", SettingTab.DEVICE, listOfNotNull(chirping?.let { Setting.Action("find", it) })),
-            group("touch", SettingTab.CONTROLS, listOfNotNull(button?.let(::buttonRow))),
+            group(
+                "touch", SettingTab.CONTROLS,
+                listOfNotNull(
+                    flags[DISABLE_TOUCH_KEY]?.takeIf { isUltra2Headphones }?.let { Setting.Toggle(TOUCH_CONTROLS_KEY, it) },
+                    button?.let(::buttonRow),
+                ),
+            ),
             group(
                 "connection", SettingTab.DEVICE,
                 listOfNotNull(
@@ -383,7 +390,8 @@ public class BoseSession : FitTest {
                     },
                     autoPlayPause?.let { Setting.Toggle("pause_taken_off", it) },
                     autoAnswer?.let { Setting.Toggle("auto_answer", it) },
-                ) + FLAGS.keys.mapNotNull { key -> flags[key]?.let { Setting.Toggle(key, it) } } + onHeadRows() + listOfNotNull(
+                ) + FLAGS.keys.filterNot { it == DISABLE_TOUCH_KEY && isUltra2Headphones }
+                    .mapNotNull { key -> flags[key]?.let { Setting.Toggle(key, it) } } + onHeadRows() + listOfNotNull(
                     leAudio?.let { Setting.Toggle("bose_le_audio", it) },
                     modesPersist?.let { Setting.Toggle("bose_modes_persist", it) },
                     volumeControl?.takeIf { it.second != 0 }?.let { (value, bits) ->
@@ -475,7 +483,10 @@ public class BoseSession : FitTest {
                         alerts = next
                         BosePacket.setGet(BoseFunction.SETTINGS_ALERTS, next and 3)
                     }
-                    in FLAGS.keys -> BosePacket.setGet(FLAGS.getValue(change.key), b).also { flags[change.key] = on }
+                    in FLAGS.keys, TOUCH_CONTROLS_KEY -> {
+                        val flagKey = if (change.key == TOUCH_CONTROLS_KEY) DISABLE_TOUCH_KEY else change.key
+                        BosePacket.setGet(FLAGS.getValue(flagKey), b).also { flags[flagKey] = on }
+                    }
                     "bose_le_audio" -> BosePacket.setGet(BoseFunction.SETTINGS_LE_AUDIO_CONTROL, b).also { leAudio = on }
                     "bose_modes_persist" -> BosePacket.setGet(BoseFunction.AUDIO_MODES_PERSISTENCE, b).also { modesPersist = on }
                     ON_HEAD_KEY, ON_HEAD_PLAY_KEY, ON_HEAD_ANSWER_KEY, ON_HEAD_TRANSPARENCY_KEY -> {
@@ -640,9 +651,11 @@ public class BoseSession : FitTest {
         private val FLAGS = linkedMapOf(
             "bose_conversation_mode" to BoseFunction.SETTINGS_CONVERSATION_MODE, "bose_auto_aware" to BoseFunction.SETTINGS_AUTO_AWARE_MODE,
             "bose_head_gesture" to BoseFunction.SETTINGS_HEAD_GESTURE, "bose_flip_to_off" to BoseFunction.SETTINGS_FLIP_TO_OFF,
-            "bose_motion_auto_off" to BoseFunction.SETTINGS_MOTION_INACTIVITY_AUTO_OFF, "bose_disable_touch" to BoseFunction.SETTINGS_DISABLE_CAPTOUCH,
+            "bose_motion_auto_off" to BoseFunction.SETTINGS_MOTION_INACTIVITY_AUTO_OFF, DISABLE_TOUCH_KEY to BoseFunction.SETTINGS_DISABLE_CAPTOUCH,
             "bose_auto_volume" to BoseFunction.SETTINGS_AUTO_VOLUME_LEVEL, "bose_cnc_persistence" to BoseFunction.SETTINGS_CNC_PERSISTENCE,
         )
+        private const val DISABLE_TOUCH_KEY = "bose_disable_touch"
+        private const val TOUCH_CONTROLS_KEY = "bose_touch_controls"
         private const val ON_HEAD_KEY = "bose_on_head"
         private const val ON_HEAD_PLAY_KEY = "bose_on_head_play"
         private const val ON_HEAD_ANSWER_KEY = "bose_on_head_answer"

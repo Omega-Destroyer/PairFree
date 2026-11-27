@@ -176,6 +176,34 @@ class BoseTest {
     }
 
     @Test
+    fun ultra2TouchControlsShowTheEnabledStateIndependentlyOfShortcut() {
+        val function = BoseFunction.SETTINGS_DISABLE_CAPTOUCH
+        val s = ultra2()
+        assertNull(setting(s, "bose_touch_controls"))
+        val shortcut = setting(s, "bose_button_128") as Setting.Choice
+        assertEquals("disabled", shortcut.value)
+
+        s.receive(status(function, "00"))
+        val off = Setting.Toggle("bose_touch_controls", false)
+        assertEquals(listOf(off, shortcut), s.groups.single { it.tab == SettingTab.CONTROLS && it.key == "touch" }.settings)
+        assertTrue(s.groups.none { group -> group.tab == SettingTab.DEVICE && group.settings.any { it.key == off.key } })
+        assertNull(setting(s, "bose_disable_touch"))
+        assertEquals(listOf(setGet(function, 1)), s.change(SettingChange.Toggle("bose_touch_controls", true)))
+        s.receive(status(function, "01"))
+        assertEquals(Setting.Toggle("bose_touch_controls", true), setting(s, "bose_touch_controls"))
+        assertEquals(shortcut, setting(s, "bose_button_128"))
+        assertEquals(listOf(setGet(function, 0)), s.change(SettingChange.Toggle("bose_touch_controls", false)))
+
+        val other = BoseSession()
+        other.receive(status(BoseFunction.PRODUCT_INFO_PRODUCT_ID_VARIANTS, "406201"))
+        other.receive(status(function, "01"))
+        assertNull(setting(other, "bose_touch_controls"))
+        assertEquals(Setting.Toggle("bose_disable_touch", true), setting(other, "bose_disable_touch"))
+        assertEquals(SettingTab.DEVICE, other.groups.single { group -> group.settings.any { it.key == "bose_disable_touch" } }.tab)
+        assertEquals(listOf(setGet(function, 0)), other.change(SettingChange.Toggle("bose_disable_touch", false)))
+    }
+
+    @Test
     fun theHeadphoneVolumeAndTheFindChirp() {
         val s = BoseSession()
         assertNull(setting(s, "bose_volume"))

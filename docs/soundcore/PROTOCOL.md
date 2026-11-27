@@ -727,3 +727,8 @@ Traced in Soundcore 5.0.35 from each command's constant to the screens that send
   bytes and the name); `0B 81` disconnects, `0B 82` connects, `0B 83` forgets (PairFree asks first), each with the address; `0B 85` with no body lets another
   device pair. The layout is OpenSCQ30's. The list is private: it is not in a report. The app does not mark which entry is this phone, so PairFree cannot
   hide it.
+- **The Frames:** OpenSurround `02 85` (on, level 0 to 4), voice commands `0A 81` (on, language), enhanced volume `0A 82`, manual shutdown `01 8F`. **VR P10:**
+  the light `0E 81` (colour 0 to 4, then mode: breathing, on, battery saving). **Space Q45 and Liberty 3 Pro:** the voice prompt language `01 8D`.
+- **The rest of the table** is in `data/soundcore/cmm2_unused.json`: commands no code of the app sends, its diagnostics and beta screens, its live decibel
+  meter and speaker equalizers, each with its reason; and the open ones (HearID, personal noise cancelling, wear calibration, daily care, the Sleep A10's
+  playback and alarms, the VR P10's dongle), listed in `data/completeness.json`.

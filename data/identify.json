@@ -17,7 +17,8 @@
     "ONEPLUS": ["OnePlus", "OPPO"],
     "SENNHEISER": ["Sennheiser"],
     "JABRA": ["Jabra"],
-    "SKULLCANDY": ["Skullcandy"]
+    "SKULLCANDY": ["Skullcandy"],
+    "HUAWEI": []
   },
   "not_ours": ["Pixel Watch", "OnePlus Watch", "OnePlus Nord Watch", "OPPO Watch", "Redmi Buds", "Galaxy Watch", "SOUNDPEATS Watch", "Nothing Phone", "CMF Watch"],
   "names": [

@@ -2,6 +2,104 @@
   "_about": "The registry the release gate (tools/release_gate.py) reads. What gates is what CAN be solved: `open` (reading the vendor's app, another source or PairFree's own code, or building, can settle it) refuses a release that touches the brand, unless the owner waived it in data/release_waivers.json. What cannot be solved by reading is noted and does not gate, but must carry its proof (owner, 2026-11-21): `needs-report` (only a user's report or other outside information settles it: `needs` says what to ask for), `blocked` (a hard rule: `rule`), `not-applicable` (the vendor's app has no such control); each lists `read` (paths read, with what they showed) and `evidence` (searches over the app's files that the gate runs again; a needs-report item needs one with `expect: some` that finds the code in question). `built` is done. Add an item as soon as a post, a report or an audit shows a gap, set it to built in the change that builds it, and never settle an item as impossible without having read the code.",
   "items": [
     {
+      "id": "huawei-shared-driver",
+      "brand": "huawei",
+      "models": [
+        "all mapped profiles"
+      ],
+      "status": "built",
+      "what": "Shared Android and desktop MBB driver, exact model detection, generated tables, supported-profile settings, and privacy-filtered report status.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-current-product-scope",
+      "brand": "huawei",
+      "models": [
+        "catalogue-only profiles",
+        "newer AI Life audio accessories"
+      ],
+      "status": "open",
+      "what": "Expand the current AI Life audio catalogue and map protocol, transport and features for its catalogue-only models and regional variants.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-legacy-settings",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds 3",
+        "FreeBuds 3i",
+        "HONOR FlyPods 3",
+        "HONOR Magic Earbuds",
+        "FreeBuds Studio",
+        "FreeBuds Pro",
+        "FreeGO Speaker",
+        "HUAWEI Eyewear II"
+      ],
+      "status": "open",
+      "what": "Trace the remaining vendor controls and device-backed alternatives to the Huawei phone wear and recording APIs. Audit Studio touch lock, actions, quality modes, Pro gestures and FreeGO speaker-specific settings.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-modern-device-settings",
+      "brand": "huawei",
+      "models": [
+        "modern FreeBuds",
+        "modern FreeClip",
+        "FreeArc",
+        "FreeLace Pro 2"
+      ],
+      "status": "open",
+      "what": "Complete per-model local settings covering ear tip fit, remaining variants of adaptive awareness and head actions, spatial audio, wind handling, case tones, reminders, remaining picks and audio connection centre peer controls.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-extended-eq",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro 2",
+        "FreeBuds Pro 3",
+        "FreeBuds Pro 4",
+        "FreeBuds Pro 5",
+        "FreeBuds 6",
+        "FreeBuds 7",
+        "FreeBuds 7i",
+        "FreeClip 2",
+        "FreeLace Pro 2"
+      ],
+      "status": "open",
+      "what": "Check variant-specific private preset curves and extended preset IDs, remaining custom EQ layouts, and full user-directed on-device slot management.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-hardware-validation",
+      "brand": "huawei",
+      "models": [
+        "all Huawei profiles"
+      ],
+      "status": "needs-report",
+      "what": "Confirm the PairFree service connection and state-changing settings on actual hardware, starting with the supplied APK models and the newer EQ variants.",
+      "reported": "AI Life APK and capture audit, 2026-11-27",
+      "needs": "Ask for the PairFree connection report, model and firmware, and a vendor-app capture of each disputed setting changed once and restored.",
+      "read": [
+        {
+          "path": "docs/huawei/VIRTUAL_TESTING.md",
+          "what": "The vendor emulator reached setup but established no Bluetooth MBB stream."
+        },
+        {
+          "path": "docs/huawei/MODELS.md",
+          "what": "Public captures and bundled vendor code identify model-specific settings but do not exercise PairFree's Bluetooth connection."
+        }
+      ],
+      "evidence": [
+        {
+          "root": "docs/huawei",
+          "glob": "VIRTUAL_TESTING\\.md$",
+          "expect": "some",
+          "pattern": "MBB"
+        }
+      ]
+    },
+    {
       "id": "sennheiser-momentum5-equalizer",
       "brand": "sennheiser",
       "models": [

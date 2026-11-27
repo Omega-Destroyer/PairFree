@@ -66,6 +66,7 @@ internal class HomeScreen(
             )
             Form.HEADPHONES, Form.SPEAKER -> listOfNotNull(
                 Battery(s.text(if (form == Form.SPEAKER) "speaker" else "headphones"), state.battery(Command.BATTERY_LEFT), art.bud, false).takeIf { state.supports(Command.BATTERY_LEFT) },
+                Battery(s.text("case_label"), state.battery(Command.BATTERY_CASE), art.case, false).takeIf { state.supports(Command.BATTERY_CASE) },
             )
         }
         if (items.isEmpty()) return null
@@ -93,10 +94,11 @@ internal class HomeScreen(
 
     private fun noiseControl(): Widget {
         val modes = listOf("off" to "anc_off", "anc" to "anc_cancelling", "transparency" to "anc_transparency")
+            .filter { state.noiseModeValues?.contains(mode(it.first)) != false }
         val current = modes.indexOfFirst { mode(it.first) == state.number(Command.ANC_MODE) }.takeIf { it >= 0 }
-        val levels = when (current) {
-            1 -> Command.ANC_LEVEL
-            2 -> Command.TRANSPARENCY_LEVEL
+        val levels = when (current?.let { modes[it].first }) {
+            "anc" -> Command.ANC_LEVEL
+            "transparency" -> Command.TRANSPARENCY_LEVEL
             else -> null
         }
         val choices = levels?.let(state::levels).orEmpty()

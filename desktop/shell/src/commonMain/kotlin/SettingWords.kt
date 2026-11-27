@@ -18,6 +18,9 @@ class SettingWords(private val strings: DesktopStrings) {
             "noise" -> "setting_group_noise"
             "ef_cycle" -> "setting_group_ef_cycle"
             "sound" -> "setting_group_sound"
+            "hw_pinch" -> "setting_hw_pinch"
+            "hw_find" -> "setting_group_find_hub"
+            "hw_voice" -> "setting_hw_voice"
             "touch" -> "setting_group_touch"
             "ambient_customize" -> "setting_group_ambient_customize"
             "calls" -> "setting_group_calls"
@@ -387,6 +390,48 @@ class SettingWords(private val strings: DesktopStrings) {
         "eq_mid" -> t("setting_eq_mid")
         "eq_high_mid" -> t("setting_eq_high_mid")
         "eq_treble" -> t("setting_eq_treble")
+        "hw_pinch_answer" -> t("setting_hw_pinch_answer")
+        "hw_pinch_reject" -> t("setting_hw_pinch_reject")
+        "hw_pinch_play" -> t("setting_hw_pinch_play")
+        "hw_pinch_next" -> t("setting_hw_pinch_next")
+        "hw_pinch_previous" -> t("setting_hw_pinch_previous")
+        "hw_pinch_hold_left" -> t("setting_hw_pinch_hold_left")
+        "hw_pinch_hold_right" -> t("setting_hw_pinch_hold_right")
+        "hw_glasses_double_left" -> t("setting_hw_glasses_double_left")
+        "hw_glasses_double_right" -> t("setting_hw_glasses_double_right")
+        "hw_glasses_hold" -> t("setting_hw_glasses_hold")
+        "hw_swipe_left" -> t("setting_hw_swipe_left")
+        "hw_swipe_right" -> t("setting_hw_swipe_right")
+        "hw_greeting" -> t("setting_hw_greeting")
+        "hw_saving" -> t("setting_hw_saving")
+        "hw_glasses_wear" -> t("setting_hw_glasses_wear")
+        "hw_nod" -> t("setting_hw_nod")
+        "hw_shake" -> t("setting_hw_shake")
+        "hw_awareness_level" -> t("setting_hw_awareness_level")
+        "hw_ring_left" -> t("setting_hw_ring_left")
+        "hw_ring_right" -> t("setting_hw_ring_right")
+        "hw_language" -> t("setting_hw_language")
+        "hw_double_left" -> t("setting_hw_double_left")
+        "hw_double_right" -> t("setting_hw_double_right")
+        "hw_triple_left" -> t("setting_hw_triple_left")
+        "hw_triple_right" -> t("setting_hw_triple_right")
+        "hw_hold_left" -> t("setting_hw_hold_left")
+        "hw_hold_right" -> t("setting_hw_hold_right")
+        "hw_hold_call" -> t("setting_hw_hold_call")
+        "hw_hold" -> t("setting_hw_hold")
+        "hw_cycle_left" -> t("setting_hw_cycle_left")
+        "hw_cycle_right" -> t("setting_hw_cycle_right")
+        "hw_power_tap" -> t("setting_hw_power_tap")
+        "hw_swipe" -> t("setting_hw_swipe")
+        "hw_auto_pause" -> t("setting_hw_auto_pause")
+        "hw_low_latency" -> t("setting_hw_low_latency")
+        "hw_anc_adjust" -> t("setting_hw_anc_adjust")
+        "hw_quality" -> t("setting_hw_quality")
+        "hw_single_anc" -> t("setting_hw_single_anc")
+        "hw_adaptive_volume" -> t("setting_hw_adaptive_volume")
+        "hw_conversation" -> t("setting_hw_conversation")
+        "hw_head_control" -> t("setting_hw_head_control")
+        "hw_drop" -> t("setting_hw_drop")
         "multipoint" -> t("setting_multipoint")
         "bose_peer_connect" -> t("setting_bose_peer_connect")
         "bose_peer_disconnect" -> t("setting_bose_peer_disconnect")
@@ -915,6 +960,34 @@ class SettingWords(private val strings: DesktopStrings) {
 
     /** The screens' words for a brand row's [option]. */
     fun optionLabel(key: String, option: String): String = when {
+        option == "hw_gesture_off" -> t("setting_hw_gesture_off")
+        option == "hw_play_pause" -> t("setting_hw_play_pause")
+        option == "hw_next_track" -> t("setting_hw_next_track")
+        option == "hw_previous_track" -> t("setting_hw_previous_track")
+        option == "hw_assistant" -> t("setting_hw_assistant")
+        option == "hw_change_track" -> t("setting_hw_change_track")
+        option == "hw_face_translate" -> t("setting_hw_face_translate")
+        option == "hw_voice_memo" -> t("setting_hw_voice_memo")
+        option == "hw_pair_glasses" -> t("setting_hw_pair_glasses")
+        option == "hw_cycle_noise" -> t("setting_hw_cycle_noise")
+        option == "hw_reject_call" -> t("setting_hw_reject_call")
+        option == "hw_answer_call" -> t("setting_hw_answer_call")
+        option == "hw_volume_up" -> t("setting_hw_volume_up")
+        option == "hw_volume_down" -> t("setting_hw_volume_down")
+        option == "hw_change_volume" -> t("setting_hw_change_volume")
+        option == "hw_off_anc" -> t("setting_hw_off_anc")
+        option == "hw_off_anc_aware" -> t("setting_hw_off_anc_aware")
+        option == "hw_anc_aware" -> t("setting_hw_anc_aware")
+        option == "hw_off_aware" -> t("setting_hw_off_aware")
+        option == "hw_switch_device" -> t("setting_hw_switch_device")
+        option == "hw_cozy" -> t("setting_hw_cozy")
+        option == "hw_general" -> t("setting_hw_general")
+        option == "hw_ultra" -> t("setting_hw_ultra")
+        option == "hw_dynamic" -> t("setting_hw_dynamic")
+        option == "hw_adaptive_awareness" -> t("setting_hw_adaptive_awareness")
+        option == "hw_voice_boost" -> t("setting_hw_voice_boost")
+        option == "hw_dual_engine" -> t("setting_hw_dual_engine")
+        key == "hw_language" -> option
         key.startsWith("jb_") -> when {
             option == "off" -> t("action_off")
             option.startsWith("min_") -> t("setting_power_off_timer_minutes", option.removePrefix("min_").toInt())
@@ -1530,6 +1603,7 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun actionStart(key: String): String = when (key) {
+        "hw_ring_left", "hw_ring_right" -> "setting_find_start"
         "op_eq_new" -> "setting_op_eq_new"
         "find" -> "setting_find_start"
         "find_hub" -> "setting_find_hub_open"
@@ -1555,6 +1629,7 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun actionStop(key: String): String = when (key) {
+        "hw_ring_left", "hw_ring_right" -> "setting_find_stop"
         "find" -> "setting_find_stop"
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"

@@ -17,6 +17,8 @@ public data class EarbudState(
     val fitTest: Boolean = false,
     /** The fit test needs a sound from the phone while the earbuds measure (QCY's): the screen plays it for as long as the test runs. */
     val fitSound: Boolean = false,
+    /** Shared noise modes a known model supports, or null to use the platform's default choices. */
+    val noiseModeValues: List<Int>? = null,
 ) {
     /** Applies one received frame. Frames that are not replies the app understands are ignored. */
     public fun update(frame: Frame): EarbudState {

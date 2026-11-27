@@ -259,8 +259,8 @@ private fun HomeScreen(
         }
 
         // Battery for left, case and right: drawing, then a percentage and a bar, or one bar per step
-        // for earbuds that report steps. Only what the earbuds report. Headphones and speakers
-        // report one battery, shown as the whole product.
+        // for devices that report steps. Headphones and speakers show the whole product
+        // and a case where the device reports one.
         val wholeProduct = AppleModels.b2p(device.name) != null
         val batteries = when (form) {
             // Apple's Beats report one level for the whole product (docs/apple/B2P.md): not a left bud.
@@ -278,6 +278,8 @@ private fun HomeScreen(
             Form.HEADPHONES, Form.SPEAKER -> listOfNotNull(
                 Battery(if (form == Form.SPEAKER) R.string.speaker else R.string.headphones, state.battery(Command.BATTERY_LEFT), art.bud, mirrored = false)
                     .takeIf { state.supports(Command.BATTERY_LEFT) },
+                Battery(R.string.case_label, state.battery(Command.BATTERY_CASE), art.case, mirrored = false)
+                    .takeIf { state.supports(Command.BATTERY_CASE) },
             )
         }
         val reportOnly = model?.reportOnly == true || Brands[device.brand].reportOnlyWhenUnknown && model == null
@@ -366,7 +368,8 @@ private enum class NoiseMode(val key: String, @StringRes val title: Int) {
  */
 @Composable
 private fun NoiseControl(state: EarbudState, actions: EarbudsActions) {
-    val mode = NoiseMode.entries.firstOrNull { it.value == state.number(Command.ANC_MODE) }
+    val modes = NoiseMode.entries.filter { state.noiseModeValues?.contains(it.value) != false }
+    val mode = modes.firstOrNull { it.value == state.number(Command.ANC_MODE) }
     val levels = when (mode) {
         NoiseMode.CANCELLING -> Command.ANC_LEVEL
         NoiseMode.TRANSPARENCY -> Command.TRANSPARENCY_LEVEL
@@ -375,7 +378,7 @@ private fun NoiseControl(state: EarbudState, actions: EarbudsActions) {
     val choices = levels?.let(state::levels).orEmpty()
     Panel {
         Label(stringResource(R.string.noise_control))
-        Segmented(NoiseMode.entries, mode, { stringResource(it.title) }, { actions.set(Command.ANC_MODE, it.value) })
+        Segmented(modes, mode, { stringResource(it.title) }, { actions.set(Command.ANC_MODE, it.value) })
         if (levels != null && choices.isNotEmpty()) {
             Label(stringResource(if (levels == Command.ANC_LEVEL) R.string.scene else R.string.transparency_level))
             Segmented(

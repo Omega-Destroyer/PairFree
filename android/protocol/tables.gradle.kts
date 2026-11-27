@@ -2768,6 +2768,8 @@ val generateSkullcandyModels = tasks.register<GenerateSkullcandyProducts>("gener
 abstract class GenerateHuaweiTables : DefaultTask() {
     @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
     abstract val sourceJson: RegularFileProperty
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
     @get:OutputDirectory abstract val outputDir: DirectoryProperty
 
     @TaskAction
@@ -2785,6 +2787,20 @@ abstract class GenerateHuaweiTables : DefaultTask() {
             }
             text.appendLine("}")
         }
+        val products = (JsonSlurper().parse(devicesJson.get().asFile) as Map<*, *>)["products"] as List<*>
+        fun quote(value: Any?): String = groovy.json.JsonOutput.toJson(value)
+        fun strings(value: Any?): String = (value as? List<*>).orEmpty().joinToString(", ", transform = ::quote)
+        text.appendLine("internal val HUAWEI_PRODUCTS: List<HuaweiProduct> = listOf(")
+        for (raw in products) {
+            val product = raw as Map<*, *>
+            val presets = (product["presets"] as? Map<*, *>).orEmpty().entries.joinToString(", ") { (id, name) ->
+                "${id.toString().toInt()} to ${quote(name)}"
+            }
+            text.appendLine("    HuaweiProduct(${quote(product["id"])}, ${quote(product["name"])}, " +
+                "listOf(${strings(product["aliases"])}), io.github.omegadestroyer.pairfree.protocol.Form.${product["form"]}, " +
+                "setOf(${strings(product["features"])}), linkedMapOf($presets)),")
+        }
+        text.appendLine(")")
         val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/huawei/HuaweiTables.kt")
         target.parentFile.mkdirs()
         target.writeText(text.toString())
@@ -2792,5 +2808,6 @@ abstract class GenerateHuaweiTables : DefaultTask() {
 }
 val generateHuaweiTables = tasks.register<GenerateHuaweiTables>("generateHuaweiTables") {
     sourceJson = rootProject.layout.projectDirectory.file("../data/huawei/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/huawei/devices.json")
     outputDir = layout.buildDirectory.dir("generated/huawei")
 }

@@ -237,6 +237,9 @@ private fun groupTitle(key: String): String = stringResource(
         "noise" -> R.string.setting_group_noise
         "ef_cycle" -> R.string.setting_group_ef_cycle
         "sound" -> R.string.setting_group_sound
+        "hw_pinch" -> R.string.setting_hw_pinch
+        "hw_find" -> R.string.setting_group_find_hub
+        "hw_voice" -> R.string.setting_hw_voice
         "touch" -> R.string.setting_group_touch
         "ambient_customize" -> R.string.setting_group_ambient_customize
         "calls" -> R.string.setting_group_calls
@@ -610,6 +613,48 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "eq_mid" -> stringResource(R.string.setting_eq_mid)
     "eq_high_mid" -> stringResource(R.string.setting_eq_high_mid)
     "eq_treble" -> stringResource(R.string.setting_eq_treble)
+    "hw_pinch_answer" -> stringResource(R.string.setting_hw_pinch_answer)
+    "hw_pinch_reject" -> stringResource(R.string.setting_hw_pinch_reject)
+    "hw_pinch_play" -> stringResource(R.string.setting_hw_pinch_play)
+    "hw_pinch_next" -> stringResource(R.string.setting_hw_pinch_next)
+    "hw_pinch_previous" -> stringResource(R.string.setting_hw_pinch_previous)
+    "hw_pinch_hold_left" -> stringResource(R.string.setting_hw_pinch_hold_left)
+    "hw_pinch_hold_right" -> stringResource(R.string.setting_hw_pinch_hold_right)
+    "hw_glasses_double_left" -> stringResource(R.string.setting_hw_glasses_double_left)
+    "hw_glasses_double_right" -> stringResource(R.string.setting_hw_glasses_double_right)
+    "hw_glasses_hold" -> stringResource(R.string.setting_hw_glasses_hold)
+    "hw_swipe_left" -> stringResource(R.string.setting_hw_swipe_left)
+    "hw_swipe_right" -> stringResource(R.string.setting_hw_swipe_right)
+    "hw_greeting" -> stringResource(R.string.setting_hw_greeting)
+    "hw_saving" -> stringResource(R.string.setting_hw_saving)
+    "hw_glasses_wear" -> stringResource(R.string.setting_hw_glasses_wear)
+    "hw_nod" -> stringResource(R.string.setting_hw_nod)
+    "hw_shake" -> stringResource(R.string.setting_hw_shake)
+    "hw_awareness_level" -> stringResource(R.string.setting_hw_awareness_level)
+    "hw_ring_left" -> stringResource(R.string.setting_hw_ring_left)
+    "hw_ring_right" -> stringResource(R.string.setting_hw_ring_right)
+    "hw_language" -> stringResource(R.string.setting_hw_language)
+    "hw_double_left" -> stringResource(R.string.setting_hw_double_left)
+    "hw_double_right" -> stringResource(R.string.setting_hw_double_right)
+    "hw_triple_left" -> stringResource(R.string.setting_hw_triple_left)
+    "hw_triple_right" -> stringResource(R.string.setting_hw_triple_right)
+    "hw_hold_left" -> stringResource(R.string.setting_hw_hold_left)
+    "hw_hold_right" -> stringResource(R.string.setting_hw_hold_right)
+    "hw_hold_call" -> stringResource(R.string.setting_hw_hold_call)
+    "hw_hold" -> stringResource(R.string.setting_hw_hold)
+    "hw_cycle_left" -> stringResource(R.string.setting_hw_cycle_left)
+    "hw_cycle_right" -> stringResource(R.string.setting_hw_cycle_right)
+    "hw_power_tap" -> stringResource(R.string.setting_hw_power_tap)
+    "hw_swipe" -> stringResource(R.string.setting_hw_swipe)
+    "hw_auto_pause" -> stringResource(R.string.setting_hw_auto_pause)
+    "hw_low_latency" -> stringResource(R.string.setting_hw_low_latency)
+    "hw_anc_adjust" -> stringResource(R.string.setting_hw_anc_adjust)
+    "hw_quality" -> stringResource(R.string.setting_hw_quality)
+    "hw_single_anc" -> stringResource(R.string.setting_hw_single_anc)
+    "hw_adaptive_volume" -> stringResource(R.string.setting_hw_adaptive_volume)
+    "hw_conversation" -> stringResource(R.string.setting_hw_conversation)
+    "hw_head_control" -> stringResource(R.string.setting_hw_head_control)
+    "hw_drop" -> stringResource(R.string.setting_hw_drop)
     "multipoint" -> stringResource(R.string.setting_multipoint)
     "bose_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
     "bose_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
@@ -1145,6 +1190,34 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    option == "hw_gesture_off" -> getString(R.string.setting_hw_gesture_off)
+    option == "hw_play_pause" -> getString(R.string.setting_hw_play_pause)
+    option == "hw_next_track" -> getString(R.string.setting_hw_next_track)
+    option == "hw_previous_track" -> getString(R.string.setting_hw_previous_track)
+    option == "hw_assistant" -> getString(R.string.setting_hw_assistant)
+    option == "hw_change_track" -> getString(R.string.setting_hw_change_track)
+    option == "hw_face_translate" -> getString(R.string.setting_hw_face_translate)
+    option == "hw_voice_memo" -> getString(R.string.setting_hw_voice_memo)
+    option == "hw_pair_glasses" -> getString(R.string.setting_hw_pair_glasses)
+    option == "hw_cycle_noise" -> getString(R.string.setting_hw_cycle_noise)
+    option == "hw_reject_call" -> getString(R.string.setting_hw_reject_call)
+    option == "hw_answer_call" -> getString(R.string.setting_hw_answer_call)
+    option == "hw_volume_up" -> getString(R.string.setting_hw_volume_up)
+    option == "hw_volume_down" -> getString(R.string.setting_hw_volume_down)
+    option == "hw_change_volume" -> getString(R.string.setting_hw_change_volume)
+    option == "hw_off_anc" -> getString(R.string.setting_hw_off_anc)
+    option == "hw_off_anc_aware" -> getString(R.string.setting_hw_off_anc_aware)
+    option == "hw_anc_aware" -> getString(R.string.setting_hw_anc_aware)
+    option == "hw_off_aware" -> getString(R.string.setting_hw_off_aware)
+    option == "hw_switch_device" -> getString(R.string.setting_hw_switch_device)
+    option == "hw_cozy" -> getString(R.string.setting_hw_cozy)
+    option == "hw_general" -> getString(R.string.setting_hw_general)
+    option == "hw_ultra" -> getString(R.string.setting_hw_ultra)
+    option == "hw_dynamic" -> getString(R.string.setting_hw_dynamic)
+    option == "hw_adaptive_awareness" -> getString(R.string.setting_hw_adaptive_awareness)
+    option == "hw_voice_boost" -> getString(R.string.setting_hw_voice_boost)
+    option == "hw_dual_engine" -> getString(R.string.setting_hw_dual_engine)
+    key == "hw_language" -> option
     key.startsWith("jb_") -> when {
         option == "off" -> getString(R.string.action_off)
         option.startsWith("min_") -> getString(R.string.setting_power_off_timer_minutes, option.removePrefix("min_").toInt())
@@ -1761,6 +1834,7 @@ private fun eqBandTitle(key: String): String? {
 }
 
 private fun actionStart(key: String): Int = when (key) {
+    "hw_ring_left", "hw_ring_right" -> R.string.setting_find_start
     "op_eq_new" -> R.string.setting_op_eq_new
     "find" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open
@@ -1786,6 +1860,7 @@ private fun actionStart(key: String): Int = when (key) {
 }
 
 private fun actionStop(key: String): Int = when (key) {
+    "hw_ring_left", "hw_ring_right" -> R.string.setting_find_stop
     "find" -> R.string.setting_find_stop
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop

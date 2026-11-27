@@ -644,6 +644,7 @@ class DesktopApp(
                 val current = state.number(Command.ANC_MODE)
                 for ((name, key) in listOf("off" to "anc_off", "anc" to "anc_cancelling", "transparency" to "anc_transparency")) {
                     val value = Command.ANC_MODE.labels.entries.first { it.value == name }.key
+                    if (state.noiseModeValues?.contains(value) == false) continue
                     items += TrayItem.Action(s.text(key), checked = current == value) { act { set(Command.ANC_MODE, value) } }
                 }
             }

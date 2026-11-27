@@ -3,10 +3,8 @@
 Virtual follow-up, 2026-11-06: [model-specific scope and interventions](VIRTUAL_TESTING.md).
 No physical hardware was tested.
 
-Research 2026-11-06; a local protocol-core draft is described in [IMPLEMENTATION.md](IMPLEMENTATION.md).
-No Huawei model is enabled in the app and no hardware was connected.
-The supplied AI Life app contains an older but readable Smart Audio plugin. Its protocol evidence and
-newer OpenFreebuds research are kept distinct below; neither proves every FreeBuds model is supported.
+The [implementation](IMPLEMENTATION.md) runs through the Android and desktop shared driver.
+The [model audit](MODELS.md) records the APK routes, supplementary captures and outstanding features.
 
 ## 1. Primary source, nested plugin, and public checks
 
@@ -37,8 +35,7 @@ and `driver/generic/spp.py`. Some reference model handlers are explicitly tentat
 comments must not be turned into hardware-validation claims.
 
 [FreeBuddies](https://github.com/IAL32/freebuddies) is a further protocol/capture reference for FreeBuds 4;
-its README identifies LGPLv3 and links its SPP documentation. It was found as a lead, not used as proof
-for a model-specific byte layout in this pass. Gadgetbridge Huawei is another follow-up cross-check.
+its captured T0022/T0022C model is marketed as FreeBuds Pro 4. [Captured protocol](https://github.com/IAL32/freebuddies/blob/main/app/README.md) ? [Huawei T0022 guide](https://consumer.huawei.com/cn/support/content/zh-cn16025581/)
 
 ## 2. Connection and model boundaries
 
@@ -49,10 +46,9 @@ is limited to these local commands; it does not authorize AI Life account or clo
 
 OpenFreebuds independently uses model-specific RFCOMM ports: its base default is 16; several newer
 models override to 1. These are public reference facts, not a reason to hardcode one port for Huawei.
-A future Android connection should preserve service discovery and produce a connection report, with
-any channel fallback backed by a model's evidence.
+PairFree uses the operating system's standard SPP service resolution and records the chosen service in its connection report.
 
-The old plugin's ModelPbiMap is:
+The old plugin's ModelPbiMap follows. See [MODELS.md](MODELS.md) for the marketed identities and outer-app entries.
 
 | PBI | Internal model string |
 |---|---|
@@ -68,7 +64,7 @@ manager before assigning a product name. The main detail activity also explicitl
 FreeBuds 3. This older plugin cannot provide a modern all-model feature table merely because the
 outer application is AI Life.
 
-Reference coverage to consult for newer devices:
+OpenFreebuds reference coverage, before the supplemental sources in [MODELS.md](MODELS.md):
 
 | OpenFreebuds model class | RFCOMM port | Useful caveat |
 |---|---|---|
@@ -99,10 +95,7 @@ byte including `5A` and the length. A TLV is type u8, length u8, then that many 
 requests a type with zero length; a write supplies its value. Multiple requested types are concatenated.
 There is no extra global success byte that can be stripped from all commands; decode the relevant TLVs.
 
-The legacy parser rejects a nonzero control byte and checks CRC. Its hex-string stream splitter keeps
-an incomplete suffix for two seconds; the decompiled implementation also has suspicious string
-concatenation. A future parser should implement bounded byte-stream reassembly from the documented
-length and checksum, without reproducing that UI/helper behavior. Fragmented control values are not
+The legacy parser rejects a nonzero control byte and checks CRC. PairFree reassembles the byte stream using a 4096-byte body limit. Fragmented control values are not
 established by this plugin's parser and must not be invented.
 
 OpenFreebuds' framing, CRC and TLV construction agree with the vendor plugin. Its reader supports
@@ -115,7 +108,7 @@ All command numbers here are hex and are paired with their service byte.
 
 | Purpose | Read / write | Payload facts |
 |---|---|---|
-| Version/info | `01 07` | vendor requests zero-length tags 1 through 21; reply includes private identity fields |
+| Version/info | `01 07` | PairFree requests software version tag 7. The vendor's broader query can return private identities |
 | Battery | `01 08`; notification `01 27` | read tag 1; response tag 1 global/minimum level, tag 2 component levels, tag 3 charging states |
 | Double tap | `01 20` / `01 1F` | tag 1 left function, tag 2 right function; omit a side rather than writing a negative sentinel |
 | Triple tap | `01 26` / `01 25` | same side TLVs, separate command pair |
@@ -191,9 +184,39 @@ ANC/language/settings parsers and model ids; native inventory; OpenFreebuds fram
 per-model handlers. No app-held server credentials or secrets files were read. No hardware test was
 performed and no source-derived example is represented as a capture.
 
-Remaining analysis: map every old plugin codename to its displayed model, follow each model's UI/action
-sets and overlapping command contexts, obtain a newer vendor plugin if its access is permitted, and
-confirm newer EQ units/notification layouts against that app or recordings. A future implementation
-needs byte-for-byte codec cases, model-specific read sets, privacy filtering and actual connection
-validation. These are open research/implementation tasks; no hard-rule blocker was established for
-ordinary local headphone control.
+
+## 8. Model-specific command details
+
+| Feature | Read / write | Payload |
+| --- | --- | --- |
+| Walrus double tap | 01 20 / 01 1F | Read tags 1, 2, 3. Tags 1 and 2 address the sides. Use tag 3's advertised list. Both 2 and 4 mean next track. Both 7 and 8 mean previous track. |
+| Walrus long press | 2B 17 / 2B 16 | Read tags 1, 2, 3. The vendor writes tag 2. Values 3, 5, 6 and 9 select combinations of off, ANC and awareness. FF disables the gesture. Use the reported list. |
+| Nile ANC | 2B 05 or 2B 2A / 2B 04 | Both use mode IDs 0, 1, 2. The former uses the scalar write. The latter uses mode and level. |
+| Eyewear battery | 01 08 | Request tags 1, 2, 3. Tag 2 holds the two temple levels and case. AI Life displays the smaller temple level. The first generation displays case battery. |
+| Eyewear language | 0C 02 / 0C 01 | Read tags 1, 2, 3. Change to a locale from the reported list with tag 1 alone. |
+| Eyewear II double tap | 01 20 / 01 1F | Request tag 3. Each side uses its tag 1/2. Actions 0 assistant, 1 play/pause, FF none. |
+| Eyewear II swipe | 2B 1F / 2B 1E | Side tags 1/2. Actions 0 volume, 1 track, FF none. |
+| Eyewear II hold | 2B 21 / 2B 20 | Tag 1. Actions 0 face-to-face translation, 1 voice memo, 2 pairing, FF none. |
+| Eyewear II switches | 2B 0F/0E, 11/10, 1D/1C, 23/22 | Boolean tag 1 for greeting, wear detection, power saving and intelligent volume, respectively. |
+| Modern pinch | 2B 93 / 2B 92 | Tags 1, 2 identify gesture and scene. Side actions are tags 3, 4. Call and playback writes address both sides together. Hold addresses one side. |
+| Modern keyed settings | 2B B4 | Tag 1 key, tag 2 state. Keys 2 adaptive volume, 5 single-ear ANC, 7 drop detection, 11 head control and 27 conversation awareness. |
+| Adaptive awareness on Pro 5 | 2B 2A / 2B 04 | Mode 2, submode 4. Read the slider in tag 2. The slider write carries [2,4] in tag 1, value 1 in tag 3 and level 0?10 in tag 4. |
+| Head gestures | 2B B4 | For key 11, tags 3 and 4 hold nod and shake actions. Values 0 none, 1 answer and 2 reject. |
+| Sound quality | 2B A3 / 2B A2 | Request tag 1. Read tag 1 capability and tag 2 state. Write tag 1, 0 connectivity or 1 quality. |
+| Ring earbuds | 2B 5E / 2B 5D | The read carries side 0 or 1 in tag 1 and the reply carries side and state in tag 2. Write side and 0 ring or 1 stop in tag 1. |
+
+The outer APK's Eyewear builders and parsers are in com/huawei/perrier/ota/spp. See ProtocolAPI,
+C1484 and AppParseDataHandleHelper for battery, language and settings, and fiji/touchsettings
+for gesture choices. Eyewear II's HD recording uses the phone's Bluetooth metadata API under
+key 10011. Walrus wear detection uses the phone's BtTwsWearDetectionEx class.
+
+PairFree requests only tag 2 of 2B 4A. Some firmware, including the captured FreeBuds 5,
+requires the single-tag query. Replies can carry the current ID in tag 2, available IDs in tag 3,
+and tag 8 custom records. Each record is 36 bytes with slot ID, band count, ten signed gains and
+a 24-byte name field. The implemented EQ grid is 60, 125, 250, 500, 1000, 2000, 4000, 8000, 12000
+and 16000 Hz, ?6 dB in signed tenths. The custom write order is 1, 2, 5, 3, 4, with operation 1
+for the save profiles and 0 for FreeBuds 7i. Pro 3 preset IDs use the published 02 03 05 09 response.
+[LibreBuds protocol and captures](https://github.com/librebuds/librebuds/tree/c7b0833) ? [HuaweiPods EQ codec](https://github.com/Nshpiter/HuaweiPods/blob/e2cf07e/app/src/main/java/moe/chenxy/huaweipods/pods/HuaweiEqualizerCodec.kt)
+
+See [the model audit](MODELS.md) for remaining features and [implementation](IMPLEMENTATION.md)
+for PairFree validation.

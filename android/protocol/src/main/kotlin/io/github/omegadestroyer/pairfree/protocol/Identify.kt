@@ -8,6 +8,7 @@ import io.github.omegadestroyer.pairfree.protocol.apple.AppleModels
 import io.github.omegadestroyer.pairfree.protocol.apple.AppleWire
 import io.github.omegadestroyer.pairfree.protocol.bose.BoseModels
 import io.github.omegadestroyer.pairfree.protocol.earfun.EarfunModels
+import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiModels
 import io.github.omegadestroyer.pairfree.protocol.jabra.JabraModels
 import io.github.omegadestroyer.pairfree.protocol.jabra.fromName
 import io.github.omegadestroyer.pairfree.protocol.jbl.AvneraModels
@@ -31,7 +32,7 @@ import io.github.omegadestroyer.pairfree.protocol.skullcandy.SkullcandyServices
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 
 /** The brands PairFree controls. */
-public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN, CAMBRIDGE, ONEPLUS, SENNHEISER, JABRA, SKULLCANDY }
+public enum class Maker { SOUNDPEATS, SOUNDCORE, SAMSUNG, SONY, BOSE, JBL, APPLE, NOTHING, PIXEL, QCY, ONEMORE, EARFUN, CAMBRIDGE, ONEPLUS, SENNHEISER, JABRA, SKULLCANDY, HUAWEI }
 
 /**
  * Which brand a paired device is, from what Android keeps for it: its Bluetooth name and the services it lists
@@ -89,7 +90,7 @@ public object Identify {
             // The standard serial service, and Airoha's and JieLi's, which other brands' earbuds offer too.
             // Skullcandy's own serial services: the AT one its Airoha earbuds list and Bragi's RPC one (docs/skullcandy/PROTOCOL.md section 9).
             Maker.SKULLCANDY -> SkullcandyServices.AT.lowercase() in list || SkullcandyServices.RPC.lowercase() in list
-            Maker.SOUNDPEATS, Maker.JBL, Maker.QCY, Maker.ONEMORE, Maker.EARFUN, Maker.CAMBRIDGE, Maker.JABRA -> false
+            Maker.SOUNDPEATS, Maker.JBL, Maker.QCY, Maker.ONEMORE, Maker.EARFUN, Maker.CAMBRIDGE, Maker.JABRA, Maker.HUAWEI -> false
         }
     }
 
@@ -106,6 +107,7 @@ public object Identify {
         Maker.CAMBRIDGE -> CambridgeModels.fromName(name) != null
         Maker.ONEPLUS -> OneplusModels.fromName(name) != null
         Maker.JABRA -> JabraModels.fromName(name) != null
+        Maker.HUAWEI -> HuaweiModels.fromName(name) != null
         Maker.SKULLCANDY -> SkullcandyModels.fromName(name) != null
         Maker.SENNHEISER -> SennheiserModels.fromName(name) != null || Gaia2Models.fromName(name) != null || NautilusModels.fromName(name) != null
         // Galaxy Buds names hold "Galaxy"; Bose's "Bose"; the Beats that speak B2P are known by name.

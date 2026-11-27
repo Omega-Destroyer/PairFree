@@ -329,7 +329,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
 
     /** The P30i family's power-off durations (10, 20, 30 or 60 minutes, as the recording of the official app shows). */
     private fun a3959FeatureRows(s: SoundcoreState): List<Setting>? {
-        if (A3959_MODES !in s.layout.features) return null
+        if (A3959_MODES !in s.layout.features && AUTO_OFF_DURATIONS !in s.layout.features) return null
         return listOfNotNull(
             s.field("auto_power_off")?.takeIf { it.size >= 2 }?.let {
                 val options = listOf("off", "10", "20", "30", "60")
@@ -377,7 +377,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
      */
     private fun switchRow(s: SoundcoreState, w: Switch): Setting? =
         // The P30i family shows its power-off durations instead of the bare switch.
-        if (w.key == "sc_auto_power_off" && A3959_MODES in s.layout.features) null
+        if (w.key == "sc_auto_power_off" && (A3959_MODES in s.layout.features || AUTO_OFF_DURATIONS in s.layout.features)) null
         else if (s.layout.has(w.field) && s.flag(w.field) != null) Setting.Toggle(w.key, s.flag(w.field) == true) else null
 
     /** The A3953's press sensitivity: five levels from softest (0) to firmest (4), set with both earbuds connected (its screen). */
@@ -643,6 +643,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
         public const val FIND_PHONE: String = "find_phone"
         private const val MUTE_LEFT = "find_mute_left"
         private const val MUTE_RIGHT = "find_mute_right"
+        /** The model's power off offers the durations of the P30i family (the Liberty Buds 2). */
+        private const val AUTO_OFF_DURATIONS = "auto_power_off_durations"
         private val EARBUD_BATTERIES = listOf("dual_battery", "dual_battery_level", "single_battery", "single_battery_charging_first", "battery_level")
 
         // The noise modes by their names in data/soundpeats/commands.json, so no number is retyped.

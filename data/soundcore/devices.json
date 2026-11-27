@@ -5342,9 +5342,37 @@
         [
           "ldac",
           1
+        ],
+        [
+          "gaming_mode",
+          1
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "touch_tone",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "in_ear_tone",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
         ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: the more screen (D1206MoreDataProvider, restored by the 2026-11-19 unpacker run) lists wear detection, two devices, the wear, touch and low battery tones, press sensitivity (firmware 1.77 to 1.99 and 2.77 to 2.99), the sound mode, the fit test, auto power off and find. Records 25 to 27 give all of them but press sensitivity; game mode is on the main screen.",
       "tlv": [
         [
           1,
@@ -5523,6 +5551,47 @@
           0,
           "bit",
           2
+        ],
+        [
+          27,
+          0,
+          "bit",
+          1
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          26,
+          0,
+          "bit",
+          0
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          26,
+          0,
+          "bit",
+          3
+        ],
+        [
+          25,
+          0,
+          2
         ]
       ],
       "tlv_private": [
@@ -5602,7 +5671,13 @@
       "eq_normalized": {
         "table": "d1206"
       },
-      "extra_features": ["ambient_sound_mode_cycle_tws", "ambient_sound_mode_cycle_adaptive", "find_device"]
+      "extra_features": [
+        "ambient_sound_mode_cycle_tws",
+        "ambient_sound_mode_cycle_adaptive",
+        "find_device",
+        "touch_tone",
+        "auto_power_off_durations"
+      ]
     },
     {
       "model": "D1301",

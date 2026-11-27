@@ -41,10 +41,47 @@ class SoundcoreHearingTest {
             assertEquals(16, run.done)
             assertNotNull(run.result())
         }
-        assertNull(SoundcoreHearingSpec.of("A3947"))
+        assertNull(SoundcoreHearingSpec.of("A3040"))
         // The A40's first tone: 3.2 kHz at -75 dB plus 6.
         assertEquals(-69.0, SoundcoreHearingRun(SoundcoreHearingSpec.of("A3936")!!).level)
         assertTrue(SoundcoreHearingRun(SoundcoreHearingSpec.of("A3936")!!).left)
+    }
+
+    @Test
+    fun hearId3() {
+        for (model in listOf("A3035", "A3947", "A3955", "A3968")) {
+            val run = SoundcoreHearingRun(SoundcoreHearingSpec.of(model)!!)
+            assertEquals(8, run.total)
+            // 3.2 kHz: the recording at 0 dB, played at -38 dB.
+            assertEquals(-87.8, run.level, 0.001)
+            repeat(9) { run.louder(true) }
+            assertEquals(4, run.steps)
+            run.keep()
+            run.back()
+            assertEquals(0, run.done)
+            assertEquals(4, run.steps)
+            run.keep()
+            // 1.6 kHz one step under, then the rest as they start.
+            run.louder(false)
+            while (!run.finished) run.keep()
+            // 3.2 kHz needed 12 dB more than the rest: half of it, in tenths. The tones below the starting level count as it.
+            assertArrayEquals(intArrayOf(0, 0, 0, 0, 0, 60, 0, 0), run.result()!!.left)
+            assertArrayEquals(run.result()!!.left, run.result()!!.right)
+
+            val spec = SoundcoreEqSpec.of(model)!!
+            val state = blank(model)
+            val body = SoundcoreHearingId.save(model, state, run.result()!!, 5)!!.body
+            val curves = spec.hearId!!.channels
+            // Preset, genre, the EQ, gender, age, the switch, the curves, time, type, the curves again, what plays, and the noise byte.
+            assertEquals(4 + spec.channels * 10 + 3 + curves * 10 + 4 + 1 + curves * 10 + spec.channels * 10 + 1, body.size, model)
+            assertEquals(0, body.last().toInt())
+        }
+    }
+
+    /** A state of [model] with every field its layout names zeroed: the A40 has a recorded one, these models none. */
+    private fun blank(model: String): SoundcoreState {
+        val layout = SoundcoreLayout.of(model)!!
+        return SoundcoreState.parse(layout, ByteArray(512))!!
     }
 
     @Test
@@ -89,7 +126,7 @@ class SoundcoreHearingTest {
     @Test
     fun aResultIsWrittenAsTheAppWritesIt() {
         val state = a40()
-        val result = SoundcoreHearingResult(IntArray(8) { 12 + it % 3 }, IntArray(8) { 12 })
+        val result = SoundcoreHearingResult(IntArray(8) { (it % 3) * 10 }, IntArray(8))
         val packet = SoundcoreHearingId.save("A3936", state, result, 0x01020304L)!!
         assertEquals(SoundcoreCommand.EQUALIZER_HEAR_ID, packet.command)
         val body = packet.body
@@ -103,7 +140,7 @@ class SoundcoreHearingTest {
         assertArrayEquals(body.copyOfRange(27, 47), body.copyOfRange(52, 72))
         // A flat right ear plays flat, with the ninth band at -1.2 dB and the tenth at -12 dB.
         assertArrayEquals(byteArrayOf(120, 120, 120, 120, 120, 120, 120, 120, 108, 0), body.copyOfRange(82, 92))
-        assertNull(SoundcoreHearingId.save("A3947", state, result, 0))
+        assertNull(SoundcoreHearingId.save("A3040", state, result, 0))
         assertNull(SoundcoreHearingId.save("A3936", null, result, 0))
     }
 
@@ -111,7 +148,7 @@ class SoundcoreHearingTest {
     fun switchingItOffSendsTheOrdinaryEqWrite() {
         val spec = SoundcoreEqSpec.of("A3936")!!
         var state = a40()
-        val saved = SoundcoreHearingId.save("A3936", state, SoundcoreHearingResult(IntArray(8) { 14 }, IntArray(8) { 15 }), 1_700_000_000L)!!.body
+        val saved = SoundcoreHearingId.save("A3936", state, SoundcoreHearingResult(IntArray(8) { 20 }, IntArray(8) { 30 }), 1_700_000_000L)!!.body
         // The state as it reads once the earbuds hold that: the switch, curve, time, type, custom and genre.
         val field = spec.hearId!!.field
         val bytes = state.field(field)!!

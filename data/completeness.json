@@ -909,20 +909,24 @@
         "Space A40 (A3936)",
         "Liberty Air 2 Pro (A3951)",
         "Liberty 2 Pro+ (A3930)",
-        "Liberty 3 Pro (A3952)"
+        "Liberty 3 Pro (A3952)",
+        "Space One (A3035)",
+        "Liberty 4 NC (A3947)",
+        "P40i (A3955)",
+        "Sport X20 (A3968)"
       ],
       "status": "built",
-      "what": "HearID on four models: the test (03 83, the app's tones, staircase and correction), writing the result, switching it and deleting it (03 87). Not tried on earbuds. The other generations are soundcore-hearid-other.",
+      "what": "HearID on eight models: the older test on four and HearID 3 on four (03 83, the app's tones and correction), writing the result, switching it and deleting it (03 87). Not tried on earbuds. The rest is soundcore-hearid-other.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {
       "id": "soundcore-hearid-other",
       "brand": "soundcore",
       "models": [
-        "Liberty 4 and later (HearID 3), Liberty 5 Pro (HearID 5), Space One, Space Q45, Space One Pro, Liberty 4 NC, the A3909 family, other HearID models"
+        "Liberty 4 (A3953), Space 2 (D1402), Liberty 5 Pro, Liberty 4 Pro family and Liberty 5, A3909 family, A3040, A3062, A3937"
       ],
       "status": "open",
-      "what": "The hearing tests of the other generations: A3953HearId3TestActivity, the Flutter HearId3FlutterActivity, A3909HearIdActivity, and which test the Liberty 4 NC runs (it reaches A3952PersonalHearIdActivity, whose level table for a product other than A3952 or A3953 would give inaudible beeps).",
+      "what": "Left of HearID: the music preference step after HearID 3 (A3953HearIdPreferenceActivity; whether it needs the app's own music is not settled); HearID 3 on the A3953 (needs its equalizer first) and D1402; HearID 5 (A3875, libhid_app.so); the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones); the A3909's test (BaseHearIdActivity); A3040, A3062, A3937 (which screen they launch was not traced).",
       "reported": "HearID worked through, 2026-11-27"
     },
     {

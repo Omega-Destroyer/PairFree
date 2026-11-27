@@ -33,8 +33,9 @@ import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
 
 /**
- * Soundcore's HearID hearing test (docs/soundcore/PROTOCOL.md, HearID), run as its app runs it: a tone sounds in one earbud, the user says whether they hear it, and
- * the next one is louder or quieter until the threshold is found, eight tones for each ear. The earbuds are told the test runs, and the tones start 1.5 s later.
+ * Soundcore's HearID hearing test (docs/soundcore/PROTOCOL.md, HearID), run as its app runs it. On the older models a tone sounds in one earbud, the user says whether
+ * they hear it, and the next one is louder or quieter until the threshold is found, eight tones for each ear. In HearID 3 beeps sound in both ears and the user sets
+ * each of eight tones to where it can just be heard. The earbuds are told the test runs, and the tones start 1.5 s later.
  * Leaving the screen, or the app, ends the test and puts the media volume back.
  */
 @Composable
@@ -94,7 +95,11 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
             return@LaunchedEffect
         }
         player.begin()
-        val side = if (run.left) TonePlayer.LEFT else TonePlayer.RIGHT
+        val side = when {
+            !host.spec.perEar -> TonePlayer.BOTH
+            run.left -> TonePlayer.LEFT
+            else -> TonePlayer.RIGHT
+        }
         if (host.spec.pulsed) player.playBeeps(run.hz, run.level, side) else player.playSteady(run.hz, run.level, side)
     }
 
@@ -115,13 +120,18 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
             result != null -> {
                 Text(stringResource(R.string.sc_hearing_done), color = c.secondaryText)
                 Panel {
-                    for ((label, values) in listOf(R.string.personifi_left_levels to result.left, R.string.personifi_right_levels to result.right)) {
-                        Text(stringResource(label), color = c.secondaryText)
+                    val ears = if (host.spec.perEar) {
+                        listOf(R.string.personifi_left_levels to result.left, R.string.personifi_right_levels to result.right)
+                    } else {
+                        listOf(null to result.left)
+                    }
+                    for ((label, values) in ears) {
+                        if (label != null) Text(stringResource(label), color = c.secondaryText)
                         for ((band, value) in values.withIndex()) {
                             Row {
                                 Text(stringResource(R.string.hearing_test_tone, HZ[band]), Modifier.weight(1f))
-                                val change = value - FLAT
-                                Text(signed(if (change > 0) "+$change dB" else "$change dB"), style = Look.type.number, color = c.accent)
+                                val change = if (value % 10 == 0) "${value / 10}" else "${value / 10.0}"
+                                Text(signed(if (value > 0) "+$change dB" else "$change dB"), style = Look.type.number, color = c.accent)
                             }
                         }
                     }
@@ -137,7 +147,7 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
                 AppButton(stringResource(R.string.capture_close), ::leave, Modifier.fillMaxWidth())
             }
             !testing -> {
-                Text(stringResource(R.string.sc_hearing_intro), color = c.secondaryText)
+                Text(stringResource(if (host.spec.perEar) R.string.sc_hearing_intro else R.string.sc_hearing_intro_both), color = c.secondaryText)
                 if (busy) Text(stringResource(R.string.hearing_test_music), color = c.destructive)
                 if (silent) Text(stringResource(R.string.sc_hearing_no_output), color = c.destructive)
                 AppButton(
@@ -158,20 +168,38 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
             }
             else -> {
                 val at = step.let { run.done }
-                val ear = stringResource(if (run.left) R.string.personifi_left else R.string.personifi_right)
                 Panel {
-                    Text(stringResource(R.string.personifi_tone_of, at + 1, run.total, ear), style = Look.type.number)
+                    Text(
+                        if (host.spec.perEar) {
+                            stringResource(R.string.personifi_tone_of, at + 1, run.total, stringResource(if (run.left) R.string.personifi_left else R.string.personifi_right))
+                        } else {
+                            stringResource(R.string.sc_hearing_tone_both, at + 1, run.total)
+                        },
+                        style = Look.type.number,
+                    )
                     Text(stringResource(R.string.hearing_test_tone, run.hz), color = c.secondaryText)
+                    if (!host.spec.perEar) {
+                        val steps = step.let { run.steps }
+                        Text(stringResource(R.string.sc_hearing_loudness, signed(if (steps > 0) "+$steps" else "$steps")), color = c.secondaryText)
+                    }
                     LevelBar(at * 100 / run.total)
                 }
-                Text(stringResource(if (ready) R.string.sc_hearing_question else R.string.sc_hearing_wait), color = c.secondaryText)
-                fun answer(heard: Boolean) {
-                    run.answer(heard)
+                fun then(change: () -> Unit) {
+                    change()
                     step++
                 }
-                AppButton(stringResource(R.string.sc_hearing_yes), { answer(true) }, Modifier.fillMaxWidth(), enabled = ready, primary = true)
-                AppButton(stringResource(R.string.sc_hearing_no), { answer(false) }, Modifier.fillMaxWidth(), enabled = ready)
-                AppButton(stringResource(R.string.sc_hearing_again), { run.repeat(); step++ }, Modifier.fillMaxWidth(), enabled = ready)
+                if (host.spec.perEar) {
+                    Text(stringResource(if (ready) R.string.sc_hearing_question else R.string.sc_hearing_wait), color = c.secondaryText)
+                    AppButton(stringResource(R.string.sc_hearing_yes), { then { run.answer(true) } }, Modifier.fillMaxWidth(), enabled = ready, primary = true)
+                    AppButton(stringResource(R.string.sc_hearing_no), { then { run.answer(false) } }, Modifier.fillMaxWidth(), enabled = ready)
+                    AppButton(stringResource(R.string.sc_hearing_again), { then { run.repeat() } }, Modifier.fillMaxWidth(), enabled = ready)
+                } else {
+                    Text(stringResource(if (ready) R.string.sc_hearing_adjust else R.string.sc_hearing_wait), color = c.secondaryText)
+                    AppButton(stringResource(R.string.sc_hearing_quieter), { then { run.louder(false) } }, Modifier.fillMaxWidth(), enabled = ready && run.steps > -4)
+                    AppButton(stringResource(R.string.sc_hearing_louder), { then { run.louder(true) } }, Modifier.fillMaxWidth(), enabled = ready && run.steps < 4)
+                    AppButton(stringResource(R.string.sc_hearing_keep), { then { run.keep() } }, Modifier.fillMaxWidth(), enabled = ready, primary = true)
+                    AppButton(stringResource(R.string.personifi_back), { then { run.back() } }, Modifier.fillMaxWidth(), enabled = ready && at > 0)
+                }
             }
         }
     }
@@ -179,7 +207,5 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
 
 private val HZ = listOf(100, 200, 400, 800, 1600, 3200, 6400, 12800)
 
-/** The value that changes nothing, in the app's scale. */
-private const val FLAT = 12
 private const val START_MS = 1500L
 private const val GAP_MS = 100L

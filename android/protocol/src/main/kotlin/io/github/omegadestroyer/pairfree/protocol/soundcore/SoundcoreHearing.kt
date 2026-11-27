@@ -8,30 +8,49 @@ import kotlin.math.floor
 import kotlin.math.pow
 
 /**
- * The Soundcore app's HearID hearing test (docs/soundcore/PROTOCOL.md, HearID), from the Soundcore app 5.0.35: the tones and
- * their levels per model, the staircase that finds each tone's threshold (`HearingAlgorithm`), the app's correction of the
- * sixteen results and the write that puts them in the earbuds. Not tried with PairFree.
+ * The Soundcore app's HearID hearing tests (docs/soundcore/PROTOCOL.md, HearID), from the Soundcore app 5.0.35: the tones and
+ * their levels per model, how each tone's threshold is found, the app's correction of the results and the write that puts them
+ * in the earbuds. Not tried with PairFree.
  *
  * The user's phone plays the tones with media volume at the top, as the app does. The models here are the ones whose
- * screen in that app was read: the Space A40, the Liberty Air 2 Pro, the Liberty 2 Pro+ and the Liberty 3 Pro.
+ * screen in that app was read.
  */
 public class SoundcoreHearingSpec private constructor(
     public val model: String,
+    public val style: Style,
     /** The tones in the order they are tested, each with the level it starts from. */
     private val tones: List<Tone>,
-    /** True for the Liberty 3 Pro's three short beeps; the others play a steady tone. */
-    public val pulsed: Boolean,
     /** How many bands each earbud's curve has in the write: 8, or 10 with two that are always sent as their lowest. */
     public val bands: Int,
 ) {
+    public enum class Style {
+        /** A steady tone in one ear; the user says whether they hear it (`BaseHearId2VM`). */
+        STEADY,
+
+        /** The same, with three short beeps for each tone (the Liberty 3 Pro's, `A3952HearIdVM`). */
+        BEEPS,
+
+        /** HearID 3: beeps in both ears, which the user makes louder or quieter until just heard (`A3968HearidVM`). */
+        CHOSEN,
+    }
+
     private class Tone(val hz: Int, val base: Int, val step: Int)
+
+    /** True when the tones are beeps rather than steady. */
+    public val pulsed: Boolean get() = style != Style.STEADY
+
+    /** True when each ear is tested by itself. */
+    public val perEar: Boolean get() = style != Style.CHOSEN
+
+    /** True for the models whose app writes the room's measured noise after the curves. PairFree measures none and sends 0. */
+    internal val noiseByte: Boolean get() = model !in setOf("A3936", "A3951", "A3930")
 
     public val count: Int get() = tones.size
     public fun hz(test: Int): Int = tones[test].hz
     internal fun base(test: Int): Int = tones[test].base
     internal fun firstStep(test: Int): Int = tones[test].step
 
-    /** The tone's peak level in dB below full scale when the staircase stands at [step] over its starting level. */
+    /** The tone's peak level in dB below full scale when it stands [step] dB from its starting level. */
     public fun level(test: Int, step: Int): Double {
         val tone = tones[test]
         return if (pulsed) {
@@ -41,7 +60,7 @@ public class SoundcoreHearingSpec private constructor(
                 12800 -> -46.7
                 else -> -49.8
             }
-            file + tone.base + step.coerceIn(-12, 12)
+            file + tone.base + step.coerceIn(-STEPS, STEPS)
         } else {
             (tone.base + step).toDouble().coerceAtMost(LOUDEST)
         }
@@ -50,23 +69,21 @@ public class SoundcoreHearingSpec private constructor(
     public companion object {
         /** No tone goes above this, whatever the staircase asks. */
         private const val LOUDEST = -27.0
+
+        /** How far from the starting level a recorded beep goes, in dB. */
+        internal const val STEPS: Int = 12
         private val ORDER = listOf(3200, 1600, 6400, 800, 400, 200, 100, 12800)
 
-        private fun classic(model: String, bands: Int): SoundcoreHearingSpec {
-            val base = listOf(-75, -64, -72, -71, -69, -59, -54, -72)
-            val step = listOf(6, 0, 6, 0, 3, 6, 6, 6)
-            return SoundcoreHearingSpec(model, ORDER.indices.map { Tone(ORDER[it], base[it], step[it]) }, false, bands)
-        }
-
-        private fun beeps(model: String): SoundcoreHearingSpec {
-            val base = listOf(-27, -19, -25, -22, -22, -17, -14, -25)
-            return SoundcoreHearingSpec(model, ORDER.indices.map { Tone(ORDER[it], base[it], 0) }, true, 10)
-        }
+        private fun spec(model: String, style: Style, bands: Int, base: List<Int>, step: List<Int> = List(8) { 0 }) =
+            SoundcoreHearingSpec(model, style, ORDER.indices.map { Tone(ORDER[it], base[it], step[it]) }, bands)
 
         public fun of(model: String?): SoundcoreHearingSpec? = when (model) {
-            "A3936" -> classic(model, 10)
-            "A3930", "A3951" -> classic(model, 8)
-            "A3952" -> beeps(model)
+            "A3936", "A3930", "A3951" -> spec(
+                model, Style.STEADY, if (model == "A3936") 10 else 8,
+                listOf(-75, -64, -72, -71, -69, -59, -54, -72), listOf(6, 0, 6, 0, 3, 6, 6, 6),
+            )
+            "A3952" -> spec(model, Style.BEEPS, 10, listOf(-27, -19, -25, -22, -22, -17, -14, -25))
+            "A3035", "A3947", "A3955", "A3968" -> spec(model, Style.CHOSEN, 10, listOf(-38, -39, -39, -34, -25, -25, -44, -39))
             else -> null
         }
     }
@@ -170,50 +187,88 @@ internal class SoundcoreStaircase(private val base: Int, firstStep: Int) {
     }
 }
 
-/** The result of a test: for each earbud, eight values from 100 Hz to 12.8 kHz in the app's scale, where 12 is flat. */
+/** The result of a test: for each earbud, eight values from 100 Hz to 12.8 kHz in tenths of a dB, 0 changing nothing. */
 public class SoundcoreHearingResult(public val left: IntArray, public val right: IntArray)
 
-/** One test as it runs: the left earbud's eight tones, then the right's. */
+/** One test as it runs: the left earbud's eight tones and then the right's, or in HearID 3 eight tones for both at once. */
 public class SoundcoreHearingRun(public val spec: SoundcoreHearingSpec) {
-    private val raw = IntArray(spec.count * 2)
+    private val chosen = spec.style == SoundcoreHearingSpec.Style.CHOSEN
 
     /** How many tones are done, of [total]. */
     public var done: Int = 0
         private set
-    public val total: Int get() = spec.count * 2
-    private var staircase = fresh(0)
+    public val total: Int = if (chosen) spec.count else spec.count * 2
+    private val raw = IntArray(total) { FLAT }
+
+    /** Where the listener left each tone of HearID 3, in dB from its starting level. */
+    private val offsets = IntArray(spec.count)
 
     public val left: Boolean get() = done < spec.count
     private val test: Int get() = done % spec.count
-    public val hz: Int get() = spec.hz(test)
-    public val level: Double get() = spec.level(test, staircase.step)
+    public val hz: Int get() = spec.hz(test.coerceAtMost(spec.count - 1))
+    private var staircase = fresh(0)
+
+    /** HearID 3: how far the tone stands from its starting level, in steps of 3 dB, -4 to 4. */
+    public val steps: Int get() = if (finished) 0 else offsets[test] / STEP
+
+    public val level: Double get() = spec.level(test, if (chosen) offsets[test] else staircase.step)
     public val finished: Boolean get() = done >= total
 
     private fun fresh(test: Int) = SoundcoreStaircase(spec.base(test), spec.firstStep(test))
+    private fun band(hz: Int) = (0 until spec.count).count { spec.hz(it) < hz }
 
-    public fun answer(heard: Boolean) {
-        if (finished) return
-        staircase.answer(heard)
-        val value = staircase.result ?: return
-        val band = (0 until spec.count).count { spec.hz(it) < hz }
-        raw[(if (left) 0 else spec.count) + band] = value
+    private fun next(value: Int) {
+        raw[(if (left) 0 else spec.count) + band(hz)] = value
         done++
         if (!finished) staircase = fresh(test)
     }
 
+    /** The listener's answer to the tone playing (not for HearID 3). */
+    public fun answer(heard: Boolean) {
+        if (finished || chosen) return
+        staircase.answer(heard)
+        next(staircase.result ?: return)
+    }
+
+    /** HearID 3: one step louder or quieter. */
+    public fun louder(up: Boolean) {
+        if (finished || !chosen) return
+        offsets[test] = (offsets[test] + if (up) STEP else -STEP).coerceIn(-SoundcoreHearingSpec.STEPS, SoundcoreHearingSpec.STEPS)
+    }
+
+    /** HearID 3: the tone is just audible where it stands. */
+    public fun keep() {
+        if (!finished && chosen) next(FLAT + offsets[test])
+    }
+
+    /** HearID 3: back to the tone before. */
+    public fun back() {
+        if (chosen && done > 0 && !finished) done--
+    }
+
     /** Starts the tone being tested over. */
     public fun repeat() {
-        if (!finished) staircase = fresh(test)
+        if (finished) return
+        if (chosen) offsets[test] = 0 else staircase = fresh(test)
     }
 
     /** The corrected result, once every tone is done. */
     public fun result(): SoundcoreHearingResult? {
         if (!finished) return null
-        val values = if (spec.pulsed) unify(raw) else correct(raw)
-        return SoundcoreHearingResult(values.copyOfRange(0, spec.count), values.copyOfRange(spec.count, total))
+        if (chosen) {
+            val both = halved(raw)
+            return SoundcoreHearingResult(both, both.copyOf())
+        }
+        val values = if (spec.style == SoundcoreHearingSpec.Style.BEEPS) unify(raw) else correct(raw)
+        val tenths = IntArray(values.size) { (values[it] - FLAT) * 10 }
+        return SoundcoreHearingResult(tenths.copyOfRange(0, spec.count), tenths.copyOfRange(spec.count, total))
     }
 
     internal companion object {
+        /** The value that changes nothing in the app's scale, in which 1 is 1 dB. */
+        private const val FLAT = 12
+        private const val STEP = 3
+
         /** `BaseHearId2VM.changeDataByAlgorithm`: both ears moved against the better 1.6 kHz result, then kept in range. */
         fun correct(raw: IntArray): IntArray {
             val n = raw.size / 2
@@ -238,13 +293,23 @@ public class SoundcoreHearingRun(public val spec: SoundcoreHearingSpec) {
                 floor(6.0 / (E.pow(15 - moved) + 1.0) + 12.0 + 0.5).toInt()
             }
         }
+
+        /**
+         * HearID 3 (`A3953HearId3TestVM.dataUnification`): what each tone needed above its starting level, against the best
+         * tone, halved. Already in tenths of a dB.
+         */
+        fun halved(raw: IntArray): IntArray {
+            val over = IntArray(raw.size) { maxOf(raw[it] - FLAT, 0) }
+            val least = over.min()
+            return IntArray(raw.size) { (over[it] - least) * 5 }
+        }
     }
 }
 
 /**
  * HearID as the earbuds hold it: the test's result (stored with the EQ), whether it is on, and the writes that store a new
  * result, switch it and delete it. All three are the model's EQ write with its HearID part filled in (`A3936CmdService.p6`,
- * `A3951DeviceManager.d2`): command `03 87`.
+ * `A3951DeviceManager.d2`, `CmmBtCmdService.p6` and, for the one-curve Space One, `o6`): command `03 87`.
  */
 public object SoundcoreHearingId {
     public const val SWITCH: String = "sc_hear_id"
@@ -284,10 +349,9 @@ public object SoundcoreHearingId {
     /** Stores [result], made at [time] (seconds since 1970), and turns HearID on. */
     public fun save(model: String, state: SoundcoreState?, result: SoundcoreHearingResult, time: Long): SoundcorePacket? {
         val h = held(model, state) ?: return null
-        val curves = listOf(result.left, result.right).map { values ->
-            IntArray(h.layout.bands) { band -> if (band < values.size) (values[band] - 12) * 10 else LOWEST }
-        }
-        val real = listOf(result.left, result.right).map { values -> applied(h.eq, IntArray(values.size) { (values[it] - 12) * 10 }) }
+        val ears = listOf(result.left, result.right)
+        val curves: List<IntArray?> = List(h.layout.channels) { c -> IntArray(h.layout.bands) { band -> ears[c].getOrElse(band) { LOWEST } } }
+        val real: List<IntArray?> = List(h.config.channels.size) { c -> applied(h.eq, ears[c]) }
         // The A40 reports no gender; the app writes 0 there after a test. The others keep what they report.
         val gender = state?.field("gender")?.get(0)?.toInt()?.and(0xFF)?.takeIf { it != 0xFF } ?: 0
         val age = state?.field("age_range")?.get(0)?.toInt()?.and(0xFF)?.takeIf { it != 0xFF } ?: 0
@@ -377,6 +441,7 @@ public object SoundcoreHearingId {
         byte(type)
         stored(custom)
         real.forEach(::playing)
+        if (SoundcoreHearingSpec.of(h.eq.model)?.noiseByte == true) byte(0)
         return SoundcorePacket(SoundcoreCommand.EQUALIZER_HEAR_ID, out.toByteArray())
     }
 

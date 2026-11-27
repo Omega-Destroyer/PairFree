@@ -767,8 +767,9 @@ Putting a sound on the earbuds: blocked: it travels by the firmware updater, whi
 
 ## HearID: the hearing test (2026-11-27)
 
-From the Soundcore app 5.0.35; built for the Space A40 (A3936), Liberty Air 2 Pro (A3951), Liberty 2 Pro+ (A3930) and Liberty 3 Pro (A3952). Not tried on
-earbuds. Code: `SoundcoreHearing.kt`, `SoundcoreHearingScreen.kt`.
+From the Soundcore app 5.0.35; built for the Space A40 (A3936), Liberty Air 2 Pro (A3951), Liberty 2 Pro+ (A3930), Liberty 3 Pro (A3952) and, as HearID 3,
+the Space One (A3035), Liberty 4 NC (A3947), P40i (A3955) and Sport X20 (A3968). Not tried on earbuds. Code: `SoundcoreHearing.kt`,
+`SoundcoreHearingScreen.kt`.
 
 **Running it.** `03 83 01` starts and `03 83 00` ends; the app waits 1.5 s after starting. The phone plays the tones, with media volume at the top, into one ear
 at a time, left first, in the order 3.2 kHz, 1.6 kHz, 6.4 kHz, 800, 400, 200, 100 Hz, 12.8 kHz (`A3936HearIdM`, `A3951HearIdM`, `A3952HearIdM`).
@@ -782,19 +783,27 @@ at a time, left first, in the order 3.2 kHz, 1.6 kHz, 6.4 kHz, 800, 400, 200, 10
 **The staircase** (`HearingAlgorithm`, ported in `SoundcoreStaircase`): 3 dB up while unheard and down while heard, until a level is heard twice or the step
 reaches 12 dB, then a short re-check. Its result is 0 to 24, 12 being the starting level.
 
+**HearID 3** (`A3968HearidVM`, reached from `A3953HearIdDataActivity`) has no staircase: the beeps sound in both ears, eight tones in the same order, and the
+user moves each between -12 and +12 dB of its starting level (-38, -39, -39, -34, -25, -25, -44, -39 dB for these four models; `getHearIdVolumeCurve`) until
+it is just heard. A tone's result is `12 + offset`. The results are sorted by frequency and corrected by `dataUnification`: what is above 12, less the smallest
+of the eight, halved, plus 12; both ears get the same. The calls between the screen and the correction are still protected in 5.0.35; their order is as in
+Soundcore 3.3.0's `A3953HearId3TestActivity.testHearIdEnd`, which is not protected.
+
 **The correction.** A3936 family (`BaseHearId2VM.changeDataByAlgorithm`): both ears are moved so the better 1.6 kHz result reads 12, then held to 12 to 15
 (100, 200 Hz), 12 to 18 (400 Hz) and 6 to 18 (the rest). A3952: each ear against its own best, then `round(6 / (e^(15 - x) + 1) + 12)`.
 
 **The write** is the model's EQ write with the HearID part filled in, `03 87` (`A3936CmdService.p6`, `A3951DeviceManager.d2`): preset, HearID genre index, the
 current EQ curves, gender, age, HearID on, the result, time, type 0, the result again, and the curves the earbuds are to play (the corrected result). In the
 result 12 is 0 dB; with ten bands the last two are sent as their lowest value, and the ninth plays at -1.2 dB (`HearId2Utils.l`). The A40's write is 92 bytes,
-as its recorded EQ write; 76 bytes on the 8-band models.
+as its recorded EQ write; 76 bytes on the 8-band models. The other models' services use the general builder (`CmmBtCmdService.p6`, or `o6` with one curve on
+the Space One), which ends with one more byte, the room's noise in dB; PairFree measures none and sends 0.
 
 **On, off, delete.** The same write with the switch byte changed (`W3`, `k2`): off plays the ordinary EQ's corrected curve, which is byte for byte PairFree's EQ
 write; on plays the result (type 0), the custom result (type 1) or the result mixed with the genre preset (type 2, `HearId2Utils.c`). Delete sends empty
 HearID parts (`CmmBtCmdService.Y`, `A3951DeviceManager.O1`). `03 81`, `03 82`, `03 84` are the same three actions on older models whose service does not
 override them; none of the four models above uses them.
 
-**Not built:** HearID 3 (Liberty 4 and later), HearID 5 (Liberty 5 Pro), the headphones' Flutter test, the A3909's older test and the Liberty 4 NC's
+**Not built:** the music preference step the app offers after HearID 3, HearID 3 on the Liberty 4 (which has no equalizer in PairFree yet) and the Space 2,
+HearID 5 (Liberty 5 Pro), the Flutter test (Liberty 4 Pro family and Liberty 5), the A3909's older test, and the models whose screen was not traced
 (open: data/completeness.json, `soundcore-hearid-other`). The app also measures the room's noise with the microphone before the test; PairFree asks no
 microphone permission.

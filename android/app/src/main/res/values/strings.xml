@@ -1466,6 +1466,13 @@
     <string name="sc_hearing_no_output">Connect the earbuds for audio first: the tones must not come out of the phone\'s speaker.</string>
     <string name="sc_hearing_wait">Getting the earbuds ready…</string>
     <string name="sc_hearing_question">Can you hear the tone?</string>
+    <string name="sc_hearing_intro_both">This is Soundcore\'s HearID hearing test, done the way its app does it. Sit somewhere quiet with both earbuds or the headphones on. Your phone plays quiet beeps into both ears, with media volume turned up to the top (it is put back afterwards). Set each of the eight tones to where you can only just hear it. PairFree has not been checked against Soundcore\'s app on real earbuds, and this is not a medical test.</string>
+    <string name="sc_hearing_tone_both">Tone %1$d of %2$d</string>
+    <string name="sc_hearing_loudness">Loudness %1$s of 4</string>
+    <string name="sc_hearing_adjust">Make the beeps quieter or louder until you can only just hear them.</string>
+    <string name="sc_hearing_quieter">Quieter</string>
+    <string name="sc_hearing_louder">Louder</string>
+    <string name="sc_hearing_keep">I can just hear it</string>
     <string name="sc_hearing_yes">I hear it</string>
     <string name="sc_hearing_no">I don\'t hear it</string>
     <string name="sc_hearing_again">Start this tone again</string>

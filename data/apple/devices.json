@@ -14,7 +14,7 @@
     {"name": "AirPods Pro 3", "kind": "earbuds", "model_numbers": ["A3063", "A3064", "A3065"], "product_id": "2027", "adaptive": true, "reports": ["data/apple/reports/AirPodsPro3_A3064_90.3431.txt"]},
     {"name": "AirPods Max", "kind": "headphones", "model_numbers": [], "product_id": "200A"},
     {"name": "AirPods Max (USB-C)", "kind": "headphones", "model_numbers": [], "product_id": "201F"},
-    {"name": "AirPods Max 2", "kind": "headphones", "model_numbers": [], "product_id": "202D", "adaptive": true},
+    {"name": "AirPods Max 2", "kind": "headphones", "model_numbers": ["A3454"], "product_id": "202D", "adaptive": true, "reports": ["data/apple/reports/AirPodsMax2_A3454_91.3431.txt"]},
     {"name": "Powerbeats3", "kind": "earbuds", "model_numbers": [], "bcd": true, "features": ["ExploreFeatures"], "product_id": "2003"},
     {"name": "Powerbeats4", "kind": "earbuds", "model_numbers": [], "b2p": true, "features": ["BatteryPolling", "ActionToStartUpdate", "Personalization", "ExploreFeatures"], "product_id": "200D"},
     {"name": "Powerbeats Pro", "kind": "earbuds", "model_numbers": [], "b2p": true, "features": ["ShowGuideOnFirstRun", "InEarDetection", "Untethered", "ActionToStartUpdate", "ExploreFeatures", "Microphone", "ToneVolume", "EndCallControl", "FullSetSerialNumbers", "EndCallControlV2"], "product_id": "200B"},

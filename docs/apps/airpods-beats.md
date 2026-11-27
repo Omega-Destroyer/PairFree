@@ -23,7 +23,7 @@ Almost none of these brands makes a Windows app, so on a PC their earbuds are pl
 
 ## AirPods and Beats models
 
-PairFree knows 30 AirPods and Beats models. Models that have been tried on real earbuds: AirPods Pro 3.
+PairFree knows 30 AirPods and Beats models. Models that have been tried on real earbuds: AirPods Max 2, AirPods Pro 3.
 
 AirPods keep their settings on a Bluetooth channel that Android refused on most phones until Android 17. PairFree does not try it on a phone that is not known to open it, and it has not worked on a real pair yet: see the AirPods page for which phones.
 
@@ -34,7 +34,7 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <div style="overflow-x:auto">
 30 models: the AirPods LibrePods knows, with the model numbers they report, and the Beats and AirPods Max MagicPodsCore lists. Each one reports its settings when PairFree connects, and PairFree shows only those.
 
-<b>Tested</b> (1): tried with PairFree. <b>Not tested</b>: from LibrePods and MagicPodsCore. A device report from any model helps (<a href="https://github.com/Omega-Destroyer/PairFree/blob/main/README.md#help-add-your-model">Help add your model</a>).
+<b>Tested</b> (2): tried with PairFree. <b>Not tested</b>: from LibrePods and MagicPodsCore. A device report from any model helps (<a href="https://github.com/Omega-Destroyer/PairFree/blob/main/README.md#help-add-your-model">Help add your model</a>).
 
 <table>
 <tr><th>Model</th><th>Model numbers</th><th>Type</th><th>Adaptive Audio</th><th>Status</th></tr>
@@ -51,7 +51,7 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td><a href="https://github.com/Omega-Destroyer/PairFree/blob/main/data/apple/reports/AirPodsPro3_A3064_90.3431.txt">AirPods Pro 3</a></td><td><code>A3063</code> <code>A3064</code> <code>A3065</code></td><td>Earbuds</td><td>Yes</td><td>Tested</td></tr>
 <tr><td>AirPods Max</td><td>—</td><td>Headphones</td><td>—</td><td>Not tested</td></tr>
 <tr><td>AirPods Max (USB-C)</td><td>—</td><td>Headphones</td><td>—</td><td>Not tested</td></tr>
-<tr><td>AirPods Max 2</td><td>—</td><td>Headphones</td><td>Yes</td><td>Not tested</td></tr>
+<tr><td><a href="https://github.com/Omega-Destroyer/PairFree/blob/main/data/apple/reports/AirPodsMax2_A3454_91.3431.txt">AirPods Max 2</a></td><td><code>A3454</code></td><td>Headphones</td><td>Yes</td><td>Tested</td></tr>
 <tr><td>Powerbeats3</td><td>—</td><td>Earbuds</td><td>—</td><td>Not tested</td></tr>
 <tr><td>Powerbeats4</td><td>—</td><td>Earbuds</td><td>—</td><td>Not tested</td></tr>
 <tr><td>Powerbeats Pro</td><td>—</td><td>Earbuds</td><td>—</td><td>Not tested</td></tr>

@@ -12,7 +12,7 @@ everything here comes from two open-source projects that worked the protocol out
   Litvintsev (GPL-3.0, commit `173245a`), which controls AirPods and Beats from Linux. It
   confirms the setting values, and lists the Beats and AirPods Max models (`AapModelIds`).
 
-Nothing here has been tried with PairFree yet; a device report from any model helps
+Two users' AirPods have been tried: an AirPods Pro 3 (issue #3) and AirPods Max 2, which answered their settings on Android 17 (A3454, issue #81, firmware 91.3431). A device report from any other model helps
 ([device page](../devices/apple.md)).
 
 The data is in `data/apple/`: `commands.json` (the channel, the fixed packets, the opcodes and

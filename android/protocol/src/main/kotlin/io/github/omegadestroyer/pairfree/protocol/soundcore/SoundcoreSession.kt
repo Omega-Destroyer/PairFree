@@ -35,6 +35,14 @@ public class SoundcoreSession(public val model: String) : FitTest {
     // The sound modes block as the earbuds last reported it; a noise mode change sends it back with byte 0 changed.
     private var soundModes: ByteArray? = null
 
+    private val peers = SoundcorePeers()
+
+    /** Whether the earbuds' list of paired devices is worth asking for: their last state shows two devices at once, switched on. */
+    public val listsPeers: Boolean get() = lastState?.flag("dual_connections_enabled") == true
+
+    /** The request for the list of paired devices. */
+    public fun requestPeers(): ByteArray = SoundcorePacket.build(SoundcoreCommand.DUAL_CONNECTIONS_DEVICES, checksum = checksum)
+
     /**
      * Applies one packet from the earbuds. Returns true when [state] changed. Acknowledgements
      * (empty bodies) and packets PairFree does not use change nothing.
@@ -46,6 +54,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         // The Life NC asks for its state with `01 09` ([SoundcoreCommand.DEVICE_INFO]) and answers under it.
         val command = if (packet.command == SoundcoreCommand.DEVICE_INFO && layout?.stateCommand == SoundcoreCommand.DEVICE_INFO) SoundcoreCommand.STATE else packet.command
         when (command) {
+            SoundcoreCommand.DUAL_CONNECTIONS_DEVICES -> return peers.receive(body)
             SoundcoreCommand.STATE -> {
                 val l = layout ?: return false
                 val s = SoundcoreState.parse(l, body) ?: return false
@@ -205,6 +214,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 a3959FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
+                peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
                 if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
         }
@@ -455,6 +465,18 @@ public class SoundcoreSession(public val model: String) : FitTest {
         return listOf(Setting.Toggle(LIMIT, b.u8(0) == 1), Setting.Level(LIMIT_DB, b.u8(1).coerceIn(75, 100) / 5 * 5, 75, 100, enabled = b.u8(0) == 1))
     }
 
+    private fun peerRows(): List<Setting> =
+        if (!listsPeers) emptyList() else peers.rows() + Setting.Action(SoundcorePeers.PAIRING)
+
+    private fun peerChange(change: SettingChange): List<SoundcorePacket>? {
+        if (!listsPeers) return null
+        return when {
+            change is SettingChange.Press && change.key == SoundcorePeers.PAIRING -> listOf(SoundcorePacket(SoundcoreCommand.PEER_PAIRING, ByteArray(0)))
+            change is SettingChange.Choice -> peers.change(change.key, change.option)?.let(::listOf)
+            else -> null
+        }
+    }
+
     /** [wanted] in the app's steps of 5 dB: rounded up when it is above [held], so the plus button moves, else down. */
     private fun limitStep(held: Int, wanted: Int): Int = ((wanted.coerceIn(75, 100) + if (wanted > held) 4 else 0) / 5 * 5).coerceIn(75, 100)
 
@@ -509,6 +531,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
+        if (change.key.startsWith("sc_peer_") || change.key == SoundcorePeers.PAIRING) return peerChange(change)
         if (change.key == LIMIT || change.key == LIMIT_DB) return limitChange(s, change)
         if (change is SettingChange.Choice && (change.key == DOUBLE_PRESS || change.key == HOLD)) return buttonChange(s, change)
         if (change is SettingChange.Toggle) {

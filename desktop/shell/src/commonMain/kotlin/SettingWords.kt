@@ -188,6 +188,14 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_voice_language" -> t("setting_sc_voice_language")
+        "sc_open_surround" -> t("setting_sc_open_surround")
+        "sc_open_surround_level" -> t("setting_sc_open_surround_level")
+        "sc_voice_commands" -> t("setting_sc_voice_commands")
+        "sc_super_volume" -> t("setting_sc_super_volume")
+        "sc_manual_shutdown" -> t("setting_sc_manual_shutdown")
+        "sc_light_mode" -> t("setting_sc_light_mode")
+        "sc_light_colour" -> t("setting_sc_light_colour")
         "sc_volume_limit" -> t("setting_sc_volume_limit")
         "sc_volume_limit_db" -> t("setting_sc_volume_limit_db")
         "sc_mode_voice_prompt", "sc_voice_prompt" -> t("setting_sc_mode_voice_prompt")
@@ -1016,6 +1024,19 @@ class SettingWords(private val strings: DesktopStrings) {
             "anc_mode" -> "setting_ca_ambient_modes_control"
             "assistant" -> "setting_ca_assistant"
             else -> "action_none"
+        })
+        key == "sc_voice_language" -> t(if (option == "chinese") "setting_sc_language_chinese" else "setting_sc_language_english")
+        key == "sc_light_mode" -> t(when (option) {
+            "breathing" -> "setting_sc_light_breathing"
+            "on" -> "setting_sc_light_on"
+            else -> "setting_sc_light_saving"
+        })
+        key == "sc_light_colour" -> t(when (option) {
+            "violet" -> "setting_sc_colour_violet"
+            "coral" -> "setting_sc_colour_coral"
+            "pink" -> "setting_sc_colour_pink"
+            "blue" -> "setting_sc_colour_blue"
+            else -> "setting_sc_colour_purple"
         })
         key == "sc_nc_double_press" || key == "sc_mfb_hold" -> t(when (option) {
             "bass" -> "setting_sc_action_bass"

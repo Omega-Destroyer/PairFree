@@ -928,9 +928,19 @@
       "models": [
         "Liberty 4 (A3953) and the models whose app screens use them"
       ],
-      "status": "open",
-      "what": "Heart rate, sitting posture and sedentary reminder switches, neck posture report, calibration and history (0D 04 to 0D 89) are not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: the sedentary and sitting posture reminders (0D 84, 0D 83) and heart rate measurement with the live heart rate, blood oxygen and steps (0D 82, 0D 01), none of it stored. The neck posture angles, report, calibration and history are soundcore-neck-posture.",
       "reported": "the app's command table, worked through 2026-11-27"
+    },
+    {
+      "id": "soundcore-neck-posture",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 4 (A3953)"
+      ],
+      "status": "open",
+      "what": "Neck posture: the report switch (0D 87), calibration (0D 88), history (0D 04, 0D 89) and live angles (0D 03) are not built.",
+      "reported": "daily care worked through, 2026-11-27"
     },
     {
       "id": "soundcore-sleep-a10",

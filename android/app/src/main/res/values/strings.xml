@@ -1457,6 +1457,14 @@
     <string name="setting_sc_press_normal">Normal</string>
     <string name="setting_sc_press_firm">Firm</string>
     <string name="setting_sc_press_firmest">Firmest</string>
+    <string name="setting_sc_health">Health</string>
+    <string name="setting_sc_health_note">The readings are shown while measuring. PairFree keeps none of them. They are not medical measurements.</string>
+    <string name="setting_sc_heart_rate">Measure the heart rate</string>
+    <string name="setting_sc_heart_rate_value">Heart rate (beats a minute)</string>
+    <string name="setting_sc_blood_oxygen">Blood oxygen</string>
+    <string name="setting_sc_steps">Steps</string>
+    <string name="setting_sc_sedentary">Remind me to move</string>
+    <string name="setting_sc_sitting_posture">Sitting posture reminder</string>
     <string name="setting_sc_dongle">USB dongle</string>
     <string name="setting_sc_dongle_connect">Connect a dongle</string>
     <string name="setting_sc_dongle_disconnect">Disconnect the dongle</string>

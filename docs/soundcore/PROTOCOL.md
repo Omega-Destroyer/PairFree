@@ -746,3 +746,9 @@ Traced in Soundcore 5.0.35 from each command's constant to the screens that send
 `0F 01` lists the USB dongles (a count, then name 20, connected 1, type 1, firmware 5, address 6 each), `0F 02` the low power mode. `0F 82` sets what the
 connected dongle is plugged into (0 Oculus to 5 other), `0F 83` disconnects it, `0F 84` forgets and `0F 85` connects one by address, `0F 86` sets low power.
 Renaming (`0F 81`) is left out. Not tried.
+
+## Health (Liberty 4, 2026-11-27)
+
+`0D 82` starts and stops heart rate measurement; the earbuds then send `0D 01` (heart rate at byte 2, blood oxygen at 24, steps from 26). `0D 84` is the
+sedentary and `0D 83` the sitting posture reminder (state, after the spatial audio bytes). 5.0.35 reads the device colour and press sensitivity one byte later
+than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. Neck posture is open. Not tried.

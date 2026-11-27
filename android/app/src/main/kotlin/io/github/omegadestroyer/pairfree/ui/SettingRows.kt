@@ -308,6 +308,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
         "sc_device" -> R.string.setting_sc_device
+        "sc_health" -> R.string.setting_sc_health
         "sc_dongle" -> R.string.setting_sc_dongle
         "sc_tests" -> R.string.setting_sc_tests
         "sc_limit" -> R.string.setting_hearing_protection
@@ -441,6 +442,12 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_heart_rate" -> stringResource(R.string.setting_sc_heart_rate)
+    "sc_heart_rate_value" -> stringResource(R.string.setting_sc_heart_rate_value)
+    "sc_blood_oxygen" -> stringResource(R.string.setting_sc_blood_oxygen)
+    "sc_steps" -> stringResource(R.string.setting_sc_steps)
+    "sc_sedentary" -> stringResource(R.string.setting_sc_sedentary)
+    "sc_sitting_posture" -> stringResource(R.string.setting_sc_sitting_posture)
     "sc_dongle_connect" -> stringResource(R.string.setting_sc_dongle_connect)
     "sc_dongle_remove" -> stringResource(R.string.setting_sc_dongle_remove)
     "sc_dongle_type" -> stringResource(R.string.setting_sc_dongle_type)

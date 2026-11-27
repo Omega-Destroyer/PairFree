@@ -3182,6 +3182,9 @@
     },
     {
       "model": "A3953",
+      "extra_features": [
+        "heart_rate"
+      ],
       "names": [
         "Soundcore Liberty 4"
       ],
@@ -3225,7 +3228,9 @@
         ["low_battery_prompt", 1],
         ["ambient_sound_prompt", 1],
         ["optional:spatial_audio", 3],
-        ["optional:skip", 4],
+        ["optional:sedentary_reminder", 1],
+        ["optional:sitting_posture", 1],
+        ["optional:skip", 2],
         ["optional:color", 1],
         ["optional:press_sensitivity", 1]
       ],

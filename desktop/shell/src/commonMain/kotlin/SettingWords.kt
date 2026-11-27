@@ -61,6 +61,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_health" -> "setting_sc_health"
             "sc_dongle" -> "setting_sc_dongle"
             "sc_tests" -> "setting_sc_tests"
             "sc_limit" -> "setting_hearing_protection"
@@ -190,6 +191,12 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_heart_rate" -> t("setting_sc_heart_rate")
+        "sc_heart_rate_value" -> t("setting_sc_heart_rate_value")
+        "sc_blood_oxygen" -> t("setting_sc_blood_oxygen")
+        "sc_steps" -> t("setting_sc_steps")
+        "sc_sedentary" -> t("setting_sc_sedentary")
+        "sc_sitting_posture" -> t("setting_sc_sitting_posture")
         "sc_dongle_connect" -> t("setting_sc_dongle_connect")
         "sc_dongle_remove" -> t("setting_sc_dongle_remove")
         "sc_dongle_type" -> t("setting_sc_dongle_type")

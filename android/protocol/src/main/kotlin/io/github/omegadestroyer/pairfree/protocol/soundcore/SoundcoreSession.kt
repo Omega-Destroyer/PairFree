@@ -231,6 +231,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 a3959FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
+                SoundcoreHearingId.rows(model, s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_hear_id", SettingTab.SOUND, it) },
                 peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
                 dongle?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_dongle", SettingTab.DEVICE, it) },
                 if (lastState != null) health?.rows()?.let { SettingGroup("sc_health", SettingTab.DEVICE, it) } else null,
@@ -599,6 +600,27 @@ public class SoundcoreSession(public val model: String) : FitTest {
         return Setting.Choice(SLEEP_TIMER, value, listOf(OFF) + SLEEP_TIMER_MINUTES.map { it.toString() })
     }
 
+    private fun hearIdChange(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
+        val packet = SoundcoreHearingId.change(model, s, change) ?: return null
+        val field = SoundcoreEqSpec.of(model)?.hearId?.field
+        if (change is SettingChange.Toggle && field != null) {
+            s.field(field)?.let { bytes ->
+                bytes[0] = (if (change.on) 1 else 0).toByte()
+                lastState = s.with(field, bytes)
+            }
+        }
+        return listOf(packet)
+    }
+
+    /** Tells the earbuds a hearing test ([SoundcoreHearingSpec]) starts or has ended (`03 83`). */
+    public fun hearingTest(running: Boolean): List<SoundcorePacket> =
+        if (SoundcoreHearingSpec.of(model) == null) emptyList()
+        else listOf(SoundcorePacket(SoundcoreCommand.HEARING_TEST, byteArrayOf(if (running) 1 else 0)))
+
+    /** The write that stores a finished test's [result] and turns HearID on, or null when the last state cannot carry it. */
+    public fun hearingSave(result: SoundcoreHearingResult): List<SoundcorePacket>? =
+        SoundcoreHearingId.save(model, lastState, result, Clock.System.now().epochSeconds)?.let(::listOf)
+
     /**
      * The packets for a change to one of [groups], or null when it is not one of them. The change shows at once;
      * the next state the earbuds send confirms it.
@@ -614,6 +636,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             return listOf(SoundcorePacket(SoundcoreCommand.ANC_SENSOR, body))
         }
         tests.change(change)?.let { return it }
+        if (change.key == SoundcoreHearingId.SWITCH || change.key == SoundcoreHearingId.DELETE) return hearIdChange(s, change)
         if (change.key == SoundcoreSleepPlayer.ALARM && change is SettingChange.Choice) {
             val packets = secondOfDay()?.let { SoundcoreSleepPlayer.alarm(change.option, Clock.System.now().epochSeconds, it) } ?: return null
             alarmSet = change.option.trim()

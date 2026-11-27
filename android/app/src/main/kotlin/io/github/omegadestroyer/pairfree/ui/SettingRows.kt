@@ -116,7 +116,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; "sc_neck_clear" -> R.string.setting_sc_neck_clear_body; else -> R.string.setting_restart_body }),
+            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; "sc_neck_clear" -> R.string.setting_sc_neck_clear_body; "sc_hear_id_delete" -> R.string.setting_sc_hear_id_delete_body; else -> R.string.setting_restart_body }),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -254,7 +254,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
 private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove")
 
-private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear")
+private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear", "sc_hear_id_delete")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
 private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://play.google.com/store/apps/details?id=com.thetileapp.tile")
@@ -314,6 +314,7 @@ private fun groupTitle(key: String): String = stringResource(
         "sc_dongle" -> R.string.setting_sc_dongle
         "sc_tests" -> R.string.setting_sc_tests
         "sc_limit" -> R.string.setting_hearing_protection
+        "sc_hear_id" -> R.string.setting_sc_hear_id
         "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
@@ -444,6 +445,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_hear_id" -> stringResource(R.string.setting_sc_hear_id)
     "sc_a10_alarm" -> stringResource(R.string.setting_sc_a10_alarm)
     "sc_calibrate_in_ear_result" -> stringResource(R.string.setting_sc_calibrate_in_ear_result)
     "sc_calibrate_neck_result" -> stringResource(R.string.setting_sc_calibrate_neck_result)
@@ -1069,6 +1071,7 @@ private fun buttonTitle(key: String): String? {
 private fun settingNote(key: String): String? = when (key) {
     "sc_easy_chat" -> stringResource(R.string.setting_sc_easy_chat_note)
     "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake_note)
+    "sc_hear_id" -> stringResource(R.string.setting_sc_hear_id_note)
     "sc_a10_alarm" -> stringResource(R.string.setting_sc_a10_alarm_note)
     "sc_call_noise" -> stringResource(R.string.setting_sc_call_noise_note)
     "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode_note)
@@ -1906,6 +1909,7 @@ private fun actionStart(key: String): Int = when (key) {
     "sc_calibrate_neck" -> R.string.setting_sc_calibrate_neck
     "sc_neck_history" -> R.string.setting_sc_neck_history
     "sc_neck_clear" -> R.string.setting_sc_neck_clear
+    "sc_hear_id_delete" -> R.string.setting_sc_hear_id_delete
     "sc_a10_play" -> R.string.setting_sc_a10_play
     "sc_a10_pause" -> R.string.setting_sc_a10_pause
     "sc_a10_alarm_clear" -> R.string.setting_sc_a10_alarm_clear

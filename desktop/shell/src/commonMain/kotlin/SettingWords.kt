@@ -67,6 +67,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "sc_dongle" -> "setting_sc_dongle"
             "sc_tests" -> "setting_sc_tests"
             "sc_limit" -> "setting_hearing_protection"
+            "sc_hear_id" -> "setting_sc_hear_id"
             "ca_touch" -> "setting_ca_touch_actions"
             "ca_connection" -> "connection"
             "oneplus_sound_switches" -> "setting_group_sound"
@@ -193,6 +194,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_hear_id" -> t("setting_sc_hear_id")
         "sc_a10_alarm" -> t("setting_sc_a10_alarm")
         "sc_calibrate_in_ear_result" -> t("setting_sc_calibrate_in_ear_result")
         "sc_calibrate_neck_result" -> t("setting_sc_calibrate_neck_result")
@@ -814,6 +816,7 @@ class SettingWords(private val strings: DesktopStrings) {
     fun settingNote(key: String): String? = when (key) {
         "sc_easy_chat" -> t("setting_sc_easy_chat_note")
         "sc_voice_wake" -> t("setting_sc_voice_wake_note")
+        "sc_hear_id" -> t("setting_sc_hear_id_note")
         "sc_a10_alarm" -> t("setting_sc_a10_alarm_note")
         "sc_call_noise" -> t("setting_sc_call_noise_note")
         "bose_default_mode" -> t("setting_bose_default_mode_note")
@@ -1647,6 +1650,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_calibrate_neck" -> "setting_sc_calibrate_neck"
         "sc_neck_history" -> "setting_sc_neck_history"
         "sc_neck_clear" -> "setting_sc_neck_clear"
+        "sc_hear_id_delete" -> "setting_sc_hear_id_delete"
         "sc_a10_play" -> "setting_sc_a10_play"
         "sc_a10_pause" -> "setting_sc_a10_pause"
         "sc_a10_alarm_clear" -> "setting_sc_a10_alarm_clear"

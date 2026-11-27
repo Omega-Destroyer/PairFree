@@ -906,11 +906,24 @@
       "id": "soundcore-hearid",
       "brand": "soundcore",
       "models": [
-        "the models with HearID (Space One, Space Q45, Space A40, Liberty 3 Pro, Liberty 4 and later)"
+        "Space A40 (A3936)",
+        "Liberty Air 2 Pro (A3951)",
+        "Liberty 2 Pro+ (A3930)",
+        "Liberty 3 Pro (A3952)"
+      ],
+      "status": "built",
+      "what": "HearID on four models: the test (03 83, the app's tones, staircase and correction), writing the result, switching it and deleting it (03 87). Not tried on earbuds. The other generations are soundcore-hearid-other.",
+      "reported": "the app's command table, worked through 2026-11-27"
+    },
+    {
+      "id": "soundcore-hearid-other",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 4 and later (HearID 3), Liberty 5 Pro (HearID 5), Space One, Space Q45, Space One Pro, Liberty 4 NC, the A3909 family, other HearID models"
       ],
       "status": "open",
-      "what": "HearID, the hearing test that makes an EQ: start and cancel the test (03 83), write the result (03 82, 03 85), switch and reset (03 81, 03 84) are not built. The app's tones and compensation have not been read.",
-      "reported": "the app's command table, worked through 2026-11-27"
+      "what": "The hearing tests of the other generations: A3953HearId3TestActivity, the Flutter HearId3FlutterActivity, A3909HearIdActivity, and which test the Liberty 4 NC runs (it reaches A3952PersonalHearIdActivity, whose level table for a product other than A3952 or A3953 would give inaudible beeps).",
+      "reported": "HearID worked through, 2026-11-27"
     },
     {
       "id": "soundcore-personal-anc",

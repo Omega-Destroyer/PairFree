@@ -38,6 +38,8 @@
      "note": "The EQ without correction: the preset number, then each earbud's curve. The Motion+ (A3116) takes only a one-byte preset number here. Layout: docs/soundcore/PROTOCOL.md section 8."},
     {"id": "equalizer_with_drc", "command": "0283", "source": "openscq30", "confirmed": ["A6611"],
      "note": "The EQ, then each curve after OpenSCQ30's dynamic range correction; some models send other layouts on it (docs/soundcore/PROTOCOL.md section 8)."},
+    {"id": "hearing_test", "command": "0383", "source": "soundcore_app",
+     "note": "A HearID hearing test starts (1) or ends (0); the tones come from the phone (`CmmBtCmdService.I1`)."},
     {"id": "equalizer_no_hear_id", "command": "0386", "source": "openscq30",
      "note": "The 03 87 layout from earbuds whose age range is FF (no HearID), with the HearID parts sent as FF."},
     {"id": "equalizer_hear_id", "command": "0387", "source": "openscq30", "confirmed": ["A3936"],

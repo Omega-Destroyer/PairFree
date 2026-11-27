@@ -15,9 +15,12 @@ import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreButtons
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreEqSpec
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingResult
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingSpec
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreLayout
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreModels
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreNormalizedSpec
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcorePacket
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreSession
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreState
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTalk
@@ -36,6 +39,8 @@ object SoundcoreSpec : BrandSpec(Brand.SOUNDCORE) {
     override fun offersSleepSounds(device: Paired): Boolean = device.model == "D1301"
 
     override fun eqNote(device: Paired): EqNote = EqNote.SOUNDCORE_UNCHECKED
+
+    override fun ownHearingTest(device: Paired): OwnHearingTest? = SoundcoreHearingSpec.of(device.model)?.let { OwnHearingTest.Soundcore(it) }
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
         SoundcoreModels.identify(name, uuids)?.let { Paired(address, name, Brand.SOUNDCORE, it.service, it.model) }
@@ -79,6 +84,25 @@ class SoundcoreDriver(host: DriverHost, private val device: Paired) : TalkDriver
         host.extra.value = session.lastState
         if (rows) host.settings.value = session.groups
         host.eq(EqEvent.REPORT)
+    }
+
+    /** The open channel's part in a hearing test, or null where the earbuds have none. */
+    fun hearing(): SoundcoreHearingHost? {
+        val test = SoundcoreHearingSpec.of(device.model) ?: return null
+        if (talk == null) return null
+        fun write(packets: List<SoundcorePacket>): Boolean {
+            val talk = talk ?: return false
+            if (!send(talk, talk.written(talk.session.frames(packets)))) return false
+            shown(talk.session)
+            return true
+        }
+        return object : SoundcoreHearingHost {
+            override val spec = test
+            override fun testing(running: Boolean) {
+                talk?.let { write(it.session.hearingTest(running)) }
+            }
+            override fun save(result: SoundcoreHearingResult): Boolean = talk?.session?.hearingSave(result)?.let(::write) ?: false
+        }
     }
 
     /** The packets, then the whole state read back, which confirms the change. */

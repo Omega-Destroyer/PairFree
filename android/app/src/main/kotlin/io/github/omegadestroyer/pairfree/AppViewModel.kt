@@ -258,6 +258,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app), EarbudsActions, Ca
 
     override fun jblPersonifi() = (connection.driver as? io.github.omegadestroyer.pairfree.brands.JblDriver)?.personifi()
 
+    override fun soundcoreHearing() = (connection.driver as? io.github.omegadestroyer.pairfree.brands.SoundcoreDriver)?.hearing()
+
     private val sleepUploader = io.github.omegadestroyer.pairfree.sleep.SleepUploader(app, viewModelScope, adapter)
 
     override fun sleepUploader() = sleepUploader

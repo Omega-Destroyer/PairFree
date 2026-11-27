@@ -61,6 +61,10 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_player" -> "setting_sc_player"
+            "sc_health" -> "setting_sc_health"
+            "sc_dongle" -> "setting_sc_dongle"
+            "sc_tests" -> "setting_sc_tests"
             "sc_limit" -> "setting_hearing_protection"
             "ca_touch" -> "setting_ca_touch_actions"
             "ca_connection" -> "connection"
@@ -188,6 +192,23 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_voice_wake" -> t("setting_sc_voice_wake")
+        "sc_a10_volume" -> t("setting_sc_a10_volume")
+        "sc_a10_play_time" -> t("setting_sc_a10_play_time")
+        "sc_a10_countdown" -> t("setting_sc_a10_countdown")
+        "sc_heart_rate" -> t("setting_sc_heart_rate")
+        "sc_heart_rate_value" -> t("setting_sc_heart_rate_value")
+        "sc_blood_oxygen" -> t("setting_sc_blood_oxygen")
+        "sc_steps" -> t("setting_sc_steps")
+        "sc_sedentary" -> t("setting_sc_sedentary")
+        "sc_sitting_posture" -> t("setting_sc_sitting_posture")
+        "sc_dongle_connect" -> t("setting_sc_dongle_connect")
+        "sc_dongle_remove" -> t("setting_sc_dongle_remove")
+        "sc_dongle_type" -> t("setting_sc_dongle_type")
+        "sc_dongle_low_power" -> t("setting_sc_dongle_low_power")
+        "sc_calibrate_table_result" -> t("setting_sc_calibrate_table_result")
+        "sc_calibrate_worn_result" -> t("setting_sc_calibrate_worn_result")
+        "sc_personal_anc_result" -> t("setting_sc_personal_anc_result")
         "sc_voice_language" -> t("setting_sc_voice_language")
         "sc_open_surround" -> t("setting_sc_open_surround")
         "sc_open_surround_level" -> t("setting_sc_open_surround_level")
@@ -783,6 +804,7 @@ class SettingWords(private val strings: DesktopStrings) {
 
     fun settingNote(key: String): String? = when (key) {
         "sc_easy_chat" -> t("setting_sc_easy_chat_note")
+        "sc_voice_wake" -> t("setting_sc_voice_wake_note")
         "sc_call_noise" -> t("setting_sc_call_noise_note")
         "bose_default_mode" -> t("setting_bose_default_mode_note")
         "bose_modes_persist" -> t("setting_bose_modes_persist_note")
@@ -1024,6 +1046,15 @@ class SettingWords(private val strings: DesktopStrings) {
             "anc_mode" -> "setting_ca_ambient_modes_control"
             "assistant" -> "setting_ca_assistant"
             else -> "action_none"
+        })
+        key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> t(if (option == "passed") "setting_sc_passed" else "setting_sc_failed")
+        key == "sc_dongle_type" -> t(when (option) {
+            "oculus" -> "setting_sc_dongle_oculus"
+            "playstation" -> "setting_sc_dongle_playstation"
+            "pc" -> "setting_sc_dongle_pc"
+            "switch" -> "setting_sc_dongle_switch"
+            "phone" -> "setting_sc_dongle_phone"
+            else -> "setting_sc_dongle_other"
         })
         key == "sc_voice_language" -> t(if (option == "chinese") "setting_sc_language_chinese" else "setting_sc_language_english")
         key == "sc_light_mode" -> t(when (option) {
@@ -1415,7 +1446,8 @@ class SettingWords(private val strings: DesktopStrings) {
         )
         key == "sleep_listening_mode" || key == "sleep_default_listening_mode" ->
             t(if (option == "local") "setting_sleep_mode_local" else "setting_sleep_mode_bluetooth")
-        key == "sleep_timer" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("action_off")
+        (key == "sc_a10_play_time" || key == "sc_a10_countdown") && option == "keep" -> t("setting_sc_keep_playing")
+        key == "sleep_timer" || key == "sc_a10_play_time" || key == "sc_a10_countdown" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("action_off")
         key == "auto_off" && option == "when_taken_off" -> t("shutdown_when_taken_off")
         key == "auto_off" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("shutdown_never")
         key == "connection_priority" -> t(
@@ -1596,6 +1628,13 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_left" -> "setting_sh_find_left"
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
+        "sc_calibrate_table" -> "setting_sc_calibrate_table"
+        "sc_calibrate_worn" -> "setting_sc_calibrate_worn"
+        "sc_personal_anc" -> "setting_sc_personal_anc"
+        "sc_personal_anc_reset" -> "setting_sc_personal_anc_reset"
+        "sc_a10_play" -> "setting_sc_a10_play"
+        "sc_a10_pause" -> "setting_sc_a10_pause"
+        "sc_dongle_disconnect" -> "setting_sc_dongle_disconnect"
         "jbl_seal_check" -> "setting_jbl_seal_check"
         "jbl_case_saver_remove" -> "setting_jbl_case_saver_remove"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scan"
@@ -1613,6 +1652,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"
         "sh_fit_test" -> "setting_sh_fit_cancel"
+        "sc_calibrate_table", "sc_calibrate_worn" -> "setting_sc_calibrating"
+        "sc_personal_anc" -> "setting_sc_personal_anc_cancel"
         "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> "setting_jbl_testing"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scanning"
         else -> "setting_action_stop"

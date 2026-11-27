@@ -603,8 +603,8 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. The Space 2
   Pro pair's buttons are records 72 (the noise button: one press, two presses; written with `04 8C`, 255 nothing or 7 powerful bass) and 73 (the
   multi-function button held: `04 61`, the phone's assistant, nap mode or nothing; the app's own assistant, translation and recording need the Soundcore app
-  and are left out). Still open in `data/completeness.json`: the Sleep Earbuds' sleep sounds (records 31 to 33, 81, 106) and the cases' own channels
-  (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
+  and are left out). The Sleep Earbuds' voice prompt language is `13 07` (record 64). Still open in `data/completeness.json`: the cases' own
+  links (D1203-Box, D1204-Box, D1302-Box, D1303-Box), which carry the Sleep Earbuds' sound playback.
 - **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
   triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
   write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The
@@ -732,3 +732,28 @@ Traced in Soundcore 5.0.35 from each command's constant to the screens that send
 - **The rest of the table** is in `data/soundcore/cmm2_unused.json`: commands no code of the app sends, its diagnostics and beta screens, its live decibel
   meter and speaker equalizers, each with its reason; and the open ones (HearID, personal noise cancelling, wear calibration, daily care, the Sleep A10's
   playback and alarms, the VR P10's dongle), listed in `data/completeness.json`.
+
+## Tests the earbuds run (2026-11-27)
+
+- **Wear detection calibration** (Space One, Space Q45, Space 2, Space 2 Pro pair): `20 84 00` with the headphones on a table, then `20 84 01` worn; the
+  reply's second and third bytes read 1 when the step passed (the app waits 15 s).
+- **Personal noise cancelling** (Liberty 3 Pro, Liberty 4 NC): `03 88` with 1 (start) or 0 (cancel), the time in seconds high byte first, and the room's noise
+  in dB. The app measures the noise with the phone's microphone; PairFree has no microphone permission and sends 255, the app's value for none. The reply's
+  first byte is the result's index, 255 none. `03 89` removes it. Neither has been tried on earbuds.
+
+## The VR P10's dongle (2026-11-27)
+
+`0F 01` lists the USB dongles (a count, then name 20, connected 1, type 1, firmware 5, address 6 each), `0F 02` the low power mode. `0F 82` sets what the
+connected dongle is plugged into (0 Oculus to 5 other), `0F 83` disconnects it, `0F 84` forgets and `0F 85` connects one by address, `0F 86` sets low power.
+Renaming (`0F 81`) is left out. Not tried.
+
+## Health (Liberty 4, 2026-11-27)
+
+`0D 82` starts and stops heart rate measurement; the earbuds then send `0D 01` (heart rate at byte 2, blood oxygen at 24, steps from 26). `0D 84` is the
+sedentary and `0D 83` the sitting posture reminder (state, after the spatial audio bytes). 5.0.35 reads the device colour and press sensitivity one byte later
+than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. Neck posture is open. Not tried.
+
+## The Sleep A10's player (2026-11-27)
+
+State: play time (byte 69, 255 no limit), whether a sound is on the earbuds, its volume (0 to 65) and the countdown (two bytes, high first, 0 off, FFFF keep
+playing). `01 AB` sets the play time, `01 B1` (0, volume), `01 B2` plays or pauses, `01 B3` the countdown. Alarms and sound transfer are open. Not tried.

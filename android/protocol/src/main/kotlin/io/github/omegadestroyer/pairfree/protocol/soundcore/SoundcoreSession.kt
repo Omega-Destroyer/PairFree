@@ -36,6 +36,13 @@ public class SoundcoreSession(public val model: String) : FitTest {
     private var soundModes: ByteArray? = null
 
     private val peers = SoundcorePeers()
+    private val health: SoundcoreHealth? = if (layout?.features?.contains(SoundcoreHealth.FEATURE) == true) SoundcoreHealth() else null
+    private val dongle: SoundcoreDongle? = if (layout?.features?.contains(SoundcoreDongle.FEATURE) == true) SoundcoreDongle() else null
+
+    /** The requests for the lists the earbuds keep besides their state: the paired devices, and the VR P10's dongles. */
+    public fun requestLists(): List<ByteArray> = listOfNotNull(if (listsPeers) requestPeers() else null) +
+        if (dongle == null) emptyList() else listOf(SoundcoreCommand.DONGLE_INFO, SoundcoreCommand.DONGLE_LOW_POWER_STATE).map { SoundcorePacket.build(it, checksum = checksum) }
+    private val tests = SoundcoreTests(layout?.features ?: emptySet())
 
     /** Whether the earbuds' list of paired devices is worth asking for: their last state shows two devices at once, switched on. */
     public val listsPeers: Boolean get() = lastState?.flag("dual_connections_enabled") == true
@@ -55,6 +62,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val command = if (packet.command == SoundcoreCommand.DEVICE_INFO && layout?.stateCommand == SoundcoreCommand.DEVICE_INFO) SoundcoreCommand.STATE else packet.command
         when (command) {
             SoundcoreCommand.DUAL_CONNECTIONS_DEVICES -> return peers.receive(body)
+            SoundcoreCommand.HEALTH_READINGS -> return health?.receive(body) == true
+            SoundcoreCommand.DONGLE_INFO, SoundcoreCommand.DONGLE_LOW_POWER_STATE -> return dongle?.receive(command, body) == true
+            SoundcoreCommand.WEAR_CALIBRATION, SoundcoreCommand.PERSONAL_ANC_TEST -> return tests.receive(command, body)
             SoundcoreCommand.STATE -> {
                 val l = layout ?: return false
                 val s = SoundcoreState.parse(l, body) ?: return false
@@ -215,6 +225,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
                 peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
+                dongle?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_dongle", SettingTab.DEVICE, it) },
+                if (lastState != null) health?.rows()?.let { SettingGroup("sc_health", SettingTab.DEVICE, it) } else null,
+                SoundcoreSleepPlayer.rows(s).takeIf { model == "A6610" && it.isNotEmpty() }?.let { SettingGroup("sc_player", SettingTab.DEVICE, it) },
+                tests.rows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_tests", SettingTab.DEVICE, it) },
                 if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
         }
@@ -497,7 +511,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change !is SettingChange.Choice) return null
         return when (change.key) {
             LANGUAGE -> LANGUAGES.indexOf(change.option).takeIf { it >= 0 && languageRow(s) != null }
-                ?.let { write(LANGUAGE_FIELD, SoundcoreCommand.VOICE_LANGUAGE, byteArrayOf(it.toByte())) }
+                ?.let {
+                    val command = if (SLEEP_LANGUAGE in s.layout.features) SoundcoreCommand.SLEEP_VOICE_LANGUAGE else SoundcoreCommand.VOICE_LANGUAGE
+                    write(LANGUAGE_FIELD, command, byteArrayOf(it.toByte()))
+                }
             LIGHT_MODE, LIGHT_COLOUR -> {
                 val options = if (change.key == LIGHT_MODE) LIGHT_MODES else LIGHT_COLOURS
                 val v = options.indexOf(change.option)
@@ -577,6 +594,14 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
+        tests.change(change)?.let { return it }
+        if (change.key.startsWith("sc_a10_")) {
+            val (packet, next) = lastState?.let { SoundcoreSleepPlayer.change(it, change) } ?: return null
+            lastState = next
+            return listOf(packet)
+        }
+        health?.change(change)?.let { return it }
+        if (change.key.startsWith("sc_dongle_")) return dongle?.change(change)
         if (change.key in EXTRA_KEYS) return extraChange(s, change)
         if (change.key.startsWith("sc_peer_") || change.key == SoundcorePeers.PAIRING) return peerChange(change)
         if (change.key == LIMIT || change.key == LIMIT_DB) return limitChange(s, change)
@@ -782,6 +807,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private class Hold(val option: String, val state: Int, val write: Int)
         private val HOLD_ACTIONS = listOf(Hold("assistant", 0, 5), Hold("nap", 3, 13), Hold("none", 5, 15))
         private const val LANGUAGE_FIELD = "prompt_language"
+        private const val SLEEP_LANGUAGE = "voice_language_1307"
         private const val LANGUAGE = "sc_voice_language"
         private val LANGUAGES = listOf("english", "chinese")
         private const val SURROUND_FIELD = "stereo_expansion"
@@ -842,6 +868,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
             Switch("sc_voice_commands", "voice_control", SoundcoreCommand.VOICE_COMMANDS),
             Switch("sc_super_volume", "super_volume", SoundcoreCommand.SUPER_VOLUME),
             Switch("sc_manual_shutdown", "manual_shutdown", SoundcoreCommand.MANUAL_SHUTDOWN),
+            Switch("sc_sedentary", "sedentary_reminder", SoundcoreCommand.SEDENTARY_REMINDER),
+            Switch("sc_sitting_posture", "sitting_posture", SoundcoreCommand.SITTING_POSTURE_REMINDER),
+            Switch("sc_voice_wake", "audio_wakeup", SoundcoreCommand.VOICE_WAKE),
             Switch("sc_power_off_tone", "power_off_tone", SoundcoreCommand.SET_AUTO_POWER_OFF_PROMPT),
             Switch("sc_connect_tone", "connect_tone", SoundcoreCommand.CONNECT_TONE),
             Switch("sc_easy_chat", "easy_chat", SoundcoreCommand.FUNCTION_SWITCH, 14),

@@ -856,11 +856,21 @@
       "id": "soundcore-space2-ai-chat",
       "brand": "soundcore",
       "models": [
-        "Space 2 Pro and Space 2 Pro Max (D1406, D1407)"
+        "Space 2, Space 2 Pro pair, AeroClip 2 (D1402, D1406, D1407, D1105)"
+      ],
+      "status": "built",
+      "what": "Built 2026-11-27: the voice wake switch (18 83) from state record 54 or its byte. The chat itself streams to Anker's servers, which PairFree does not call. The AeroFit 2 pair's state past its head is not read yet (soundcore-aerofit-2-state).",
+      "reported": "read of the D1406 and D1407 settings screens, 2026-11-27"
+    },
+    {
+      "id": "soundcore-aerofit-2-state",
+      "brand": "soundcore",
+      "models": [
+        "AeroFit 2, AeroFit 2 Pro (A3874, A3875)"
       ],
       "status": "open",
-      "what": "The AI chat settings page (a Flutter page, aiChatSettingPage; state record 54: wake by voice and its language) is not built or explained.",
-      "reported": "read of the D1406 and D1407 settings screens, 2026-11-27"
+      "what": "PairFree reads only the head of their state; the rest (their settings, voice wake among them) has a parser that is not ported.",
+      "reported": "the AI chat page worked through, 2026-11-27"
     },
     {
       "id": "soundcore-case-channels",
@@ -869,7 +879,7 @@
         "Liberty 5 Pro pair, Sleep Earbuds 4 pair (D1203-Box, D1204-Box, D1302-Box, D1303-Box)"
       ],
       "status": "open",
-      "what": "The charging cases' own connections and settings (case language and the rest) are not built or explained.",
+      "what": "The charging cases' own connections and settings (case language and the rest) are not built or explained. Includes the Sleep Earbuds 4 pair sound playback and falling-asleep settings (13 08 and the rest over the case link).",
       "reported": "read of the settings screens, 2026-11-27"
     },
     {
@@ -878,8 +888,8 @@
       "models": [
         "Sleep Earbuds 4 pair (D1302, D1303)"
       ],
-      "status": "open",
-      "what": "The sleep sounds and playback held on the earbuds (state records 31 to 33, 81, 106) are not built or explained.",
+      "status": "built",
+      "what": "Built 2026-11-27: the voice prompt language (13 07, record 64), the earbuds' one write here. The sound playback and the falling-asleep choices go over the charging case's own Bluetooth LE link (BoxBleDeviceManager), so they are part of soundcore-case-channels.",
       "reported": "read of the tag-length-value records, 2026-11-27"
     },
     {
@@ -908,8 +918,8 @@
       "models": [
         "Liberty 3 Pro, Liberty 4 and the others whose app has personal noise cancelling"
       ],
-      "status": "open",
-      "what": "The personal noise cancelling ear canal test (03 88 start, 03 89 reset, 06 83) is not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: start, cancel and remove (03 88, 03 89) on the Liberty 3 Pro and Liberty 4 NC, with 255 for the room noise PairFree does not measure. 06 83 is the Liberty 4's engineering screen titled ANC TEST, left out.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {
@@ -918,8 +928,8 @@
       "models": [
         "Space One, Space Q45, Space 2, Space 2 Pro and Liberty 3 Pro"
       ],
-      "status": "open",
-      "what": "The wear detection calibration (20 84, in two steps) and the Liberty 3 Pro wear test (FF 83) are not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: the calibration (20 84, on a table, then worn) on the Space One, Space Q45, Space 2 and Space 2 Pro pair. The Liberty 3 Pro's \"wear test\" (FF 83) switches its infrared sensor in a beta test screen and is left out as diagnostics.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {
@@ -928,9 +938,19 @@
       "models": [
         "Liberty 4 (A3953) and the models whose app screens use them"
       ],
-      "status": "open",
-      "what": "Heart rate, sitting posture and sedentary reminder switches, neck posture report, calibration and history (0D 04 to 0D 89) are not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: the sedentary and sitting posture reminders (0D 84, 0D 83) and heart rate measurement with the live heart rate, blood oxygen and steps (0D 82, 0D 01), none of it stored. The neck posture angles, report, calibration and history are soundcore-neck-posture.",
       "reported": "the app's command table, worked through 2026-11-27"
+    },
+    {
+      "id": "soundcore-neck-posture",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 4 (A3953)"
+      ],
+      "status": "open",
+      "what": "Neck posture: the report switch (0D 87), calibration (0D 88), history (0D 04, 0D 89) and live angles (0D 03) are not built.",
+      "reported": "daily care worked through, 2026-11-27"
     },
     {
       "id": "soundcore-sleep-a10",
@@ -938,9 +958,29 @@
       "models": [
         "Sleep A10 (A6610) and the sleep playback of the Sleep Earbuds"
       ],
-      "status": "open",
-      "what": "The Sleep A10's own sounds: play and pause, volume, play time and countdown, the chosen sound, alarms and the sleep records are not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: play, pause, volume, play time and countdown (01 AB, 01 B1 to 01 B3). Alarms and sleep records are soundcore-sleep-a10-alarms; putting a sound on the earbuds and choosing it are soundcore-sleep-a10-sounds.",
       "reported": "the app's command table, worked through 2026-11-27"
+    },
+    {
+      "id": "soundcore-sleep-a10-alarms",
+      "brand": "soundcore",
+      "models": [
+        "Sleep A10 (A6610)"
+      ],
+      "status": "open",
+      "what": "Alarms (01 A7, next ring times the app reschedules each day; it needs a time picker) and the sleep records (01 10) are not built.",
+      "reported": "the Sleep A10 worked through, 2026-11-27"
+    },
+    {
+      "id": "soundcore-sleep-a10-sounds",
+      "brand": "soundcore",
+      "models": [
+        "Sleep A10 (A6610)"
+      ],
+      "status": "open",
+      "what": "Putting a sound on the earbuds and choosing it (01 A4): the sounds and their ids come from the app's server catalogue, which has not been read.",
+      "reported": "the Sleep A10 worked through, 2026-11-27"
     },
     {
       "id": "soundcore-vr-p10-dongle",
@@ -948,8 +988,8 @@
       "models": [
         "VR P10 (A3850)"
       ],
-      "status": "open",
-      "what": "The VR P10's USB dongle (name, paired headsets, low power mode) is not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: the dongle list, connect, disconnect, forget, what it is plugged into and its low power mode (0F 01, 02, 82 to 86). Renaming (0F 81) is left out, as PairFree renames no device (owner, 2026-11-04).",
       "reported": "the app's command table, worked through 2026-11-27"
     }
   ]

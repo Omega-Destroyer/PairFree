@@ -101,7 +101,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key.startsWith("sc_calibrate_") || setting.key == "sc_personal_anc_result" || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
@@ -252,7 +252,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
-private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete")
+private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove")
 
 private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove")
 
@@ -308,6 +308,10 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
         "sc_device" -> R.string.setting_sc_device
+        "sc_player" -> R.string.setting_sc_player
+        "sc_health" -> R.string.setting_sc_health
+        "sc_dongle" -> R.string.setting_sc_dongle
+        "sc_tests" -> R.string.setting_sc_tests
         "sc_limit" -> R.string.setting_hearing_protection
         "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
@@ -439,6 +443,23 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake)
+    "sc_a10_volume" -> stringResource(R.string.setting_sc_a10_volume)
+    "sc_a10_play_time" -> stringResource(R.string.setting_sc_a10_play_time)
+    "sc_a10_countdown" -> stringResource(R.string.setting_sc_a10_countdown)
+    "sc_heart_rate" -> stringResource(R.string.setting_sc_heart_rate)
+    "sc_heart_rate_value" -> stringResource(R.string.setting_sc_heart_rate_value)
+    "sc_blood_oxygen" -> stringResource(R.string.setting_sc_blood_oxygen)
+    "sc_steps" -> stringResource(R.string.setting_sc_steps)
+    "sc_sedentary" -> stringResource(R.string.setting_sc_sedentary)
+    "sc_sitting_posture" -> stringResource(R.string.setting_sc_sitting_posture)
+    "sc_dongle_connect" -> stringResource(R.string.setting_sc_dongle_connect)
+    "sc_dongle_remove" -> stringResource(R.string.setting_sc_dongle_remove)
+    "sc_dongle_type" -> stringResource(R.string.setting_sc_dongle_type)
+    "sc_dongle_low_power" -> stringResource(R.string.setting_sc_dongle_low_power)
+    "sc_calibrate_table_result" -> stringResource(R.string.setting_sc_calibrate_table_result)
+    "sc_calibrate_worn_result" -> stringResource(R.string.setting_sc_calibrate_worn_result)
+    "sc_personal_anc_result" -> stringResource(R.string.setting_sc_personal_anc_result)
     "sc_voice_language" -> stringResource(R.string.setting_sc_voice_language)
     "sc_open_surround" -> stringResource(R.string.setting_sc_open_surround)
     "sc_open_surround_level" -> stringResource(R.string.setting_sc_open_surround_level)
@@ -1038,6 +1059,7 @@ private fun buttonTitle(key: String): String? {
 @Composable
 private fun settingNote(key: String): String? = when (key) {
     "sc_easy_chat" -> stringResource(R.string.setting_sc_easy_chat_note)
+    "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake_note)
     "sc_call_noise" -> stringResource(R.string.setting_sc_call_noise_note)
     "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode_note)
     "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist_note)
@@ -1282,6 +1304,15 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "anc_mode" -> R.string.setting_ca_ambient_modes_control
         "assistant" -> R.string.setting_ca_assistant
         else -> R.string.action_none
+    })
+    key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> getString(if (option == "passed") R.string.setting_sc_passed else R.string.setting_sc_failed)
+    key == "sc_dongle_type" -> getString(when (option) {
+        "oculus" -> R.string.setting_sc_dongle_oculus
+        "playstation" -> R.string.setting_sc_dongle_playstation
+        "pc" -> R.string.setting_sc_dongle_pc
+        "switch" -> R.string.setting_sc_dongle_switch
+        "phone" -> R.string.setting_sc_dongle_phone
+        else -> R.string.setting_sc_dongle_other
     })
     key == "sc_voice_language" -> getString(if (option == "chinese") R.string.setting_sc_language_chinese else R.string.setting_sc_language_english)
     key == "sc_light_mode" -> getString(when (option) {
@@ -1673,7 +1704,8 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     )
     key == "sleep_listening_mode" || key == "sleep_default_listening_mode" ->
         getString(if (option == "local") R.string.setting_sleep_mode_local else R.string.setting_sleep_mode_bluetooth)
-    key == "sleep_timer" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.action_off)
+    (key == "sc_a10_play_time" || key == "sc_a10_countdown") && option == "keep" -> getString(R.string.setting_sc_keep_playing)
+    key == "sleep_timer" || key == "sc_a10_play_time" || key == "sc_a10_countdown" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.action_off)
     key == "auto_off" && option == "when_taken_off" -> getString(R.string.shutdown_when_taken_off)
     key == "auto_off" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.shutdown_never)
     key == "connection_priority" -> getString(
@@ -1855,6 +1887,13 @@ private fun actionStart(key: String): Int = when (key) {
     "sh_find_left" -> R.string.setting_sh_find_left
     "sh_find_right" -> R.string.setting_sh_find_right
     "sh_fit_test" -> R.string.setting_sh_fit_start
+    "sc_calibrate_table" -> R.string.setting_sc_calibrate_table
+    "sc_calibrate_worn" -> R.string.setting_sc_calibrate_worn
+    "sc_personal_anc" -> R.string.setting_sc_personal_anc
+    "sc_personal_anc_reset" -> R.string.setting_sc_personal_anc_reset
+    "sc_a10_play" -> R.string.setting_sc_a10_play
+    "sc_a10_pause" -> R.string.setting_sc_a10_pause
+    "sc_dongle_disconnect" -> R.string.setting_sc_dongle_disconnect
     "jbl_seal_check" -> R.string.setting_jbl_seal_check
     "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove
     "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scan
@@ -1872,6 +1911,8 @@ private fun actionStop(key: String): Int = when (key) {
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
     "sh_fit_test" -> R.string.setting_sh_fit_cancel
+    "sc_calibrate_table", "sc_calibrate_worn" -> R.string.setting_sc_calibrating
+    "sc_personal_anc" -> R.string.setting_sc_personal_anc_cancel
     "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> R.string.setting_jbl_testing
     "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scanning
     else -> R.string.setting_action_stop

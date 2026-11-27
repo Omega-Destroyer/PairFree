@@ -36,6 +36,11 @@ public class SoundcoreSession(public val model: String) : FitTest {
     private var soundModes: ByteArray? = null
 
     private val peers = SoundcorePeers()
+    private val dongle: SoundcoreDongle? = if (layout?.features?.contains(SoundcoreDongle.FEATURE) == true) SoundcoreDongle() else null
+
+    /** The requests for the lists the earbuds keep besides their state: the paired devices, and the VR P10's dongles. */
+    public fun requestLists(): List<ByteArray> = listOfNotNull(if (listsPeers) requestPeers() else null) +
+        if (dongle == null) emptyList() else listOf(SoundcoreCommand.DONGLE_INFO, SoundcoreCommand.DONGLE_LOW_POWER_STATE).map { SoundcorePacket.build(it, checksum = checksum) }
     private val tests = SoundcoreTests(layout?.features ?: emptySet())
 
     /** Whether the earbuds' list of paired devices is worth asking for: their last state shows two devices at once, switched on. */
@@ -56,6 +61,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val command = if (packet.command == SoundcoreCommand.DEVICE_INFO && layout?.stateCommand == SoundcoreCommand.DEVICE_INFO) SoundcoreCommand.STATE else packet.command
         when (command) {
             SoundcoreCommand.DUAL_CONNECTIONS_DEVICES -> return peers.receive(body)
+            SoundcoreCommand.DONGLE_INFO, SoundcoreCommand.DONGLE_LOW_POWER_STATE -> return dongle?.receive(command, body) == true
             SoundcoreCommand.WEAR_CALIBRATION, SoundcoreCommand.PERSONAL_ANC_TEST -> return tests.receive(command, body)
             SoundcoreCommand.STATE -> {
                 val l = layout ?: return false
@@ -217,6 +223,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
                 peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
+                dongle?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_dongle", SettingTab.DEVICE, it) },
                 tests.rows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_tests", SettingTab.DEVICE, it) },
                 if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
@@ -581,6 +588,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
         tests.change(change)?.let { return it }
+        if (change.key.startsWith("sc_dongle_")) return dongle?.change(change)
         if (change.key in EXTRA_KEYS) return extraChange(s, change)
         if (change.key.startsWith("sc_peer_") || change.key == SoundcorePeers.PAIRING) return peerChange(change)
         if (change.key == LIMIT || change.key == LIMIT_DB) return limitChange(s, change)

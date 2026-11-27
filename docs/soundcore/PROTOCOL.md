@@ -740,3 +740,9 @@ Traced in Soundcore 5.0.35 from each command's constant to the screens that send
 - **Personal noise cancelling** (Liberty 3 Pro, Liberty 4 NC): `03 88` with 1 (start) or 0 (cancel), the time in seconds high byte first, and the room's noise
   in dB. The app measures the noise with the phone's microphone; PairFree has no microphone permission and sends 255, the app's value for none. The reply's
   first byte is the result's index, 255 none. `03 89` removes it. Neither has been tried on earbuds.
+
+## The VR P10's dongle (2026-11-27)
+
+`0F 01` lists the USB dongles (a count, then name 20, connected 1, type 1, firmware 5, address 6 each), `0F 02` the low power mode. `0F 82` sets what the
+connected dongle is plugged into (0 Oculus to 5 other), `0F 83` disconnects it, `0F 84` forgets and `0F 85` connects one by address, `0F 86` sets low power.
+Renaming (`0F 81`) is left out. Not tried.

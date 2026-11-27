@@ -948,8 +948,8 @@
       "models": [
         "VR P10 (A3850)"
       ],
-      "status": "open",
-      "what": "The VR P10's USB dongle (name, paired headsets, low power mode) is not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: the dongle list, connect, disconnect, forget, what it is plugged into and its low power mode (0F 01, 02, 82 to 86). Renaming (0F 81) is left out, as PairFree renames no device (owner, 2026-11-04).",
       "reported": "the app's command table, worked through 2026-11-27"
     }
   ]

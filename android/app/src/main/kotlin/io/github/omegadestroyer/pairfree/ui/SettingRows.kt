@@ -252,7 +252,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
-private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete")
+private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove")
 
 private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove")
 
@@ -308,6 +308,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
         "sc_device" -> R.string.setting_sc_device
+        "sc_dongle" -> R.string.setting_sc_dongle
         "sc_tests" -> R.string.setting_sc_tests
         "sc_limit" -> R.string.setting_hearing_protection
         "ca_touch" -> R.string.setting_ca_touch_actions
@@ -440,6 +441,10 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_dongle_connect" -> stringResource(R.string.setting_sc_dongle_connect)
+    "sc_dongle_remove" -> stringResource(R.string.setting_sc_dongle_remove)
+    "sc_dongle_type" -> stringResource(R.string.setting_sc_dongle_type)
+    "sc_dongle_low_power" -> stringResource(R.string.setting_sc_dongle_low_power)
     "sc_calibrate_table_result" -> stringResource(R.string.setting_sc_calibrate_table_result)
     "sc_calibrate_worn_result" -> stringResource(R.string.setting_sc_calibrate_worn_result)
     "sc_personal_anc_result" -> stringResource(R.string.setting_sc_personal_anc_result)
@@ -1288,6 +1293,14 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         else -> R.string.action_none
     })
     key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> getString(if (option == "passed") R.string.setting_sc_passed else R.string.setting_sc_failed)
+    key == "sc_dongle_type" -> getString(when (option) {
+        "oculus" -> R.string.setting_sc_dongle_oculus
+        "playstation" -> R.string.setting_sc_dongle_playstation
+        "pc" -> R.string.setting_sc_dongle_pc
+        "switch" -> R.string.setting_sc_dongle_switch
+        "phone" -> R.string.setting_sc_dongle_phone
+        else -> R.string.setting_sc_dongle_other
+    })
     key == "sc_voice_language" -> getString(if (option == "chinese") R.string.setting_sc_language_chinese else R.string.setting_sc_language_english)
     key == "sc_light_mode" -> getString(when (option) {
         "breathing" -> R.string.setting_sc_light_breathing
@@ -1864,6 +1877,7 @@ private fun actionStart(key: String): Int = when (key) {
     "sc_calibrate_worn" -> R.string.setting_sc_calibrate_worn
     "sc_personal_anc" -> R.string.setting_sc_personal_anc
     "sc_personal_anc_reset" -> R.string.setting_sc_personal_anc_reset
+    "sc_dongle_disconnect" -> R.string.setting_sc_dongle_disconnect
     "jbl_seal_check" -> R.string.setting_jbl_seal_check
     "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove
     "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scan

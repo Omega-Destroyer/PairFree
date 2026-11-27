@@ -1187,6 +1187,9 @@
     },
     {
       "model": "A3850",
+      "extra_features": [
+        "dongle"
+      ],
       "names": [
         "Soundcore VR P10"
       ],

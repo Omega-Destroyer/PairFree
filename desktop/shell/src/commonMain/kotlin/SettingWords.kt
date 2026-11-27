@@ -61,6 +61,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_dongle" -> "setting_sc_dongle"
             "sc_tests" -> "setting_sc_tests"
             "sc_limit" -> "setting_hearing_protection"
             "ca_touch" -> "setting_ca_touch_actions"
@@ -189,6 +190,10 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_dongle_connect" -> t("setting_sc_dongle_connect")
+        "sc_dongle_remove" -> t("setting_sc_dongle_remove")
+        "sc_dongle_type" -> t("setting_sc_dongle_type")
+        "sc_dongle_low_power" -> t("setting_sc_dongle_low_power")
         "sc_calibrate_table_result" -> t("setting_sc_calibrate_table_result")
         "sc_calibrate_worn_result" -> t("setting_sc_calibrate_worn_result")
         "sc_personal_anc_result" -> t("setting_sc_personal_anc_result")
@@ -1030,6 +1035,14 @@ class SettingWords(private val strings: DesktopStrings) {
             else -> "action_none"
         })
         key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> t(if (option == "passed") "setting_sc_passed" else "setting_sc_failed")
+        key == "sc_dongle_type" -> t(when (option) {
+            "oculus" -> "setting_sc_dongle_oculus"
+            "playstation" -> "setting_sc_dongle_playstation"
+            "pc" -> "setting_sc_dongle_pc"
+            "switch" -> "setting_sc_dongle_switch"
+            "phone" -> "setting_sc_dongle_phone"
+            else -> "setting_sc_dongle_other"
+        })
         key == "sc_voice_language" -> t(if (option == "chinese") "setting_sc_language_chinese" else "setting_sc_language_english")
         key == "sc_light_mode" -> t(when (option) {
             "breathing" -> "setting_sc_light_breathing"
@@ -1605,6 +1618,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_calibrate_worn" -> "setting_sc_calibrate_worn"
         "sc_personal_anc" -> "setting_sc_personal_anc"
         "sc_personal_anc_reset" -> "setting_sc_personal_anc_reset"
+        "sc_dongle_disconnect" -> "setting_sc_dongle_disconnect"
         "jbl_seal_check" -> "setting_jbl_seal_check"
         "jbl_case_saver_remove" -> "setting_jbl_case_saver_remove"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scan"

@@ -58,12 +58,12 @@ class VendorRecordingTest {
         log.rfcomm(t0 + 2_100_000, false, 0x0B, 10, SoundcorePacket.build(SoundcoreCommand.SET_SOUND_MODES, "010001000000".hexBytes()))
         log.rfcomm(t0 + 3_000_000, true, 0x0B, 10, SoundcorePacket.buildFromEarbuds(SoundcoreCommand.DUAL_CONNECTIONS_DEVICES, ByteArray(42) { 0x41 }))
         log.rfcomm(t0 + 4_000_000, false, 0x0B, 10, SoundcorePacket.build(0x0F81, "0102".hexBytes()))
-        log.rfcomm(t0 + 4_500_000, false, 0x0B, 10, SoundcorePacket.build(0x0F82, ByteArray(10) { 7 }))
+        log.rfcomm(t0 + 4_500_000, false, 0x0B, 10, SoundcorePacket.build(0x0F8F, ByteArray(10) { 7 }))
 
         val earbuds = VendorRecording.of(SnoopScanner().apply { feed(log.bytes()) }.packets()).single()
         assertEquals(RecordedBrand.SOUNDCORE, earbuds.brand)
         assertEquals(5, earbuds.fromApp)
-        assertEquals(listOf("state" to 1, "set_sound_modes" to 2, "0F81" to 1, "0F82" to 1), earbuds.sent)
+        assertEquals(listOf("state" to 1, "set_sound_modes" to 2, "0F81" to 1, "0F8F" to 1), earbuds.sent)
         val lines = VendorRecording.lines(earbuds)
         val text = lines.joinToString("\n")
         assertFalse(text.contains(addressText.encodeToByteArray().hex()), "the address as text")
@@ -75,7 +75,7 @@ class VendorRecordingTest {
         assertTrue(lines.any { it.contains("0681 set_sound_modes") && it.endsWith("01 00 01 00 00 00 (x2)") }, text)
         assertTrue(lines.any { it.contains("0B01") && it.endsWith("(42 bytes left out)") }, text)
         assertTrue(lines.any { it.contains("0F81 ?") && it.endsWith("01 02") }, "a short unknown message is shown")
-        assertTrue(lines.any { it.contains("0F82 ?") && it.endsWith("(10 bytes; prefix=07 07 07 07; remaining bytes left out)") }, "only four bytes of a longer unknown message")
+        assertTrue(lines.any { it.contains("0F8F ?") && it.endsWith("(10 bytes; prefix=07 07 07 07; remaining bytes left out)") }, "only four bytes of a longer unknown message")
         assertTrue(lines[1].trimStart().startsWith("0.000 app"), lines[1])
     }
 

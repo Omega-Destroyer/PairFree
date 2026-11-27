@@ -4587,7 +4587,11 @@
     },
     {
       "model": "D1102",
-      "extra_features": ["find_device"],
+      "extra_features": [
+        "find_device",
+        "touch_tone",
+        "auto_power_off_long"
+      ],
       "names": [
         "soundcore AeroClip 2 Pro"
       ],
@@ -4603,71 +4607,304 @@
         ]
       },
       "state": [
-        ["tws_status", 2],
-        ["dual_battery", 4],
-        ["dual_firmware", 10],
-        ["serial", 16],
-        ["case_battery", 1],
-        ["buttons", 12],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "tws_status",
+          2
+        ],
+        [
+          "dual_battery",
+          4
+        ],
+        [
+          "dual_firmware",
+          10
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "case_battery",
+          1
+        ],
+        [
+          "buttons",
+          12
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "touch_tone",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "in_ear_tone",
+          1
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35: the app builds the AeroClip 2 Pro with D1105AnalysisService and D1105CmdService (constructed with its code; neither branches on it), so its records and touch writes are the AeroClip 2's. Its data source lists other actions: translate, ask or answer and recording besides the playback ones, and no white noise. Only the touch controls and the equalizer are offered. The battery's scale is not in the parser. Not tried on the earbuds. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35: the app builds the AeroClip 2 Pro with D1105AnalysisService and D1105CmdService (constructed with its code; neither branches on it), so its records and touch writes are the AeroClip 2's. Its data source lists other actions: translate, ask or answer and recording besides the playback ones, and no white noise. Only the touch controls and the equalizer are offered. The battery's scale is not in the parser. Not tried on the earbuds. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): touch_tone, low_battery_prompt, in_ear_tone, wearing_detection, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "buttons": {
         "groups": [
           {
-            "fields": ["buttons"],
-            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_triple",
+              "right_triple",
+              "left_long",
+              "right_long",
+              "left_slide_up",
+              "right_slide_up",
+              "left_slide_down",
+              "right_slide_down"
+            ],
             "ignore_enabled": true,
             "wide": true,
             "command": "048C",
             "presses": {
-              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
-              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1102"},
-              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1102"},
-              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1102"},
-              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+              "single": {
+                "id": 2,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "minimal"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1102"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1102"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1102"
+              },
+              "slide_up": {
+                "id": 6,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "slide_down": {
+                "id": 7,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              }
             }
           }
         ]
       },
       "tlv": [
-        [1, 0, 1],
-        [2, 0, 1],
-        [3, 1, 1],
-        [4, 1, 1],
-        [3, 0, 1],
-        [4, 0, 1],
-        [5, 0, 5],
-        [6, 0, 5],
-        [7, 0, 16],
-        [8, 1, 1],
-        [13, 0, "pack"],
-        [14, 0, "pack"],
-        [15, 0, "pack"],
-        [16, 0, "pack"],
-        [17, 0, "pack"],
-        [18, 0, "pack"],
-        [19, 0, "pack"],
-        [20, 0, "pack"],
-        [21, 0, "pack"],
-        [22, 0, "pack"],
-        [23, 0, "pack"],
-        [24, 0, "pack"],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          1
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          4,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          6,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          8,
+          1,
+          1
+        ],
+        [
+          13,
+          0,
+          "pack"
+        ],
+        [
+          14,
+          0,
+          "pack"
+        ],
+        [
+          15,
+          0,
+          "pack"
+        ],
+        [
+          16,
+          0,
+          "pack"
+        ],
+        [
+          17,
+          0,
+          "pack"
+        ],
+        [
+          18,
+          0,
+          "pack"
+        ],
+        [
+          19,
+          0,
+          "pack"
+        ],
+        [
+          20,
+          0,
+          "pack"
+        ],
+        [
+          21,
+          0,
+          "pack"
+        ],
+        [
+          22,
+          0,
+          "pack"
+        ],
+        [
+          23,
+          0,
+          "pack"
+        ],
+        [
+          24,
+          0,
+          "pack"
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          26,
+          0,
+          "bit",
+          0
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          26,
+          0,
+          "bit",
+          3
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          25,
+          0,
+          2
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "eq_normalized": {
         "table": "d1105"
       }
     },
     {
       "model": "D1105",
-      "extra_features": ["find_device"],
+      "extra_features": [
+        "find_device",
+        "auto_power_off_long"
+      ],
       "names": [
         "Anker AeroClip 2"
       ],
@@ -4684,63 +4921,270 @@
         ]
       },
       "state": [
-        ["tws_status", 2],
-        ["dual_battery", 4],
-        ["dual_firmware", 10],
-        ["serial", 16],
-        ["case_battery", 1],
-        ["buttons", 12],
-        ["dual_connections_enabled", 1],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "tws_status",
+          2
+        ],
+        [
+          "dual_battery",
+          4
+        ],
+        [
+          "dual_firmware",
+          10
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "case_battery",
+          1
+        ],
+        [
+          "buttons",
+          12
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the game mode (its command is not read), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the game mode (its command is not read), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): low_battery_prompt, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "tlv": [
-        [1, 0, 1],
-        [2, 0, 1],
-        [3, 1, 1],
-        [4, 1, 1],
-        [3, 0, 1],
-        [4, 0, 1],
-        [5, 0, 5],
-        [6, 0, 5],
-        [7, 0, 16],
-        [8, 1, 1],
-        [13, 0, "pack"],
-        [14, 0, "pack"],
-        [15, 0, "pack"],
-        [16, 0, "pack"],
-        [17, 0, "pack"],
-        [18, 0, "pack"],
-        [19, 0, "pack"],
-        [20, 0, "pack"],
-        [21, 0, "pack"],
-        [22, 0, "pack"],
-        [23, 0, "pack"],
-        [24, 0, "pack"],
-        [27, 0, "bit",
-          3],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          1
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          4,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          6,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          8,
+          1,
+          1
+        ],
+        [
+          13,
+          0,
+          "pack"
+        ],
+        [
+          14,
+          0,
+          "pack"
+        ],
+        [
+          15,
+          0,
+          "pack"
+        ],
+        [
+          16,
+          0,
+          "pack"
+        ],
+        [
+          17,
+          0,
+          "pack"
+        ],
+        [
+          18,
+          0,
+          "pack"
+        ],
+        [
+          19,
+          0,
+          "pack"
+        ],
+        [
+          20,
+          0,
+          "pack"
+        ],
+        [
+          21,
+          0,
+          "pack"
+        ],
+        [
+          22,
+          0,
+          "pack"
+        ],
+        [
+          23,
+          0,
+          "pack"
+        ],
+        [
+          24,
+          0,
+          "pack"
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          25,
+          0,
+          2
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "buttons": {
         "groups": [
           {
-            "fields": ["buttons"],
-            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_triple",
+              "right_triple",
+              "left_long",
+              "right_long",
+              "left_slide_up",
+              "right_slide_up",
+              "left_slide_down",
+              "right_slide_down"
+            ],
             "ignore_enabled": true,
             "wide": true,
             "command": "048C",
             "presses": {
-              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
-              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "white_noise"},
-              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+              "single": {
+                "id": 2,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "minimal"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "white_noise"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "slide_up": {
+                "id": 6,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "slide_down": {
+                "id": 7,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              }
             }
           }
         ]
@@ -5966,38 +6410,153 @@
         ]
       },
       "state": [
-        ["single_battery", 2],
-        ["firmware", 5],
-        ["serial", 16],
-        ["sound_modes", 6],
-        ["limit_high_volume", 3],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "single_battery",
+          2
+        ],
+        [
+          "firmware",
+          5
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "sound_modes",
+          6
+        ],
+        [
+          "limit_high_volume",
+          3
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "kind": "headphones",
       "tlv": [
-        [3, 1, 1],
-        [3, 0, 1],
-        [5, 0, 5],
-        [7, 0, 16],
-        [36, 0, 1],
-        [37, 0, "swap"],
-        [36, 2, 1],
-        [36, 1, 1],
-        [27, 1, "bit",
-          3],
-        [37, 1, "hi"],
-        [39, 0, 3],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          36,
+          0,
+          1
+        ],
+        [
+          37,
+          0,
+          "swap"
+        ],
+        [
+          36,
+          2,
+          1
+        ],
+        [
+          36,
+          1,
+          1
+        ],
+        [
+          27,
+          1,
+          "bit",
+          3
+        ],
+        [
+          37,
+          1,
+          "hi"
+        ],
+        [
+          39,
+          0,
+          3
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          25,
+          0,
+          2
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "eq_normalized": {
         "table": "d1406"
-      }
+      },
+      "extra_features": [
+        "auto_power_off_long"
+      ]
     },
     {
       "model": "D1407",
@@ -6015,38 +6574,153 @@
         ]
       },
       "state": [
-        ["single_battery", 2],
-        ["firmware", 5],
-        ["serial", 16],
-        ["sound_modes", 6],
-        ["limit_high_volume", 3],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "single_battery",
+          2
+        ],
+        [
+          "firmware",
+          5
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "sound_modes",
+          6
+        ],
+        [
+          "limit_high_volume",
+          3
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "kind": "headphones",
       "tlv": [
-        [3, 1, 1],
-        [3, 0, 1],
-        [5, 0, 5],
-        [7, 0, 16],
-        [36, 0, 1],
-        [37, 0, "swap"],
-        [36, 2, 1],
-        [36, 1, 1],
-        [27, 1, "bit",
-          3],
-        [37, 1, "hi"],
-        [39, 0, 3],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          36,
+          0,
+          1
+        ],
+        [
+          37,
+          0,
+          "swap"
+        ],
+        [
+          36,
+          2,
+          1
+        ],
+        [
+          36,
+          1,
+          1
+        ],
+        [
+          27,
+          1,
+          "bit",
+          3
+        ],
+        [
+          37,
+          1,
+          "hi"
+        ],
+        [
+          39,
+          0,
+          3
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          25,
+          0,
+          2
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "eq_normalized": {
         "table": "d1406"
-      }
+      },
+      "extra_features": [
+        "auto_power_off_long"
+      ]
     }
   ]
 }

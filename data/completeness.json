@@ -948,8 +948,8 @@
       "models": [
         "Liberty 4 (A3953)"
       ],
-      "status": "open",
-      "what": "Neck posture: the report switch (0D 87), calibration (0D 88), history (0D 04, 0D 89) and live angles (0D 03) are not built.",
+      "status": "built",
+      "what": "Built 2026-11-27: in-ear and neck calibration (0D 88), the posture report switch (0D 87), the history shown on the phone (0D 04, never uploaded), clearing it after a confirmation (0D 89) and the live angle when the earbuds send it (0D 03).",
       "reported": "daily care worked through, 2026-11-27"
     },
     {

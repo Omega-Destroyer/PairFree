@@ -116,7 +116,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; else -> R.string.setting_restart_body }),
+            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; "sc_neck_clear" -> R.string.setting_sc_neck_clear_body; else -> R.string.setting_restart_body }),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -254,7 +254,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
 private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove")
 
-private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove")
+private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
 private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://play.google.com/store/apps/details?id=com.thetileapp.tile")
@@ -308,6 +308,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
         "sc_device" -> R.string.setting_sc_device
+        "sc_neck" -> R.string.setting_sc_neck
         "sc_player" -> R.string.setting_sc_player
         "sc_health" -> R.string.setting_sc_health
         "sc_dongle" -> R.string.setting_sc_dongle
@@ -443,6 +444,12 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_calibrate_in_ear_result" -> stringResource(R.string.setting_sc_calibrate_in_ear_result)
+    "sc_calibrate_neck_result" -> stringResource(R.string.setting_sc_calibrate_neck_result)
+    "sc_neck_report" -> stringResource(R.string.setting_sc_neck_report)
+    "sc_neck_tilt_front" -> stringResource(R.string.setting_sc_neck_tilt_front)
+    "sc_neck_tilt_side" -> stringResource(R.string.setting_sc_neck_tilt_side)
+    "sc_neck_angle" -> stringResource(R.string.setting_sc_neck_angle)
     "sc_anc_sensor" -> stringResource(R.string.setting_sc_anc_sensor)
     "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake)
     "sc_a10_volume" -> stringResource(R.string.setting_sc_a10_volume)
@@ -1307,6 +1314,7 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         else -> R.string.action_none
     })
     key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> getString(if (option == "passed") R.string.setting_sc_passed else R.string.setting_sc_failed)
+    key == "sc_neck_report" -> getString(if (option == "on") R.string.on else R.string.action_off)
     key == "sc_dongle_type" -> getString(when (option) {
         "oculus" -> R.string.setting_sc_dongle_oculus
         "playstation" -> R.string.setting_sc_dongle_playstation
@@ -1892,6 +1900,10 @@ private fun actionStart(key: String): Int = when (key) {
     "sc_calibrate_worn" -> R.string.setting_sc_calibrate_worn
     "sc_personal_anc" -> R.string.setting_sc_personal_anc
     "sc_personal_anc_reset" -> R.string.setting_sc_personal_anc_reset
+    "sc_calibrate_in_ear" -> R.string.setting_sc_calibrate_in_ear
+    "sc_calibrate_neck" -> R.string.setting_sc_calibrate_neck
+    "sc_neck_history" -> R.string.setting_sc_neck_history
+    "sc_neck_clear" -> R.string.setting_sc_neck_clear
     "sc_a10_play" -> R.string.setting_sc_a10_play
     "sc_a10_pause" -> R.string.setting_sc_a10_pause
     "sc_dongle_disconnect" -> R.string.setting_sc_dongle_disconnect
@@ -1912,7 +1924,7 @@ private fun actionStop(key: String): Int = when (key) {
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop
     "sh_fit_test" -> R.string.setting_sh_fit_cancel
-    "sc_calibrate_table", "sc_calibrate_worn" -> R.string.setting_sc_calibrating
+    "sc_calibrate_table", "sc_calibrate_worn", "sc_calibrate_in_ear", "sc_calibrate_neck" -> R.string.setting_sc_calibrating
     "sc_personal_anc" -> R.string.setting_sc_personal_anc_cancel
     "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> R.string.setting_jbl_testing
     "jbl_auracast_scan" -> R.string.setting_jbl_auracast_scanning

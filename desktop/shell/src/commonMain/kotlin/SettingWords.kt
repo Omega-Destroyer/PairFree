@@ -61,6 +61,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_neck" -> "setting_sc_neck"
             "sc_player" -> "setting_sc_player"
             "sc_health" -> "setting_sc_health"
             "sc_dongle" -> "setting_sc_dongle"
@@ -192,6 +193,12 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_calibrate_in_ear_result" -> t("setting_sc_calibrate_in_ear_result")
+        "sc_calibrate_neck_result" -> t("setting_sc_calibrate_neck_result")
+        "sc_neck_report" -> t("setting_sc_neck_report")
+        "sc_neck_tilt_front" -> t("setting_sc_neck_tilt_front")
+        "sc_neck_tilt_side" -> t("setting_sc_neck_tilt_side")
+        "sc_neck_angle" -> t("setting_sc_neck_angle")
         "sc_anc_sensor" -> t("setting_sc_anc_sensor")
         "sc_voice_wake" -> t("setting_sc_voice_wake")
         "sc_a10_volume" -> t("setting_sc_a10_volume")
@@ -1049,6 +1056,7 @@ class SettingWords(private val strings: DesktopStrings) {
             else -> "action_none"
         })
         key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> t(if (option == "passed") "setting_sc_passed" else "setting_sc_failed")
+        key == "sc_neck_report" -> t(if (option == "on") "on" else "action_off")
         key == "sc_dongle_type" -> t(when (option) {
             "oculus" -> "setting_sc_dongle_oculus"
             "playstation" -> "setting_sc_dongle_playstation"
@@ -1633,6 +1641,10 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_calibrate_worn" -> "setting_sc_calibrate_worn"
         "sc_personal_anc" -> "setting_sc_personal_anc"
         "sc_personal_anc_reset" -> "setting_sc_personal_anc_reset"
+        "sc_calibrate_in_ear" -> "setting_sc_calibrate_in_ear"
+        "sc_calibrate_neck" -> "setting_sc_calibrate_neck"
+        "sc_neck_history" -> "setting_sc_neck_history"
+        "sc_neck_clear" -> "setting_sc_neck_clear"
         "sc_a10_play" -> "setting_sc_a10_play"
         "sc_a10_pause" -> "setting_sc_a10_pause"
         "sc_dongle_disconnect" -> "setting_sc_dongle_disconnect"
@@ -1653,7 +1665,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"
         "sh_fit_test" -> "setting_sh_fit_cancel"
-        "sc_calibrate_table", "sc_calibrate_worn" -> "setting_sc_calibrating"
+        "sc_calibrate_table", "sc_calibrate_worn", "sc_calibrate_in_ear", "sc_calibrate_neck" -> "setting_sc_calibrating"
         "sc_personal_anc" -> "setting_sc_personal_anc_cancel"
         "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> "setting_jbl_testing"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scanning"

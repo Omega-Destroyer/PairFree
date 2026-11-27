@@ -751,7 +751,10 @@ Renaming (`0F 81`) is left out. Not tried.
 
 `0D 82` starts and stops heart rate measurement; the earbuds then send `0D 01` (heart rate at byte 2, blood oxygen at 24, steps from 26). `0D 84` is the
 sedentary and `0D 83` the sitting posture reminder (state, after the spatial audio bytes). 5.0.35 reads the device colour and press sensitivity one byte later
-than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. Neck posture is open. Not tried.
+than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. `0D 88` calibrates (1, 2 in-ear or 3 neck; reply: a byte,
+the kind, 0 on success), `0D 87` switches the neck report, `0D 04` answers 72 two byte counts (five degree bands from 90 to -90, front to back then
+sideways, the halves read from the field order of the app's upload), `0D 89` clears them and `0D 03` is the live angle. The app uploads the counts to
+Anker's server; PairFree shows them and sends them nowhere. Not tried.
 
 ## The Sleep A10's player (2026-11-27)
 

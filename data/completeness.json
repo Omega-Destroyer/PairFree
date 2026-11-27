@@ -830,7 +830,7 @@
         "the tag-length-value models and every Soundcore statement blocked on 'empty stubs'"
       ],
       "status": "open",
-      "what": "docs/soundcore/PROTOCOL.md blocks settings on method bodies being empty stubs in the restored app. The 2026-11-19 unpacker run (SOUNDCORE-unpacker-2026-11-19/fresh-run) restored the bodies (D1206MoreDataProvider is 231 lines of code) and none of those statements was re-read.",
+      "what": "docs/soundcore/PROTOCOL.md blocks settings on method bodies being empty stubs; the 2026-11-19 unpacker run restored them. The Liberty Buds 2's switches and auto power off are built from them (2026-11-27). Still to read and build: its press sensitivity (firmware 1.77 to 1.99 and 2.77 to 2.99) and fit test, the other tag-length-value models (D1105, D1102, D1203, D1204, D1406, D1407, D1302, D1303) and every other statement blocked that way.",
       "reported": "issue #76 (a user's Liberty Buds 2 on 0.18.0, 2026-11-25), triaged 2026-11-27"
     },
     {

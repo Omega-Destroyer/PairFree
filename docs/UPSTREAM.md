@@ -86,3 +86,10 @@ explicitly untested on hardware; this finding is also static vendor-app evidence
 | What | PairFree's evidence | Reported |
 |---|---|---|
 | BOS-RPC STATUS success: Earshot's BragiConnection accepts an absent or empty status body as success, and VirtualCrusher emits an empty STATUS. Skullcandy's SDK only recognizes a STATUS success when body byte 0 exists and equals zero; a missing byte follows its error path. Use the explicit success byte when building future PairFree support, pending contrary hardware evidence. | Skullcandy 5.0.6, `com/bragi/sdk/android/transport/rpc/l.invoke` (STATUS handling and getOrNull at payload offset 4); reference `app/src/main/kotlin/dev/earshot/bt/BragiConnection.kt` around 231-235 and `virtual/VirtualCrusher.kt` around 186-188; `docs/skullcandy/PROTOCOL.md` section 4 | No |
+
+## OpenSCQ30: the voice prompt of the V20i and V40i (A3876, A3878)
+
+OpenSCQ30 (commit bc77a29) sets `voice_prompt` on these with `01 90` (`common/modules/flag.rs`, `flag!(VoicePrompt)`). The Soundcore app 5.0.35 shows
+their "voice prompt" switch from the state byte its parser names the touch tone (`A3876AnalysisService`, `A3878AnalysisService`) and writes it as the touch
+tone, `01 83` (`A3876MoreDataProvider`, `SoundcoreMoreVM.sendTouchToneCmd`). PairFree follows the app. Not tried on the earbuds, so which of the two (or
+both) the earbuds take is not known.

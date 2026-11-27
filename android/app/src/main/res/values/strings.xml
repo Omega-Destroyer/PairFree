@@ -1457,6 +1457,9 @@
     <string name="setting_sc_press_normal">Normal</string>
     <string name="setting_sc_press_firm">Firm</string>
     <string name="setting_sc_press_firmest">Firmest</string>
+    <string name="setting_sc_mode_voice_prompt">Voice prompt when the sound mode changes</string>
+    <string name="setting_sc_voice_tone">Voice prompts</string>
+    <string name="setting_sc_battery_alert">Announce the battery level at power on</string>
     <string name="setting_sc_nc_double_press">Noise button pressed twice</string>
     <string name="setting_sc_mfb_hold">Multi-function button held</string>
     <string name="setting_sc_action_bass">Powerful bass on or off</string>

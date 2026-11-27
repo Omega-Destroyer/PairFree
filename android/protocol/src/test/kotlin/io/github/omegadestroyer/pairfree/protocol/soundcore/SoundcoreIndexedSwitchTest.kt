@@ -98,6 +98,23 @@ class SoundcoreIndexedSwitchTest {
         }
     }
 
+    /** The prompt switches of the Space headphones and the V20i, by the app's prompt screens (and OpenSCQ30 for `01 AE` and `01 AF`). */
+    @Test
+    fun voicePromptsAndTheBatteryNotice() {
+        fun write(model: String, key: String): String {
+            val s = SoundcoreSession(model)
+            s.receive(SoundcorePacket(SoundcoreCommand.STATE, ByteArray(255)))
+            return s.write(SettingChange.Toggle(key, true))
+        }
+        assertEquals("01 ae 01", write("A3035", "sc_mode_voice_prompt"))
+        assertEquals("01 af 01", write("A3035", "sc_battery_alert"))
+        assertEquals("01 ae 01", write("A3040", "sc_voice_prompt"))
+        assertEquals("01 af 01", write("A3040", "sc_battery_alert"))
+        assertEquals("01 ae 01", write("A3062", "sc_mode_voice_prompt"))
+        assertEquals("01 ae 01", write("D1402", "sc_mode_voice_prompt"))
+        assertEquals("01 83 01", write("A3876", "sc_voice_tone"))
+    }
+
     /** The older models keep their own commands. */
     @Test
     fun otherModelsAreUntouched() {

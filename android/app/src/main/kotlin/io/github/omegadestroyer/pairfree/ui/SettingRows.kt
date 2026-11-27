@@ -244,7 +244,7 @@ private fun LevelRow(setting: Setting.Level, onChange: (SettingChange) -> Unit) 
 
 /** The slider's centre for levels that run from one side to the other, such as balance. */
 private fun levelOrigin(setting: Setting.Level): Int =
-    if (setting.key == "balance" || setting.key == "clear_bass" || setting.key.startsWith("eq_")) (setting.min + setting.max) / 2 else setting.min
+    if (setting.key == "balance" || setting.key == "sc_volume_balance" || setting.key == "clear_bass" || setting.key.startsWith("eq_")) (setting.min + setting.max) / 2 else setting.min
 
 private const val SEND_AFTER_MS = 300L
 
@@ -438,6 +438,15 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_nc_double_press" -> stringResource(R.string.setting_sc_nc_double_press)
+    "sc_mfb_hold" -> stringResource(R.string.setting_sc_mfb_hold)
+    "sc_volume_balance" -> stringResource(R.string.setting_sc_volume_balance)
+    "sc_power_off_tone" -> stringResource(R.string.setting_sc_power_off_tone)
+    "sc_connect_tone" -> stringResource(R.string.setting_sc_connect_tone)
+    "sc_easy_chat" -> stringResource(R.string.setting_sc_easy_chat)
+    "sc_sound_field" -> stringResource(R.string.setting_sc_sound_field)
+    "sc_call_noise" -> stringResource(R.string.setting_sc_call_noise)
+    "sc_voice_pickup" -> stringResource(R.string.setting_sc_voice_pickup)
     "sc_in_ear_tone" -> stringResource(R.string.setting_sc_in_ear_tone)
     "sc_bass_up" -> stringResource(R.string.setting_sc_bass_up)
     "sc_spatial_audio" -> stringResource(R.string.setting_sc_spatial_audio)
@@ -1014,6 +1023,8 @@ private fun buttonTitle(key: String): String? {
 
 @Composable
 private fun settingNote(key: String): String? = when (key) {
+    "sc_easy_chat" -> stringResource(R.string.setting_sc_easy_chat_note)
+    "sc_call_noise" -> stringResource(R.string.setting_sc_call_noise_note)
     "bose_default_mode" -> stringResource(R.string.setting_bose_default_mode_note)
     "bose_modes_persist" -> stringResource(R.string.setting_bose_modes_persist_note)
     "bose_latency" -> stringResource(R.string.setting_bose_latency_note)
@@ -1258,7 +1269,16 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "assistant" -> R.string.setting_ca_assistant
         else -> R.string.action_none
     })
+    key == "sc_nc_double_press" || key == "sc_mfb_hold" -> getString(when (option) {
+        "bass" -> R.string.setting_sc_action_bass
+        "assistant" -> R.string.setting_ca_assistant
+        "nap" -> R.string.setting_sc_action_nap
+        else -> R.string.action_none
+    })
     key == "sc_press_sensitivity" -> getString(when (option) {
+        "low" -> R.string.setting_sc_press_low
+        "medium" -> R.string.setting_sc_press_medium
+        "high" -> R.string.setting_sc_press_high
         "softest" -> R.string.setting_sc_press_softest
         "soft" -> R.string.setting_sc_press_soft
         "normal" -> R.string.setting_sc_press_normal
@@ -1762,6 +1782,11 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
             value > middle -> stringResource(R.string.setting_balance_right, value - middle)
             else -> stringResource(R.string.setting_balance_middle)
         }
+    }
+    "sc_volume_balance" -> when {
+        value < 0 -> stringResource(R.string.setting_balance_left, -value)
+        value > 0 -> stringResource(R.string.setting_balance_right, value)
+        else -> stringResource(R.string.setting_balance_middle)
     }
     "balance" -> {
         val middle = max / 2

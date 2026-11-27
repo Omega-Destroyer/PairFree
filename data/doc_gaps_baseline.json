@@ -219,10 +219,6 @@
   },
   {
    "file": "docs/soundcore/PROTOCOL.md",
-   "line": "mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the"
-  },
-  {
-   "file": "docs/soundcore/PROTOCOL.md",
    "line": "(HearID). The A3909 and A3913 carry a transparency switch byte after the buttons that PairFree does not read."
   },
   {

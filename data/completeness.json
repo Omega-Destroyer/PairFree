@@ -791,6 +791,47 @@
       "status": "open",
       "what": "On a Tour Pro 3 the firmware reads 255.255.255 for a moment after a setting changes, and after some change the screens showed only the Speak to chat switch even after restarting the app; the cause is to be found in JblSession and JblHarmanKitRace (a read-back or reload that replaces the state with an empty one).",
       "reported": "issue #1 (comments of 2026-11-26, device report from 0.18.0)"
+    },
+    {
+      "id": "soundcore-ldac-switch-does-nothing",
+      "brand": "soundcore",
+      "models": [
+        "Liberty Buds 2 (D1206)",
+        "any model whose layout has no ldac field but whose earbuds send the LDAC notice"
+      ],
+      "status": "built",
+      "what": "The Liberty Buds 2 reads LDAC from record 27 bit 2 and writes 01 FF, and no model shows an LDAC or game mode switch from the earbuds' notice unless its state holds the field, with a test over every model (issue #76, 2026-11-27; not tried on the earbuds).",
+      "reported": "issue #76 (a user's Liberty Buds 2 on 0.18.0, 2026-11-25), triaged 2026-11-27"
+    },
+    {
+      "id": "soundcore-d1206-touch-actions",
+      "brand": "soundcore",
+      "models": [
+        "Liberty Buds 2 (D1206)"
+      ],
+      "status": "built",
+      "what": "The Liberty Buds 2's actions include Transparency (4) and 8 is the app's ambient sound switch, shown as noise control with its mode choices (issue #76, 2026-11-27; not tried on the earbuds).",
+      "reported": "issue #76 (a user's Liberty Buds 2 on 0.18.0, 2026-11-25), triaged 2026-11-27"
+    },
+    {
+      "id": "soundcore-d1206-ambient-cycle",
+      "brand": "soundcore",
+      "models": [
+        "Liberty Buds 2 (D1206) and the other models whose record 46 holds the cycle"
+      ],
+      "status": "built",
+      "what": "The Liberty Buds 2's four cycled modes (noise cancelling, transparency, normal, adaptive) are read from record 46 and written with 06 82 (issue #76, 2026-11-27; not tried on the earbuds).",
+      "reported": "issue #76 (a user's Liberty Buds 2 on 0.18.0, 2026-11-25), triaged 2026-11-27"
+    },
+    {
+      "id": "soundcore-stub-blockers-stale",
+      "brand": "soundcore",
+      "models": [
+        "the tag-length-value models and every Soundcore statement blocked on 'empty stubs'"
+      ],
+      "status": "open",
+      "what": "docs/soundcore/PROTOCOL.md blocks settings on method bodies being empty stubs in the restored app. The 2026-11-19 unpacker run (SOUNDCORE-unpacker-2026-11-19/fresh-run) restored the bodies (D1206MoreDataProvider is 231 lines of code) and none of those statements was re-read.",
+      "reported": "issue #76 (a user's Liberty Buds 2 on 0.18.0, 2026-11-25), triaged 2026-11-27"
     }
   ]
 }

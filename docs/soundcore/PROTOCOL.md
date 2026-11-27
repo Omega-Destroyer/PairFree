@@ -534,7 +534,7 @@ Source: `com/oceanwing/devicecmd/manager/l/n/a.java` (`A3953AnalysisService`) of
 | | 4 | health: sedentary reminder, sitting posture, abnormal heart rate alarm, its threshold |
 | (replies longer than 163 bytes) | 1+1 | device colour (one character) and press sensitivity |
 
-Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Not built yet for the model: the equalizer (the app writes `03 87` or `02 81`; the HearID part is 49 bytes here, not the 48 of the A3947's), the touch controls (the 24-byte button block), and the HearID and ANC tests. Nothing has been tried on a Liberty 4.
+Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Since built: the equalizer (`03 87`, the P40i's layout), HearID and the touch controls (the first 16 bytes of the button block, as the Liberty 4 NC's). Nothing has been tried on a Liberty 4.
 
 ## 14. The Soundcore app 5.0.35 (2026-11-15)
 
@@ -806,9 +806,8 @@ write; on plays the result (type 0), the custom result (type 1) or the result mi
 HearID parts (`CmmBtCmdService.Y`, `A3951DeviceManager.O1`). `03 81`, `03 82`, `03 84` are the same three actions on older models whose service does not
 override them; none of the four models above uses them.
 
-**Not built:** the music preference step the app offers after HearID 3, HearID 3 on the Liberty 4 (which has no equalizer in PairFree yet) and the Space 2,
-HearID 5 (Liberty 5 Pro), the Flutter test (Liberty 4 Pro family and Liberty 5), the A3909's older test, and the P41i, whose screen was not traced
-(open: data/completeness.json, `soundcore-hearid-other`). The app also measures the room's noise with the microphone before the test; PairFree asks no
+**Not built:** the music preference step the app offers after HearID 3, HearID 5 (Liberty 5 Pro), and the Flutter test (Liberty 4 Pro family and
+Liberty 5) (open: data/completeness.json, `soundcore-hearid-other`). The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
 microphone permission.
 
 ## Charging cases (2026-11-27)
@@ -839,5 +838,11 @@ Putting a picture of your own on the Liberty 5 Pro's case screen: blocked: it go
 code here calls; checked: `D1302AmbienceManager`, `A6610WhiteNoiseApi`. The file commands `18 70` to `18 77` have no caller in the app (`BoxSppDeviceManager`
 `R0` to `Y0`).
 
-**Not built:** the case screen's picture order (`FA 02`) and voice language on the Liberty 5 Pro, and the Sleep case's breathing exercise (open:
-data/completeness.json, `soundcore-case-rest`).
+Removing pictures from the case screen: blocked: they are named by the ids of Anker's server list; checked: `A3956CustomPicPersonVM` (`WallPaperApi`).
+The breathing exercise: blocked: its sounds are downloaded from Anker's server; checked: `BreatheAudioDownloadManager`. The app has no voice language control
+for the Liberty 5 Pro: it sets it itself (`A3956MainActivity.setVoiceLanguage`).
+
+**The oldest test** (A3909, A3910, A3913; `BaseHearIdVM`, `A3909HearIdM`): seven steady tones in each ear, 6.4 kHz down to 100 Hz, from -75, -75, -70, -75,
+-70, -60, -55 dB (A3910 -73, -80, -70, -70, -63, -55, -52; A3913 -75, -75, -70, -72, -67, -55, -55), 6 dB up to start; the same staircase. Each ear is moved
+against its own 1.6 kHz result. The result is `03 82` [gender][age][left 8][right 8][time, high byte first] in whole values (12 flat; the eighth is 12), the
+switch `03 81 [on]`, delete `03 84` (`A3909DeviceManager`).

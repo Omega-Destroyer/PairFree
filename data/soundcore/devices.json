@@ -3239,15 +3239,91 @@
           "offset": 0
         }
       },
+      "eq": {
+        "write": "a3955",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_long",
+              "right_long",
+              "left_triple",
+              "right_triple"
+            ],
+            "presses": {
+              "single": {
+                "id": 2,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              }
+            }
+          }
+        ],
+        "reset": true
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
         ["equalizer", 22],
-        ["skip", 49],
+        ["hear_id_status", 1],
+        ["custom_hear_id", 48],
         ["skip", 1],
-        ["skip", 24],
+        ["buttons", 16],
+        ["skip", 8],
         ["sound_mode_cycle", 1],
         ["sound_modes", 6],
         ["skip", 4],
@@ -3288,10 +3364,11 @@
           "in_ear_tone",
           "low_battery_prompt",
           "ambient_sound_prompt",
-          "press_sensitivity"
+          "press_sensitivity",
+          "button_configuration"
         ]
       },
-      "notes": "Read from Soundcore 3.3.0's A3953AnalysisService (docs/soundcore/PROTOCOL.md, the A3953 section), not from OpenSCQ30 or a recording. The HearID block (49 bytes), the button block (24 bytes, preceded by its length byte) and the personalised ANC test fields are skipped: the equalizer and touch controls are not built yet. The reply is at least 163 bytes; spatial audio, the health block, the colour and press sensitivity come after that on longer replies."
+      "notes": "Read from Soundcore 3.3.0's A3953AnalysisService (docs/soundcore/PROTOCOL.md, the A3953 section), not from OpenSCQ30 or a recording. Touch controls are the first 16 bytes of the button block, as the Liberty 4 NC's (`A3953AnalysisService.T0`, written with `04 81` and `04 83`); the other 8 bytes of the block and the personalised ANC test fields are skipped. The equalizer is written as 5.0.35 writes it (`CmmBtCmdService.t6`/`p6`, the P40i's layout), with the HearID block after the age byte; not tried. The reply is at least 163 bytes; spatial audio, the health block, the colour and press sensitivity come after that on longer replies."
     },
     {
       "model": "A3954",
@@ -6570,6 +6647,30 @@
           "serial_number_and_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3035",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3035",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 1,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
       "state": [
         ["single_battery", 2],
         ["firmware", 5],
@@ -6592,7 +6693,7 @@
         ["optional:wearing_detection", 1],
         ["optional:audio_wakeup", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1402AnalysisService.e1 and D1402CmdService), not from OpenSCQ30 and not tried on the headphones. Its head is the Space One Pro's (A3062) up to the HearID block; its button block (five bytes) and the tail are its own: after the six noise mode bytes come the colour, a 3D mode, easy chat (switch and time), the ambient sound notice, the power-on battery notice, LDAC, dual connections, the auto power off switch and index, and the hearing protection (switch, limit, third byte). Shown: the noise mode (its six-byte write is the Space One Pro's), LDAC, dual connections, auto power off and the high volume limit. Not offered: the equalizer (its command service has no HearID write), the one-button controls (single, double and long press as raw bytes) and the records after the hearing protection. No battery scale is shown: the parser does not give one.",
+      "notes": "Read from the Soundcore app 5.0.35 (D1402AnalysisService.e1 and D1402CmdService), not from OpenSCQ30 and not tried on the headphones. Its head is the Space One Pro's (A3062) up to the HearID block; its button block (five bytes) and the tail are its own: after the six noise mode bytes come the colour, a 3D mode, easy chat (switch and time), the ambient sound notice, the power-on battery notice, LDAC, dual connections, the auto power off switch and index, and the hearing protection (switch, limit, third byte). Shown: the noise mode (its six-byte write is the Space One Pro's), LDAC, dual connections, auto power off and the high volume limit. The equalizer is written as the Space One's (`CmmBtCmdService.o6`, one curve, smoothed), with preset position 2 sent as 32382 (Bass Booster); not tried. Not offered: the one-button controls (single, double and long press as raw bytes) and the records after the hearing protection. No battery scale is shown: the parser does not give one.",
       "kind": "headphones"
     },
     {

@@ -92,9 +92,11 @@ public class SoundcoreHearingSpec private constructor(
                 listOf(-75, -64, -72, -71, -69, -59, -54, -72), listOf(6, 0, 6, 0, 3, 6, 6, 6),
             )
             "A3952" -> spec(model, Style.BEEPS, 10, listOf(-27, -19, -25, -22, -22, -17, -14, -25))
-            "A3035", "A3040", "A3947", "A3955", "A3968" -> spec(model, Style.CHOSEN, 10, listOf(-38, -39, -39, -34, -25, -25, -44, -39))
+            "A3035", "A3040", "A3947", "A3953", "A3955", "A3968" -> spec(model, Style.CHOSEN, 10, listOf(-38, -39, -39, -34, -25, -25, -44, -39))
             // The Space One Pro's own levels (`A3062ProductModel.getHearIdVolumeCurve`; its half dB is rounded to the louder).
             "A3062" -> spec(model, Style.CHOSEN, 10, listOf(-32, -32, -20, -36, -30, -28, -30, -24))
+            // The Space 2's (`D1402ProductModel`).
+            "D1402" -> spec(model, Style.CHOSEN, 10, listOf(-38, -37, -17, -38, -36, -29, -29, -32))
             else -> null
         }
     }
@@ -368,7 +370,8 @@ public object SoundcoreHearingId {
     }
 
     private fun held(model: String, state: SoundcoreState?): Held? {
-        if (state == null || SoundcoreHearingSpec.of(model) == null) return null
+        // The P41i has no test in its app but holds and switches a result.
+        if (state == null || (SoundcoreHearingSpec.of(model) == null && model != "A3937")) return null
         val eq = SoundcoreEqSpec.of(model) ?: return null
         val layout = eq.hearId ?: return null
         val config = SoundcoreEqualizer.read(eq, state) ?: return null

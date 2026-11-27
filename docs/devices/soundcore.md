@@ -9,7 +9,8 @@ model's writes are confirmed. The Space A40 has been tried with PairFree by the 
 the AeroClip and the Sleep A20 by users, the Sleep A20 with a recording of the Soundcore app; the
 other settings come next.
 
-On the Space A40, Liberty Air 2 Pro, Liberty 2 Pro+, Liberty 3 Pro, Space One, Space Q45, Space One Pro, Liberty 4 NC, P40i and Sport X20 the Sound tab also runs Soundcore's HearID hearing test and puts the result on the
+On the Space A40, Liberty Air 2 Pro, Liberty 2 Pro+, Liberty 2 Pro, Liberty 2, Liberty Air 2, Liberty 3 Pro, Liberty 4, Liberty 4 NC, Space One, Space Q45,
+Space One Pro, Space 2, P40i and Sport X20 the Sound tab also runs Soundcore's HearID hearing test and puts the result on the
 earbuds, with a switch for it and a way to delete it. It has not been tried on earbuds.
 
 The charging cases of the Liberty 5 Pro, Liberty 5 Pro Max and Sleep Earbuds 4 Pro are reached over their own Bluetooth link: PairFree sets their clock, and
@@ -70,7 +71,7 @@ protocol (one request returns its state) and shows its battery, vibration and vo
 <tr><td>Liberty 2 Pro</td><td>A3909</td><td>Checked</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Liberty 2 Pro+</td><td>A3930</td><td>Checked</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
 <tr><td>Liberty 3 Pro</td><td>A3952</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>Liberty 4</td><td>A3953</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td></tr>
+<tr><td>Liberty 4</td><td>A3953</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td></tr>
 <tr><td>Liberty 4 NC</td><td>A3947</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>Liberty 4 Pro</td><td>A3954</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Checked</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td></tr>
 <tr><td>Liberty 5</td><td>A3957</td><td>Checked</td><td>Each earbud, case</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
@@ -126,6 +127,6 @@ protocol (one request returns its state) and shows its battery, vibration and vo
 <tr><td>soundcore V40i</td><td>A3878</td><td>Not tested</td><td>Each earbud</td><td>—</td><td>✅ Not tested</td><td>—</td><td>✅ Not tested</td><td>✅</td><td>—</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
 <tr><td>Vortex</td><td>A3031</td><td>Not tested</td><td>Each earbud</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
 <tr><td>VR P10</td><td>A3850</td><td>Checked</td><td>Each earbud</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr><td>Space 2</td><td>D1402</td><td>Not tested</td><td>One</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
+<tr><td>Space 2</td><td>D1402</td><td>Not tested</td><td>One</td><td>✅</td><td>✅ Not tested</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td></tr>
 </table>
 <!-- soundcore-table:end -->

@@ -885,16 +885,6 @@
       "reported": "read of the settings screens, 2026-11-27"
     },
     {
-      "id": "soundcore-case-rest",
-      "brand": "soundcore",
-      "models": [
-        "Liberty 5 Pro (D1203), Liberty 5 Pro Max (D1204), Sleep Earbuds 4 Pro (D1302)"
-      ],
-      "status": "open",
-      "what": "The case screen's picture order (FA 02, A3956CustomPicPersonVM) and voice language (A3956MainActivity.setVoiceLanguage, protected in 5.0.35) on the Liberty 5 Pro; the Sleep case's breathing exercise (D1302BreatheTrainingActivity, 07 11).",
-      "reported": "the case link worked through, 2026-11-27"
-    },
-    {
       "id": "soundcore-case-picture",
       "brand": "soundcore",
       "models": [
@@ -945,6 +935,124 @@
       ]
     },
     {
+      "id": "soundcore-case-picture-delete",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 5 Pro, Liberty 5 Pro Max"
+      ],
+      "status": "blocked",
+      "what": "Removing pictures from the case screen (FA 02). The app names them by the ids of the list it gets from Anker's server.",
+      "reported": "the case link worked through, 2026-11-27",
+      "rule": "no code calls any brand's servers",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/viewmodel/A3956CustomPicPersonVM.java",
+          "what": "the ids to delete come from the WallPaperApi list"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/viewmodel",
+          "glob": "A3956CustomPicPersonVM\\.java$",
+          "pattern": "WallPaperApi",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-case-breathing",
+      "brand": "soundcore",
+      "models": [
+        "Sleep Earbuds 4 Pro (D1302)"
+      ],
+      "status": "blocked",
+      "what": "The breathing exercise. Its sounds are downloaded from Anker's server.",
+      "reported": "the case link worked through, 2026-11-27",
+      "rule": "no code calls any brand's servers",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager/BreatheAudioDownloadManager.java",
+          "what": "downloads /sleep/breath/*.mp3 from Anker's hosts"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager",
+          "glob": "BreatheAudioDownloadManager\\.java$",
+          "pattern": "sleep/breath",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-case-language",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 5 Pro"
+      ],
+      "status": "not-applicable",
+      "what": "A voice language setting. The app has no control for it: it sets the language itself after reading the earbuds' state.",
+      "reported": "the case link worked through, 2026-11-27",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/A3956MainActivity$eventAdapter$1.java",
+          "what": "setVoiceLanguage is called from getDeviceInfoCallback, not from a row"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/more/A3956MoreDataProvider.java",
+          "what": "no language row"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/more",
+          "glob": "A3956MoreDataProvider\\.java$",
+          "pattern": "(?i)language",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956",
+          "glob": "A3956MainActivity\\$eventAdapter\\$1\\.java$",
+          "pattern": "setVoiceLanguage",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-hearid-p41i-test",
+      "brand": "soundcore",
+      "models": [
+        "P41i (A3937)"
+      ],
+      "status": "not-applicable",
+      "what": "A hearing test on the P41i. Its sound screen lists HearID, but its data provider does not open any test for it (the P40i's does); a stored result can only be switched, which PairFree does.",
+      "reported": "HearID worked through, 2026-11-27",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3937/provider/A3937SoundEffectsDataProvider.java",
+          "what": "no actionNext: the base one returns false"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3955/provider/A3955SoundEffectsDataProvider.java",
+          "what": "the P40i's actionNext opens A3953HearIdDataActivity"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3937/provider",
+          "glob": "A3937SoundEffectsDataProvider\\.java$",
+          "pattern": "actionNext",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3955/provider",
+          "glob": "A3955SoundEffectsDataProvider\\.java$",
+          "pattern": "A3953HearIdDataActivity",
+          "expect": "some"
+        }
+      ]
+    },
+    {
       "id": "soundcore-sleep-earbuds-4-sounds",
       "brand": "soundcore",
       "models": [
@@ -965,6 +1073,17 @@
       "reported": "the audit added for issue #79, 2026-11-27"
     },
     {
+      "id": "soundcore-liberty4-space2-eq",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 4 (A3953)",
+        "Space 2 (D1402)"
+      ],
+      "status": "built",
+      "what": "The equalizer of the Liberty 4 and the Space 2 and the Liberty 4's touch controls, which their notes had left unbuilt without a registry entry. Built 2026-11-27, not tried.",
+      "reported": "HearID worked through, 2026-11-27"
+    },
+    {
       "id": "soundcore-hearid",
       "brand": "soundcore",
       "models": [
@@ -977,20 +1096,25 @@
         "P40i (A3955)",
         "Sport X20 (A3968)",
         "Space Q45 (A3040)",
-        "Space One Pro (A3062)"
+        "Space One Pro (A3062)",
+        "Liberty 2 Pro (A3909)",
+        "Liberty Air 2 (A3910)",
+        "Liberty 2 (A3913)",
+        "Liberty 4 (A3953)",
+        "Space 2 (D1402)"
       ],
       "status": "built",
-      "what": "HearID on ten models: the older test on four and HearID 3 on six (03 83, the app's tones and correction), writing the result, switching it and deleting it (03 87). Not tried on earbuds. The rest is soundcore-hearid-other.",
+      "what": "HearID on fifteen models: the oldest test on three, the older test on four and HearID 3 on eight (the app's tones and correction), writing the result, switching it and deleting it. Not tried on earbuds. The rest is soundcore-hearid-other.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {
       "id": "soundcore-hearid-other",
       "brand": "soundcore",
       "models": [
-        "Liberty 4 (A3953), Space 2 (D1402), Liberty 5 Pro, Liberty 4 Pro family and Liberty 5, A3909 family, P41i (A3937)"
+        "Liberty 5 Pro, Liberty 4 Pro family and Liberty 5; the music preference step on the HearID 3 models; the P41i (A3937)"
       ],
       "status": "open",
-      "what": "Left of HearID: the music preference step after HearID 3 (A3953HearIdPreferenceActivity; whether it needs the app's own music is not settled); HearID 3 on the A3953 (needs its equalizer first) and D1402; HearID 5 (A3875, libhid_app.so); the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones); the A3909's test (BaseHearIdActivity); the P41i (which screen it launches was not traced).",
+      "what": "Left of HearID: the music preference step after HearID 3 (A3953HearIdPreferenceActivity; whether it needs the app's own music is not settled); HearID 5 (A3875, libhid_app.so); the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones).",
       "reported": "HearID worked through, 2026-11-27"
     },
     {

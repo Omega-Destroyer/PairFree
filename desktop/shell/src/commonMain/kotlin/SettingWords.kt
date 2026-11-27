@@ -61,6 +61,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_limit" -> "setting_hearing_protection"
             "ca_touch" -> "setting_ca_touch_actions"
             "ca_connection" -> "connection"
             "oneplus_sound_switches" -> "setting_group_sound"
@@ -187,6 +188,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_volume_limit" -> t("setting_sc_volume_limit")
+        "sc_volume_limit_db" -> t("setting_sc_volume_limit_db")
         "sc_mode_voice_prompt", "sc_voice_prompt" -> t("setting_sc_mode_voice_prompt")
         "sc_voice_tone" -> t("setting_sc_voice_tone")
         "sc_battery_alert" -> t("setting_sc_battery_alert")
@@ -1527,6 +1530,7 @@ class SettingWords(private val strings: DesktopStrings) {
                 else -> t("setting_balance_middle")
             }
         }
+        "sc_volume_limit_db", "a3954_volume_limit_db" -> t("db", value.toString())
         "sc_volume_balance" -> when {
             value < 0 -> t("setting_balance_left", -value)
             value > 0 -> t("setting_balance_right", value)

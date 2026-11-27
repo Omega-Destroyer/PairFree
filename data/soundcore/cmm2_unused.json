@@ -65,7 +65,6 @@
   "1087": "gap-audit 2026-11-27: in the app's table (setThreeDEffectModeCallback), not in PairFree's",
   "2003": "gap-audit 2026-11-27: in the app's table (getHearProtectCurDbCallBack), not in PairFree's",
   "2081": "gap-audit 2026-11-27: in the app's table (setHearProtectUpdateFrequencyCallBack), not in PairFree's",
-  "2082": "gap-audit 2026-11-27: in the app's table (setHearProtectMaxValueCallBack), not in PairFree's",
   "2084": "gap-audit 2026-11-27: in the app's table (getWearCheckTestCallBack), not in PairFree's",
   "2086": "gap-audit 2026-11-27: in the app's table (setHearProtectCallBack), not in PairFree's",
   "ff01": "gap-audit 2026-11-27: in the app's table (getBetaDataCollectionCallback), not in PairFree's",

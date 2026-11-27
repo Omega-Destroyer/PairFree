@@ -115,6 +115,20 @@ class SoundcoreIndexedSwitchTest {
         assertEquals("01 83 01", write("A3876", "sc_voice_tone"))
     }
 
+    /** The high volume limit of the models with a hearing protection screen: `20 82`, the switch and the dB, in steps of 5. */
+    @Test
+    fun theVolumeLimit() {
+        val s = SoundcoreSession("A3040")
+        val body = ByteArray(255)
+        val (at, _) = SoundcoreLayout.of("A3040")!!.locate("limit_high_volume")!!
+        byteArrayOf(1, 80, 0).copyInto(body, at)
+        s.receive(SoundcorePacket(SoundcoreCommand.STATE, body))
+        assertEquals(Setting.Level("sc_volume_limit_db", 80, 75, 100), s.rows()["sc_volume_limit_db"])
+        assertEquals("20 82 01 55", s.write(SettingChange.Level("sc_volume_limit_db", 81)))
+        assertEquals("20 82 01 50", s.write(SettingChange.Level("sc_volume_limit_db", 84)))
+        assertEquals("20 82 00 50", s.write(SettingChange.Toggle("sc_volume_limit", false)))
+    }
+
     /** The older models keep their own commands. */
     @Test
     fun otherModelsAreUntouched() {

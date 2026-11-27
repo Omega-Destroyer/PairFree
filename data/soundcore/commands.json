@@ -151,6 +151,8 @@
      "note": "The voice prompt when the sound mode changes on the Space One, Space One Pro, Space Q45 and Space 2 (`CmmBtCmdService.R4`, their prompt screens; OpenSCQ30 sends the same). Body: 1 on, 0 off."},
     {"id": "power_on_battery_notice", "command": "01AF", "source": "soundcore_app",
      "note": "The battery level announced when the headphones are switched on (`CmmBtCmdService.n4`; the Space One, Space Q45 and Space 2). Body: 1 on, 0 off. OpenSCQ30 calls it the low battery prompt. PairFree 0.18.0 and earlier sent the Q45 10 82, which its app does not."},
+    {"id": "volume_limit", "command": "2082", "source": "soundcore_app",
+     "note": "The high volume limit: body 1 on or 0 off, then the limit in dB, 75 to 100 (`CmmBtCmdService.o2`; the hearing protection screens). The Liberty 4 Pro's write has a third byte. State field limit_high_volume: switch, dB, the app's reading interval."},
     {"id": "press_sensitivity", "command": "0485", "source": "soundcore_app",
      "note": "Body: one byte, the level. Soundcore 3.3.0 04 85 (`setCustomPressSensitivityCallback`; the A3953's press sensitivity screen)."},
     {"id": "smart_play", "command": "01AA", "source": "soundcore_app",

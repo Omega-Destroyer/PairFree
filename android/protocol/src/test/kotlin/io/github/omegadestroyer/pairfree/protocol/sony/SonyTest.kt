@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.sony
 
+import io.github.omegadestroyer.pairfree.protocol.deadControls
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Form
@@ -816,5 +817,14 @@ class SonySessionTest {
         s.receive(message(0x25, 0x01, 69, 0, 60, 0))
         assertArrayEquals(byteArrayOf(0x23, 0x01, 70, 0, 60, 0), s.replies["1 23 01"])
         assertArrayEquals(byteArrayOf(0x25, 0x01, 69, 0, 60, 0), s.replies["1 25 01"])
+    }
+
+    /** Every control shown from this brand's test states writes something (ShownControls.kt). */
+    @Test
+    fun everyShownControlWrites() {
+        val every = (0x00..0xFF).toList().toIntArray()
+        for ((name, make) in listOf<Pair<String, () -> SonySession>>("set 1" to { set1(*every.copyOf(100)) }, "set 2" to { set2(*every.copyOf(100)) })) {
+            assertEquals(emptyList<String>(), deadControls(name, make, { it.state }, { it.groups }, { s, c, v -> s.set(c, v) }, { s, c -> s.change(c) }))
+        }
     }
 }

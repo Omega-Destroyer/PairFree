@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.bose
 
+import io.github.omegadestroyer.pairfree.protocol.deadControls
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Form
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -423,5 +424,11 @@ class BoseTest {
         )
         // the phone's own entry cannot be reached by a change
         assertNull(s.change(SettingChange.Choice(BoseSession.KEY_PEER_DELETE, "Phone")))
+    }
+
+    /** Every control shown from this brand's test states writes something (ShownControls.kt). */
+    @Test
+    fun everyShownControlWrites() {
+        assertEquals(emptyList<String>(), deadControls("QC Ultra 2", ::ultra2, { it.state }, { it.groups }, { _, _, _ -> null }, { s, c -> s.change(c) }))
     }
 }

@@ -6,7 +6,7 @@
   "0113": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0114": "a read of the current listening mode, which the state reply holds; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0115": "a read of whether the sound is playing, used by the app home screens; PairFree offers play and pause without it; checked: its callers, 2026-11-27",
-  "01a4": "gap-audit 2026-11-27: open, data/completeness.json soundcore-sleep-a10-sounds",
+  "01a4": "blocked: the sound is sent by the firmware updater (A6610WqOtaUpgrade), which is never sent; checked: A6610OtaActivity, A6610WhiteNoiseApi, 2026-11-27",
   "01ad": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "01b0": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0201": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",

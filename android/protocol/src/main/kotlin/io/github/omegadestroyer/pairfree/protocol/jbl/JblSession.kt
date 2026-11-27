@@ -420,7 +420,7 @@ public class JblSession(initial: JblModel) {
             _replies["p4." + id.toString(16).padStart(4, '0')] = v.copyOf()
             when (id) {
                 JblP4.FEATURE_PRODUCT_ID -> if (v.size >= 2) productIdIs(JblP4Packet.u16(v, 0))
-                JblP4.FEATURE_FIRMWARE -> firmware = v.joinToString(".") { (it.toInt() and 0xFF).toString() }
+                JblP4.FEATURE_FIRMWARE -> versionIs(v.map { it.toInt() and 0xFF })
                 JblP4.FEATURE_BATTERY_LEFT -> p4Battery(Command.BATTERY_LEFT, v)
                 JblP4.FEATURE_BATTERY_RIGHT -> if (model.form != Form.HEADPHONES) p4Battery(Command.BATTERY_RIGHT, v)
                 JblP4.FEATURE_BATTERY_CASE -> if (model.form != Form.HEADPHONES) p4Battery(Command.BATTERY_CASE, v)
@@ -465,7 +465,7 @@ public class JblSession(initial: JblModel) {
             for (i in INFO_MAC until minOf(INFO_MAC + MAC_BYTES, r.size)) r[i] = 0
         }
         if (p.size >= INFO_PID + 2) productIdIs((p.u8(INFO_PID + 1) shl 8) or p.u8(INFO_PID))
-        if (p.size >= INFO_FIRMWARE + 3) firmware = "${p.u8(INFO_FIRMWARE)}.${p.u8(INFO_FIRMWARE + 1)}.${p.u8(INFO_FIRMWARE + 2)}"
+        if (p.size >= INFO_FIRMWARE + 3) versionIs(listOf(p.u8(INFO_FIRMWARE), p.u8(INFO_FIRMWARE + 1), p.u8(INFO_FIRMWARE + 2)))
     }
 
     /** A status reply: the type, then its values (JBL's HandleParse.parseDevStatus and parseDeviceAllStatus). */
@@ -572,7 +572,7 @@ public class JblSession(initial: JblModel) {
         _replies[key(JblCommand.FEATURE, id)] = v.copyOf()
         when (id) {
             JblFeature.PRODUCT_ID -> if (v.size >= 2) productIdIs((v.u8(1) shl 8) or v.u8(0))
-            JblFeature.FIRMWARE -> if (v.size >= 3) firmware = "${v.u8(0)}.${v.u8(1)}.${v.u8(2)}"
+            JblFeature.FIRMWARE -> if (v.size >= 3) versionIs(listOf(v.u8(0), v.u8(1), v.u8(2)))
             JblFeature.AUTO_OFF -> if (v.size >= 3) {
                 autoOffOn = v.u8(0) == 1
                 autoOffMinutes = v.u8(1) or (v.u8(2) shl 8)
@@ -590,6 +590,11 @@ public class JblSession(initial: JblModel) {
     private fun unitBattery(command: Command, v: ByteArray) {
         if (v.size < 2) return
         state = state.copy(values = state.values + (command to Value.Number(level(v.u8(1)))))
+    }
+
+    /** The firmware from its bytes; every byte FF means the earbuds have none to give for the moment (a Tour Pro 3 after a change, issue #1), so the last version stays. */
+    private fun versionIs(bytes: List<Int>) {
+        if (bytes.isNotEmpty() && bytes.any { it != 0xFF }) firmware = bytes.joinToString(".")
     }
 
     /** The product id names the model where two share a name; a model of another kind is read afresh. */

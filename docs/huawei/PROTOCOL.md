@@ -191,13 +191,16 @@ performed and no source-derived example is represented as a capture.
 | --- | --- | --- |
 | Walrus double tap | 01 20 / 01 1F | Read tags 1, 2, 3. Tags 1 and 2 address the sides. Use tag 3's advertised list. Both 2 and 4 mean next track. Both 7 and 8 mean previous track. |
 | Walrus long press | 2B 17 / 2B 16 | Read tags 1, 2, 3. The vendor writes tag 2. Values 3, 5, 6 and 9 select combinations of off, ANC and awareness. FF disables the gesture. Use the reported list. |
+| Nile shared hold | 2B 17 / 2B 16 | Read tags 1, 2, 3. Prefer the shared setting in reply tag 2 as the APK does, with tag 1 as a fallback for later firmware. Write tag 1. Codes 3, 5, 6, 9 and FF match the Walrus meanings. |
 | Nile ANC | 2B 05 or 2B 2A / 2B 04 | Both use mode IDs 0, 1, 2. The former uses the scalar write. The latter uses mode and level. |
 | Eyewear battery | 01 08 | Request tags 1, 2, 3. Tag 2 holds the two temple levels and case. AI Life displays the smaller temple level. The first generation displays case battery. |
 | Eyewear language | 0C 02 / 0C 01 | Read tags 1, 2, 3. Change to a locale from the reported list with tag 1 alone. |
-| Eyewear II double tap | 01 20 / 01 1F | Request tag 3. Each side uses its tag 1/2. Actions 0 assistant, 1 play/pause, FF none. |
+| Eyewear and Eyewear II double tap | 01 20 / 01 1F | Request tag 3. Each side uses its tag 1/2. Actions 0 assistant, 1 play/pause, FF none. |
 | Eyewear II swipe | 2B 1F / 2B 1E | Side tags 1/2. Actions 0 volume, 1 track, FF none. |
-| Eyewear II hold | 2B 21 / 2B 20 | Tag 1. Actions 0 face-to-face translation, 1 voice memo, 2 pairing, FF none. |
-| Eyewear II switches | 2B 0F/0E, 11/10, 1D/1C, 23/22 | Boolean tag 1 for greeting, wear detection, power saving and intelligent volume, respectively. |
+| Eyewear II short press | 2B 21 / 2B 20 | Tag 1. Actions 0 face-to-face translation, 1 voice memo, 2 pairing, FF none. |
+| Eyewear II call hold | 2B 17 / 2B 16 | Request tags 1, 2 and 3. Left tag 1 uses 9 reject call and FF none. |
+| Eyewear and Eyewear II switches | 2B 0F/0E, 11/10 | Boolean tag 1 for greeting and wear detection. |
+| Eyewear II switches | 2B 1D/1C, 23/22 | Boolean tag 1 for power saving and intelligent volume. |
 | Modern pinch | 2B 93 / 2B 92 | Tags 1, 2 identify gesture and scene. Side actions are tags 3, 4. Call and playback writes address both sides together. Hold addresses one side. |
 | Modern keyed settings | 2B B4 | Tag 1 key, tag 2 state. Keys 2 adaptive volume, 5 single-ear ANC, 7 drop detection, 11 head control and 27 conversation awareness. |
 | Adaptive awareness on Pro 5 | 2B 2A / 2B 04 | Mode 2, submode 4. Read the slider in tag 2. The slider write carries [2,4] in tag 1, value 1 in tag 3 and level 0?10 in tag 4. |
@@ -209,8 +212,10 @@ Studio's double-tap, hold and slide cards animate the built-in controls. Its qua
 
 The outer APK's Eyewear builders and parsers are in com/huawei/perrier/ota/spp. See ProtocolAPI,
 C1484 and AppParseDataHandleHelper for battery, language and settings, and fiji/touchsettings
-for gesture choices. Eyewear II's HD recording uses the phone's Bluetooth metadata API under
-key 10011. Walrus wear detection uses the phone's BtTwsWearDetectionEx class.
+for gesture choices. Both generations also expose double tap, greeting and wear detection through
+their respective DeviceSettingActivity routes. The device-backed wear path is explicit even
+when the outer app also updates a Huawei phone preference. Eyewear II's HD recording uses the
+phone's Bluetooth metadata API under key 10011.
 
 PairFree requests only tag 2 of 2B 4A. Some firmware, including the captured FreeBuds 5,
 requires the single-tag query. Replies can carry the current ID in tag 2, available IDs in tag 3,
@@ -219,6 +224,26 @@ a 24-byte name field. The implemented EQ grid is 60, 125, 250, 500, 1000, 2000, 
 and 16000 Hz, ?6 dB in signed tenths. The custom write order is 1, 2, 5, 3, 4, with operation 1
 for the save profiles and 0 for FreeBuds 7i. Pro 3 preset IDs use the published 02 03 05 09 response.
 [LibreBuds protocol and captures](https://github.com/librebuds/librebuds/tree/c7b0833) ? [HuaweiPods EQ codec](https://github.com/Nshpiter/HuaweiPods/blob/e2cf07e/app/src/main/java/moe/chenxy/huaweipods/pods/HuaweiEqualizerCodec.kt)
+
+## 9. Supplied APK scope and gaps
+
+Checked the outer APK's manifests, DEX files, local product profiles and the embedded Smart Audio
+JAR. The active audio screens reach their settings through the Java MBB builders or the phone
+APIs below. The ARM64 and ARMv7 dynamic symbol tables show no audio-control JNI exports. The two
+nativeloader binaries lack dynamic symbol sections, and the audited settings paths call no native
+loader methods. The reference folder supplies AI Life 11.0.2.305 as one complete APK.
+
+| Area | What the APK establishes |
+| --- | --- |
+| FreeGO | Cm530DetailActivity, LuteDetailPresenter and lute_activity_main show battery and connection state. The action panel offers firmware and help. AccessoryDeviceSettingActivity is shared device management. The bundle provides no speaker EQ, power mode or sound-mode selector for CM530. |
+| Wear detection on Walrus, Roc and Mermaid | The model wear activities call the Huawei phone class BtTwsWearDetectionEx. A portable MBB alternative for Walrus and Mermaid needs firmware evidence. The Studio profile has an independent wear-control reference. |
+| Roc sound quality | RocQualityModeModel reads BluetoothA2dp.getCodecStatus and writes setCodecConfigPreference on the host. The app trace gives no MBB equivalent for Studio. |
+| HD recording | MermaidHDRecordingActivity calls accessory.utils.ag. Both it and Fiji's HDRecordActivity use phone Bluetooth metadata 10011. A portable device write needs external evidence. |
+| Finding | The Studio and FreeBuds Pro panels open the Huawei find-my-phone app. PairFree's independent ring support for newer products uses a separate local command. |
+| Mermaid's archived smart-noise UI | The plugin manifest names three Mermaid noise activities whose class descriptors are absent from the outer and plugin DEX files. BaseNoiseControlActivity and BaseHeadsetSwitchActivity remain in the DEX without a reachable product-panel entry. The presenter forwards the smart strength and voice fields to BaseAudioDevice's empty three-argument method. Capture evidence is needed before giving those values a wire layout. |
+| Eyewear preferences | A fixed voice language is an MBB write. Follow system is an AI Life preference that sends the phone's locale on reconnect. The main screen also sends its clock as device-management command 01 05 with epoch seconds and signed UTC offset. These are app-managed behaviors. |
+| Later audio panels | The supplied bundle has no device route for the later fit-test, spatial audio, case-tone, multi-device centre or extended EQ panels. Their model matrices remain open for newer vendor artifacts and captures. |
+
 
 See [the model audit](MODELS.md) for remaining features and [implementation](IMPLEMENTATION.md)
 for PairFree validation.

@@ -623,6 +623,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "hw_glasses_double_left" -> stringResource(R.string.setting_hw_glasses_double_left)
     "hw_glasses_double_right" -> stringResource(R.string.setting_hw_glasses_double_right)
     "hw_touch_enabled" -> stringResource(R.string.setting_hw_touch_enabled)
+    "hw_glasses_press" -> stringResource(R.string.setting_hw_glasses_press)
     "hw_glasses_hold" -> stringResource(R.string.setting_hw_glasses_hold)
     "hw_swipe_left" -> stringResource(R.string.setting_hw_swipe_left)
     "hw_swipe_right" -> stringResource(R.string.setting_hw_swipe_right)

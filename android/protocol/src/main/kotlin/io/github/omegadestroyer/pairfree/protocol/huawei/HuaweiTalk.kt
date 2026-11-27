@@ -43,14 +43,15 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         for ((read, rows) in controls.groupBy(HuaweiControl::read)) {
             val tags = when (read) {
                 0x0120 -> when {
-                    product.has("fiji") -> intArrayOf(3)
+                    product.has("eyewear") -> intArrayOf(3)
                     product.has("walrus_tap") || product.has("power_tap_list") -> intArrayOf(1, 2, 3)
                     else -> intArrayOf(1, 2)
                 }
                 0x2b21 -> intArrayOf(1, 2, 3)
                 0x2b1f -> if (product.has("fiji")) intArrayOf(1, 2, 3) else intArrayOf(1, 2)
                 0x0126, 0x2b19 -> intArrayOf(1, 2)
-                0x2b17 -> if (product.has("walrus_hold") || product.has("single_hold")) intArrayOf(1, 2, 3) else intArrayOf(1, 2)
+                0x2b17 -> if (product.has("walrus_hold") || product.has("single_hold") ||
+                    product.has("fiji") || product.has("mermaid_hold")) intArrayOf(1, 2, 3) else intArrayOf(1, 2)
                 else -> rows.flatMap(HuaweiControl::readTags).distinct().toIntArray()
             }
             add(huaweiRead(read, *tags))
@@ -248,7 +249,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     }
 
     private fun languages(): List<String> = reports[LANGUAGE]?.field(3)?.decodeToString()
-        ?.trimEnd('\u0000')?.split(',')?.map(String::trim)?.filter { LOCALE.matches(it) }?.distinct().orEmpty()
+        ?.substringBefore('\u0000')?.split(',')?.map(String::trim)?.filter { LOCALE.matches(it) }?.distinct().orEmpty()
 
     override fun takeOutbox(): List<HuaweiPacket> {
         if (!refreshNoise) return emptyList()

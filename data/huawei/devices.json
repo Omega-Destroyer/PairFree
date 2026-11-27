@@ -213,7 +213,8 @@
         "language",
         "multipoint",
         "modern_battery",
-        "hold_assistant"
+        "hold_assistant",
+        "mermaid_hold"
       ],
       "aliases": [
         "MermaidTWS",

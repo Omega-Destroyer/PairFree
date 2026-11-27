@@ -35,9 +35,64 @@
         "FreeGO Speaker",
         "HUAWEI Eyewear II"
       ],
-      "status": "open",
-      "what": "Trace the remaining vendor controls and device-backed alternatives to the Huawei phone wear and recording APIs. Check portable equivalents for Studio's phone-side codec setting and trace Pro legacy noise variants and FreeGO speaker-specific settings.",
+      "status": "built",
+      "what": "Audited reachable controls in the supplied AI Life APK. Added first-generation Eyewear double tap, smart greeting and wear detection, separated Eyewear II press and call hold, and corrected Nile shared-hold readback and Mermaid hold query. FreeGO exposes battery and generic management in this APK.",
       "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-host-mediated-controls",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds 3i",
+        "HONOR FlyPods 3",
+        "HONOR Magic Earbuds",
+        "FreeBuds Pro",
+        "FreeBuds Studio",
+        "HUAWEI Eyewear II"
+      ],
+      "status": "needs-report",
+      "what": "Identify any portable Bluetooth equivalents for the settings this APK delegates to the Huawei phone framework.",
+      "reported": "Supplied AI Life APK follow-up, 2026-11-27",
+      "needs": "Use device-scoped Bluetooth captures of wear detection, HD recording or Studio sound quality changed once and restored, with exact model and firmware.",
+      "read": [
+        {
+          "path": "docs/huawei/PROTOCOL.md",
+          "what": "The screen call sites delegate wear detection, audio codec preference and recording to phone APIs rather than giving a portable earbud command in the APK."
+        }
+      ],
+      "evidence": [
+        {
+          "root": "docs/huawei",
+          "glob": "PROTOCOL\\.md$",
+          "expect": "some",
+          "pattern": "BtTwsWearDetectionEx|RocQualityModeModel|HDRecordActivity"
+        }
+      ]
+    },
+    {
+      "id": "huawei-mermaid-smart-noise",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro"
+      ],
+      "status": "needs-report",
+      "what": "Establish whether a deployed FreeBuds Pro firmware exposes the archived smart scene, strength and voice switches, and identify their wire layout.",
+      "reported": "Supplied AI Life APK follow-up, 2026-11-27",
+      "needs": "Use a matching vendor plugin or a device-scoped Bluetooth capture from the live smart-noise panel with model, firmware and one change per control.",
+      "read": [
+        {
+          "path": "docs/huawei/PROTOCOL.md",
+          "what": "The manifest references missing product activities, and the generic presenter forwards the smart noise parameters to an empty device-manager method."
+        }
+      ],
+      "evidence": [
+        {
+          "root": "docs/huawei",
+          "glob": "PROTOCOL\\.md$",
+          "expect": "some",
+          "pattern": "BaseAudioDevice.*empty three-argument"
+        }
+      ]
     },
     {
       "id": "huawei-modern-device-settings",

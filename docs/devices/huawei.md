@@ -13,7 +13,7 @@ PairFree uses the Huawei MBB settings protocol over Bluetooth Classic. The earbu
 <tr><td>HONOR Magic Earbuds</td><td>Battery, Gestures</td><td>Bundled APK</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeLace Pro</td><td>Battery, Noise control, Gestures, Device settings</td><td>Bundled APK and public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeGO Speaker</td><td>Battery</td><td>Bundled APK</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>HUAWEI Eyewear</td><td>Battery, Device settings</td><td>Bundled APK</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>HUAWEI Eyewear</td><td>Battery, Gestures, Device settings</td><td>Bundled APK</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>HUAWEI Eyewear II</td><td>Battery, Gestures, Device settings</td><td>Bundled APK</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 4i</td><td>Battery, Noise control, Gestures, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 5i</td><td>Battery, Noise control, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>

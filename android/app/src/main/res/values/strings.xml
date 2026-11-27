@@ -2164,7 +2164,8 @@
     <string name="setting_hw_pair_glasses">Pair glasses</string>
     <string name="setting_hw_glasses_double_left">Double tap, left temple</string>
     <string name="setting_hw_glasses_double_right">Double tap, right temple</string>
-    <string name="setting_hw_glasses_hold">Press and hold, left temple</string>
+    <string name="setting_hw_glasses_press">Short press, left temple</string>
+    <string name="setting_hw_glasses_hold">Press and hold, left temple, during calls</string>
     <string name="setting_hw_nod">Nod</string>
     <string name="setting_hw_shake">Shake head</string>
     <string name="setting_hw_awareness_level">Awareness level</string>

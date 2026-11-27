@@ -3,6 +3,7 @@ package io.github.omegadestroyer.pairfree.protocol.huawei
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.Identify
 import io.github.omegadestroyer.pairfree.protocol.Maker
+import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import org.junit.jupiter.api.Assertions.*
@@ -101,12 +102,67 @@ class HuaweiTest {
         assertEquals(63, eyewear.state.batteryLeft)
         assertNull(eyewear.state.batteryRight)
         assertEquals(29, eyewear.state.batteryCase)
-        eyewear.receive(huaweiPacket(0x0c02, listOf(HuaweiTlv(3, "zh-CN,en-GB".encodeToByteArray()))))
+        eyewear.receive(huaweiPacket(0x0c02, listOf(HuaweiTlv(3, "zh-CN,en-GB\u0000,en-US".encodeToByteArray()))))
         val choice = eyewear.change(SettingChange.Choice("hw_language", "en-GB"))!!.single()
         assertEquals(0x0c01, choice.op)
         assertTrue(eyewear.allowed(choice))
         assertArrayEquals("en-GB".encodeToByteArray(), choice.fields.single().value)
         assertNull(eyewear.change(SettingChange.Choice("hw_language", "en-US")))
+    }
+
+    @Test fun bothEyewearGenerationsUseTheVendorDoubleTapAndSwitches() {
+        for (model in listOf("HUAWEI Eyewear", "HUAWEI Eyewear II")) {
+            val glasses = talk(model)
+            assertEquals(listOf(3), glasses.start().single { it.op == 0x0120 }.fields.map(HuaweiTlv::tag))
+            assertNull(glasses.change(SettingChange.Toggle("hw_greeting", true)))
+            glasses.receive(huaweiWrite(0x0120, 1 to 0, 2 to 255))
+            val tap = glasses.change(SettingChange.Choice("hw_glasses_double_right", "hw_play_pause"))!!.single()
+            assertEquals(0x011f, tap.op)
+            assertEquals(listOf(2), tap.fields.map(HuaweiTlv::tag))
+            assertEquals(1, tap.scalar(2))
+            assertTrue(glasses.allowed(tap))
+            for ((key, op) in listOf("hw_greeting" to 0x2b0f, "hw_glasses_wear" to 0x2b11)) {
+                glasses.receive(huaweiWrite(op, 1 to 0))
+                val write = glasses.change(SettingChange.Toggle(key, true))!!.single()
+                assertEquals(op - 1, write.op)
+                assertEquals(1, write.scalar(1))
+                assertTrue(glasses.allowed(write))
+            }
+        }
+    }
+
+    @Test fun fijiCallHoldAndShortPressUseDifferentCommands() {
+        val first = talk("HUAWEI Eyewear")
+        val fiji = talk("HUAWEI Eyewear II")
+        val read = fiji.start().single { it.op == 0x2b17 }
+        assertEquals(listOf(1, 2, 3), read.fields.map(HuaweiTlv::tag))
+        assertFalse(first.allowed(read))
+        assertNull(fiji.change(SettingChange.Choice("hw_glasses_hold", "hw_reject_call")))
+        fiji.receive(huaweiWrite(0x2b17, 1 to 255))
+        fiji.receive(huaweiWrite(0x2b21, 1 to 255))
+        val hold = fiji.change(SettingChange.Choice("hw_glasses_hold", "hw_reject_call"))!!.single()
+        assertEquals(0x2b16, hold.op)
+        assertEquals(9, hold.scalar(1))
+        assertTrue(fiji.allowed(hold))
+        assertFalse(first.allowed(hold))
+        assertNull(fiji.change(SettingChange.Choice("hw_glasses_hold", "hw_voice_memo")))
+        val press = fiji.change(SettingChange.Choice("hw_glasses_press", "hw_voice_memo"))!!.single()
+        assertEquals(0x2b20, press.op)
+        assertEquals(1, press.scalar(1))
+        assertTrue(fiji.allowed(press))
+    }
+
+    @Test fun nileUsesTheReportedSharedHoldAndWritesItOnTagOne() {
+        val nile = talk("FreeLace Pro")
+        nile.receive(huaweiWrite(0x2b17, 1 to 5, 2 to 6))
+        val current = nile.groups.flatMap { it.settings }.filterIsInstance<Setting.Choice>().single { it.key == "hw_hold" }
+        assertEquals("hw_anc_aware", current.value)
+        val write = nile.change(SettingChange.Choice("hw_hold", "hw_off_aware"))!!.single()
+        assertEquals(0x2b16, write.op)
+        assertEquals(listOf(1), write.fields.map(HuaweiTlv::tag))
+        assertEquals(9, write.scalar(1))
+        assertTrue(nile.allowed(write))
+        assertFalse(nile.allowed(huaweiWrite(0x2b16, 2 to 9)))
     }
 
     @Test fun pinchReadsAndWritesACallSlotWithoutChangingOtherSlots() {

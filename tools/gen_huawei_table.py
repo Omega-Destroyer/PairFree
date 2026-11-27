@@ -24,7 +24,7 @@ def coverage(product):
     rows = ["Battery"]
     if features & {"anc", "legacy_anc"}:
         rows.append("Noise control")
-    if features & {"pinch", "double", "shark_tap", "walrus_tap", "hold", "power_tap", "fiji"}:
+    if features & {"pinch", "double", "shark_tap", "walrus_tap", "hold", "power_tap", "eyewear"}:
         rows.append("Gestures")
     if "studio_touch" in features:
         rows.append("Touch lock")

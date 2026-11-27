@@ -400,6 +400,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "hw_glasses_double_left" -> t("setting_hw_glasses_double_left")
         "hw_glasses_double_right" -> t("setting_hw_glasses_double_right")
         "hw_touch_enabled" -> t("setting_hw_touch_enabled")
+        "hw_glasses_press" -> t("setting_hw_glasses_press")
         "hw_glasses_hold" -> t("setting_hw_glasses_hold")
         "hw_swipe_left" -> t("setting_hw_swipe_left")
         "hw_swipe_right" -> t("setting_hw_swipe_right")

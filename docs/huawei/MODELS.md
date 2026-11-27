@@ -4,16 +4,16 @@ The supplied AI Life 11.0.2.305 APK lists eight audio products in its bundled ca
 
 | Product ID | Model and app route | PairFree controls | Remaining vendor behavior |
 | --- | --- | --- | --- |
-| 004O | FreeBuds 3 / Shark (CM-SHK00, CM-SHK09) | Battery, ANC and nine-position adjustment, double tap, reported voice language | Phone wear integration |
-| ZA02 | FreeBuds 3i / Walrus (WAL-CT025) | Battery, double tap, long-press noise cycle | Huawei phone wear API and direct ANC control evidence |
-| ZB02 | HONOR FlyPods 3 / Walrus | Battery, double tap, long-press noise cycle | Huawei phone wear API and direct ANC control evidence |
-| ZB04 | HONOR Magic Earbuds / Walrus | Battery, double tap, long-press noise cycle | Huawei phone wear API and direct ANC control evidence |
-| ZA04 | FreeLace Pro / Nile | Battery, legacy and modern ANC, power button, hold cycle and language | Firmware differences in side reporting and availability |
-| ZA01 | FreeGO Speaker / CM530 | Battery | Speaker settings and host integration |
-| ZC01 | HUAWEI Eyewear / Perrier (CMG0-PER) | Glasses and case battery, voice language | Gesture guide and firmware workflow |
-| ZC02 | HUAWEI Eyewear II / Fiji (FIJ-CG020) | Glasses battery, language, double tap, swipe, hold, greetings, wear, power saving and intelligent volume | Phone-specific recording and execution of gestures assigned to translation or voice memo |
+| 004O | FreeBuds 3 / Shark (CM-SHK00, CM-SHK09) | Battery, ANC and nine-position adjustment, double tap, reported voice language | Bluetooth system pairing and app help |
+| ZA02 | FreeBuds 3i / Walrus (WAL-CT025) | Battery, double tap, long-press noise cycle | Wear detection uses a Huawei phone API. The APK puts noise modes in the long-press cycle |
+| ZB02 | HONOR FlyPods 3 / Walrus | Battery, double tap, long-press noise cycle | Wear detection uses a Huawei phone API. The APK puts noise modes in the long-press cycle |
+| ZB04 | HONOR Magic Earbuds / Walrus | Battery, double tap, long-press noise cycle | Wear detection uses a Huawei phone API. The APK puts noise modes in the long-press cycle |
+| ZA04 | FreeLace Pro / Nile | Battery, legacy and modern ANC, power button, hold cycle and language | The APK reads the shared hold from the right value and writes it through the left tag |
+| ZA01 | FreeGO Speaker / CM530 | Battery | The FreeGO panel shows battery, pairing, help and firmware. Its device settings link opens the outer app's generic management screen |
+| ZC01 | HUAWEI Eyewear / Perrier (CMG0-PER) | Glasses and case battery, double tap, smart greeting, wear detection and voice language | Gesture guide and firmware workflow |
+| ZC02 | HUAWEI Eyewear II / Fiji (FIJ-CG020) | Glasses battery, language, double tap, swipe, short press, call hold, greetings, wear, power saving and intelligent volume | Phone-specific recording and execution of gestures assigned to translation or voice memo |
 | ZA06 | FreeBuds Studio / Roc (M0001) | Battery, ANC, wear, touch lock, preset EQ | Gesture panels guide the built-in actions. Sound quality uses the phone codec API |
-| ZA07 | FreeBuds Pro / Mermaid (T0003 / T0003C) | Battery, ANC, swipe, hold, language and multipoint | Legacy noise tuning, recording and other phone integrations |
+| ZA07 | FreeBuds Pro / Mermaid (T0003 / T0003C) | Battery, ANC, swipe, hold, language and multipoint | HD recording and wear detection use Huawei phone APIs. The archived smart-noise activities lack a complete device route |
 
 The eight catalogue rows came from the union of main_help.json, main_help_global.json, main_help_oversea_cloud.json and localProfile. Studio and Pro are linked by ModelPbiMap and the product identities Huawei publishes. The Walrus fallback token ZA0*undefine* maps to offering OFFE00113769 but the archive supplies no catalogue record connecting it to a shipping Bluetooth name. [Huawei model identifiers](https://consumer.huawei.com/jp/support/content/ja-jp15938700/) · [Legacy model names](https://consumer.huawei.com/cn/support/content/zh-cn15984866/)
 

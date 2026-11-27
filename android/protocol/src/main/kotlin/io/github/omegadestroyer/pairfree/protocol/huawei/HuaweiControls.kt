@@ -23,6 +23,7 @@ internal class HuaweiControl(
     val requiresOptions: Boolean = false,
     val capabilityTag: Int? = null,
     val readTags: List<Int> = listOf(tag),
+    val fallbackTag: Int? = null,
 ) {
     fun options(report: HuaweiPacket): Map<Int, String> =
         report.field(availabilityTag ?: return choices)?.let { data ->
@@ -31,7 +32,7 @@ internal class HuaweiControl(
 
     fun row(report: HuaweiPacket): Setting? {
         if (capabilityTag != null && (report.scalar(capabilityTag) ?: 0) == 0) return null
-        val value = report.scalar(tag) ?: return null
+        val value = report.scalar(tag) ?: fallbackTag?.let(report::scalar) ?: return null
         if (choices.isEmpty()) return if (value in 0..1) Setting.Toggle(key, value == 1) else null
         val options = options(report)
         return if (options.isEmpty()) null else Setting.Choice(key, choices[value], options.values.distinct())
@@ -81,23 +82,27 @@ internal fun HuaweiProduct.controls(): List<HuaweiControl> = buildList {
     if (has("hold_right") && "two_modes" !in features && has("anc")) gesture("hw_cycle_right", 0x2b19, 0x2b18, 2, cycle)
     if (has("single_hold")) {
         val options = mapOf(off, 3 to "hw_off_anc", 5 to "hw_off_anc_aware", 6 to "hw_anc_aware", 9 to "hw_off_aware")
-        gesture("hw_hold", 0x2b17, 0x2b16, 1, options)
+        add(HuaweiControl("hw_hold", SettingTab.CONTROLS, 0x2b17, 0x2b16, tag = 2, writeTags = listOf(1),
+            choices = options, fallbackTag = 1))
     }
     if (has("power_tap")) gesture("hw_power_tap", 0x0120, 0x011f, 1, mapOf(off, 12 to "hw_switch_device"), 3)
     if (has("swipe")) gesture("hw_swipe", 0x2b1f, 0x2b1e, 1, mapOf(off, 0 to "hw_change_volume"), both = true)
     if (has("wear")) add(HuaweiControl("hw_auto_pause", SettingTab.DEVICE, 0x2b11, 0x2b10))
     if (has("latency")) add(HuaweiControl("hw_low_latency", SettingTab.SOUND, 0x2b6c, 0x2b6c, tag = 2, writeTags = listOf(1)))
-    if (has("fiji")) {
+    if (has("eyewear")) {
         val eyewearTap = mapOf(off, 0 to "hw_assistant", 1 to "hw_play_pause")
-        val eyewearSwipe = mapOf(off, 0 to "hw_change_volume", 1 to "hw_change_track")
         gesture("hw_glasses_double_left", 0x0120, 0x011f, 1, eyewearTap)
         gesture("hw_glasses_double_right", 0x0120, 0x011f, 2, eyewearTap)
-        gesture("hw_swipe_left", 0x2b1f, 0x2b1e, 1, eyewearSwipe)
-        gesture("hw_swipe_right", 0x2b1f, 0x2b1e, 2, eyewearSwipe)
-        gesture("hw_glasses_hold", 0x2b21, 0x2b20, 1,
-            mapOf(off, 0 to "hw_face_translate", 1 to "hw_voice_memo", 2 to "hw_pair_glasses"))
         add(HuaweiControl("hw_greeting", SettingTab.DEVICE, 0x2b0f, 0x2b0e))
         add(HuaweiControl("hw_glasses_wear", SettingTab.DEVICE, 0x2b11, 0x2b10))
+    }
+    if (has("fiji")) {
+        val eyewearSwipe = mapOf(off, 0 to "hw_change_volume", 1 to "hw_change_track")
+        gesture("hw_swipe_left", 0x2b1f, 0x2b1e, 1, eyewearSwipe)
+        gesture("hw_swipe_right", 0x2b1f, 0x2b1e, 2, eyewearSwipe)
+        gesture("hw_glasses_press", 0x2b21, 0x2b20, 1,
+            mapOf(off, 0 to "hw_face_translate", 1 to "hw_voice_memo", 2 to "hw_pair_glasses"))
+        gesture("hw_glasses_hold", 0x2b17, 0x2b16, 1, mapOf(off, 9 to "hw_reject_call"))
         add(HuaweiControl("hw_saving", SettingTab.DEVICE, 0x2b1d, 0x2b1c))
         add(HuaweiControl("hw_adaptive_volume", SettingTab.SOUND, 0x2b23, 0x2b22))
     }

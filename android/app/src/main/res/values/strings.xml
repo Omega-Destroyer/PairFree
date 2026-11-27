@@ -1457,6 +1457,13 @@
     <string name="setting_sc_press_normal">Normal</string>
     <string name="setting_sc_press_firm">Firm</string>
     <string name="setting_sc_press_firmest">Firmest</string>
+    <string name="setting_sc_player">Sounds on the earbuds</string>
+    <string name="setting_sc_a10_play">Play</string>
+    <string name="setting_sc_a10_pause">Pause</string>
+    <string name="setting_sc_a10_volume">Volume</string>
+    <string name="setting_sc_a10_play_time">Play time</string>
+    <string name="setting_sc_a10_countdown">Stop after</string>
+    <string name="setting_sc_keep_playing">Keep playing</string>
     <string name="setting_sc_health">Health</string>
     <string name="setting_sc_health_note">The readings are shown while measuring. PairFree keeps none of them. They are not medical measurements.</string>
     <string name="setting_sc_heart_rate">Measure the heart rate</string>

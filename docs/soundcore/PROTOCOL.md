@@ -752,3 +752,8 @@ Renaming (`0F 81`) is left out. Not tried.
 `0D 82` starts and stops heart rate measurement; the earbuds then send `0D 01` (heart rate at byte 2, blood oxygen at 24, steps from 26). `0D 84` is the
 sedentary and `0D 83` the sitting posture reminder (state, after the spatial audio bytes). 5.0.35 reads the device colour and press sensitivity one byte later
 than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. Neck posture is open. Not tried.
+
+## The Sleep A10's player (2026-11-27)
+
+State: play time (byte 69, 255 no limit), whether a sound is on the earbuds, its volume (0 to 65) and the countdown (two bytes, high first, 0 off, FFFF keep
+playing). `01 AB` sets the play time, `01 B1` (0, volume), `01 B2` plays or pauses, `01 B3` the countdown. Alarms and sound transfer are open. Not tried.

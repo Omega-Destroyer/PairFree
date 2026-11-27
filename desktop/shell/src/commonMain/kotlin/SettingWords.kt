@@ -61,6 +61,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_player" -> "setting_sc_player"
             "sc_health" -> "setting_sc_health"
             "sc_dongle" -> "setting_sc_dongle"
             "sc_tests" -> "setting_sc_tests"
@@ -191,6 +192,9 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_a10_volume" -> t("setting_sc_a10_volume")
+        "sc_a10_play_time" -> t("setting_sc_a10_play_time")
+        "sc_a10_countdown" -> t("setting_sc_a10_countdown")
         "sc_heart_rate" -> t("setting_sc_heart_rate")
         "sc_heart_rate_value" -> t("setting_sc_heart_rate_value")
         "sc_blood_oxygen" -> t("setting_sc_blood_oxygen")
@@ -1440,7 +1444,8 @@ class SettingWords(private val strings: DesktopStrings) {
         )
         key == "sleep_listening_mode" || key == "sleep_default_listening_mode" ->
             t(if (option == "local") "setting_sleep_mode_local" else "setting_sleep_mode_bluetooth")
-        key == "sleep_timer" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("action_off")
+        (key == "sc_a10_play_time" || key == "sc_a10_countdown") && option == "keep" -> t("setting_sc_keep_playing")
+        key == "sleep_timer" || key == "sc_a10_play_time" || key == "sc_a10_countdown" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("action_off")
         key == "auto_off" && option == "when_taken_off" -> t("shutdown_when_taken_off")
         key == "auto_off" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("shutdown_never")
         key == "connection_priority" -> t(
@@ -1625,6 +1630,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_calibrate_worn" -> "setting_sc_calibrate_worn"
         "sc_personal_anc" -> "setting_sc_personal_anc"
         "sc_personal_anc_reset" -> "setting_sc_personal_anc_reset"
+        "sc_a10_play" -> "setting_sc_a10_play"
+        "sc_a10_pause" -> "setting_sc_a10_pause"
         "sc_dongle_disconnect" -> "setting_sc_dongle_disconnect"
         "jbl_seal_check" -> "setting_jbl_seal_check"
         "jbl_case_saver_remove" -> "setting_jbl_case_saver_remove"

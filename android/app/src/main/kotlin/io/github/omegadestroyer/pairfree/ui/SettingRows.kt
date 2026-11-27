@@ -308,6 +308,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
         "sc_device" -> R.string.setting_sc_device
+        "sc_player" -> R.string.setting_sc_player
         "sc_health" -> R.string.setting_sc_health
         "sc_dongle" -> R.string.setting_sc_dongle
         "sc_tests" -> R.string.setting_sc_tests
@@ -442,6 +443,9 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_a10_volume" -> stringResource(R.string.setting_sc_a10_volume)
+    "sc_a10_play_time" -> stringResource(R.string.setting_sc_a10_play_time)
+    "sc_a10_countdown" -> stringResource(R.string.setting_sc_a10_countdown)
     "sc_heart_rate" -> stringResource(R.string.setting_sc_heart_rate)
     "sc_heart_rate_value" -> stringResource(R.string.setting_sc_heart_rate_value)
     "sc_blood_oxygen" -> stringResource(R.string.setting_sc_blood_oxygen)
@@ -1698,7 +1702,8 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     )
     key == "sleep_listening_mode" || key == "sleep_default_listening_mode" ->
         getString(if (option == "local") R.string.setting_sleep_mode_local else R.string.setting_sleep_mode_bluetooth)
-    key == "sleep_timer" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.action_off)
+    (key == "sc_a10_play_time" || key == "sc_a10_countdown") && option == "keep" -> getString(R.string.setting_sc_keep_playing)
+    key == "sleep_timer" || key == "sc_a10_play_time" || key == "sc_a10_countdown" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.action_off)
     key == "auto_off" && option == "when_taken_off" -> getString(R.string.shutdown_when_taken_off)
     key == "auto_off" -> option.toIntOrNull()?.let { getString(R.string.shutdown_minutes, it) } ?: getString(R.string.shutdown_never)
     key == "connection_priority" -> getString(
@@ -1884,6 +1889,8 @@ private fun actionStart(key: String): Int = when (key) {
     "sc_calibrate_worn" -> R.string.setting_sc_calibrate_worn
     "sc_personal_anc" -> R.string.setting_sc_personal_anc
     "sc_personal_anc_reset" -> R.string.setting_sc_personal_anc_reset
+    "sc_a10_play" -> R.string.setting_sc_a10_play
+    "sc_a10_pause" -> R.string.setting_sc_a10_pause
     "sc_dongle_disconnect" -> R.string.setting_sc_dongle_disconnect
     "jbl_seal_check" -> R.string.setting_jbl_seal_check
     "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove

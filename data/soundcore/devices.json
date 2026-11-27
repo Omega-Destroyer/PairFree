@@ -4453,13 +4453,15 @@
         ["skip", 1],
         ["skip", 1],
         ["smart_play", 1],
-        ["skip", 1],
+        ["play_time", 1],
         ["adaptive_noise", 1],
         ["skip", 1],
         ["skip", 1],
-        ["skip", 3],
+        ["skip", 1],
+        ["has_sleep_music", 1],
+        ["music_volume", 1],
         ["optional:press_sensitivity", 1],
-        ["optional:skip", 2]
+        ["optional:play_countdown", 2]
       ],
       "soundcore_app": {
         "version": "3.3.0",

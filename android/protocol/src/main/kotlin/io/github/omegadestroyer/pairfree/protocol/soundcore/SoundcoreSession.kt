@@ -227,6 +227,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
                 dongle?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_dongle", SettingTab.DEVICE, it) },
                 if (lastState != null) health?.rows()?.let { SettingGroup("sc_health", SettingTab.DEVICE, it) } else null,
+                SoundcoreSleepPlayer.rows(s).takeIf { model == "A6610" && it.isNotEmpty() }?.let { SettingGroup("sc_player", SettingTab.DEVICE, it) },
                 tests.rows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_tests", SettingTab.DEVICE, it) },
                 if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
@@ -591,6 +592,11 @@ public class SoundcoreSession(public val model: String) : FitTest {
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
         tests.change(change)?.let { return it }
+        if (change.key.startsWith("sc_a10_")) {
+            val (packet, next) = lastState?.let { SoundcoreSleepPlayer.change(it, change) } ?: return null
+            lastState = next
+            return listOf(packet)
+        }
         health?.change(change)?.let { return it }
         if (change.key.startsWith("sc_dongle_")) return dongle?.change(change)
         if (change.key in EXTRA_KEYS) return extraChange(s, change)

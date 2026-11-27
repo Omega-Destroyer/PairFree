@@ -443,6 +443,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_anc_sensor" -> stringResource(R.string.setting_sc_anc_sensor)
     "sc_voice_wake" -> stringResource(R.string.setting_sc_voice_wake)
     "sc_a10_volume" -> stringResource(R.string.setting_sc_a10_volume)
     "sc_a10_play_time" -> stringResource(R.string.setting_sc_a10_play_time)

@@ -868,8 +868,8 @@
       "models": [
         "AeroFit 2, AeroFit 2 Pro (A3874, A3875)"
       ],
-      "status": "open",
-      "what": "PairFree reads only the head of their state; the rest (their settings, voice wake among them) has a parser that is not ported.",
+      "status": "built",
+      "what": "Built 2026-11-27: the state past the head (LDAC, two devices, auto power off, tones, game mode, voice wake), the AeroFit 2's balance, and the AeroFit 2 Pro's noise mode and noise sensor enhancement. The Pro's balance is clamped by its own app's parser, so it is not offered.",
       "reported": "the AI chat page worked through, 2026-11-27"
     },
     {

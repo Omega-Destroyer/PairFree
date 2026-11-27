@@ -212,7 +212,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         get() {
             val s = lastState ?: return emptyList()
             val find = findRows()
-            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s), balanceRow(s), doublePressRow(s), holdRow(s), languageRow(s), surroundRow(s)) + lightRows(s)
+            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s), balanceRow(s), doublePressRow(s), holdRow(s), languageRow(s), surroundRow(s), sensorRow(s)) + lightRows(s)
             val rows = listOfNotNull(sleepTimerRow(s)) + A30_FLAGS.filter { it.home.not() }.mapNotNull { flagRow(s, it) } +
                 listOfNotNull(listeningRow(s, A30_LISTENING_MODE), listeningRow(s, A30_DEFAULT_LISTENING_MODE))
             val home = A30_FLAGS.filter { it.home }.mapNotNull { flagRow(s, it) } + listOfNotNull(listeningRow(s, A30_LISTENING_MODE))
@@ -528,6 +528,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
         }
     }
 
+    /** The AeroFit 2 Pro's noise sensor enhancement, which the earbuds hold as 1 on or 2 off. */
+    private fun sensorRow(s: SoundcoreState): Setting? =
+        s.byte(SENSOR_FIELD)?.takeIf { it == 1 || it == 2 }?.let { Setting.Toggle(SENSOR, it == 1) }
+
     private fun peerRows(): List<Setting> =
         if (!listsPeers) emptyList() else peers.rows() + Setting.Action(SoundcorePeers.PAIRING)
 
@@ -594,6 +598,12 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
+        if (change is SettingChange.Toggle && change.key == SENSOR) {
+            if (sensorRow(s) == null) return null
+            val body = byteArrayOf(if (change.on) 1 else 2)
+            lastState = s.with(SENSOR_FIELD, body)
+            return listOf(SoundcorePacket(SoundcoreCommand.ANC_SENSOR, body))
+        }
         tests.change(change)?.let { return it }
         if (change.key.startsWith("sc_a10_")) {
             val (packet, next) = lastState?.let { SoundcoreSleepPlayer.change(it, change) } ?: return null
@@ -818,6 +828,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private val LIGHT_MODES = listOf("breathing", "on", "saving")
         private val LIGHT_COLOURS = listOf("violet", "coral", "pink", "blue", "purple")
         private val EXTRA_KEYS = setOf(LANGUAGE, SURROUND_LEVEL, LIGHT_MODE, LIGHT_COLOUR)
+        private const val SENSOR_FIELD = "anc_sensor"
+        private const val SENSOR = "sc_anc_sensor"
         private const val LIMIT_FIELD = "limit_high_volume"
         private const val LIMIT = "sc_volume_limit"
         private const val LIMIT_DB = "sc_volume_limit_db"

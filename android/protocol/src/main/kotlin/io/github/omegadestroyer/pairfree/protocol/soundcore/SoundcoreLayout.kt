@@ -233,24 +233,24 @@ public class SoundcoreState private constructor(
         val hidden = listOf("serial", "case_serial").mapNotNull(layout::locate).map { (at, size) -> at until at + size }
         // Also anything that looks like a serial number (12 or more hex digits as text, which holds the earbuds'
         // address), for models whose layout does not locate it: a report goes into a public issue.
-        val serialLike = VendorRecording.masked(body, null, serials = true)
+        val serialLike = VendorRecording.masked(raw, null, serials = true)
         // A run that reaches into a located serial is that serial: where the firmware before it ends in digits (the
         // A6611's "03.22"), the run starts early, so only its located bytes stay hidden and the firmware stays readable.
         var start = 0
-        while (start < body.size) {
+        while (start < raw.size) {
             if (!serialLike[start]) {
                 start++
                 continue
             }
             var end = start
-            while (end < body.size && serialLike[end]) end++
+            while (end < raw.size && serialLike[end]) end++
             if (hidden.any { it.first < end && start <= it.last }) {
                 for (j in start until end) if (hidden.none { j in it }) serialLike[j] = false
             }
             start = end
         }
-        return body.indices.joinToString(" ") { i ->
-            if (serialLike[i] || hidden.any { i in it }) "XX" else (body[i].toInt() and 0xFF).toString(16).padStart(2, '0')
+        return raw.indices.joinToString(" ") { i ->
+            if (serialLike[i] || hidden.any { i in it }) "XX" else (raw[i].toInt() and 0xFF).toString(16).padStart(2, '0')
         }
     }
 
@@ -270,11 +270,33 @@ public class SoundcoreState private constructor(
 
     public companion object {
         public fun parse(layout: SoundcoreLayout, body: ByteArray): SoundcoreState? {
-            if (layout.tlv.isEmpty()) return if (body.size >= layout.minSize) SoundcoreState(layout, body.copyOf()) else null
+            if (layout.tlv.isEmpty()) {
+                val fixed = if (layout.has(BLOCK)) withoutBlocks(layout, body) else body.copyOf()
+                return if (fixed.size >= layout.minSize) SoundcoreState(layout, fixed, body.copyOf()) else null
+            }
             val records = SoundcoreTlv.records(body)
             if (records.isEmpty()) return null
             val normalised = layout.tlv.fold(ByteArray(0)) { all, item -> all + item.take(records[item.tag]) }
             return SoundcoreState(layout, normalised, body.copyOf())
+        }
+
+        private const val BLOCK = "block"
+
+        /** [body] without the blocks whose first byte gives their own length (that byte counted), so that the fields after them sit at fixed places. */
+        private fun withoutBlocks(layout: SoundcoreLayout, body: ByteArray): ByteArray {
+            var out = ByteArray(0)
+            var at = 0
+            for (f in layout.fields) {
+                if (at >= body.size) break
+                if (f.name == BLOCK) {
+                    at += maxOf(1, body[at].toInt() and 0xFF)
+                } else {
+                    val end = minOf(body.size, at + f.size)
+                    out += body.copyOfRange(at, end)
+                    at = end
+                }
+            }
+            return if (at < body.size) out + body.copyOfRange(at, body.size) else out
         }
 
         private fun isVersion(s: String): Boolean = s.length == 5 && s[2] == '.' && s.removeRange(2, 3).all { it in '0'..'9' }

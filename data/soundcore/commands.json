@@ -213,6 +213,8 @@
      "note": "The Sleep Earbuds 4 pair's voice prompt language, 0 English or 1 Chinese; state record 64 (`CmmBtCmdService.n5`, `D1302MainVM.n1`)."},
     {"id": "voice_wake", "command": "1883", "source": "soundcore_app",
      "note": "Whether the headphones wake the Soundcore app's AI chat by voice: 1 on, 0 off (`CmmBtCmdService.g4`, the AI chat page). The chat itself runs in the Soundcore app and on Anker's servers."},
+    {"id": "anc_sensor", "command": "1066", "source": "soundcore_app",
+     "note": "The AeroFit 2 Pro's noise sensor enhancement: 1 on, 2 off (`CmmBtCmdService.d1`, `SoundcoreMoreActivity`)."},
     {"id": "press_sensitivity", "command": "0485", "source": "soundcore_app",
      "note": "Body: one byte, the level. Soundcore 3.3.0 04 85 (`setCustomPressSensitivityCallback`; the A3953's press sensitivity screen)."},
     {"id": "smart_play", "command": "01AA", "source": "soundcore_app",

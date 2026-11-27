@@ -1457,6 +1457,7 @@
     <string name="setting_sc_press_normal">Normal</string>
     <string name="setting_sc_press_firm">Firm</string>
     <string name="setting_sc_press_firmest">Firmest</string>
+    <string name="setting_sc_anc_sensor">Noise sensor enhancement</string>
     <string name="setting_sc_voice_wake">Wake the AI chat by voice</string>
     <string name="setting_sc_voice_wake_note">The chat itself needs the Soundcore app. Turn this off if you do not use it.</string>
     <string name="setting_sc_player">Sounds on the earbuds</string>

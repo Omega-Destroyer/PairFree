@@ -6346,7 +6346,8 @@
 "d1301_noise_canceling_prompt",
 "d1301_listening_mode_prompt",
 "d1301_auto_power_off_prompt",
-"d1301_incoming_calls_during_bluetooth_mode"],
+"d1301_incoming_calls_during_bluetooth_mode",
+"voice_language_1307"],
       "names": [
         "Anker Sleep Earbuds 4 Pro"
       ],
@@ -6375,7 +6376,8 @@
         ["noise_canceling_prompt", 1],
         ["listening_mode_prompt", 1],
         ["auto_power_off_prompt", 1],
-        ["incoming_calls_during_bluetooth", 1]
+        ["incoming_calls_during_bluetooth", 1],
+        ["prompt_language", 1]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1302AnalysisService.e1 and D1302CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -6400,7 +6402,8 @@
         [26, 0, "bit", 6],
         [26, 0, "bit", 5],
         [26, 0, "bit", 2],
-        [27, 2, "bit", 7]
+        [27, 2, "bit", 7],
+        [64, 0, "opt"]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -6423,7 +6426,8 @@
 "d1301_noise_canceling_prompt",
 "d1301_listening_mode_prompt",
 "d1301_auto_power_off_prompt",
-"d1301_incoming_calls_during_bluetooth_mode"],
+"d1301_incoming_calls_during_bluetooth_mode",
+"voice_language_1307"],
       "names": [
         "Anker Sleep Earbuds 4"
       ],
@@ -6452,7 +6456,8 @@
         ["noise_canceling_prompt", 1],
         ["listening_mode_prompt", 1],
         ["auto_power_off_prompt", 1],
-        ["incoming_calls_during_bluetooth", 1]
+        ["incoming_calls_during_bluetooth", 1],
+        ["prompt_language", 1]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1303AnalysisService.e1 and D1303CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -6477,7 +6482,8 @@
         [26, 0, "bit", 6],
         [26, 0, "bit", 5],
         [26, 0, "bit", 2],
-        [27, 2, "bit", 7]
+        [27, 2, "bit", 7],
+        [64, 0, "opt"]
       ],
       "tlv_private": [7, 41],
       "buttons": {

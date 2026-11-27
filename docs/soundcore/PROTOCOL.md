@@ -603,8 +603,8 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. The Space 2
   Pro pair's buttons are records 72 (the noise button: one press, two presses; written with `04 8C`, 255 nothing or 7 powerful bass) and 73 (the
   multi-function button held: `04 61`, the phone's assistant, nap mode or nothing; the app's own assistant, translation and recording need the Soundcore app
-  and are left out). Still open in `data/completeness.json`: the Sleep Earbuds' sleep sounds (records 31 to 33, 81, 106) and the cases' own channels
-  (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
+  and are left out). The Sleep Earbuds' voice prompt language is `13 07` (record 64). Still open in `data/completeness.json`: the cases' own
+  links (D1203-Box, D1204-Box, D1302-Box, D1303-Box), which carry the Sleep Earbuds' sound playback.
 - **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
   triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
   write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The

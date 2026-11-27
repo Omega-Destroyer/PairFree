@@ -511,7 +511,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change !is SettingChange.Choice) return null
         return when (change.key) {
             LANGUAGE -> LANGUAGES.indexOf(change.option).takeIf { it >= 0 && languageRow(s) != null }
-                ?.let { write(LANGUAGE_FIELD, SoundcoreCommand.VOICE_LANGUAGE, byteArrayOf(it.toByte())) }
+                ?.let {
+                    val command = if (SLEEP_LANGUAGE in s.layout.features) SoundcoreCommand.SLEEP_VOICE_LANGUAGE else SoundcoreCommand.VOICE_LANGUAGE
+                    write(LANGUAGE_FIELD, command, byteArrayOf(it.toByte()))
+                }
             LIGHT_MODE, LIGHT_COLOUR -> {
                 val options = if (change.key == LIGHT_MODE) LIGHT_MODES else LIGHT_COLOURS
                 val v = options.indexOf(change.option)
@@ -804,6 +807,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private class Hold(val option: String, val state: Int, val write: Int)
         private val HOLD_ACTIONS = listOf(Hold("assistant", 0, 5), Hold("nap", 3, 13), Hold("none", 5, 15))
         private const val LANGUAGE_FIELD = "prompt_language"
+        private const val SLEEP_LANGUAGE = "voice_language_1307"
         private const val LANGUAGE = "sc_voice_language"
         private val LANGUAGES = listOf("english", "chinese")
         private const val SURROUND_FIELD = "stereo_expansion"

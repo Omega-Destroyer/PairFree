@@ -129,6 +129,13 @@ class SoundcoreIndexedSwitchTest {
         assertEquals("20 82 00 50", s.write(SettingChange.Toggle("sc_volume_limit", false)))
     }
 
+    @Test
+    fun theSleepEarbudsLanguage() {
+        val s = session("D1302", record(64, 0))
+        assertEquals("13 07 01", s.write(SettingChange.Choice("sc_voice_language", "chinese")))
+        assertNull(session("D1302", record(27, 0, 0, 0)).rows()["sc_voice_language"])
+    }
+
     /** The older models keep their own commands. */
     @Test
     fun otherModelsAreUntouched() {

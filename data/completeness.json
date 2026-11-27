@@ -869,7 +869,7 @@
         "Liberty 5 Pro pair, Sleep Earbuds 4 pair (D1203-Box, D1204-Box, D1302-Box, D1303-Box)"
       ],
       "status": "open",
-      "what": "The charging cases' own connections and settings (case language and the rest) are not built or explained.",
+      "what": "The charging cases' own connections and settings (case language and the rest) are not built or explained. Includes the Sleep Earbuds 4 pair sound playback and falling-asleep settings (13 08 and the rest over the case link).",
       "reported": "read of the settings screens, 2026-11-27"
     },
     {
@@ -878,8 +878,8 @@
       "models": [
         "Sleep Earbuds 4 pair (D1302, D1303)"
       ],
-      "status": "open",
-      "what": "The sleep sounds and playback held on the earbuds (state records 31 to 33, 81, 106) are not built or explained.",
+      "status": "built",
+      "what": "Built 2026-11-27: the voice prompt language (13 07, record 64), the earbuds' one write here. The sound playback and the falling-asleep choices go over the charging case's own Bluetooth LE link (BoxBleDeviceManager), so they are part of soundcore-case-channels.",
       "reported": "read of the tag-length-value records, 2026-11-27"
     },
     {

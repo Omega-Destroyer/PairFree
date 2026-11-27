@@ -209,6 +209,8 @@
      "note": "Plays (1) or pauses (0) the Sleep A10's own sound (`CmmBtCmdService.X4`)."},
     {"id": "sleep_play_countdown", "command": "01B3", "source": "soundcore_app",
      "note": "The Sleep A10's countdown in minutes, high byte first: 0 off, FFFF keeps playing (`CmmBtCmdService.k0`, `A6610PlayCountdownTimeUtils`)."},
+    {"id": "sleep_voice_language", "command": "1307", "source": "soundcore_app",
+     "note": "The Sleep Earbuds 4 pair's voice prompt language, 0 English or 1 Chinese; state record 64 (`CmmBtCmdService.n5`, `D1302MainVM.n1`)."},
     {"id": "press_sensitivity", "command": "0485", "source": "soundcore_app",
      "note": "Body: one byte, the level. Soundcore 3.3.0 04 85 (`setCustomPressSensitivityCallback`; the A3953's press sensitivity screen)."},
     {"id": "smart_play", "command": "01AA", "source": "soundcore_app",

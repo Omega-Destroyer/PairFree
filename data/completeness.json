@@ -849,7 +849,7 @@
         "the tag-length-value models and every Soundcore statement blocked on 'empty stubs'"
       ],
       "status": "open",
-      "what": "docs/soundcore/PROTOCOL.md blocks settings on method bodies being empty stubs; the 2026-11-19 unpacker run restored them. The Liberty Buds 2's switches and auto power off are built from them (2026-11-27). Still to read and build: its press sensitivity (firmware 1.77 to 1.99 and 2.77 to 2.99) and fit test, the other tag-length-value models (D1105, D1102, D1203, D1204, D1406, D1407, D1302, D1303) and every other statement blocked that way.",
+      "what": "Built 2026-11-27 from the restored method bodies: the Liberty Buds 2's, AeroClip 2 pair's and Space 2 Pro pair's switches and auto power off. Still to read and build: the Liberty Buds 2's press sensitivity and fit test, the AeroClip 2's volume balance, the AeroClip 2 Pro's easy chat, the Space 2 Pro pair's voice prompt, AI chat and call noise switches, the Sleep Earbuds 4 pair's call alert, and the Liberty 5 Pro pair (D1203, D1204; no parser or screen class in the unpacked app, so check its Flutter parts).",
       "reported": "issue #76 (a user's Liberty Buds 2 on 0.18.0, 2026-11-25), triaged 2026-11-27"
     },
     {

@@ -576,12 +576,12 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   `stateCommand` in `devices.json`), returns its whole state in a frame with no checksum (the level 0 to 5, the vibration switch, the custom button
   function, the volume limit's switch and value 0 to 16, the firmware as four characters, the serial and the name); the writes are `01 82`, `01 84` and
   `01 85`. Its equalizer is read and set by index (`02 01`, `02 81`) and its presets are in a native screen, so none is offered.
-  **Switch bits of the tag-length-value models** (records 26 and 27: the prompts, the touch lock, LDAC, 3D mode, adaptive volume, side tone and the
-  rest): blocked: which of them each model shows is the model's "more" data provider, whose bodies are empty stubs in the restored app; checked:
-  `D1206MoreDataProvider` (6 of its 9 methods are stubs), `D1206MainActivity` (57 stubs, 12 native methods), `A3954AncFragmentVM` and the other
-  models' main view models. The bits are read; offering a switch the model does not have would write to a bit it ignores. A device report from the
-  model (or the Soundcore app's screens recorded) settles which to offer.
-- **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
+  **Switch bits of the tag-length-value models** (records 25 to 27). Re-read on 2026-11-27 from the restored method bodies (the 2026-11-19 unpacker run): the Liberty Buds 2,
+  AeroClip 2, AeroClip 2 Pro, Space 2 Pro and Space 2 Pro Max show the settings their more screen lists and PairFree knows the write for (wear detection, two devices, the tones,
+  auto power off, game mode and LDAC where their screens have them). Still to read and build, open in `data/completeness.json`: the Liberty Buds 2's press sensitivity and fit
+  test, the AeroClip 2's volume balance, the AeroClip 2 Pro's easy chat, the Space 2 Pro pair's voice prompt, AI chat and call noise switches, and the Sleep Earbuds 4 pair's call
+  alert; and the Liberty 5 Pro pair (D1203, D1204), for which the unpacked app has neither a parser nor a more screen class.
+  - **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
   from the first byte (`ParseCommonCmdUtils.a`) and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns
   the records into the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and
   `"hi"` a nibble, `"pack"` the touch control's two bytes (with both earbuds in, with one) as OpenSCQ30's one nibble-packed byte, `"level"` and

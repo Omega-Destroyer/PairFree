@@ -751,6 +751,46 @@
           "expect": "some"
         }
       ]
+    },
+    {
+      "id": "soundcore-find-earbuds",
+      "brand": "soundcore",
+      "models": [
+        "Soundcore earbuds whose app has Find Earbuds (reported on the R60i)"
+      ],
+      "status": "open",
+      "what": "The Soundcore app's Find Earbuds (play a loud sound from the left, the right or both earbuds until stopped) is not in PairFree for any Soundcore model; which models have it and the command are to be read from the Soundcore app (2.9.9 and the restored 5.0.35).",
+      "reported": "issue #79"
+    },
+    {
+      "id": "apple-airpods-max-2-a3454",
+      "brand": "apple",
+      "models": [
+        "AirPods Max 2 (model number A3454)"
+      ],
+      "status": "open",
+      "what": "The AirPods Max 2 connect (the report lists battery and ten settings) but are not in PairFree's model table (model number A3454, firmware 91.3431046004000000.29), so their settings are not named or checked against the model.",
+      "reported": "issue #81"
+    },
+    {
+      "id": "oneplus-oppo-enco-buds2-pro-open",
+      "brand": "oneplus",
+      "models": [
+        "OPPO Enco Buds2 Pro (068010)"
+      ],
+      "status": "open",
+      "what": "The channel on service 0000079A-D102-11E1-9B23-00025B00A5A5 did not open (two socket attempts, read ret -1) on a Pixel 10 Pro XL, Android 17: to be settled from the OPPO and OnePlus apps' own connection code (which channel or service they open) and the report's service list, which holds only 00001107-d102-11e1-9b23-00025b00a5a5 beside the standard ones.",
+      "reported": "issue #78"
+    },
+    {
+      "id": "jbl-tour-pro-3-screens",
+      "brand": "jbl",
+      "models": [
+        "JBL Tour Pro 3 (20F2, serial channel, Airoha AB1585)"
+      ],
+      "status": "open",
+      "what": "On a Tour Pro 3 the firmware reads 255.255.255 for a moment after a setting changes, and after some change the screens showed only the Speak to chat switch even after restarting the app; the cause is to be found in JblSession and JblHarmanKitRace (a read-back or reload that replaces the state with an empty one).",
+      "reported": "issue #1 (comments of 2026-11-26, device report from 0.18.0)"
     }
   ]
 }

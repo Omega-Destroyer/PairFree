@@ -36,6 +36,12 @@
       "brand": "altec-lansing",
       "what": "Altec Lansing Bluetooth speakers (HydraMini to SoundRover, 17 models, a BLE service with a write and a notify characteristic, lighting colours and battery): a new vendor and speakers, which are held back. The only source so far is a third party's notes on the app; the Altec Lansing app itself is not among the reference APKs, so nothing can be built from it yet.",
       "reported": "issue #1 (a posted archive, not used)"
+    },
+    {
+      "id": "motorola-moto-buds",
+      "brand": "motorola",
+      "what": "Motorola Moto Buds (companion app com.motorola.motobuds): a new vendor. The issue holds a long protocol write-up from a user's reading of the app (RFCOMM service fc9d9fe0-4899-11ee-be56-0242ac120002 and BLE service fc9d9ff0-..., a PDU with a HEAD magic, CRC32 and an opcode registry); none of it is checked against the app or earbuds yet, and no Motorola APK is among the reference APKs.",
+      "reported": "issue #80"
     }
   ]
 }

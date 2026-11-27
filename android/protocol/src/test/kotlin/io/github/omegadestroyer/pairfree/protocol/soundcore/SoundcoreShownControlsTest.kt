@@ -35,6 +35,29 @@ class SoundcoreShownControlsTest {
         assertTrue(SoundcoreLayout.of("D1206")!!.features.contains("find_device"))
     }
 
+    /**
+     * The Liberty Buds 2's switches from records 25 to 27 (D1206AnalysisService): built from the app's parser, not recorded. Each shows with the state the records give and
+     * writes the command the app's own table names.
+     */
+    @Test
+    fun theLibertyBuds2sRecords() {
+        fun record(tag: Int, vararg v: Int) = byteArrayOf(tag.toByte(), v.size.toByte()) + ByteArray(v.size) { v[it].toByte() }
+        // Auto power off on at the second duration; touch tone and low battery tone on; game mode off, LDAC on, two devices on; wear detection on.
+        val body = record(25, 1, 1) + record(26, 0b0011) + record(27, 0b1100, 0b0001, 0, 0, 0)
+        val s = SoundcoreSession("D1206")
+        assertTrue(s.receive(SoundcorePacket(SoundcoreCommand.STATE, body)))
+        assertEquals(true, s.state.switch(Command.LDAC))
+        assertEquals(true, s.state.switch(Command.MULTIPOINT))
+        assertEquals(false, s.state.switch(Command.GAME_MODE))
+        val rows = s.groups.flatMap { it.settings }.associateBy { it.key }
+        assertEquals(Setting.Toggle("sc_wearing_detection", true), rows["sc_wearing_detection"])
+        assertEquals(Setting.Toggle("sc_low_battery_prompt", true), rows["sc_low_battery_prompt"])
+        assertEquals(Setting.Toggle("sc_in_ear_tone", false), rows["sc_in_ear_tone"])
+        assertEquals("20", (rows["a3954_auto_power_off_duration"] as Setting.Choice).value)
+        val write = s.change(SettingChange.Toggle("sc_wearing_detection", false))!!.single()
+        assertEquals(SoundcoreCommand.WEARING_DETECTION, write.command)
+    }
+
     @Test
     fun everyShownControlWrites() {
         val recorded = (vectors.getValue("openscq30_states").jsonArray + vectors.getValue("report_states").jsonArray).map { it.jsonObject }

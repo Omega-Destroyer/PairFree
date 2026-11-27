@@ -204,6 +204,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 (a3954SoundRows(s) ?: a3959SoundRows(s))?.takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
                 a3959FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
+                limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
                 if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
         }
@@ -444,6 +445,31 @@ public class SoundcoreSession(public val model: String) : FitTest {
         else -> null
     }
 
+    /**
+     * The high volume limit of the models whose app has a hearing protection screen: a switch and the level in steps of 5 from 75 to 100 dB.
+     * The Liberty 4 Pro shows its own rows ([a3954FeatureRows]).
+     */
+    private fun limitRows(s: SoundcoreState): List<Setting> {
+        if (model == "A3954") return emptyList()
+        val b = s.field(LIMIT_FIELD)?.takeIf { it.size >= 2 && it.u8(0) <= 1 } ?: return emptyList()
+        return listOf(Setting.Toggle(LIMIT, b.u8(0) == 1), Setting.Level(LIMIT_DB, b.u8(1).coerceIn(75, 100) / 5 * 5, 75, 100, enabled = b.u8(0) == 1))
+    }
+
+    /** [wanted] in the app's steps of 5 dB: rounded up when it is above [held], so the plus button moves, else down. */
+    private fun limitStep(held: Int, wanted: Int): Int = ((wanted.coerceIn(75, 100) + if (wanted > held) 4 else 0) / 5 * 5).coerceIn(75, 100)
+
+    private fun limitChange(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
+        if (limitRows(s).isEmpty()) return null
+        val b = s.field(LIMIT_FIELD) ?: return null
+        when {
+            change is SettingChange.Toggle && change.key == LIMIT -> b[0] = if (change.on) 1 else 0
+            change is SettingChange.Level && change.key == LIMIT_DB -> b[1] = limitStep(b.u8(1), change.value).toByte()
+            else -> return null
+        }
+        lastState = s.with(LIMIT_FIELD, b)
+        return listOf(SoundcorePacket(SoundcoreCommand.VOLUME_LIMIT, b.copyOf(2)))
+    }
+
     /** The AeroClip 2 pair's balance between the earbuds, -6 (left) to 6 (right), sent and reported as 100 plus it. */
     private fun balanceRow(s: SoundcoreState): Setting? {
         val v = s.field("volume_balance")?.firstOrNull()?.let { (it.toInt() and 0xFF) - BALANCE_CENTRE } ?: return null
@@ -483,6 +509,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
+        if (change.key == LIMIT || change.key == LIMIT_DB) return limitChange(s, change)
         if (change is SettingChange.Choice && (change.key == DOUBLE_PRESS || change.key == HOLD)) return buttonChange(s, change)
         if (change is SettingChange.Toggle) {
             if (model == "A3954" && change.key.startsWith("a3954_")) {
@@ -596,7 +623,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             if (change.key == "a3954_volume_limit_db") {
                 val bytes = s.field("limit_high_volume") ?: return null
                 // Three bytes, as the app writes them: the switch, the limit in dB (steps of 5) and the third byte (the reading refresh) as reported.
-                bytes[1] = (change.value.coerceIn(75, 100) / 5 * 5).toByte()
+                bytes[1] = limitStep(bytes.u8(1), change.value).toByte()
                 lastState = s.with("limit_high_volume", bytes)
                 return listOf(SoundcorePacket(0x2082, bytes))
             }
@@ -684,6 +711,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private const val HOLD = "sc_mfb_hold"
         private class Hold(val option: String, val state: Int, val write: Int)
         private val HOLD_ACTIONS = listOf(Hold("assistant", 0, 5), Hold("nap", 3, 13), Hold("none", 5, 15))
+        private const val LIMIT_FIELD = "limit_high_volume"
+        private const val LIMIT = "sc_volume_limit"
+        private const val LIMIT_DB = "sc_volume_limit_db"
         private const val BALANCE = "sc_volume_balance"
         private const val BALANCE_CENTRE = 100
         private const val BALANCE_STEPS = 6

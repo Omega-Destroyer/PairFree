@@ -308,6 +308,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_sound" -> R.string.setting_ca_sound
         "ca_case" -> R.string.setting_ca_case_group
         "sc_device" -> R.string.setting_sc_device
+        "sc_limit" -> R.string.setting_hearing_protection
         "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
@@ -438,6 +439,8 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_vibration" -> stringResource(R.string.setting_sc_vibration)
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
+    "sc_volume_limit" -> stringResource(R.string.setting_sc_volume_limit)
+    "sc_volume_limit_db" -> stringResource(R.string.setting_sc_volume_limit_db)
     "sc_mode_voice_prompt", "sc_voice_prompt" -> stringResource(R.string.setting_sc_mode_voice_prompt)
     "sc_voice_tone" -> stringResource(R.string.setting_sc_voice_tone)
     "sc_battery_alert" -> stringResource(R.string.setting_sc_battery_alert)
@@ -1786,6 +1789,7 @@ private fun levelName(key: String, value: Int, max: Int): String = when (key) {
             else -> stringResource(R.string.setting_balance_middle)
         }
     }
+    "sc_volume_limit_db", "a3954_volume_limit_db" -> stringResource(R.string.db, value.toString())
     "sc_volume_balance" -> when {
         value < 0 -> stringResource(R.string.setting_balance_left, -value)
         value > 0 -> stringResource(R.string.setting_balance_right, value)

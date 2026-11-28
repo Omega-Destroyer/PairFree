@@ -101,7 +101,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key.startsWith("sc_calibrate_") || setting.key == "sc_personal_anc_result" || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key.startsWith("sc_calibrate_") || setting.key == "sc_personal_anc_result" || setting.key == "hw_sleep_state" || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
@@ -270,6 +270,7 @@ private fun groupTitle(key: String): String = stringResource(
         "hw_find" -> R.string.setting_group_find_hub
         "hw_voice" -> R.string.setting_hw_voice
         "hw_battery_health" -> R.string.setting_group_hw_battery_health
+        "hw_scenario" -> R.string.setting_group_hw_scenario
         "touch" -> R.string.setting_group_touch
         "ambient_customize" -> R.string.setting_group_ambient_customize
         "calls" -> R.string.setting_group_calls
@@ -792,6 +793,14 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "hw_adaptive_sensitivity" -> stringResource(R.string.setting_hw_adaptive_sensitivity)
     "hw_pair_new" -> stringResource(R.string.setting_hw_pair_new)
     "hw_scene_detection" -> stringResource(R.string.setting_hw_scene_detection)
+    "hw_game" -> stringResource(R.string.setting_hw_game)
+    "hw_game_lock" -> stringResource(R.string.setting_hw_game_lock)
+    "hw_game_latency" -> stringResource(R.string.setting_hw_game_latency)
+    "hw_game_sound" -> stringResource(R.string.setting_hw_game_sound)
+    "hw_sleep" -> stringResource(R.string.setting_hw_sleep)
+    "hw_sleep_timer" -> stringResource(R.string.setting_hw_sleep_timer)
+    "hw_sleep_mute" -> stringResource(R.string.setting_hw_sleep_mute)
+    "hw_sleep_state" -> stringResource(R.string.setting_hw_sleep_state)
     "multipoint" -> stringResource(R.string.setting_multipoint)
     "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
     "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
@@ -1344,6 +1353,12 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     option == "hw_assistant" -> getString(R.string.setting_hw_assistant)
     option == "hw_change_track" -> getString(R.string.setting_hw_change_track)
     option == "hw_game_mode" -> getString(R.string.setting_hw_game_mode)
+    option == "hw_sleep_15" -> getString(R.string.setting_hw_sleep_15)
+    option == "hw_sleep_30" -> getString(R.string.setting_hw_sleep_30)
+    option == "hw_sleep_60" -> getString(R.string.setting_hw_sleep_60)
+    option == "hw_sleep_90" -> getString(R.string.setting_hw_sleep_90)
+    option == "hw_sleep_always" -> getString(R.string.setting_hw_sleep_always)
+    option == "hw_sleep_elsewhere" -> getString(R.string.setting_hw_sleep_elsewhere)
     option == "hw_sensitivity_low" -> getString(R.string.setting_hw_sensitivity_low)
     option == "hw_sensitivity_medium" -> getString(R.string.setting_hw_sensitivity_medium)
     option == "hw_sensitivity_high" -> getString(R.string.setting_hw_sensitivity_high)

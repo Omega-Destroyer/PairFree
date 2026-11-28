@@ -40,8 +40,8 @@
       "models": [
         "FreeBuds Neo"
       ],
-      "status": "open",
-      "what": "Smart scenario: the sleep mode (2B B4 key 48, with times, noise, music, call mute) and game focus (low latency, connection lock, quick gesture; keys 48 and 49). Builders in E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/smartscenario/manager/sleepmode/v.java; the replies' layouts still to be read.",
+      "status": "built",
+      "what": "Smart scenario: the game mode (connection lock, low latency, game sound) and the sleep mode (timer, call mute, 30 s heartbeat), 2B B4 key 48 with the phone address from 2B 35. The app's sleep sounds are phone playback and not copied. Not tried.",
       "reported": "Audio Connect read, 2026-11-28"
     },
     {

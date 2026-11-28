@@ -17,7 +17,8 @@ import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Value
 
 /** One AI Life MBB conversation. Settings become writable after the matching model returns their read. */
-public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<HuaweiPacket>(), BandEq, FitTest {
+public class HuaweiTalk(private val product: HuaweiProduct, clock: () -> HuaweiClock? = { null }) :
+    SessionTalk<HuaweiPacket>(), BandEq, FitTest {
     private val parser = HuaweiParser()
     private val controls = product.controls()
     private val pinch = if (product.has("pinch")) HuaweiPinch.entries.filter { it != HuaweiPinch.HOLD || product.has("pinch_hold") } else emptyList()
@@ -46,6 +47,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     private var fitDone = false
     private var lights: ByteArray? = null
     private var cycles: Pair<Int, Int>? = null
+    private val scenes = if (product.has("smart_scenario") && !reportOnly) HuaweiScenes(clock) else null
 
     private val opening = buildList {
         add(batteryRead)
@@ -77,6 +79,11 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         if (product.has("light")) add(huaweiRead(HuaweiCommand.LIGHT, 1))
         if (product.has("pair_new")) add(huaweiRead(HuaweiCommand.PAIR_NEW_READ, 1))
         addAll(pinch.map(HuaweiPinch::read))
+        if (product.has("smart_scenario") && !reportOnly) {
+            add(huaweiRead(HuaweiCommand.LOCAL_ADDRESS, 3))
+            add(HuaweiScenes.GAME_QUERY)
+            add(HuaweiScenes.SLEEP_QUERY)
+        }
         if (product.has("find")) addAll((0..1).map { huaweiWrite(HuaweiCommand.RING_STATE, 1 to it) })
         if (product.has("language")) add(huaweiRead(HuaweiCommand.LANGUAGE_READ, 1, 2, 3))
         if (product.mayHaveEq && !product.has("eq_write_only")) add(huaweiRead(HuaweiCommand.EQ_READ, 2))
@@ -169,6 +176,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
             if (sensitivity != null && sensitivity in SENSITIVITIES) add(SettingGroup("other", SettingTab.SOUND,
                 listOf(Setting.Choice(SENSITIVITY, SENSITIVITIES[sensitivity], SENSITIVITIES.values.toList()))))
             if (HuaweiCommand.PAIR_NEW_READ in reports) add(SettingGroup("other", SettingTab.DEVICE, listOf(Setting.Action(PAIR_NEW))))
+            val modes = scenes?.rows().orEmpty()
+            if (modes.isNotEmpty()) add(SettingGroup("hw_scenario", SettingTab.HOME, modes))
             val hosts = peers.rows()
             if (hosts.isNotEmpty()) add(SettingGroup("hw_peers", SettingTab.DEVICE, hosts))
             val languages = languages()
@@ -194,6 +203,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     private fun hex(value: Int): String = value.toString(16).padStart(2, '0')
 
     private fun reported(packet: HuaweiPacket, field: HuaweiTlv): ByteArray = when {
+        // The two modes' reports carry the address of the phone that started them.
+        isScene(packet) && field.tag == 4 -> byteArrayOf()
         // The battery cycle reply also carries each battery's serial number.
         packet.op == HuaweiFeature.OP && packet.scalar(1) == CYCLES_KEY && field.tag > 3 -> byteArrayOf()
         packet.op == HuaweiCommand.VERSION -> if (field.tag == 7) field.value.copyOf(minOf(field.value.size, 24)) else byteArrayOf()
@@ -202,12 +213,12 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     }
 
     private fun remember(packet: HuaweiPacket) {
-        // The paired devices' list holds other devices' names and addresses.
-        if (packet.op == HuaweiCommand.PEER_LIST) return
+        // The paired devices' list holds other devices' names and addresses; the other reply is the phone's own address.
+        if (packet.op == HuaweiCommand.PEER_LIST || packet.op == HuaweiCommand.LOCAL_ADDRESS) return
         if (opening.none { it.op == packet.op } && packet.op != HuaweiCommand.BATTERY_NOTIFY) return
         val selectors = when (packet.op) {
             HuaweiFeature.OP, HuaweiCommand.PINCH_READ ->
-                packet.fields.filter { it.tag == 1 || (packet.op == HuaweiCommand.PINCH_READ && it.tag == 2) }
+                packet.fields.filter { it.tag == 1 || (it.tag == 2 && (packet.op == HuaweiCommand.PINCH_READ || isScene(packet))) }
                     .joinToString("") { field -> "." + field.value.joinToString("") { hex(it.toInt() and 0xff) } }
             else -> ""
         }
@@ -215,7 +226,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     }
 
     override fun start(): List<HuaweiPacket> = opening
-    override fun poll(): List<HuaweiPacket> = listOf(batteryRead)
+    override fun poll(): List<HuaweiPacket> = listOf(batteryRead) + scenes?.heartbeat().orEmpty()
+    private fun isScene(packet: HuaweiPacket): Boolean = packet.op == HuaweiFeature.OP && packet.scalar(1) == HuaweiScenes.KEY
     override fun bytes(message: HuaweiPacket): ByteArray =
         message.bytes(emptyLastTlvDeclaresValue = message.op in BARE_READS && isRead(message))
     override fun answers(sent: HuaweiPacket, got: Any): Boolean {
@@ -223,7 +235,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         if (sent.op == HuaweiCommand.BATTERY && got.op == HuaweiCommand.BATTERY_NOTIFY) return true
         if (sent.op != got.op) return false
         return when (sent.op) {
-            HuaweiFeature.OP -> sent.scalar(1) == got.scalar(1)
+            HuaweiFeature.OP -> sent.scalar(1) == got.scalar(1) && (!isScene(sent) || sent.scalar(2) == got.scalar(2))
             HuaweiPinch.READ -> sent.scalar(1) == got.scalar(1) && sent.scalar(2) == got.scalar(2)
             HuaweiCommand.RING_STATE -> sent.scalar(1) == got.field(2)?.firstOrNull()?.toInt()
             else -> true
@@ -239,7 +251,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
 
     override fun allowed(message: HuaweiPacket): Boolean =
         message.op !in HuaweiNever.ALL && message.service !in HuaweiNeverservice.ALL &&
-            (isRead(message) || (!reportOnly && (isEqWrite(message) || isFitMessage(message) || permittedSettingsWrite(message))))
+            (isRead(message) || (!reportOnly && (isEqWrite(message) || isFitMessage(message) ||
+                scenes?.allows(message) == true || permittedSettingsWrite(message))))
 
     private fun isFitMessage(message: HuaweiPacket): Boolean = hasFit && message.op == HuaweiCommand.FIT_SET &&
         message.fields.size == 1 && message.fields[0].tag in setOf(1, 3) && message.fields[0].value.isEmpty()
@@ -256,6 +269,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
                     reports[op] = packet
                     changed = true
                 }
+            } else if (op == HuaweiCommand.LOCAL_ADDRESS || isScene(packet)) {
+                if (scenes?.receive(packet) == true) changed = true
             } else if (op == HuaweiFeature.OP && packet.scalar(1) == CYCLES_KEY) {
                 val left = packet.field(2)?.takeIf { it.size == 2 }
                 val right = packet.field(3)?.takeIf { it.size == 2 }
@@ -406,6 +421,15 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     override fun change(change: SettingChange): List<HuaweiPacket>? {
         val key = change.key
         val mode = state.number(Command.ANC_MODE)
+        scenes?.change(change)?.let { writes ->
+            if (writes.isEmpty()) return writes
+            val scene = writes.first().scalar(2)
+            // Before the sleep mode starts, the app sends the noise mode it should run with: here the one in use.
+            val noise = if (scenes.startsSleep(change) && mode != null) set(Command.ANC_MODE, mode).orEmpty() else emptyList()
+            val back = opening.filter { isScene(it) && it.scalar(2) == scene }
+            readBacks = if (noise.isEmpty()) back else readBacks + back
+            return noise + writes
+        }
         if (change is SettingChange.Toggle && (key == LIGHT_CALL || key == LIGHT_MEDIA)) {
             val now = lights ?: return null
             val value = if (change.on) 0 else 1

@@ -325,6 +325,62 @@ class HuaweiTest {
         assertTrue(glasses.allowed(write))
     }
 
+    private fun scene(kind: Int, vararg fields: Pair<Int, ByteArray>): HuaweiPacket = huaweiPacket(0x2bb4,
+        listOf(HuaweiTlv(1, byteArrayOf(48)), HuaweiTlv(2, byteArrayOf(kind.toByte()))) + fields.map { HuaweiTlv(it.first, it.second) })
+
+    private val phone = byteArrayOf(1, 2, 3, 4, 5, 6)
+    private val one = byteArrayOf(1)
+    private val none = byteArrayOf(0)
+
+    private fun neo(now: () -> Long): HuaweiTalk {
+        val talk = HuaweiTalk(checkNotNull(HuaweiModels.fromName("FreeBuds Neo"))) { HuaweiClock(now(), 3600) }
+        talk.receive(huaweiPacket(0x2b35, listOf(HuaweiTlv(4, phone))))
+        talk.receive(scene(1, 3 to none, 5 to one, 6 to one))
+        talk.receive(scene(2, 3 to none))
+        return talk
+    }
+
+    private fun HuaweiTalk.rows(): Map<String, Setting> = groups.firstOrNull { it.key == "hw_scenario" }?.settings.orEmpty().associateBy { it.key }
+
+    @Test fun theGameModeIsWrittenWithThePhonesOwnAddress() {
+        val talk = neo { 1000 }
+        assertEquals(setOf("hw_game", "hw_sleep", "hw_sleep_timer", "hw_sleep_mute"), talk.rows().keys)
+        val on = talk.change(SettingChange.Toggle("hw_game", true))!!.single()
+        assertArrayEquals(scene(1, 3 to one, 4 to phone, 5 to one, 6 to one).bytes(), on.bytes())
+        assertTrue(talk.allowed(on))
+        talk.receive(scene(1, 3 to one, 4 to phone, 5 to one, 6 to one))
+        val sound = talk.change(SettingChange.Toggle("hw_game_sound", true))!!.single()
+        assertArrayEquals(scene(1, 3 to byteArrayOf(2), 4 to phone, 5 to one, 6 to one, 7 to byteArrayOf(25)).bytes(), sound.bytes())
+        assertFalse(talk.allowed(scene(1, 3 to one, 4 to ByteArray(6), 5 to one, 6 to one)))
+        assertTrue(talk.reportLines.none { "010203040506" in it })
+    }
+
+    @Test fun theSleepModeStartsBeatsAndStops() {
+        var now = 1_000_000L
+        val talk = neo { now }
+        val start = talk.change(SettingChange.Toggle("hw_sleep", true))!!.last()
+        fun four(value: Long) = ByteArray(4) { (value shr (24 - 8 * it)).toByte() }
+        val zone = four(3600)
+        assertArrayEquals(scene(2, 3 to one, 4 to phone, 13 to four(now), 14 to zone, 15 to four(now + 1800), 16 to none,
+            17 to four(now), 18 to zone, 19 to four(now + 900), 20 to byteArrayOf(7, 8), 21 to none).bytes(), start.bytes())
+        assertTrue(talk.allowed(start))
+        talk.receive(scene(2, 3 to one, 4 to phone, 13 to four(now), 15 to four(now + 1800)))
+        now += 30
+        val beat = talk.poll().first { it.scalar(1) == 48 }
+        assertArrayEquals(scene(2, 20 to byteArrayOf(6, -22)).bytes(), beat.bytes())
+        assertTrue(talk.poll().all(talk::allowed))
+        now += 4000
+        assertArrayEquals(scene(2, 3 to none).bytes(), talk.poll().first { it.scalar(1) == 48 }.bytes())
+    }
+
+    @Test fun anotherPhonesSleepModeIsLeftAlone() {
+        val talk = neo { 1000 }
+        talk.receive(scene(2, 3 to one, 4 to byteArrayOf(9, 9, 9, 9, 9, 9)))
+        assertTrue("hw_sleep" !in talk.rows())
+        assertNull(talk.change(SettingChange.Toggle("hw_sleep", false)))
+        assertTrue(talk.poll().none { it.scalar(1) == 48 })
+    }
+
     /** The frames HuaweiPods (e2cf07e) writes out in full. */
     @Test fun spatialAudioAndCaseSoundMatchPublishedFrames() {
         assertArrayEquals("5a0009002bb401011802010170cc".hexBytes(), huaweiWrite(0x2bb4, 1 to 24, 2 to 1).bytes())

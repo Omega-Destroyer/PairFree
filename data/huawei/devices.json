@@ -1707,7 +1707,8 @@
         "voice",
         "voice_control",
         "voice_wake",
-        "wear"
+        "wear",
+        "smart_scenario"
       ],
       "app_ids": [
         "ZAB4"

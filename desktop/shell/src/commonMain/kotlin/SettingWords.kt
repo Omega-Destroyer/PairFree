@@ -22,6 +22,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "hw_find" -> "setting_group_find_hub"
             "hw_voice" -> "setting_hw_voice"
             "hw_battery_health" -> "setting_group_hw_battery_health"
+            "hw_scenario" -> "setting_group_hw_scenario"
             "touch" -> "setting_group_touch"
             "ambient_customize" -> "setting_group_ambient_customize"
             "calls" -> "setting_group_calls"
@@ -540,6 +541,14 @@ class SettingWords(private val strings: DesktopStrings) {
         "hw_adaptive_sensitivity" -> t("setting_hw_adaptive_sensitivity")
         "hw_pair_new" -> t("setting_hw_pair_new")
         "hw_scene_detection" -> t("setting_hw_scene_detection")
+        "hw_game" -> t("setting_hw_game")
+        "hw_game_lock" -> t("setting_hw_game_lock")
+        "hw_game_latency" -> t("setting_hw_game_latency")
+        "hw_game_sound" -> t("setting_hw_game_sound")
+        "hw_sleep" -> t("setting_hw_sleep")
+        "hw_sleep_timer" -> t("setting_hw_sleep_timer")
+        "hw_sleep_mute" -> t("setting_hw_sleep_mute")
+        "hw_sleep_state" -> t("setting_hw_sleep_state")
         "multipoint" -> t("setting_multipoint")
         "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> t("setting_bose_peer_connect")
         "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> t("setting_bose_peer_disconnect")
@@ -1085,6 +1094,12 @@ class SettingWords(private val strings: DesktopStrings) {
         option == "hw_assistant" -> t("setting_hw_assistant")
         option == "hw_change_track" -> t("setting_hw_change_track")
         option == "hw_game_mode" -> t("setting_hw_game_mode")
+        option == "hw_sleep_15" -> t("setting_hw_sleep_15")
+        option == "hw_sleep_30" -> t("setting_hw_sleep_30")
+        option == "hw_sleep_60" -> t("setting_hw_sleep_60")
+        option == "hw_sleep_90" -> t("setting_hw_sleep_90")
+        option == "hw_sleep_always" -> t("setting_hw_sleep_always")
+        option == "hw_sleep_elsewhere" -> t("setting_hw_sleep_elsewhere")
         option == "hw_sensitivity_low" -> t("setting_hw_sensitivity_low")
         option == "hw_sensitivity_medium" -> t("setting_hw_sensitivity_medium")
         option == "hw_sensitivity_high" -> t("setting_hw_sensitivity_high")

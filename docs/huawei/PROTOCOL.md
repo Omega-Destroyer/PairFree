@@ -351,11 +351,39 @@ triple tap), song recognition (14), workout summary (20) and recording (21).
 
 **The rest of the app's screens.**
 
-- *Smart scenario* (FreeBuds Neo): a sleep mode and a game focus the phone runs, writing keys 48 and 49 of `2B B4` with the phone's times, noise mode,
-  low latency and a connection lock (`smartscenario/manager/sleepmode/v`). Its commands are read; the registry item `huawei-smart-scenario` is open.
+- *Smart scenario* (FreeBuds Neo, the one product file with the card): a game mode and a sleep mode, built; section 15.1.
 - *Airplane and deep noise cancelling*: not separate settings. Deep is noise level 2 (offered as Ultra); the airplane marking is the phone's airplane
   mode drawn on the card (`NoiseControlConstant`, `NoiseControlWidget.setAncFlyMode`).
 - *Hearing test, hearing aid and the Eyewear's neck health*: blocked: the screens are not in this APK; checked: the manifest, the DEX class names and
   `drouter/core/hearingassistance`, which holds only the interfaces. `Mbb` names their commands (`2B 3A` to `2B 40`, `2B 71` to `2B 7C`) without
   builders or parsers to give a layout.
 - *Open-lid reminder* (`2B 7F`): its builder has no caller in the app's screens.
+
+### 15.1 Smart scenario: game mode and sleep mode
+
+Both are key 48 of `2B B4` (`lr/k`, `mbb/d` `I3`, `c2`, `d4`; `smartscenario/manager/sleepmode/v`; `rr/e`), told apart by tag 2: 1 game, 2 sleep.
+Tag 3 is the switch, tag 4 the address of the phone that started it. The earbuds report that address themselves: `2B 35`, empty tag 3, reply tag 4
+(six bytes), sent back as it came. PairFree offers neither mode until it has it.
+
+| | Message after `2B B4 01 01 30 02 01 kk` |
+|---|---|
+| Game query | `kk` = 01, `03 00` |
+| Game write | `kk` = 01: tag 3 (1 on, 0 off, 2 only the choices changed), 4 phone, 5 connection lock, 6 low latency, and for sound enhancement 7 its equalizer number (25 is the app's game sound) with tags 8 to 11 when the earbuds reported a curve |
+| Sleep query | `kk` = 02, nothing more |
+| Sleep start | `kk` = 02: 3 = 1, 4 phone, 13 start (4 bytes, seconds since 1970), 14 zone offset (4), 15 end (4), 16 music, 17 music start, 18 offset, 19 music end, 20 seconds left (2), 21 mute calls |
+| Sleep stop | `kk` = 02: `03 01 00` |
+| While it runs | `kk` = 02: tag 20 with the seconds left, then the query, every 30 s; tag 21 when call mute changes |
+
+- Timer: 15, 30, 60 or 90 minutes, or "always on", which is 100 minutes and 100 in every heartbeat. The app's default is 30; a new time restarts a
+  running sleep mode.
+- Before starting, the app writes the sleep mode's own noise preference with `2B 04`; PairFree writes the noise mode in use, so the Home tab's choice
+  holds.
+- A game report from another phone shows as off and turning it on takes it over, as in the app; another phone's sleep mode is only shown.
+- The sleep mode lives on the phone's heartbeats, so PairFree has to stay connected (the status notification keeps the channel).
+- Not copied: the app plays sleep sounds it downloads (PairFree sends the music switch off), checks that the earbuds are worn or out of the case
+  before starting, silences its own greetings, and sends the standard time zone offset where PairFree sends the current one.
+- The game card's adaptive switch (tag 22) is left out: blocked: the app shows it only with Huawei's system accessory manager installed, which does
+  the adapting; checked: `GameModeFragment.K5` (its `com.huawei.audioaccessorymanager` metadata test) and `lr/k.C0`.
+- The press-and-hold gesture "game mode" (value 22) is in the gesture settings.
+
+Nothing here has met a FreeBuds Neo; the layouts are read from the app.

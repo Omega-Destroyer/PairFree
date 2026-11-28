@@ -8,12 +8,14 @@ import io.github.omegadestroyer.pairfree.eq.EqSource
 import io.github.omegadestroyer.pairfree.protocol.EarbudState
 import io.github.omegadestroyer.pairfree.protocol.Model
 import io.github.omegadestroyer.pairfree.protocol.Wire
+import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiClock
 import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiModels
 import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiPacket
 import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiParser
 import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiProduct
 import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiTalk
 import io.github.omegadestroyer.pairfree.protocol.widget.NoiseChoice
+import kotlin.time.Clock
 
 /** Huawei AI Life and the Honor models in its Smart Audio plugin. */
 object HuaweiSpec : BrandSpec(Brand.HUAWEI) {
@@ -41,7 +43,12 @@ object HuaweiSpec : BrandSpec(Brand.HUAWEI) {
 }
 
 private class HuaweiDriver(host: DriverHost, private val product: HuaweiProduct) : TalkDriver<HuaweiPacket, HuaweiTalk>(host) {
-    override fun talk(opened: ControlLink): HuaweiTalk = HuaweiTalk(product)
+    override fun talk(opened: ControlLink): HuaweiTalk = HuaweiTalk(product, ::clock)
+
+    private fun clock(): HuaweiClock? = host.localTime()?.let { local ->
+        val now = Clock.System.now().epochSeconds
+        HuaweiClock(now, offsetSeconds(local, now))
+    }
 
     override val followsEqReports: Boolean get() = true
 

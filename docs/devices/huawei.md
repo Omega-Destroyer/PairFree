@@ -15,13 +15,13 @@ What PairFree shows, where the model has it:
 - **Controls:** double and triple tap, press and hold, swipe and pinch, with the choices Huawei offers for each model.
 - **Device:** wear detection, two devices at once and the paired devices (connect, disconnect, connect automatically, preferred), rest reminders, case
   prompt sounds, voice prompt language, voice wake-up, left and right detection (FreeClip), battery charge cycles, the Eyewear's lights and
-  pairing button, and finding each earbud.
+  pairing button, the FreeBuds Neo's game and sleep modes, and finding each earbud.
 
 Where it comes from: Huawei's own apps, HUAWEI Audio Connect 2.0.7.390 for the current models and AI Life 11.0.2.305 for the oldest, checked against
 the open-source LibreBuds, HuaweiPods and OpenFreebuds, which used real earbuds. Models in the table as "Catalogue only" show their battery and firmware and take a device report; a newer FreeBuds,
 FreeClip, FreeLace or FreeArc that the table lacks is listed the same way.
 
-**Not covered:** the FreeBuds Neo's smart scenario (sleep and game modes), and the hearing test, hearing aid and neck health, whose screens are not in the
+**Not covered:** the sleep sounds the maker's app plays, and the hearing test, hearing aid and neck health, whose screens are not in the
 app PairFree read. **Left out:** unpairing a paired device, factory reset, firmware updates, gesture choices that only work through Huawei's own app
 (quick play, song recognition, recording), and what that app does on the phone or with an account.
 

@@ -43,7 +43,7 @@ SPOKEN = {
     "head", "voice_control", "voice_wake", "drop", "single_anc", "case_sound", "smart_charge", "noisy_volume", "find", "rest", "ear_tip", "fit",
     "wind_noise", "wind", "multipoint", "auto_lr", "double", "double_call", "triple", "hold", "hold_right", "hold_call", "hold_reject",
     "hold_extra", "hold_assistant", "hold_toggle", "hold_cycle", "swipe", "swipe_sides", "pinch", "pinch_hold", "conversation", "adaptive_volume",
-    "limited_levels", "report_only", "soh", "light", "pair_new",
+    "limited_levels", "report_only", "soh", "light", "pair_new", "smart_scenario",
 }
 
 GESTURES = {"double": ("011F", 1), "double_call": ("011F", 4), "triple": ("0125", 1), "hold": ("2B16", 1), "hold_call": ("2B16", 4),
@@ -165,6 +165,7 @@ def describe(archive, pid):
     when(config.get("isSupportSoh"), "soh")
     when("light_setting" in tags, "light")
     when("pare_new_device" in tags, "pair_new")
+    when("smart_scenario" in tags, "smart_scenario")
 
     gestures = {}
     if touch is not None:

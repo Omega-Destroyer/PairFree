@@ -65,6 +65,7 @@
     "PEER_LIST": 11057,
     "PEER_PREFERRED": 11058,
     "PEER_EXECUTE": 11059,
+    "LOCAL_ADDRESS": 11061,
     "PEER_EVENT": 11062,
     "SCENE_DETECTION_READ": 11064,
     "SCENE_DETECTION_SET": 11065,
@@ -185,6 +186,7 @@
     "PAIR_NEW": "Audio Connect",
     "LIGHT": "Audio Connect",
     "SCENE_DETECTION_READ": "Audio Connect",
-    "SCENE_DETECTION_SET": "Audio Connect"
+    "SCENE_DETECTION_SET": "Audio Connect",
+    "LOCAL_ADDRESS": "Audio Connect"
   }
 }

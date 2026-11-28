@@ -88,7 +88,9 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
                     Setting.Choice(key, HEAD_CHOICES[it], HEAD_CHOICES.values.toList())
                 }
             }
-            if (switches.isNotEmpty()) add(SettingGroup("other", SettingTab.HOME, switches + headActions))
+            val scene = featureStates[HuaweiFeature.SPATIAL]?.takeIf { product.has("spatial_scene") }?.scalar(3)
+                ?.takeIf { it in SCENES }?.let { Setting.Choice(SCENE, SCENES[it], SCENES.values.toList()) }
+            if (switches.isNotEmpty()) add(SettingGroup("other", SettingTab.HOME, switches + headActions + listOfNotNull(scene)))
             if (ringing.isNotEmpty()) add(SettingGroup("hw_find", SettingTab.DEVICE, listOfNotNull(
                 ringing[0]?.let { Setting.Action("hw_ring_left", it) },
                 ringing[1]?.let { Setting.Action("hw_ring_right", it) },
@@ -303,6 +305,12 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     override fun change(change: SettingChange): List<HuaweiPacket>? {
         val key = change.key
         val mode = state.number(Command.ANC_MODE)
+        if (change is SettingChange.Choice && key == SCENE) {
+            if (!product.has("spatial_scene") || featureStates[HuaweiFeature.SPATIAL]?.scalar(3) == null) return null
+            val value = SCENES.entries.firstOrNull { it.value == change.option }?.key ?: return null
+            readBacks = listOf(HuaweiFeature.SPATIAL.read())
+            return listOf(huaweiWrite(HuaweiFeature.OP, 1 to HuaweiFeature.SPATIAL.code, 3 to value))
+        }
         if (change is SettingChange.Choice) {
             val feature = features.firstOrNull { it.row == key && it in featureStates && it.choices.isNotEmpty() }
             val value = feature?.choices?.entries?.firstOrNull { it.value == change.option }?.key
@@ -406,6 +414,9 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
                 val report = featureStates[feature] ?: return false
                 val tags = packet.fields.map(HuaweiTlv::tag)
                 if (tags == listOf(1, 2)) feature.accepts(packet.scalar(2))
+                else if (feature == HuaweiFeature.SPATIAL && tags == listOf(1, 3)) {
+                    product.has("spatial_scene") && report.scalar(3) != null && packet.scalar(3) in SCENES
+                }
                 else feature == HuaweiFeature.HEAD && report.scalar(2) == 1 &&
                     HEAD_ACTIONS.values.any { tags == listOf(1, it) && report.scalar(it) != null && packet.scalar(it) in HEAD_CHOICES }
             }
@@ -495,6 +506,9 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         val VERSION_NUMBER = Regex("^[vV]?[0-9]{1,4}(?:\\.[0-9]{1,4}){1,4}(?![.0-9])")
         val LOCALE = Regex("[a-zA-Z]{2,3}([-_][a-zA-Z0-9]{2,8}){0,3}")
         val STANDARD_PRESETS = mapOf(1 to "Default", 2 to "Bass boost", 3 to "Treble boost", 9 to "Voices")
+
+        const val SCENE = "hw_spatial_scene"
+        val SCENES = mapOf(0 to "hw_scene_default", 1 to "hw_scene_theater", 2 to "hw_scene_cinema", 3 to "hw_scene_hall")
 
         /** Reads whose request declares one byte it does not carry, as the vendor app sends them (the Studio's touch switch; LibreBuds). */
         val BARE_READS = setOf(HuaweiCommand.TOUCH_ENABLE_READ, HuaweiCommand.HD_CALL_READ, HuaweiCommand.PICKUP_READ)

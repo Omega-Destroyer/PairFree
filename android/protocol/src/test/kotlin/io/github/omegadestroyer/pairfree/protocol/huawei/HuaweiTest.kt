@@ -251,6 +251,18 @@ class HuaweiTest {
         assertTrue(neo.reportLines.any { it.startsWith("2b4a:") })
     }
 
+    /** The frames HuaweiPods (e2cf07e) writes out in full. */
+    @Test fun spatialAudioAndCaseSoundMatchPublishedFrames() {
+        assertArrayEquals("5a0009002bb401011802010170cc".hexBytes(), huaweiWrite(0x2bb4, 1 to 24, 2 to 1).bytes())
+        assertArrayEquals("5a0006002bb101010025b5".hexBytes(), huaweiWrite(0x2bb1, 1 to 0).bytes())
+        val clip = talk("FreeClip 2")
+        assertArrayEquals("5a000a002bb4010118020003009b3f".hexBytes(), clip.start().single { it.op == 0x2bb4 && it.scalar(1) == 24 }.bytes())
+        clip.receive(huaweiWrite(0x2bb4, 1 to 24, 2 to 0, 3 to 0))
+        val scene = clip.change(SettingChange.Choice("hw_spatial_scene", "hw_scene_hall"))!!.single()
+        assertArrayEquals("5a0009002bb401011803010367be".hexBytes(), scene.bytes())
+        assertTrue(clip.allowed(scene))
+    }
+
     @Test fun theNewSwitchesAndEarTipsWaitForTheirReads() {
         val pro = talk("FreeBuds Pro 5")
         assertNull(pro.change(SettingChange.Toggle("hw_rest", true)))

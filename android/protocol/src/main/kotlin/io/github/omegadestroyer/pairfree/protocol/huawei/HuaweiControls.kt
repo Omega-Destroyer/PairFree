@@ -113,6 +113,9 @@ internal fun HuaweiProduct.controls(): List<HuaweiControl> = buildList {
     if (has("hd_call")) add(HuaweiControl("hw_hd_call", SettingTab.SOUND, HuaweiCommand.HD_CALL_READ, HuaweiCommand.HD_CALL_SET))
     if (has("pickup")) add(HuaweiControl("hw_pickup", SettingTab.SOUND, HuaweiCommand.PICKUP_READ, HuaweiCommand.PICKUP_SET,
         choices = mapOf(1 to "hw_pickup_voices", 0 to "hw_pickup_surroundings")))
+    if (has("case_sound")) add(HuaweiControl("hw_case_sound", SettingTab.DEVICE, HuaweiCommand.CASE_SOUND, HuaweiCommand.CASE_SOUND,
+        tag = 2, writeTags = listOf(1), readTags = listOf(2, 3)))
+    if (has("noisy_volume")) add(HuaweiControl("hw_noisy_volume", SettingTab.SOUND, HuaweiCommand.NOISY_VOLUME_READ, HuaweiCommand.NOISY_VOLUME_SET))
     if (has("multipoint")) add(HuaweiControl("multipoint", SettingTab.DEVICE, HuaweiCommand.MULTIPOINT_READ, HuaweiCommand.MULTIPOINT_SET))
 }
 
@@ -123,11 +126,16 @@ internal enum class HuaweiFeature(val feature: String, val row: String, val code
     DROP("drop", "hw_drop", 7),
     EAR_TIP("ear_tip", "hw_ear_tip", 8, mapOf(1 to "hw_tips_silicone", 2 to "hw_tips_foam")),
     HEAD("head", "hw_head_control", 11),
+    VOICE_CONTROL("voice_control", "hw_voice_control", 3),
+    SPATIAL("spatial", "hw_spatial", 24, mapOf(0 to "hw_spatial_off", 2 to "hw_spatial_fixed", 1 to "hw_spatial_tracking")),
+    WIND("wind", "hw_wind_noise", 29),
     CONVERSATION("conversation", "hw_conversation", 27);
 
     fun read(): HuaweiPacket = huaweiPacket(OP, buildList {
         add(HuaweiTlv(1, byteArrayOf(code.toByte())))
         if (this@HuaweiFeature != HEAD) add(HuaweiTlv(2))
+        // Spatial audio carries its sound scene beside the mode.
+        if (this@HuaweiFeature == SPATIAL) add(HuaweiTlv(3))
     })
 
     fun write(on: Boolean): HuaweiPacket = write(if (on) 1 else 0)

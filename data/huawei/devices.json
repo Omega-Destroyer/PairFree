@@ -396,7 +396,10 @@
         "adaptive_awareness",
         "rest",
         "pickup",
-        "ear_tip"
+        "ear_tip",
+        "voice_control",
+        "case_sound",
+        "spatial"
       ],
       "presets": {
         "2": "Bass boost",
@@ -475,7 +478,8 @@
         "hold_extra",
         "latency",
         "custom_eq",
-        "custom_save"
+        "custom_save",
+        "wind"
       ],
       "presets": {
         "1": "Default",
@@ -522,7 +526,12 @@
         "wear",
         "latency",
         "language",
-        "multipoint"
+        "multipoint",
+        "case_sound",
+        "spatial",
+        "spatial_scene",
+        "noisy_volume",
+        "drop"
       ],
       "presets": {
         "1": "Default",
@@ -764,7 +773,9 @@
         "latency",
         "quality",
         "custom_eq",
-        "custom_save"
+        "custom_save",
+        "case_sound",
+        "spatial"
       ],
       "presets": {
         "5": "Default",

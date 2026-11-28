@@ -71,10 +71,13 @@
     "REST_SET": 11104,
     "REST_READ": 11105,
     "LOW_LATENCY": 11116,
+    "NOISY_VOLUME_SET": 11143,
+    "NOISY_VOLUME_READ": 11144,
     "PINCH_SET": 11154,
     "PINCH_READ": 11155,
     "QUALITY_SET": 11170,
     "QUALITY_READ": 11171,
+    "CASE_SOUND": 11185,
     "KEYED_SETTING": 11188
   },
   "never": {
@@ -153,6 +156,9 @@
     "HD_CALL_SET": "LibreBuds",
     "HD_CALL_READ": "LibreBuds",
     "REST_SET": "LibreBuds",
-    "REST_READ": "LibreBuds"
+    "REST_READ": "LibreBuds",
+    "NOISY_VOLUME_SET": "HuaweiPods",
+    "NOISY_VOLUME_READ": "HuaweiPods",
+    "CASE_SOUND": "HuaweiPods"
   }
 }

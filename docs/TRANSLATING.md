@@ -79,6 +79,7 @@ phone's language again. On Android 13 and later the choice also shows under the 
 |---|---|---|---|
 | English | `values/strings.xml` | 2010 entries | 138 entries |
 | `fa` | `values-fa/strings.xml` | 66% (1333) | 92% (128) |
+| `fr` | `values-fr/strings.xml` | 100% (2010) | 100% (138) |
 <!-- END LANGUAGES -->
 
 Translators are credited in [CONTRIBUTORS.md](../CONTRIBUTORS.md).

@@ -1,0 +1,35 @@
+{
+ "name": "FreeBuds 4 / FreeBuds 4E / FreeBuds 4E (open fit)",
+ "names": [
+  "FreeBuds 4",
+  "HUAWEI FreeBuds 4",
+  "T0004",
+  "HUAWEI T0004",
+  "FreeBuds 4 Wired Charging Case",
+  "HUAWEI FreeBuds 4 Wired Charging Case",
+  "FreeBuds 4E",
+  "HUAWEI FreeBuds 4E",
+  "FreeBuds 4E (open fit)",
+  "HUAWEI FreeBuds 4E (open fit)",
+  "FreeBuds 4E 无降噪版",
+  "HUAWEI FreeBuds 4E 无降噪版"
+ ],
+ "codes": [
+  "FreeBuds 4",
+  "FreeBuds 4E",
+  "FreeBuds 4E (open fit)"
+ ],
+ "source": "Traced from LibreBuds' product render of the FreeBuds 4; the 4E shares it (the left earbud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "282,128 299,127 316,131 332,139 346,150 356,162 363,176 370,210 368,228 361,250 347,270 333,284 330,290 329,534 325,545 319,552 309,559 297,561 286,559 274,552 267,542 263,530 263,293 258,287 230,273 212,255 202,237 198,215 202,186 217,162 247,139 263,132",
+  "holes": [
+   "294,184 301,184 304,190 304,212 302,216 298,218 292,216 290,211 290,189"
+  ],
+  "axis": [
+   296.3,
+   244.3
+  ]
+ },
+ "case": "generic"
+}

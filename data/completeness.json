@@ -2,6 +2,258 @@
   "_about": "The registry the release gate (tools/release_gate.py) reads. What gates is what CAN be solved: `open` (reading the vendor's app, another source or PairFree's own code, or building, can settle it) refuses a release that touches the brand, unless the owner waived it in data/release_waivers.json. What cannot be solved by reading is noted and does not gate, but must carry its proof (owner, 2026-11-21): `needs-report` (only a user's report or other outside information settles it: `needs` says what to ask for), `blocked` (a hard rule: `rule`), `not-applicable` (the vendor's app has no such control); each lists `read` (paths read, with what they showed) and `evidence` (searches over the app's files that the gate runs again; a needs-report item needs one with `expect: some` that finds the code in question). `built` is done. Add an item as soon as a post, a report or an audit shows a gap, set it to built in the change that builds it, and never settle an item as impossible without having read the code.",
   "items": [
     {
+      "id": "huawei-shared-driver",
+      "brand": "huawei",
+      "models": [
+        "all mapped profiles"
+      ],
+      "status": "built",
+      "what": "Shared Android and desktop MBB driver, exact model detection, generated tables, supported-profile settings, and privacy-filtered report status.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-current-product-scope",
+      "brand": "huawei",
+      "models": [
+        "every product HUAWEI Audio Connect lists"
+      ],
+      "status": "built",
+      "what": "HUAWEI Audio Connect 2.0.7.390 read: its product files import into devices.json (tools/import_huawei_app.py), its builders confirm the commands, and the fit test, wind noise, voice wake-up, left and right detection, smart charging, extended sounds and per-model gesture choices are built. None tried.",
+      "reported": "Sourced from Huawei's AppGallery, 2026-11-28"
+    },
+    {
+      "id": "huawei-audio-connect-settings",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro 5",
+        "FreeBuds Pro 4",
+        "FreeClip 2",
+        "HUAWEI Eyewear 2"
+      ],
+      "status": "built",
+      "what": "Battery health (charge cycles), adaptive volume strength, Eyewear light effects and pairing mode, scene detection. Airplane and deep noise cancelling are the existing noise levels. Not tried.",
+      "reported": "Audio Connect read, 2026-11-28"
+    },
+    {
+      "id": "huawei-smart-scenario",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Neo"
+      ],
+      "status": "built",
+      "what": "Smart scenario: the game mode (connection lock, low latency, game sound) and the sleep mode (timer, call mute, 30 s heartbeat), 2B B4 key 48 with the phone address from 2B 35. The app's sleep sounds are phone playback and not copied. Not tried.",
+      "reported": "Audio Connect read, 2026-11-28"
+    },
+    {
+      "id": "huawei-hearing-and-neck",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro 5",
+        "FreeBuds Neo",
+        "HUAWEI Eyewear (2022)",
+        "HUAWEI Eyewear 2"
+      ],
+      "status": "needs-report",
+      "what": "Hearing test, hearing aid and neck health monitoring.",
+      "reported": "Audio Connect read, 2026-11-28",
+      "needs": "The Huawei component that holds these screens (a build or feature module that contains them), or a Bluetooth capture of the app running them.",
+      "read": [
+        {
+          "path": "E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/drouter/core/hearingassistance/HearingAidService.java",
+          "what": "interfaces only; no activity or command builder in the APK"
+        },
+        {
+          "path": "E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/datarouter/base/collector/mbb/Mbb.java",
+          "what": "names the commands, no layouts"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/drouter/core/hearingassistance",
+          "glob": "\\.java$",
+          "pattern": "HearingAidService",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "huawei-eyewear-2022-name",
+      "brand": "huawei",
+      "models": [
+        "HUAWEI Eyewear (2022)"
+      ],
+      "status": "needs-report",
+      "what": "The 2022 HUAWEI Eyewear (ZCA0) has the same product name as the first one AI Life describes; PairFree's entry for it is not matched by name.",
+      "reported": "Audio Connect read, 2026-11-28",
+      "needs": "The Bluetooth name of a 2022 HUAWEI Eyewear, or its device report.",
+      "read": [
+        {
+          "path": "E:/Builds/research/huawei-app-2026-11-28/unz/assets/device_information.json",
+          "what": "product names and ids; no Bluetooth name for ZCA0"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/huawei-app-2026-11-28/unz/assets",
+          "glob": "device_information\\.json$",
+          "pattern": "ZCA0",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "huawei-legacy-settings",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds 3",
+        "FreeBuds 3i",
+        "HONOR FlyPods 3",
+        "HONOR Magic Earbuds",
+        "FreeBuds Studio",
+        "FreeBuds Pro",
+        "FreeGO Speaker",
+        "HUAWEI Eyewear II"
+      ],
+      "status": "built",
+      "what": "Audited reachable controls in the supplied AI Life APK. Added first-generation Eyewear double tap, smart greeting and wear detection, separated Eyewear II press and call hold, and corrected Nile shared-hold readback and Mermaid hold query. FreeGO exposes battery and generic management in this APK.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-host-mediated-controls",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds 3i",
+        "HONOR FlyPods 3",
+        "HONOR Magic Earbuds",
+        "FreeBuds Pro",
+        "FreeBuds Studio",
+        "HUAWEI Eyewear II"
+      ],
+      "status": "needs-report",
+      "what": "Identify any portable Bluetooth equivalents for the settings this APK delegates to the Huawei phone framework.",
+      "reported": "Supplied AI Life APK follow-up, 2026-11-27",
+      "needs": "Use device-scoped Bluetooth captures of wear detection, HD recording or Studio sound quality changed once and restored, with exact model and firmware.",
+      "read": [
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid",
+          "what": "wear detection goes to the Huawei phone class BtTwsWearDetectionEx, not to an earbud command"
+        },
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/roc",
+          "what": "sound quality sets the phone's own Bluetooth codec preference (setCodecConfigPreference)"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid",
+          "glob": "\\.java$",
+          "pattern": "BtTwsWearDetectionEx",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/roc",
+          "glob": "\\.java$",
+          "pattern": "setCodecConfigPreference",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "huawei-mermaid-smart-noise",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro"
+      ],
+      "status": "needs-report",
+      "what": "Establish whether a deployed FreeBuds Pro firmware exposes the archived smart scene, strength and voice switches, and identify their wire layout.",
+      "reported": "Supplied AI Life APK follow-up, 2026-11-27",
+      "needs": "Use a matching vendor plugin or a device-scoped Bluetooth capture from the live smart-noise panel with model, firmware and one change per control.",
+      "read": [
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid/R.java",
+          "what": "resources for a smart noise control remain (btn_smart_noise_control), with no activity that shows them"
+        },
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/ui/mine/basenoisecontrol/BaseNoiseControlActivity.java",
+          "what": "the archived noise screen, reached from no product panel"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid",
+          "glob": "R\\.java$",
+          "pattern": "smart_noise_control",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "huawei-modern-device-settings",
+      "brand": "huawei",
+      "models": [
+        "modern FreeBuds",
+        "modern FreeClip",
+        "FreeArc",
+        "FreeLace Pro 2"
+      ],
+      "status": "built",
+      "what": "Built from LibreBuds and HuaweiPods (GPL-3.0): find earbuds, rest reminders, HD calls, pickup mode, ear tip type, spatial audio and scenes, case prompt sounds, voice control, wind noise reduction, volume boost in noise, drop reminder, paired devices. None tried.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-extended-eq",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro 2",
+        "FreeBuds Pro 3",
+        "FreeBuds Pro 4",
+        "FreeBuds Pro 5",
+        "FreeBuds 6",
+        "FreeBuds 7",
+        "FreeBuds 7i",
+        "FreeClip 2",
+        "FreeLace Pro 2"
+      ],
+      "status": "built",
+      "what": "The preset numbers LibreBuds lists per model, its Symphony, Hi-Fi Live and HUAWEI SOUND curves, and deleting a saved curve. None tried.",
+      "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-fit-test",
+      "brand": "huawei",
+      "models": [
+        "the models Audio Connect gives a fit test"
+      ],
+      "status": "built",
+      "what": "The ear tip fit test (2B 26, result 2B 27), from HUAWEI Audio Connect. Not tried.",
+      "reported": "Huawei branch completed, 2026-11-27"
+    },
+    {
+      "id": "huawei-hardware-validation",
+      "brand": "huawei",
+      "models": [
+        "all Huawei profiles"
+      ],
+      "status": "needs-report",
+      "what": "Confirm the PairFree service connection and state-changing settings on actual hardware, starting with the supplied APK models and the newer EQ variants.",
+      "reported": "AI Life APK and capture audit, 2026-11-27",
+      "needs": "A device report from any Huawei or Honor model (Device tab, Copy device report), and the connection report if it does not connect.",
+      "read": [
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/datatransmanager",
+          "what": "the plugin opens a secure RFCOMM socket on the standard serial service, as PairFree does"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/datatransmanager",
+          "glob": "\\.java$",
+          "pattern": "createRfcommSocketToServiceRecord",
+          "expect": "some"
+        }
+      ]
+    },
+    {
       "id": "sennheiser-momentum5-equalizer",
       "brand": "sennheiser",
       "models": [

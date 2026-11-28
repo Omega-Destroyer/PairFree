@@ -68,8 +68,8 @@ internal class SettingRows(
     private val state: RowState,
     private val call: RowCallbacks,
 ) {
-    private val confirmKeys = setOf("restart", "power_off", "sh_personalized_reset")
-    private val confirmChoices = setOf("sh_peer_delete", "bose_peer_delete")
+    private val confirmKeys = setOf("restart", "power_off", "sh_personalized_reset", "hw_pair_new")
+    private val confirmChoices = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove", "hw_eq_delete")
     private val links = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://www.tile.com/")
 
     fun panels(): List<Widget> {
@@ -151,7 +151,9 @@ internal class SettingRows(
         return choiceRow(state, setting.key, titleWithNote(setting.key), current, names, setting.options.indexOf(setting.value).takeIf { it >= 0 }, theme, call.changed) { i ->
             val option = setting.options[i]
             val send = { call.change(SettingChange.Choice(setting.key, option)) }
-            if (setting.key in confirmChoices) call.confirm(words.settingTitle(setting.key), s.text("setting_sh_peer_delete_body", option), s.text("setting_sh_peer_delete_confirm")) { send() } else send()
+            val sound = setting.key == "hw_eq_delete"
+            if (setting.key in confirmChoices) call.confirm(words.settingTitle(setting.key), s.text(if (sound) "setting_hw_eq_delete_body" else "setting_sh_peer_delete_body", option),
+                s.text(if (sound) "setting_hw_eq_delete_confirm" else "setting_sh_peer_delete_confirm")) { send() } else send()
         }
     }
 
@@ -196,6 +198,7 @@ internal class SettingRows(
                     val body = when (key) {
                         "power_off" -> "setting_power_off_body"
                         "sh_personalized_reset" -> "setting_sh_personalized_reset_body"
+                        "hw_pair_new" -> "setting_hw_pair_new_body"
                         else -> "setting_restart_body"
                     }
                     call.confirm(s.text(words.actionStart(key)), s.text(body), s.text(words.actionStart(key))) { call.change(SettingChange.Press(key)) }

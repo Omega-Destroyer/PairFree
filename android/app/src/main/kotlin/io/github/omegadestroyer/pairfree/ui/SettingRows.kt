@@ -101,7 +101,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
                         Text(settingTitle(setting.key), Modifier.weight(1f))
                         Text(
                             when {
-                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key.startsWith("sc_calibrate_") || setting.key == "sc_personal_anc_result" || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
+                                setting.key.startsWith("sh_wear") || setting.key.startsWith("sh_fit_") || setting.key.startsWith("sc_calibrate_") || setting.key == "sc_personal_anc_result" || setting.key == "hw_sleep_state" || setting.key == "jbl_canal_result" || setting.key == "jbl_seal_left" || setting.key == "jbl_seal_right" || setting.key == "jbl_noise_left" || setting.key == "jbl_noise_right" -> optionName(setting.key, setting.value)
                                 setting.key == "sh_auracast_source" -> optionName(setting.key, setting.value.substringBefore(':')) + ": " + setting.value.substringAfter(':')
                                 else -> setting.value
                             },
@@ -116,7 +116,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; "sc_neck_clear" -> R.string.setting_sc_neck_clear_body; "sc_hear_id_delete" -> R.string.setting_sc_hear_id_delete_body; else -> R.string.setting_restart_body }),
+            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; "sc_neck_clear" -> R.string.setting_sc_neck_clear_body; "sc_hear_id_delete" -> R.string.setting_sc_hear_id_delete_body; "hw_pair_new" -> R.string.setting_hw_pair_new_body; else -> R.string.setting_restart_body }),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -135,10 +135,11 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
         )
     }
     confirmingChoice?.let { change ->
+        val sound = change.key == "hw_eq_delete"
         ConfirmDialog(
             title = settingTitle(change.key),
-            body = stringResource(R.string.setting_sh_peer_delete_body, change.option),
-            confirm = stringResource(R.string.setting_sh_peer_delete_confirm),
+            body = stringResource(if (sound) R.string.setting_hw_eq_delete_body else R.string.setting_sh_peer_delete_body, change.option),
+            confirm = stringResource(if (sound) R.string.setting_hw_eq_delete_confirm else R.string.setting_sh_peer_delete_confirm),
             onConfirm = { onChange(change) },
             onDismiss = { confirmingChoice = null },
             destructive = true,
@@ -252,9 +253,9 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
-private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove")
+private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove", "hw_eq_delete")
 
-private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear", "sc_hear_id_delete")
+private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear", "sc_hear_id_delete", "hw_pair_new")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
 private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://play.google.com/store/apps/details?id=com.thetileapp.tile")
@@ -265,6 +266,11 @@ private fun groupTitle(key: String): String = stringResource(
         "noise" -> R.string.setting_group_noise
         "ef_cycle" -> R.string.setting_group_ef_cycle
         "sound" -> R.string.setting_group_sound
+        "hw_pinch" -> R.string.setting_hw_pinch
+        "hw_find" -> R.string.setting_group_find_hub
+        "hw_voice" -> R.string.setting_hw_voice
+        "hw_battery_health" -> R.string.setting_group_hw_battery_health
+        "hw_scenario" -> R.string.setting_group_hw_scenario
         "touch" -> R.string.setting_group_touch
         "ambient_customize" -> R.string.setting_group_ambient_customize
         "calls" -> R.string.setting_group_calls
@@ -321,7 +327,8 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
         "oneplus_head_motion" -> R.string.setting_group_head_motion
-        "oneplus_peers", "sc_peers" -> R.string.setting_group_peers
+        "oneplus_peers", "sc_peers", "hw_peers" -> R.string.setting_group_peers
+        "hw_saved_sounds" -> R.string.setting_hw_saved_sounds
         else -> R.string.setting_group_other
     },
 )
@@ -709,9 +716,98 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "eq_mid" -> stringResource(R.string.setting_eq_mid)
     "eq_high_mid" -> stringResource(R.string.setting_eq_high_mid)
     "eq_treble" -> stringResource(R.string.setting_eq_treble)
+    "hw_pinch_answer" -> stringResource(R.string.setting_hw_pinch_answer)
+    "hw_pinch_reject" -> stringResource(R.string.setting_hw_pinch_reject)
+    "hw_pinch_play" -> stringResource(R.string.setting_hw_pinch_play)
+    "hw_pinch_next" -> stringResource(R.string.setting_hw_pinch_next)
+    "hw_pinch_previous" -> stringResource(R.string.setting_hw_pinch_previous)
+    "hw_pinch_hold_left" -> stringResource(R.string.setting_hw_pinch_hold_left)
+    "hw_pinch_hold_right" -> stringResource(R.string.setting_hw_pinch_hold_right)
+    "hw_glasses_double_left" -> stringResource(R.string.setting_hw_glasses_double_left)
+    "hw_glasses_double_right" -> stringResource(R.string.setting_hw_glasses_double_right)
+    "hw_touch_enabled" -> stringResource(R.string.setting_hw_touch_enabled)
+    "hw_glasses_press" -> stringResource(R.string.setting_hw_glasses_press)
+    "hw_glasses_hold" -> stringResource(R.string.setting_hw_glasses_hold)
+    "hw_swipe_left" -> stringResource(R.string.setting_hw_swipe_left)
+    "hw_swipe_right" -> stringResource(R.string.setting_hw_swipe_right)
+    "hw_greeting" -> stringResource(R.string.setting_hw_greeting)
+    "hw_saving" -> stringResource(R.string.setting_hw_saving)
+    "hw_glasses_wear" -> stringResource(R.string.setting_hw_glasses_wear)
+    "hw_nod" -> stringResource(R.string.setting_hw_nod)
+    "hw_shake" -> stringResource(R.string.setting_hw_shake)
+    "hw_awareness_level" -> stringResource(R.string.setting_hw_awareness_level)
+    "hw_ring_left" -> stringResource(R.string.setting_hw_ring_left)
+    "hw_ring_right" -> stringResource(R.string.setting_hw_ring_right)
+    "hw_language" -> stringResource(R.string.setting_hw_language)
+    "hw_double_left" -> stringResource(R.string.setting_hw_double_left)
+    "hw_double_right" -> stringResource(R.string.setting_hw_double_right)
+    "hw_triple_left" -> stringResource(R.string.setting_hw_triple_left)
+    "hw_triple_right" -> stringResource(R.string.setting_hw_triple_right)
+    "hw_hold_left" -> stringResource(R.string.setting_hw_hold_left)
+    "hw_hold_right" -> stringResource(R.string.setting_hw_hold_right)
+    "hw_hold_call" -> stringResource(R.string.setting_hw_hold_call)
+    "hw_hold" -> stringResource(R.string.setting_hw_hold)
+    "hw_cycle_left" -> stringResource(R.string.setting_hw_cycle_left)
+    "hw_cycle_right" -> stringResource(R.string.setting_hw_cycle_right)
+    "hw_power_tap" -> stringResource(R.string.setting_hw_power_tap)
+    "hw_swipe" -> stringResource(R.string.setting_hw_swipe)
+    "hw_auto_pause" -> stringResource(R.string.setting_hw_auto_pause)
+    "hw_low_latency" -> stringResource(R.string.setting_hw_low_latency)
+    "hw_anc_adjust" -> stringResource(R.string.setting_hw_anc_adjust)
+    "hw_quality" -> stringResource(R.string.setting_hw_quality)
+    "hw_single_anc" -> stringResource(R.string.setting_hw_single_anc)
+    "hw_adaptive_volume" -> stringResource(R.string.setting_hw_adaptive_volume)
+    "hw_conversation" -> stringResource(R.string.setting_hw_conversation)
+    "hw_head_control" -> stringResource(R.string.setting_hw_head_control)
+    "hw_case_sound" -> stringResource(R.string.setting_hw_case_sound)
+    "hw_noisy_volume" -> stringResource(R.string.setting_hw_noisy_volume)
+    "hw_voice_control" -> stringResource(R.string.setting_hw_voice_control)
+    "hw_spatial" -> stringResource(R.string.setting_hw_spatial)
+    "hw_spatial_off" -> stringResource(R.string.setting_hw_spatial_off)
+    "hw_spatial_fixed" -> stringResource(R.string.setting_hw_spatial_fixed)
+    "hw_spatial_tracking" -> stringResource(R.string.setting_hw_spatial_tracking)
+    "hw_spatial_scene" -> stringResource(R.string.setting_hw_spatial_scene)
+    "hw_scene_default" -> stringResource(R.string.setting_hw_scene_default)
+    "hw_scene_theater" -> stringResource(R.string.setting_hw_scene_theater)
+    "hw_scene_cinema" -> stringResource(R.string.setting_hw_scene_cinema)
+    "hw_scene_hall" -> stringResource(R.string.setting_hw_scene_hall)
+    "hw_wind_noise" -> stringResource(R.string.setting_hw_wind_noise)
+    "hw_rest" -> stringResource(R.string.setting_hw_rest)
+    "hw_hd_call" -> stringResource(R.string.setting_hw_hd_call)
+    "hw_pickup" -> stringResource(R.string.setting_hw_pickup)
+    "hw_pickup_voices" -> stringResource(R.string.setting_hw_pickup_voices)
+    "hw_pickup_surroundings" -> stringResource(R.string.setting_hw_pickup_surroundings)
+    "hw_ear_tip" -> stringResource(R.string.setting_hw_ear_tip)
+    "hw_tips_silicone" -> stringResource(R.string.setting_hw_tips_silicone)
+    "hw_tips_foam" -> stringResource(R.string.setting_hw_tips_foam)
+    "hw_drop" -> stringResource(R.string.setting_hw_drop)
+    "hw_swipe_side_left" -> stringResource(R.string.setting_hw_swipe_side_left)
+    "hw_swipe_side_right" -> stringResource(R.string.setting_hw_swipe_side_right)
+    "hw_voice_wake" -> stringResource(R.string.setting_hw_voice_wake)
+    "hw_auto_lr" -> stringResource(R.string.setting_hw_auto_lr)
+    "hw_smart_charge" -> stringResource(R.string.setting_hw_smart_charge)
+    "hw_light_call" -> stringResource(R.string.setting_hw_light_call)
+    "hw_light_media" -> stringResource(R.string.setting_hw_light_media)
+    "hw_cycles_left" -> stringResource(R.string.setting_hw_cycles_left)
+    "hw_cycles_right" -> stringResource(R.string.setting_hw_cycles_right)
+    "hw_adaptive_sensitivity" -> stringResource(R.string.setting_hw_adaptive_sensitivity)
+    "hw_pair_new" -> stringResource(R.string.setting_hw_pair_new)
+    "hw_scene_detection" -> stringResource(R.string.setting_hw_scene_detection)
+    "hw_game" -> stringResource(R.string.setting_hw_game)
+    "hw_game_lock" -> stringResource(R.string.setting_hw_game_lock)
+    "hw_game_latency" -> stringResource(R.string.setting_hw_game_latency)
+    "hw_game_sound" -> stringResource(R.string.setting_hw_game_sound)
+    "hw_sleep" -> stringResource(R.string.setting_hw_sleep)
+    "hw_sleep_timer" -> stringResource(R.string.setting_hw_sleep_timer)
+    "hw_sleep_mute" -> stringResource(R.string.setting_hw_sleep_mute)
+    "hw_sleep_state" -> stringResource(R.string.setting_hw_sleep_state)
     "multipoint" -> stringResource(R.string.setting_multipoint)
-    "bose_peer_connect", "sc_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
-    "bose_peer_disconnect", "sc_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
+    "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
+    "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
+    "hw_peer_preferred" -> stringResource(R.string.setting_hw_peer_preferred)
+    "hw_eq_delete" -> stringResource(R.string.setting_hw_eq_delete)
+    "hw_peer_auto_on" -> stringResource(R.string.setting_hw_peer_auto_on)
+    "hw_peer_auto_off" -> stringResource(R.string.setting_hw_peer_auto_off)
     "bose_peer_delete", "sc_peer_delete" -> stringResource(R.string.setting_sh_peer_delete)
     "bose_pairing_mode", "sc_pairing_mode" -> stringResource(R.string.setting_bose_pairing_mode)
     "auto_answer" -> stringResource(R.string.setting_auto_answer)
@@ -1250,6 +1346,44 @@ private fun isTouchRow(key: String): Boolean {
 
 /** The screens' words for a brand row's [option], as a [Context] function so the home screen widget says the same. */
 internal fun Context.optionLabel(key: String, option: String): String = when {
+    option == "hw_gesture_off" -> getString(R.string.setting_hw_gesture_off)
+    option == "hw_play_pause" -> getString(R.string.setting_hw_play_pause)
+    option == "hw_next_track" -> getString(R.string.setting_hw_next_track)
+    option == "hw_previous_track" -> getString(R.string.setting_hw_previous_track)
+    option == "hw_assistant" -> getString(R.string.setting_hw_assistant)
+    option == "hw_change_track" -> getString(R.string.setting_hw_change_track)
+    option == "hw_game_mode" -> getString(R.string.setting_hw_game_mode)
+    option == "hw_sleep_15" -> getString(R.string.setting_hw_sleep_15)
+    option == "hw_sleep_30" -> getString(R.string.setting_hw_sleep_30)
+    option == "hw_sleep_60" -> getString(R.string.setting_hw_sleep_60)
+    option == "hw_sleep_90" -> getString(R.string.setting_hw_sleep_90)
+    option == "hw_sleep_always" -> getString(R.string.setting_hw_sleep_always)
+    option == "hw_sleep_elsewhere" -> getString(R.string.setting_hw_sleep_elsewhere)
+    option == "hw_sensitivity_low" -> getString(R.string.setting_hw_sensitivity_low)
+    option == "hw_sensitivity_medium" -> getString(R.string.setting_hw_sensitivity_medium)
+    option == "hw_sensitivity_high" -> getString(R.string.setting_hw_sensitivity_high)
+    option == "hw_face_translate" -> getString(R.string.setting_hw_face_translate)
+    option == "hw_voice_memo" -> getString(R.string.setting_hw_voice_memo)
+    option == "hw_pair_glasses" -> getString(R.string.setting_hw_pair_glasses)
+    option == "hw_cycle_noise" -> getString(R.string.setting_hw_cycle_noise)
+    option == "hw_reject_call" -> getString(R.string.setting_hw_reject_call)
+    option == "hw_answer_call" -> getString(R.string.setting_hw_answer_call)
+    option == "hw_volume_up" -> getString(R.string.setting_hw_volume_up)
+    option == "hw_volume_down" -> getString(R.string.setting_hw_volume_down)
+    option == "hw_change_volume" -> getString(R.string.setting_hw_change_volume)
+    option == "hw_off_anc" -> getString(R.string.setting_hw_off_anc)
+    option == "hw_off_anc_aware" -> getString(R.string.setting_hw_off_anc_aware)
+    option == "hw_anc_aware" -> getString(R.string.setting_hw_anc_aware)
+    option == "hw_off_aware" -> getString(R.string.setting_hw_off_aware)
+    option == "hw_switch_device" -> getString(R.string.setting_hw_switch_device)
+    option == "hw_cozy" -> getString(R.string.setting_hw_cozy)
+    option == "hw_general" -> getString(R.string.setting_hw_general)
+    option == "hw_ultra" -> getString(R.string.setting_hw_ultra)
+    option == "hw_dynamic" -> getString(R.string.setting_hw_dynamic)
+    option == "hw_adaptive_awareness" -> getString(R.string.setting_hw_adaptive_awareness)
+    option == "hw_voice_boost" -> getString(R.string.setting_hw_voice_boost)
+    option == "hw_dual_engine" -> getString(R.string.setting_hw_dual_engine)
+    key == "hw_language" -> option
     key.startsWith("jb_") -> when {
         option == "off" -> getString(R.string.action_off)
         option.startsWith("min_") -> getString(R.string.setting_power_off_timer_minutes, option.removePrefix("min_").toInt())
@@ -1910,6 +2044,8 @@ private fun eqBandTitle(key: String): String? {
 }
 
 private fun actionStart(key: String): Int = when (key) {
+    "hw_ring_left", "hw_ring_right" -> R.string.setting_find_start
+    "hw_pair_new" -> R.string.setting_hw_pair_new_start
     "op_eq_new" -> R.string.setting_op_eq_new
     "find", "find_phone" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open
@@ -1948,6 +2084,7 @@ private fun actionStart(key: String): Int = when (key) {
 }
 
 private fun actionStop(key: String): Int = when (key) {
+    "hw_ring_left", "hw_ring_right" -> R.string.setting_find_stop
     "find", "find_phone" -> R.string.setting_find_stop
     "nc_optimizer" -> R.string.setting_nc_optimizer_stop
     "sh_find_left", "sh_find_right" -> R.string.setting_find_stop

@@ -25,7 +25,7 @@ Almost none of these brands makes a Windows app, so on a PC their earbuds are pl
 
 ## OnePlus and OPPO models
 
-PairFree knows 53 OnePlus and OPPO models. Models that have been tried on real earbuds: OnePlus Buds 4.
+PairFree knows 53 OnePlus and OPPO models. Models that have been tried on real earbuds: OPPO Enco Buds2 Pro, OnePlus Buds 4.
 
 OnePlus and OPPO support is read from HeyMelody (117.6.6), which controls both brands, and was checked against the official app and against PairFree run on virtual earbuds. It has not been tried on real earbuds yet; more settings are not built yet.
 
@@ -78,7 +78,7 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>OPPO Enco X3</td><td><code>067410</code></td><td>battery; noise control: off, noise cancelling, transparency; 5 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco Air3s</td><td><code>067810</code></td><td>battery; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco Air4 Pro</td><td><code>067C10</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
-<tr><td>OPPO Enco Buds2 Pro</td><td><code>068010</code></td><td>battery; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
+<tr><td>OPPO Enco Buds2 Pro</td><td><code>068010</code></td><td>battery; 3 equalizer presets; game mode</td><td><a href="https://github.com/Omega-Destroyer/PairFree/blob/main/data/oneplus/reports/OPPOEncoBuds2Pro_068010_0.18.1.txt">Tested</a> by a user report</td></tr>
 <tr><td>OnePlus Buds</td><td><code>068414</code></td><td>battery</td><td>Not tested</td></tr>
 <tr><td>OnePlus Buds Z</td><td><code>068814</code></td><td>battery</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco Air4</td><td><code>069010</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
@@ -126,7 +126,8 @@ PairFree controls earbuds of other brands too:
 - [Sennheiser](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/)
 - [Jabra](https://omega-destroyer.github.io/PairFree/open-source-jabra-app/)
 - [Skullcandy](https://omega-destroyer.github.io/PairFree/open-source-skullcandy-app/)
+- [Huawei and Honor](https://omega-destroyer.github.io/PairFree/open-source-huawei-app/)
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, OnePlus or OPPO; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, Huawei, Honor, OnePlus or OPPO; the names are used to say which earbuds it works with.

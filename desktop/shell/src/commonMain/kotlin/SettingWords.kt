@@ -18,6 +18,11 @@ class SettingWords(private val strings: DesktopStrings) {
             "noise" -> "setting_group_noise"
             "ef_cycle" -> "setting_group_ef_cycle"
             "sound" -> "setting_group_sound"
+            "hw_pinch" -> "setting_hw_pinch"
+            "hw_find" -> "setting_group_find_hub"
+            "hw_voice" -> "setting_hw_voice"
+            "hw_battery_health" -> "setting_group_hw_battery_health"
+            "hw_scenario" -> "setting_group_hw_scenario"
             "touch" -> "setting_group_touch"
             "ambient_customize" -> "setting_group_ambient_customize"
             "calls" -> "setting_group_calls"
@@ -74,7 +79,8 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_connection" -> "connection"
             "oneplus_sound_switches" -> "setting_group_sound"
             "oneplus_head_motion" -> "setting_group_head_motion"
-            "oneplus_peers", "sc_peers" -> "setting_group_peers"
+            "oneplus_peers", "sc_peers", "hw_peers" -> "setting_group_peers"
+            "hw_saved_sounds" -> "setting_hw_saved_sounds"
             else -> "setting_group_other"
         },
     )
@@ -458,9 +464,98 @@ class SettingWords(private val strings: DesktopStrings) {
         "eq_mid" -> t("setting_eq_mid")
         "eq_high_mid" -> t("setting_eq_high_mid")
         "eq_treble" -> t("setting_eq_treble")
+        "hw_pinch_answer" -> t("setting_hw_pinch_answer")
+        "hw_pinch_reject" -> t("setting_hw_pinch_reject")
+        "hw_pinch_play" -> t("setting_hw_pinch_play")
+        "hw_pinch_next" -> t("setting_hw_pinch_next")
+        "hw_pinch_previous" -> t("setting_hw_pinch_previous")
+        "hw_pinch_hold_left" -> t("setting_hw_pinch_hold_left")
+        "hw_pinch_hold_right" -> t("setting_hw_pinch_hold_right")
+        "hw_glasses_double_left" -> t("setting_hw_glasses_double_left")
+        "hw_glasses_double_right" -> t("setting_hw_glasses_double_right")
+        "hw_touch_enabled" -> t("setting_hw_touch_enabled")
+        "hw_glasses_press" -> t("setting_hw_glasses_press")
+        "hw_glasses_hold" -> t("setting_hw_glasses_hold")
+        "hw_swipe_left" -> t("setting_hw_swipe_left")
+        "hw_swipe_right" -> t("setting_hw_swipe_right")
+        "hw_greeting" -> t("setting_hw_greeting")
+        "hw_saving" -> t("setting_hw_saving")
+        "hw_glasses_wear" -> t("setting_hw_glasses_wear")
+        "hw_nod" -> t("setting_hw_nod")
+        "hw_shake" -> t("setting_hw_shake")
+        "hw_awareness_level" -> t("setting_hw_awareness_level")
+        "hw_ring_left" -> t("setting_hw_ring_left")
+        "hw_ring_right" -> t("setting_hw_ring_right")
+        "hw_language" -> t("setting_hw_language")
+        "hw_double_left" -> t("setting_hw_double_left")
+        "hw_double_right" -> t("setting_hw_double_right")
+        "hw_triple_left" -> t("setting_hw_triple_left")
+        "hw_triple_right" -> t("setting_hw_triple_right")
+        "hw_hold_left" -> t("setting_hw_hold_left")
+        "hw_hold_right" -> t("setting_hw_hold_right")
+        "hw_hold_call" -> t("setting_hw_hold_call")
+        "hw_hold" -> t("setting_hw_hold")
+        "hw_cycle_left" -> t("setting_hw_cycle_left")
+        "hw_cycle_right" -> t("setting_hw_cycle_right")
+        "hw_power_tap" -> t("setting_hw_power_tap")
+        "hw_swipe" -> t("setting_hw_swipe")
+        "hw_auto_pause" -> t("setting_hw_auto_pause")
+        "hw_low_latency" -> t("setting_hw_low_latency")
+        "hw_anc_adjust" -> t("setting_hw_anc_adjust")
+        "hw_quality" -> t("setting_hw_quality")
+        "hw_single_anc" -> t("setting_hw_single_anc")
+        "hw_adaptive_volume" -> t("setting_hw_adaptive_volume")
+        "hw_conversation" -> t("setting_hw_conversation")
+        "hw_head_control" -> t("setting_hw_head_control")
+        "hw_case_sound" -> t("setting_hw_case_sound")
+        "hw_noisy_volume" -> t("setting_hw_noisy_volume")
+        "hw_voice_control" -> t("setting_hw_voice_control")
+        "hw_spatial" -> t("setting_hw_spatial")
+        "hw_spatial_off" -> t("setting_hw_spatial_off")
+        "hw_spatial_fixed" -> t("setting_hw_spatial_fixed")
+        "hw_spatial_tracking" -> t("setting_hw_spatial_tracking")
+        "hw_spatial_scene" -> t("setting_hw_spatial_scene")
+        "hw_scene_default" -> t("setting_hw_scene_default")
+        "hw_scene_theater" -> t("setting_hw_scene_theater")
+        "hw_scene_cinema" -> t("setting_hw_scene_cinema")
+        "hw_scene_hall" -> t("setting_hw_scene_hall")
+        "hw_wind_noise" -> t("setting_hw_wind_noise")
+        "hw_rest" -> t("setting_hw_rest")
+        "hw_hd_call" -> t("setting_hw_hd_call")
+        "hw_pickup" -> t("setting_hw_pickup")
+        "hw_pickup_voices" -> t("setting_hw_pickup_voices")
+        "hw_pickup_surroundings" -> t("setting_hw_pickup_surroundings")
+        "hw_ear_tip" -> t("setting_hw_ear_tip")
+        "hw_tips_silicone" -> t("setting_hw_tips_silicone")
+        "hw_tips_foam" -> t("setting_hw_tips_foam")
+        "hw_drop" -> t("setting_hw_drop")
+        "hw_swipe_side_left" -> t("setting_hw_swipe_side_left")
+        "hw_swipe_side_right" -> t("setting_hw_swipe_side_right")
+        "hw_voice_wake" -> t("setting_hw_voice_wake")
+        "hw_auto_lr" -> t("setting_hw_auto_lr")
+        "hw_smart_charge" -> t("setting_hw_smart_charge")
+        "hw_light_call" -> t("setting_hw_light_call")
+        "hw_light_media" -> t("setting_hw_light_media")
+        "hw_cycles_left" -> t("setting_hw_cycles_left")
+        "hw_cycles_right" -> t("setting_hw_cycles_right")
+        "hw_adaptive_sensitivity" -> t("setting_hw_adaptive_sensitivity")
+        "hw_pair_new" -> t("setting_hw_pair_new")
+        "hw_scene_detection" -> t("setting_hw_scene_detection")
+        "hw_game" -> t("setting_hw_game")
+        "hw_game_lock" -> t("setting_hw_game_lock")
+        "hw_game_latency" -> t("setting_hw_game_latency")
+        "hw_game_sound" -> t("setting_hw_game_sound")
+        "hw_sleep" -> t("setting_hw_sleep")
+        "hw_sleep_timer" -> t("setting_hw_sleep_timer")
+        "hw_sleep_mute" -> t("setting_hw_sleep_mute")
+        "hw_sleep_state" -> t("setting_hw_sleep_state")
         "multipoint" -> t("setting_multipoint")
-        "bose_peer_connect", "sc_peer_connect" -> t("setting_bose_peer_connect")
-        "bose_peer_disconnect", "sc_peer_disconnect" -> t("setting_bose_peer_disconnect")
+        "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> t("setting_bose_peer_connect")
+        "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> t("setting_bose_peer_disconnect")
+        "hw_peer_preferred" -> t("setting_hw_peer_preferred")
+        "hw_eq_delete" -> t("setting_hw_eq_delete")
+        "hw_peer_auto_on" -> t("setting_hw_peer_auto_on")
+        "hw_peer_auto_off" -> t("setting_hw_peer_auto_off")
         "bose_peer_delete", "sc_peer_delete" -> t("setting_sh_peer_delete")
         "bose_pairing_mode", "sc_pairing_mode" -> t("setting_bose_pairing_mode")
         "auto_answer" -> t("setting_auto_answer")
@@ -992,6 +1087,44 @@ class SettingWords(private val strings: DesktopStrings) {
 
     /** The screens' words for a brand row's [option]. */
     fun optionLabel(key: String, option: String): String = when {
+        option == "hw_gesture_off" -> t("setting_hw_gesture_off")
+        option == "hw_play_pause" -> t("setting_hw_play_pause")
+        option == "hw_next_track" -> t("setting_hw_next_track")
+        option == "hw_previous_track" -> t("setting_hw_previous_track")
+        option == "hw_assistant" -> t("setting_hw_assistant")
+        option == "hw_change_track" -> t("setting_hw_change_track")
+        option == "hw_game_mode" -> t("setting_hw_game_mode")
+        option == "hw_sleep_15" -> t("setting_hw_sleep_15")
+        option == "hw_sleep_30" -> t("setting_hw_sleep_30")
+        option == "hw_sleep_60" -> t("setting_hw_sleep_60")
+        option == "hw_sleep_90" -> t("setting_hw_sleep_90")
+        option == "hw_sleep_always" -> t("setting_hw_sleep_always")
+        option == "hw_sleep_elsewhere" -> t("setting_hw_sleep_elsewhere")
+        option == "hw_sensitivity_low" -> t("setting_hw_sensitivity_low")
+        option == "hw_sensitivity_medium" -> t("setting_hw_sensitivity_medium")
+        option == "hw_sensitivity_high" -> t("setting_hw_sensitivity_high")
+        option == "hw_face_translate" -> t("setting_hw_face_translate")
+        option == "hw_voice_memo" -> t("setting_hw_voice_memo")
+        option == "hw_pair_glasses" -> t("setting_hw_pair_glasses")
+        option == "hw_cycle_noise" -> t("setting_hw_cycle_noise")
+        option == "hw_reject_call" -> t("setting_hw_reject_call")
+        option == "hw_answer_call" -> t("setting_hw_answer_call")
+        option == "hw_volume_up" -> t("setting_hw_volume_up")
+        option == "hw_volume_down" -> t("setting_hw_volume_down")
+        option == "hw_change_volume" -> t("setting_hw_change_volume")
+        option == "hw_off_anc" -> t("setting_hw_off_anc")
+        option == "hw_off_anc_aware" -> t("setting_hw_off_anc_aware")
+        option == "hw_anc_aware" -> t("setting_hw_anc_aware")
+        option == "hw_off_aware" -> t("setting_hw_off_aware")
+        option == "hw_switch_device" -> t("setting_hw_switch_device")
+        option == "hw_cozy" -> t("setting_hw_cozy")
+        option == "hw_general" -> t("setting_hw_general")
+        option == "hw_ultra" -> t("setting_hw_ultra")
+        option == "hw_dynamic" -> t("setting_hw_dynamic")
+        option == "hw_adaptive_awareness" -> t("setting_hw_adaptive_awareness")
+        option == "hw_voice_boost" -> t("setting_hw_voice_boost")
+        option == "hw_dual_engine" -> t("setting_hw_dual_engine")
+        key == "hw_language" -> option
         key.startsWith("jb_") -> when {
             option == "off" -> t("action_off")
             option.startsWith("min_") -> t("setting_power_off_timer_minutes", option.removePrefix("min_").toInt())
@@ -1651,6 +1784,8 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun actionStart(key: String): String = when (key) {
+        "hw_ring_left", "hw_ring_right" -> "setting_find_start"
+        "hw_pair_new" -> "setting_hw_pair_new_start"
         "op_eq_new" -> "setting_op_eq_new"
         "find", "find_phone" -> "setting_find_start"
         "find_hub" -> "setting_find_hub_open"
@@ -1689,6 +1824,7 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun actionStop(key: String): String = when (key) {
+        "hw_ring_left", "hw_ring_right" -> "setting_find_stop"
         "find", "find_phone" -> "setting_find_stop"
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"

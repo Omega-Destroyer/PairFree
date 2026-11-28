@@ -2,7 +2,7 @@
 
 PairFree is a free, open-source app that controls wireless earbuds and headphones of many brands from one place, on **Android and on Windows**. It
 is an alternative to the Soundcore, Bose Music, JBL Headphones, Sony | Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio (SOUNDPEATS), QCY,
-1MORE, EarFun, Melomania (Cambridge Audio), Sennheiser Smart Control, Jabra Sound+, Skullcandy and HeyMelody (OnePlus and OPPO) apps, and a way to change AirPods
+1MORE, EarFun, Melomania (Cambridge Audio), Sennheiser Smart Control, Jabra Sound+, Skullcandy, HUAWEI AI Life and HeyMelody (OnePlus and OPPO) apps, and a way to change AirPods
 and Pixel Buds settings on Android: noise cancelling, the equalizer, touch controls and more, with no account and no internet.
 
 ## Now on Windows
@@ -89,7 +89,7 @@ colours; on Windows, its accent colour) and **Sketchbook** (hand-drawn). A new l
 </p>
 
 PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing (and its
-CMF brand), Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, OnePlus or OPPO.
+CMF brand), Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, Huawei, Honor, OnePlus or OPPO.
 
 ## Supported brands
 
@@ -116,18 +116,18 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | Momentum 5 Wireless |
 | [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
-| **Total: 17 brands** | **846** | **27 tried** |
+| [Huawei and Honor](docs/devices/huawei.md) | 52 | — |
+| **Total: 18 brands** | **898** | **27 tried** |
 <!-- devices-summary:end -->
 
 ## Coming next
 
 Brands PairFree does not support yet, in the order they are planned:
 
-1. Huawei
-2. Baseus
-3. Fairbuds
-4. Motorola (Moto Buds)
-5. Dell
+1. Baseus
+2. Fairbuds
+3. Motorola (Moto Buds)
+4. Dell
 
 If you own a pair and want to help test one, [open an issue](https://github.com/Omega-Destroyer/PairFree/issues).
 
@@ -183,11 +183,14 @@ Each brand also has a page on the [web site](https://omega-destroyer.github.io/P
 - [Open-source Sennheiser Smart Control alternative](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/)
 - [Open-source Jabra Sound+ alternative](https://omega-destroyer.github.io/PairFree/open-source-jabra-app/)
 - [Open-source Skullcandy app alternative](https://omega-destroyer.github.io/PairFree/open-source-skullcandy-app/)
+- [Open-source HUAWEI AI Life alternative for FreeBuds](https://omega-destroyer.github.io/PairFree/open-source-huawei-app/)
 - [Open-source HeyMelody alternative for OnePlus and OPPO earbuds](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/)
 <!-- site-links:end -->
 
 ## Credits
 
+- [LibreBuds](https://github.com/librebuds/librebuds), [HuaweiPods](https://github.com/Nshpiter/HuaweiPods) (both GPL-3.0-or-later) and
+  [OpenFreebuds](https://github.com/melianmiko/OpenFreebuds) by MelianMiko (GPL-3.0; facts only): the settings of the newer Huawei earbuds.
 - [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) by Kyle Scheuing (GPL-3.0-or-later): the
   Soundcore protocol, model list and per-model features that PairFree's Soundcore support is
   ported from. Code ported from it says so where it is.

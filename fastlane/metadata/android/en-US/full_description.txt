@@ -9,8 +9,8 @@ Why PairFree:
 • Small and quick: about 6 MB
 • Needs Android 12 or later (the PC version: Windows 10 or 11, 64-bit)
 • Open source (GPL-3.0), every protocol documented and tested
-• Your equalizer as files: save, export and share your own curves
-• Translations: a language picker, and a new language is one file added by pull request (right-to-left is mirrored)
+• Equalizer curves saved as files you can share
+• Translations by pull request, right-to-left included
 
 Supported brands (models; tried on):
 
@@ -31,6 +31,7 @@ Supported brands (models; tried on):
 • Sennheiser: 28, from the Accentum, Momentum and CX ranges to the older HD, PXC and IE models, none tried yet
 • Jabra: 34, Elite and Evolve2; Elite Active 75t
 • Skullcandy: 56 earbuds and headphones, none tried yet
+• Huawei and Honor: 52, none tried yet
 
 Each is built from the brand's own app, checked against open-source projects and users' device reports.
 
@@ -53,4 +54,4 @@ Close the brand's own app before using PairFree: only one app can control the ea
 
 Thanks to everyone who sent device reports: CONTRIBUTORS.md on GitHub.
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, OnePlus, OPPO, Sennheiser, Jabra or Skullcandy.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, OnePlus, OPPO, Sennheiser, Jabra, Skullcandy or Huawei.

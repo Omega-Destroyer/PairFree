@@ -1,0 +1,33 @@
+{
+ "name": "FreeBuds 3",
+ "names": [
+  "FreeBuds 3",
+  "HUAWEI FreeBuds 3",
+  "CM-H-SHARK",
+  "HUAWEI CM-H-SHARK",
+  "CM-SHK00",
+  "HUAWEI CM-SHK00",
+  "Shark",
+  "HUAWEI Shark",
+  "CM-SHK09",
+  "HUAWEI CM-SHK09",
+  "FreeBuds 3 Wired Charging Case",
+  "HUAWEI FreeBuds 3 Wired Charging Case"
+ ],
+ "codes": [
+  "FreeBuds 3"
+ ],
+ "source": "Traced from LibreBuds' product render of the FreeBuds 3 (the left earbud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "286,128 320,133 334,140 346,148 357,160 365,175 372,206 369,229 363,243 354,257 337,273 334,280 333,529 326,545 313,557 302,561 289,557 273,543 269,533 269,288 264,282 228,262 205,242 197,228 194,211 197,184 203,175 217,160 248,139 270,130",
+  "holes": [
+   "309,204 308,208 304,209 300,208 299,204 300,200 304,199 308,200"
+  ],
+  "axis": [
+   301.0,
+   244.5
+  ]
+ },
+ "case": "generic"
+}

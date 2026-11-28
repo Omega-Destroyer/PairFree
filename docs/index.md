@@ -21,7 +21,7 @@ The screens, the device drawings and the widget follow the look you choose:
 
 <p><img src="https://omega-destroyer.github.io/PairFree/screenshots/look-studio-light.png" width="250" alt="The Studio Light look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-material-you.png" width="250" alt="The Material You look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-sketchbook.png" width="250" alt="The Sketchbook look"></p>
 
-It covers 846 models from 17 brands. Pick yours:
+It covers 898 models from 18 brands. Pick yours:
 
 - [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/): 88 SOUNDPEATS models
 - [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 83 Soundcore models
@@ -39,6 +39,7 @@ It covers 846 models from 17 brands. Pick yours:
 - [Open-source Sennheiser Smart Control alternative](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/): 28 Sennheiser models
 - [Open-source Jabra Sound+ alternative](https://omega-destroyer.github.io/PairFree/open-source-jabra-app/): 34 Jabra models
 - [Open-source Skullcandy app alternative](https://omega-destroyer.github.io/PairFree/open-source-skullcandy-app/): 56 Skullcandy models
+- [Open-source HUAWEI AI Life alternative for FreeBuds](https://omega-destroyer.github.io/PairFree/open-source-huawei-app/): 52 Huawei and Honor models
 - [Open-source HeyMelody alternative for OnePlus and OPPO earbuds](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/): 53 OnePlus and OPPO models
 
 ## What it controls
@@ -61,7 +62,7 @@ On Android, PairFree is on [F-Droid](https://f-droid.org/packages/io.github.omeg
 
 ### Is there an open-source app for my earbuds?
 
-Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, QCY, 1MORE, EarFun, Melomania, Sennheiser Smart Control, Jabra Sound+, Skullcandy and HeyMelody apps, on Android and on Windows.
+Yes, for the brands above. PairFree is one open-source app (GPL-3.0) that talks directly to the earbuds over Bluetooth, so one app can replace the Soundcore, Bose Music, JBL Headphones, Sony Sound Connect, Galaxy Wearable, Nothing X, PeatsAudio, QCY, 1MORE, EarFun, Melomania, Sennheiser Smart Control, Jabra Sound+, Skullcandy, HUAWEI AI Life and HeyMelody apps, on Android and on Windows.
 
 ### Does it work without an account or internet?
 
@@ -89,4 +90,4 @@ The Android app is on F-Droid and on the GitHub releases page (the same APK, sig
 
 ---
 
-PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, OnePlus or OPPO; the names are used to say which earbuds it works with.
+PairFree is an independent project. It is not affiliated with or endorsed by SOUNDPEATS, Anker, Samsung, Sony, Bose, Harman (JBL), Apple, Nothing, Google, QCY, 1MORE, EarFun, Cambridge Audio, Sennheiser, Jabra, Skullcandy, Huawei, Honor, OnePlus or OPPO; the names are used to say which earbuds it works with.

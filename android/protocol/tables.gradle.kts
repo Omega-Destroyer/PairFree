@@ -2770,3 +2770,61 @@ val generateSkullcandyModels = tasks.register<GenerateSkullcandyProducts>("gener
     buttonsJson = rootProject.layout.projectDirectory.file("../data/skullcandy/buttons.json")
     outputDir = layout.buildDirectory.dir("generated/skullcandyProducts")
 }
+
+abstract class GenerateHuaweiTables : DefaultTask() {
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val sourceJson: RegularFileProperty
+    @get:InputFile @get:PathSensitive(PathSensitivity.NONE)
+    abstract val devicesJson: RegularFileProperty
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        @Suppress("UNCHECKED_CAST")
+        val sections = JsonSlurper().parse(sourceJson.get().asFile) as Map<String, Any?>
+        val text = StringBuilder("// Generated from data/huawei/commands.json; do not edit.\npackage io.github.omegadestroyer.pairfree.protocol.huawei\n\n")
+        for ((section, raw) in sections.filterKeys { !it.startsWith("_") }) {
+            check(section.matches(Regex("[a-z]+")))
+            text.appendLine("public object Huawei${section.replaceFirstChar { it.uppercase() }} {")
+            @Suppress("UNCHECKED_CAST")
+            for ((key, value) in raw as Map<String, Any>) {
+                check(key.matches(Regex("[A-Z_0-9]+")) && (value is String || value is Number))
+                text.appendLine("    public const val $key: ${if (value is String) "String" else "Int"} = ${groovy.json.JsonOutput.toJson(value)}")
+            }
+            // What is never sent, as a set the session checks before anything else.
+            if (section.startsWith("never")) text.appendLine("    public val ALL: Set<Int> = setOf(${(raw as Map<String, Any>).values.joinToString(", ")})")
+            text.appendLine("}")
+        }
+        val products = (JsonSlurper().parse(devicesJson.get().asFile) as Map<*, *>)["products"] as List<*>
+        fun quote(value: Any?): String = groovy.json.JsonOutput.toJson(value)
+        fun strings(value: Any?): String = (value as? List<*>).orEmpty().joinToString(", ", transform = ::quote)
+        text.appendLine("internal val HUAWEI_PRODUCTS: List<HuaweiProduct> = listOf(")
+        for (raw in products) {
+            val product = raw as Map<*, *>
+            val presets = (product["presets"] as? Map<*, *>).orEmpty().entries.joinToString(", ") { (id, name) ->
+                "${id.toString().toInt()} to ${quote(name)}"
+            }
+            text.appendLine("    HuaweiProduct(${quote(product["id"])}, ${quote(product["name"])}, " +
+                "listOf(${strings(product["aliases"])}), io.github.omegadestroyer.pairfree.protocol.Form.${product["form"]}, " +
+                "setOf(${strings(product["features"])}), linkedMapOf($presets)" +
+                (product["curves"] as? Map<*, *>)?.entries?.joinToString(", ", ", linkedMapOf(", ")") { (name, gains) ->
+                    "${quote(name)} to listOf(${(gains as List<*>).joinToString(", ")})"
+                }.orEmpty() +
+                (product["curve_ids"] as? Map<*, *>)?.entries?.joinToString(", ", ", curveIds = mapOf(", ")") { (name, id) ->
+                    "${quote(name)} to $id"
+                }.orEmpty() +
+                (product["gestures"] as? Map<*, *>)?.entries?.joinToString(", ", ", gestures = mapOf(", ")") { (name, values) ->
+                    "${quote(name)} to listOf(${(values as List<*>).joinToString(", ")})"
+                }.orEmpty() + "),")
+        }
+        text.appendLine(")")
+        val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/huawei/HuaweiTables.kt")
+        target.parentFile.mkdirs()
+        target.writeText(text.toString())
+    }
+}
+val generateHuaweiTables = tasks.register<GenerateHuaweiTables>("generateHuaweiTables") {
+    sourceJson = rootProject.layout.projectDirectory.file("../data/huawei/commands.json")
+    devicesJson = rootProject.layout.projectDirectory.file("../data/huawei/devices.json")
+    outputDir = layout.buildDirectory.dir("generated/huawei")
+}

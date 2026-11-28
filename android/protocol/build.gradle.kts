@@ -26,6 +26,7 @@ apply(from = "tables.gradle.kts")
 val dataDir: Directory = rootProject.layout.projectDirectory.dir("../data/soundpeats")
 
 kotlin.sourceSets.main {
+    kotlin.srcDir(tasks.named("generateHuaweiTables"))
     kotlin.srcDir(tasks.named("generateCambridgeTables"))
     kotlin.srcDir(tasks.named("generateSennheiserTables"))
     kotlin.srcDir(tasks.named("generateJabraTables"))

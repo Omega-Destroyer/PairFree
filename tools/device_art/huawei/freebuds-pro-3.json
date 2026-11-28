@@ -1,0 +1,30 @@
+{
+ "name": "FreeBuds Pro 3 / FreeBuds Pro 4",
+ "names": [
+  "FreeBuds Pro 3",
+  "HUAWEI FreeBuds Pro 3",
+  "FreeBuds Pro 4",
+  "HUAWEI FreeBuds Pro 4",
+  "T0022",
+  "HUAWEI T0022",
+  "T0022C",
+  "HUAWEI T0022C"
+ ],
+ "codes": [
+  "FreeBuds Pro 3",
+  "FreeBuds Pro 4"
+ ],
+ "source": "Traced from LibreBuds' product render of the FreeBuds Pro 3; the Pro 4 has the same shape (the left earbud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "232,127 256,128 281,134 304,145 326,160 350,184 374,225 406,243 427,264 439,286 444,311 443,333 434,356 420,376 402,392 384,401 362,407 337,407 312,401 307,404 306,537 298,552 280,559 211,559 197,554 189,545 185,525 185,353 180,345 154,321 139,301 127,274 123,250 124,228 130,207 140,185 155,165 172,150 190,139 211,131",
+  "holes": [
+   "244,201 238,224 220,242 196,248 172,242 154,224 148,201 154,178 172,160 196,154 220,160 238,177"
+  ],
+  "axis": [
+   245.7,
+   244.1
+  ]
+ },
+ "case": "generic"
+}

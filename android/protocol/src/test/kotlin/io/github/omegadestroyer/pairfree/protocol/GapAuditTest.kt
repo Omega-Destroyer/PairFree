@@ -34,6 +34,7 @@ class GapAuditTest {
         Brand("apple", "apple", listOf("AppleControl", "AppleOpcode"), "apple", listOf("Apple")),
         Brand("cambridge", "cambridge", listOf("CambridgeCommand"), "cambridge", listOf("Cambridge")),
         Brand("sennheiser", "sennheiser", listOf("SennheiserCommands"), "sennheiser", listOf("Sennheiser")),
+        Brand("huawei", "huawei", listOf("HuaweiCommand"), "huawei", listOf("Huawei")),
         // Jabra's settings are data (settings.json), every one drawn by the generic rows; the table's constants are its wire values.
         Brand("jabra", "jabra", listOf("JabraWire"), "jabra", listOf("Jabra")),
         // Skullcandy's table holds wire constants (the Bragi frame and RPC header, the device service, the serial services); its features are the manifest's and each session's rows.

@@ -605,5 +605,18 @@
  "skullcandy": {
   "SkullcandyServices.AT_SECOND": "explained: the app's SPP voice channel (`SPP_VOICE_UUID` in `app/skullcandy/bragi/voicecontrol/f.java`, the SDK's second `ConnectionService.Spp` of the AT models) that streams audio to the app's own voice assistant; voice streaming is never sent (docs/skullcandy/PROTOCOL.md section 15, never-sent list) and it carries no setting; checked: voicecontrol/f.java, `DeviceServices` in `device/config/c.java`",
   "SkullcandyServices.RPC_SECOND": "explained: the second `ConnectionService.Spp` slot of the Method and Crusher 1080 configurations (`DeviceServices` in `device/config/c.java`), the same voice-streaming slot as the AT models'; voice streaming is never sent and it carries no setting; checked: `device/config/c.java`, the RPC `voice_streaming` service in the never-sent list"
+ },
+ "huawei": {
+  "HuaweiCommand.LINK_PARAMETERS": "not-applicable: no screen of the bundled app sends it; checked: no builder for it in MbbProtocol; it is the link layer of the update channel",
+  "HuaweiCommand.LINK_PARAMETERS_NOTIFY": "not-applicable: no screen of the bundled app sends it; checked: named only in Command; ui/a/d maps firmware-update codes to it",
+  "HuaweiCommand.SERVICE_ABILITY": "not-applicable: no screen of the bundled app sends it; checked: no builder in MbbProtocol and no caller anywhere in the plugin",
+  "HuaweiCommand.COMMAND_ABILITY": "not-applicable: no screen of the bundled app sends it; checked: no builder in MbbProtocol and no caller anywhere in the plugin",
+  "HuaweiCommand.TIME": "not-applicable: the clock is AI Life's own upkeep, not a setting (docs/huawei/PROTOCOL.md section 9); checked: MbbProtocol.packageSetDeviceTime has no caller in the plugin",
+  "HuaweiCommand.VOICE_NOISE_SET": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageVoiceANCSetCmd has no caller",
+  "HuaweiCommand.VOICE_NOISE_READ": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageVoiceANCCheckCmd has no caller",
+  "HuaweiCommand.TOUCH_SENSITIVITY_SET": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageConfig (CommandConfigEnum) has no caller",
+  "HuaweiCommand.TOUCH_SENSITIVITY_READ": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageConfig (CommandConfigEnum) has no caller",
+  "HuaweiCommand.LEGACY_MODE_SET": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageANCModeSetCmd has no caller; the screens set noise control with 2B04 and the level with 2B08",
+  "HuaweiCommand.DEVICE_MODEL": "not-applicable: identification, not a setting, and its reply may hold serial numbers, so PairFree does not ask; checked: DeviceManager (accessory/b/b/b) reads it to identify the product, which PairFree does by name"
  }
 }

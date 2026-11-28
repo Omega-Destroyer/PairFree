@@ -1,0 +1,16 @@
+{
+  "_about": "Frames every implementation must reproduce byte for byte. 'source': the bundled AI Life plugin's builder (computed from its code) or a frame HuaweiPods (e2cf07e, GPL-3.0-or-later) writes out in full from captures. None was sent to hardware by PairFree.",
+  "frames": [
+    {"name": "battery read", "source": "AI Life plugin", "command": "0108", "fields": [[1, ""]], "hex": "5a00050001080100f53d"},
+    {"name": "wear detection on", "source": "HuaweiPods", "command": "2B10", "fields": [[1, "01"]], "hex": "5a0006002b10010101a956"},
+    {"name": "wear detection read", "source": "HuaweiPods", "command": "2B11", "fields": [[1, ""]], "hex": "5a0005002b110100772a"},
+    {"name": "ear tips, memory foam", "source": "HuaweiPods", "command": "2BB4", "fields": [[1, "08"], [2, "02"]], "hex": "5a0009002bb40101080201025b08"},
+    {"name": "spatial audio, head tracking", "source": "HuaweiPods", "command": "2BB4", "fields": [[1, "18"], [2, "01"]], "hex": "5a0009002bb401011802010170cc"},
+    {"name": "spatial scene, concert hall", "source": "HuaweiPods", "command": "2BB4", "fields": [[1, "18"], [3, "03"]], "hex": "5a0009002bb401011803010367be"},
+    {"name": "spatial read", "source": "HuaweiPods", "command": "2BB4", "fields": [[1, "18"], [2, ""], [3, ""]], "hex": "5a000a002bb4010118020003009b3f"},
+    {"name": "case prompt sound off", "source": "HuaweiPods", "command": "2BB1", "fields": [[1, "00"]], "hex": "5a0006002bb101010025b5"},
+    {"name": "low latency on", "source": "HuaweiPods", "command": "2B6C", "fields": [[1, "01"]], "hex": "5a0006002b6c010101a411"},
+    {"name": "volume boost in noise on", "source": "HuaweiPods", "command": "2B87", "fields": [[1, "01"]], "hex": "5a0006002b870101013ee4"},
+    {"name": "two devices at once on", "source": "HuaweiPods", "command": "2B2E", "fields": [[1, "01"]], "hex": "5a0006002b2e01010127e5"}
+  ]
+}

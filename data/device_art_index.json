@@ -493,6 +493,14 @@
    "device_bose_uopen_bud",
    "device_generic_case"
   ],
+  "btft0013": [
+   "device_huawei_freebuds_5_bud",
+   "device_generic_case"
+  ],
+  "btft0020": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
   "c1": [
    "device_qcy_neckband_bud",
    null
@@ -500,6 +508,18 @@
   "c2": [
    "device_qcy_neckband_bud",
    null
+  ],
+  "cm-h-shark": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "cm-shk00": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "cm-shk09": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
   ],
   "cmf buds": [
    "device_nothing_cmf_buds_bud",
@@ -949,6 +969,106 @@
    "device_jabra_evolve2_buds_bud",
    "device_generic_case"
   ],
+  "flypods 3": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "freebuds 3": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "freebuds 3 wired charging case": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "freebuds 3i": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "freebuds 4": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "freebuds 4 wired charging case": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "freebuds 4e": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "freebuds 4e (open fit)": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "freebuds 4e 无降噪版": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "freebuds 4i": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "freebuds 5": [
+   "device_huawei_freebuds_5_bud",
+   "device_generic_case"
+  ],
+  "freebuds 6": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
+  "freebuds 7": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
+  "freebuds pro": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "freebuds pro 2": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "freebuds pro 2 +": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "freebuds pro 2+": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "freebuds pro 3": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "freebuds pro 4": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "freebuds pro 5": [
+   "device_huawei_freebuds_pro_5_bud",
+   "device_generic_case"
+  ],
+  "freelace": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "freelace lite": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "freelace pro": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "freelace pro 2": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "freelace 活力版": [
+   "device_huawei_freelace_bud",
+   null
+  ],
   "g1": [
    "device_qcy_stem_bud",
    "device_generic_case"
@@ -1089,6 +1209,14 @@
    "device_skullcandy_icon_180_bud",
    null
   ],
+  "honor flypods 3": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "honor magic earbuds": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
   "ht01": [
    "device_qcy_round_bud",
    "device_generic_case"
@@ -1111,6 +1239,178 @@
   ],
   "ht08": [
    "device_qcy_melobuds_bud",
+   "device_generic_case"
+  ],
+  "huawei btft0013": [
+   "device_huawei_freebuds_5_bud",
+   "device_generic_case"
+  ],
+  "huawei btft0020": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
+  "huawei cm-h-shark": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "huawei cm-shk00": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "huawei cm-shk09": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "huawei flypods 3": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 3": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 3 wired charging case": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 3i": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 4": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 4 wired charging case": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 4e": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 4e (open fit)": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 4e 无降噪版": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 4i": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 5": [
+   "device_huawei_freebuds_5_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 6": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds 7": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds pro": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds pro 2": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds pro 2 +": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds pro 2+": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds pro 3": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds pro 4": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "huawei freebuds pro 5": [
+   "device_huawei_freebuds_pro_5_bud",
+   "device_generic_case"
+  ],
+  "huawei freelace": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "huawei freelace lite": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "huawei freelace pro": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "huawei freelace pro 2": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "huawei freelace 活力版": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "huawei magic earbuds": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "huawei mermaidtws": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "huawei nile": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "huawei nile-cn020": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "huawei shark": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "huawei t0003": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "huawei t0003c": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "huawei t0004": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "huawei t0022": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "huawei t0022c": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "huawei wal-ct025": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "huawei walrus": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "huawei walrus-at020": [
+   "device_huawei_freebuds_3i_bud",
    "device_generic_case"
   ],
   "icon 180": [
@@ -1801,6 +2101,10 @@
    "device_sennheiser_momentum_5_bud",
    null
   ],
+  "magic earbuds": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
   "magnum": [
    "device_sennheiser_momentum_sport_bud",
    "device_generic_case"
@@ -1868,6 +2172,10 @@
   "melomania x100": [
    "device_cambridge_melomania_x100_bud",
    null
+  ],
+  "mermaidtws": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
   ],
   "method 360 anc": [
    "device_skullcandy_method_bud",
@@ -2032,6 +2340,14 @@
   "mtw5": [
    "device_sennheiser_momentum_tw_4_bud",
    "device_generic_case"
+  ],
+  "nile": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "nile-cn020": [
+   "device_huawei_freelace_bud",
+   null
   ],
   "nothing ear": [
    "device_nothing_ear_bud",
@@ -3213,6 +3529,10 @@
    "device_skullcandy_crusher_plyr_bud",
    null
   ],
+  "shark": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
   "slyr pro wireless": [
    "device_skullcandy_slyr_pro_bud",
    null
@@ -3837,6 +4157,26 @@
    "device_sennheiser_cx_sport_tw_bud",
    "device_generic_case"
   ],
+  "t0003": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "t0003c": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "t0004": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "t0022": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "t0022c": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
   "t11s": [
    "device_qcy_stem_bud",
    "device_generic_case"
@@ -4000,6 +4340,14 @@
   "venus white": [
    "device_sennheiser_accentum_bud",
    null
+  ],
+  "wal-ct025": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "walrus-at020": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
   ],
   "wf-1000xm3": [
    "device_sony_wfxm3_bud",
@@ -5455,6 +5803,82 @@
    "device_1more_es903_bud",
    "device_generic_case"
   ],
+  "FreeBuds 3": [
+   "device_huawei_freebuds_3_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 3i": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 4": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 4E": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 4E (open fit)": [
+   "device_huawei_freebuds_4_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 4i": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 5": [
+   "device_huawei_freebuds_5_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 6": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds 7": [
+   "device_huawei_freebuds_6_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds Pro": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds Pro 2": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds Pro 2+": [
+   "device_huawei_freebuds_pro_2_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds Pro 3": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds Pro 4": [
+   "device_huawei_freebuds_pro_3_bud",
+   "device_generic_case"
+  ],
+  "FreeBuds Pro 5": [
+   "device_huawei_freebuds_pro_5_bud",
+   "device_generic_case"
+  ],
+  "FreeLace": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "FreeLace Lite": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "FreeLace Pro": [
+   "device_huawei_freelace_bud",
+   null
+  ],
+  "FreeLace Pro 2": [
+   "device_huawei_freelace_bud",
+   null
+  ],
   "G50": [
    "device_1more_g50_bud",
    null
@@ -5482,6 +5906,14 @@
   "HILISTENING": [
    "device_stem_bud",
    "device_stem_case"
+  ],
+  "HONOR FlyPods 3": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
+  ],
+  "HONOR Magic Earbuds": [
+   "device_huawei_freebuds_3i_bud",
+   "device_generic_case"
   ],
   "HP1000": [
    "device_earfun_wave_pro_x_bud",

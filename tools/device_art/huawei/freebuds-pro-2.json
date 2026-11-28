@@ -1,0 +1,37 @@
+{
+ "name": "FreeBuds Pro / FreeBuds Pro 2 / FreeBuds Pro 2+",
+ "names": [
+  "FreeBuds Pro",
+  "HUAWEI FreeBuds Pro",
+  "MermaidTWS",
+  "HUAWEI MermaidTWS",
+  "T0003",
+  "HUAWEI T0003",
+  "T0003C",
+  "HUAWEI T0003C",
+  "FreeBuds Pro 2",
+  "HUAWEI FreeBuds Pro 2",
+  "FreeBuds Pro 2+",
+  "HUAWEI FreeBuds Pro 2+",
+  "FreeBuds Pro 2 +",
+  "HUAWEI FreeBuds Pro 2 +"
+ ],
+ "codes": [
+  "FreeBuds Pro",
+  "FreeBuds Pro 2",
+  "FreeBuds Pro 2+"
+ ],
+ "source": "Traced from LibreBuds' product render of the FreeBuds Pro 2; the first Pro is taken to share it, unchecked (the left earbud), not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "236,128 258,129 286,136 310,148 334,167 355,191 376,227 406,249 423,267 436,290 441,312 437,336 428,357 415,376 397,392 381,401 361,406 341,406 317,401 313,403 311,535 308,545 302,552 294,557 283,559 217,559 203,554 195,544 191,526 191,355 187,348 162,325 145,303 134,281 127,253 128,231 134,209 144,187 159,167 177,150 195,139 212,133",
+  "holes": [
+   "245,202 239,225 222,242 198,248 174,242 157,225 151,202 157,179 174,162 198,156 222,162 239,179"
+  ],
+  "axis": [
+   250.9,
+   244.8
+  ]
+ },
+ "case": "generic"
+}

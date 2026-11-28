@@ -1,8 +1,12 @@
 # Huawei AI Life / FreeBuds protocol research
 
-Research only, 2026-11-06. No Huawei support was implemented and no hardware was connected.
-The supplied AI Life app contains an older but readable Smart Audio plugin. Its protocol evidence and
-newer OpenFreebuds research are kept distinct below; neither proves every FreeBuds model is supported.
+Virtual follow-up, 2026-11-06: [model-specific scope and interventions](VIRTUAL_TESTING.md).
+No physical hardware was tested.
+
+The first source is now HUAWEI Audio Connect (section 15); sections 1 to 14 record the research before it.
+
+The [implementation](IMPLEMENTATION.md) runs through the Android and desktop shared driver.
+The [model audit](MODELS.md) records the APK routes, supplementary captures and outstanding features.
 
 ## 1. Primary source, nested plugin, and public checks
 
@@ -33,8 +37,7 @@ and `driver/generic/spp.py`. Some reference model handlers are explicitly tentat
 comments must not be turned into hardware-validation claims.
 
 [FreeBuddies](https://github.com/IAL32/freebuddies) is a further protocol/capture reference for FreeBuds 4;
-its README identifies LGPLv3 and links its SPP documentation. It was found as a lead, not used as proof
-for a model-specific byte layout in this pass. Gadgetbridge Huawei is another follow-up cross-check.
+its captured T0022/T0022C model is marketed as FreeBuds Pro 4. [Captured protocol](https://github.com/IAL32/freebuddies/blob/main/app/README.md) ? [Huawei T0022 guide](https://consumer.huawei.com/cn/support/content/zh-cn16025581/)
 
 ## 2. Connection and model boundaries
 
@@ -45,10 +48,9 @@ is limited to these local commands; it does not authorize AI Life account or clo
 
 OpenFreebuds independently uses model-specific RFCOMM ports: its base default is 16; several newer
 models override to 1. These are public reference facts, not a reason to hardcode one port for Huawei.
-A future Android connection should preserve service discovery and produce a connection report, with
-any channel fallback backed by a model's evidence.
+PairFree uses the operating system's standard SPP service resolution and records the chosen service in its connection report.
 
-The old plugin's ModelPbiMap is:
+The old plugin's ModelPbiMap follows. See [MODELS.md](MODELS.md) for the marketed identities and outer-app entries.
 
 | PBI | Internal model string |
 |---|---|
@@ -64,7 +66,7 @@ manager before assigning a product name. The main detail activity also explicitl
 FreeBuds 3. This older plugin cannot provide a modern all-model feature table merely because the
 outer application is AI Life.
 
-Reference coverage to consult for newer devices:
+OpenFreebuds reference coverage, before the supplemental sources in [MODELS.md](MODELS.md):
 
 | OpenFreebuds model class | RFCOMM port | Useful caveat |
 |---|---|---|
@@ -95,10 +97,7 @@ byte including `5A` and the length. A TLV is type u8, length u8, then that many 
 requests a type with zero length; a write supplies its value. Multiple requested types are concatenated.
 There is no extra global success byte that can be stripped from all commands; decode the relevant TLVs.
 
-The legacy parser rejects a nonzero control byte and checks CRC. Its hex-string stream splitter keeps
-an incomplete suffix for two seconds; the decompiled implementation also has suspicious string
-concatenation. A future parser should implement bounded byte-stream reassembly from the documented
-length and checksum, without reproducing that UI/helper behavior. Fragmented control values are not
+The legacy parser rejects a nonzero control byte and checks CRC. PairFree reassembles the byte stream using a 4096-byte body limit. Fragmented control values are not
 established by this plugin's parser and must not be invented.
 
 OpenFreebuds' framing, CRC and TLV construction agree with the vendor plugin. Its reader supports
@@ -111,7 +110,7 @@ All command numbers here are hex and are paired with their service byte.
 
 | Purpose | Read / write | Payload facts |
 |---|---|---|
-| Version/info | `01 07` | vendor requests zero-length tags 1 through 21; reply includes private identity fields |
+| Version/info | `01 07` | PairFree requests software version tag 7. The vendor's broader query can return private identities |
 | Battery | `01 08`; notification `01 27` | read tag 1; response tag 1 global/minimum level, tag 2 component levels, tag 3 charging states |
 | Double tap | `01 20` / `01 1F` | tag 1 left function, tag 2 right function; omit a side rather than writing a negative sentinel |
 | Triple tap | `01 26` / `01 25` | same side TLVs, separate command pair |
@@ -121,7 +120,7 @@ All command numbers here are hex and are paired with their service byte.
 | Voice ANC | `2B 13` / `2B 12` | tag 1 |
 | Long press | `2B 17` / `2B 16` | model-dependent side/action structure; follow packageLongPressSettingCmd |
 | Long-press noise cycle | `2B 19` / `2B 18` | separate from choosing the current ANC mode |
-| Touch enable | `01 2D` / `01 2C` | follow getTouchState / setTouchBoardState |
+| Touch enable | `01 2D` / `01 2C` | Studio's read body is 01 01 with no value byte. Read reply and write carry tag 1 with one byte, 0 locked and 1 enabled |
 | Language | service `0C`, commands `02` / `01` | language-list, unit and supported-language TLVs; not a universal one-byte language code |
 | Model info | `2B 0A` | vendor requests tags 1 through 5 |
 
@@ -187,9 +186,204 @@ ANC/language/settings parsers and model ids; native inventory; OpenFreebuds fram
 per-model handlers. No app-held server credentials or secrets files were read. No hardware test was
 performed and no source-derived example is represented as a capture.
 
-Remaining analysis: map every old plugin codename to its displayed model, follow each model's UI/action
-sets and overlapping command contexts, obtain a newer vendor plugin if its access is permitted, and
-confirm newer EQ units/notification layouts against that app or recordings. A future implementation
-needs byte-for-byte codec cases, model-specific read sets, privacy filtering and actual connection
-validation. These are open research/implementation tasks; no hard-rule blocker was established for
-ordinary local headphone control.
+
+## 8. Model-specific command details
+
+| Feature | Read / write | Payload |
+| --- | --- | --- |
+| Walrus double tap | 01 20 / 01 1F | Read tags 1, 2, 3. Tags 1 and 2 address the sides. Use tag 3's advertised list. Both 2 and 4 mean next track. Both 7 and 8 mean previous track. |
+| Walrus long press | 2B 17 / 2B 16 | Read tags 1, 2, 3. The vendor writes tag 2. Values 3, 5, 6 and 9 select combinations of off, ANC and awareness. FF disables the gesture. Use the reported list. |
+| Nile shared hold | 2B 17 / 2B 16 | Read tags 1, 2, 3. Prefer the shared setting in reply tag 2 as the APK does, with tag 1 as a fallback for later firmware. Write tag 1. Codes 3, 5, 6, 9 and FF match the Walrus meanings. |
+| Nile ANC | 2B 05 or 2B 2A / 2B 04 | Both use mode IDs 0, 1, 2. The former uses the scalar write. The latter uses mode and level. |
+| Eyewear battery | 01 08 | Request tags 1, 2, 3. Tag 2 holds the two temple levels and case. AI Life displays the smaller temple level. The first generation displays case battery. |
+| Eyewear language | 0C 02 / 0C 01 | Read tags 1, 2, 3. Change to a locale from the reported list with tag 1 alone. |
+| Eyewear and Eyewear II double tap | 01 20 / 01 1F | Request tag 3. Each side uses its tag 1/2. Actions 0 assistant, 1 play/pause, FF none. |
+| Eyewear II swipe | 2B 1F / 2B 1E | Side tags 1/2. Actions 0 volume, 1 track, FF none. |
+| Eyewear II short press | 2B 21 / 2B 20 | Tag 1. Actions 0 face-to-face translation, 1 voice memo, 2 pairing, FF none. |
+| Eyewear II call hold | 2B 17 / 2B 16 | Request tags 1, 2 and 3. Left tag 1 uses 9 reject call and FF none. |
+| Eyewear and Eyewear II switches | 2B 0F/0E, 11/10 | Boolean tag 1 for greeting and wear detection. |
+| Eyewear II switches | 2B 1D/1C, 23/22 | Boolean tag 1 for power saving and intelligent volume. |
+| Modern pinch | 2B 93 / 2B 92 | Tags 1, 2 identify gesture and scene. Side actions are tags 3, 4. Call and playback writes address both sides together. Hold addresses one side. |
+| Modern keyed settings | 2B B4 | Tag 1 key, tag 2 state. Keys 2 adaptive volume, 5 single-ear ANC, 7 drop detection, 11 head control and 27 conversation awareness. |
+| Adaptive awareness on Pro 5 | 2B 2A / 2B 04 | Mode 2, submode 4. Read the slider in tag 2. The slider write carries [2,4] in tag 1, value 1 in tag 3 and level 0?10 in tag 4. |
+| Head gestures | 2B B4 | For key 11, tags 3 and 4 hold nod and shake actions. Values 0 none, 1 answer and 2 reject. |
+| Sound quality | 2B A3 / 2B A2 | Request tag 1. Read tag 1 capability and tag 2 state. Write tag 1, 0 connectivity or 1 quality. |
+| Ring earbuds | 2B 5E / 2B 5D | The read carries side 0 or 1 in tag 1 and the reply carries side and state in tag 2. Write side and 0 ring or 1 stop in tag 1. |
+
+Studio's double-tap, hold and slide cards animate the built-in controls. Its quality screen reads and sets the phone's Bluetooth A2DP codec preference. In the FreeBuds Pro plugin, the light-press and swipe cards are tutorials, while the hold card writes 10 for noise control or 0 for voice assistant to the selected side. Modern firmware can expose additional controls.
+
+The outer APK's Eyewear builders and parsers are in com/huawei/perrier/ota/spp. See ProtocolAPI,
+C1484 and AppParseDataHandleHelper for battery, language and settings, and fiji/touchsettings
+for gesture choices. Both generations also expose double tap, greeting and wear detection through
+their respective DeviceSettingActivity routes. The device-backed wear path is explicit even
+when the outer app also updates a Huawei phone preference. Eyewear II's HD recording uses the
+phone's Bluetooth metadata API under key 10011.
+
+PairFree requests only tag 2 of 2B 4A. Some firmware, including the captured FreeBuds 5,
+requires the single-tag query. Replies can carry the current ID in tag 2, available IDs in tag 3,
+and tag 8 custom records. Each record is 36 bytes with slot ID, band count, ten signed gains and
+a 24-byte name field. The implemented EQ grid is 60, 125, 250, 500, 1000, 2000, 4000, 8000, 12000
+and 16000 Hz, ?6 dB in signed tenths. The custom write order is 1, 2, 5, 3, 4, with operation 1
+for the save profiles and 0 for FreeBuds 7i. Pro 3 preset IDs use the published 02 03 05 09 response.
+[LibreBuds protocol and captures](https://github.com/librebuds/librebuds/tree/c7b0833) ? [HuaweiPods EQ codec](https://github.com/Nshpiter/HuaweiPods/blob/e2cf07e/app/src/main/java/moe/chenxy/huaweipods/pods/HuaweiEqualizerCodec.kt)
+
+## 9. Supplied APK scope and gaps
+
+Checked the outer APK's manifests, DEX files, local product profiles and the embedded Smart Audio
+JAR. The active audio screens reach their settings through the Java MBB builders or the phone
+APIs below. The ARM64 and ARMv7 dynamic symbol tables show no audio-control JNI exports. The two
+nativeloader binaries lack dynamic symbol sections, and the audited settings paths call no native
+loader methods. The reference folder supplies AI Life 11.0.2.305 as one complete APK.
+
+| Area | What the APK establishes |
+| --- | --- |
+| FreeGO | Cm530DetailActivity, LuteDetailPresenter and lute_activity_main show battery and connection state. The action panel offers firmware and help. AccessoryDeviceSettingActivity is shared device management. The bundle provides no speaker EQ, power mode or sound-mode selector for CM530. |
+| Wear detection on Walrus, Roc and Mermaid | The model wear activities call the Huawei phone class BtTwsWearDetectionEx. A portable MBB alternative for Walrus and Mermaid needs firmware evidence. The Studio profile has an independent wear-control reference. |
+| Roc sound quality | RocQualityModeModel reads BluetoothA2dp.getCodecStatus and writes setCodecConfigPreference on the host. The app trace gives no MBB equivalent for Studio. |
+| HD recording | MermaidHDRecordingActivity calls accessory.utils.ag. Both it and Fiji's HDRecordActivity use phone Bluetooth metadata 10011. A portable device write needs external evidence. |
+| Finding | The Studio and FreeBuds Pro panels open the Huawei find-my-phone app. PairFree's independent ring support for newer products uses a separate local command. |
+| Mermaid's archived smart-noise UI | The plugin manifest names three Mermaid noise activities whose class descriptors are absent from the outer and plugin DEX files. BaseNoiseControlActivity and BaseHeadsetSwitchActivity remain in the DEX without a reachable product-panel entry. The presenter forwards the smart strength and voice fields to BaseAudioDevice's empty three-argument method. Capture evidence is needed before giving those values a wire layout. |
+| Eyewear preferences | A fixed voice language is an MBB write. Follow system is an AI Life preference that sends the phone's locale on reconnect. The main screen also sends its clock as device-management command 01 05 with epoch seconds and signed UTC offset. These are app-managed behaviors. |
+| Later audio panels | The supplied bundle has no device route for the later fit-test, spatial audio, case-tone, multi-device centre or extended EQ panels. HUAWEI Audio Connect has them (section 15). |
+
+
+See [the model audit](MODELS.md) for remaining features and [implementation](IMPLEMENTATION.md)
+for PairFree validation.
+
+## 10. The newer settings (2026-11-28)
+
+From LibreBuds (c7b0833) and HuaweiPods (e2cf07e), both GPL-3.0-or-later, from their authors' captures and probes. None was tried with PairFree.
+Numbers are in `data/huawei/commands.json`; frames in `data/huawei/test_vectors.json`.
+
+| Setting | Read / write | Payload |
+|---|---|---|
+| Rest reminders | `2B 61` / `2B 60` | tag 1, 0 or 1 |
+| HD calls | `2B 46` / `2B 45` | the read declares one byte for tag 1 and carries none; write tag 1 |
+| Pickup mode | `2B 42` / `2B 41` | read as HD calls; 0 surroundings, 1 voices |
+| Case prompt sounds | `2B B1` / `2B B1` | read tags 2 and 3, state in tag 2; write tag 1 |
+| Volume boost in noise | `2B 88` / `2B 87` | tag 1 |
+| Keyed settings | `2B B4` | tag 1 key: 3 voice control, 8 ear tip type (1 silicone, 2 memory foam), 24 spatial audio (tag 2: 0 off, 1 head tracking, 2 fixed; tag 3 the scene: 0 default, 1 theater, 2 cinema, 3 concert hall), 29 wind noise reduction |
+| Delete a saved sound | `2B 49` | the slot's own record with operation 2 |
+
+**Paired devices** (models with two devices at once): `2B 31` with an empty tag 1 answers one packet per host: tag 2 how many, tag 3 this one's index,
+tag 4 the address (least significant byte first), tag 5 connected (9 while playing), tag 7 preferred, tag 8 connects automatically, tag 9 the name.
+`2B 32` tag 1 = address sets the preferred device. `2B 33` acts on a device: the tag is the action (1 connect, 2 disconnect, 4 and 5 automatic
+connection on and off), the value its address. `2B 36` says the list changed. Action 3 (unpair) is never sent. The list stays out of the device report.
+
+**Software sounds.** Symphony, Hi-Fi Live and the HUAWEI SOUND Classical sound are curves the maker's app writes as a custom slot; PairFree does the same.
+
+## 11. Commands in the bundled app that nothing calls
+
+Its protocol class builds commands for voice recognition (`2B 01`/`02`), voice noise control (`2B 12`/`13`), touch sensitivity, cue volume and "is
+beside" (`CommandConfigEnum`, which reuses `2B 14` to `2B 19`), the legacy mode write (`2B 06`) and the clock (`01 05`): none has a caller in the
+plugin, so PairFree sends none (`data/unused_ids.json`). `2B 0A` reads the model, whose reply may hold serial numbers, so it is left out (checked:
+the callers of every builder in `MbbProtocol`, and the `accessory/b/b/b` device manager).
+
+## 12. What is never sent
+
+Factory reset (`01 0D`), connection legality (`01 13`), every command of the update service (`09`) and of the log service (`0A`), unpairing a device,
+and anything not on the session's own closed list (`HuaweiTalk.allowed`).
+
+## 13. The device report
+
+Only the answers to PairFree's own reads, by command: of the version reply the version number alone, custom equalizer slots with their names blanked,
+and never the paired devices' list. A catalogue model, and a newer FreeBuds, FreeClip, FreeLace or FreeArc the table lacks, is asked the settings'
+reads only, for its report; nothing is shown or written.
+
+## 14. Huawei's server (research, 2026-11-27 and 28)
+
+The app's product list and device plugins come from Huawei's guide server (`smarthome.hicloud.com/device/guide/`, and its delivery host
+`smarthome-drcn.dbankcdn.com`), which serves them to a plain `GET` with no token or signature. A research script outside the repo
+(`E:/Builds/research/huawei-tools/fetch_guide.py`) fetched, at the owner's word, the app's feed, list version, `mainHelp.json`, the two global plugin
+files and the per-product plugin files the app asks for.
+
+- Both hosts give the same list (version 1936). Its audio products are the eight the bundled app has: nothing newer.
+- The global plugin files list router add-ons only.
+- None of the per-product plugin files exist for the audio ids tried (all seven headset and eyewear ids on the first host, three on the second).
+  The storage answers a bare 403 `AccessDenied` for a file it lacks, while a file the list names is served anonymously; no reply asked for sign-in.
+- The route list's server for outside China (`smarthome-dra.things.hicloud.com`) does not resolve.
+
+Raw replies are in `server_dump/huawei/`, not committed.
+
+Huawei's earbuds have since moved to a separate app, HUAWEI Audio Connect (section 15).
+
+## 15. HUAWEI Audio Connect (read 2026-11-28)
+
+Version 2.0.7.390 (`com.huawei.smartaudio`), downloaded from Huawei's AppGallery, SHA-256
+`9a3837d4045cb4ff263a856c7f5dd03e161dc0e597dd28e2b6bbb25a0994d319`, signed by Huawei and not packed. Decompiled outside the repo
+(`E:/Builds/research/huawei-app-2026-11-28`); its credential files were not opened. It is the first source for every product it lists.
+
+**Where things are.** `Mbb` (an enum naming 174 commands), `audiobluetooth/layer/data/mbb/d` (`MbbAppLayer`: the builders and parsers), `p9.b` (the
+facade the screens call), `FeatureMbbState` (the keys of command `2B B4`), `eqadjust/bean/EqMode` (the equalizer numbers), and per product id the
+assets `config/config_<id>.json` (screen cards and flags), `touchsetting/`, `eqextend/` and `device_information.json`.
+`tools/import_huawei_app.py` turns the assets into `data/huawei/devices.json`: for a model with a screen or touch file, its features, gesture values,
+equalizer sounds and extended curves are the app's. The eight older products keep what AI Life's plugin showed; what the files do not speak of (voice
+prompt language, which models keep the user's own curves) is as before.
+
+**Confirmed.** The app's builders match what PairFree had taken from the public projects for noise control, paired devices, pickup, HD calls, the
+equalizer write (tags 1, 2, 5, 3, 4; operations preview 0, save 1, delete 2), find earbuds, rest reminders, low latency, quality, pinch, case tones
+and the keyed settings (3 voice control, 8 ear tips, 11 head control, 24 spatial audio, 29 wind noise, 2 adaptive audio, 5 one-ear noise
+cancelling, 7 drop detection, 27 conversation).
+
+**Added from it.**
+
+| Setting | Read / write | Payload |
+|---|---|---|
+| Ear tip fit test | `2B 26` / result `2B 27` | the phone plays a sound, then sends an empty tag 1; each result is tag 1: 0 left good, 1 left not, 2 right good, 3 right not, 4 and 5 left or right too noisy to tell; an empty tag 3 ends the test |
+| Wind noise reduction (the models flagged for it) | `2B 95` / `2B 94` | tag 1, on or off; the read declares one byte it does not carry |
+| Voice wake-up | `2B 02` / `2B 01` | read tag 1 = 0; write tag 1 |
+| Left and right detection (FreeClip) | `2B 9A` / `2B 99` | tag 1 |
+| Smart charging | `2B B4` | key 4 |
+| Extended sounds (Symphony, Hi-Fi Live, Sport) | `2B 49` | a curve saved in slot 200, 201 or 202, named by the slot number |
+
+The quality read (`2B A3`) declares one byte it does not carry, like the HD call and pickup reads.
+
+**Gestures.** The values each model's touch file writes are the choices PairFree offers: double tap (`01 1F`), triple tap (`01 25`), press and hold
+(`2B 16`: 0 assistant, 3 or 10 noise control, 18 and 19 volume, 22 game mode), the noise modes a hold goes through (`2B 18`), swipe (`2B 1E`, one
+setting or one per side) and pinch (`2B 92`). Values that only act through Huawei's own app or services are left out: quick play (15, and 5 on a
+triple tap), song recognition (14), workout summary (20) and recording (21).
+
+| Battery health | `2B B4` | read tag 1 = 13, empty tag 2; the reply's tags 2 and 3 are each earbud's charge cycles, 4 and 5 the batteries' serial numbers (dropped from the report) |
+| Adaptive volume strength | `2B B4` | key 2, tag 3: 0, 1 or 2 |
+| Eyewear light effects | `2B AE` | read declares tag 1 and carries none; reply tag 1 `00 call 01 media`, write the same four bytes as tag 2; 0 is on |
+| Eyewear pairing mode | `2B 8F` / `2B 90` | read tag 1; write tag 1 = 1, only from the confirmed button |
+| Scene detection | `2B 38` / `2B 39` | read tag 1; write tag 1, on or off |
+
+**The rest of the app's screens.**
+
+- *Smart scenario* (FreeBuds Neo, the one product file with the card): a game mode and a sleep mode, built; section 15.1.
+- *Airplane and deep noise cancelling*: not separate settings. Deep is noise level 2 (offered as Ultra); the airplane marking is the phone's airplane
+  mode drawn on the card (`NoiseControlConstant`, `NoiseControlWidget.setAncFlyMode`).
+- *Hearing test, hearing aid and the Eyewear's neck health*: blocked: the screens are not in this APK; checked: the manifest, the DEX class names and
+  `drouter/core/hearingassistance`, which holds only the interfaces. `Mbb` names their commands (`2B 3A` to `2B 40`, `2B 71` to `2B 7C`) without
+  builders or parsers to give a layout.
+- *Open-lid reminder* (`2B 7F`): its builder has no caller in the app's screens.
+
+### 15.1 Smart scenario: game mode and sleep mode
+
+Both are key 48 of `2B B4` (`lr/k`, `mbb/d` `I3`, `c2`, `d4`; `smartscenario/manager/sleepmode/v`; `rr/e`), told apart by tag 2: 1 game, 2 sleep.
+Tag 3 is the switch, tag 4 the address of the phone that started it. The earbuds report that address themselves: `2B 35`, empty tag 3, reply tag 4
+(six bytes), sent back as it came. PairFree offers neither mode until it has it.
+
+| | Message after `2B B4 01 01 30 02 01 kk` |
+|---|---|
+| Game query | `kk` = 01, `03 00` |
+| Game write | `kk` = 01: tag 3 (1 on, 0 off, 2 only the choices changed), 4 phone, 5 connection lock, 6 low latency, and for sound enhancement 7 its equalizer number (25 is the app's game sound) with tags 8 to 11 when the earbuds reported a curve |
+| Sleep query | `kk` = 02, nothing more |
+| Sleep start | `kk` = 02: 3 = 1, 4 phone, 13 start (4 bytes, seconds since 1970), 14 zone offset (4), 15 end (4), 16 music, 17 music start, 18 offset, 19 music end, 20 seconds left (2), 21 mute calls |
+| Sleep stop | `kk` = 02: `03 01 00` |
+| While it runs | `kk` = 02: tag 20 with the seconds left, then the query, every 30 s; tag 21 when call mute changes |
+
+- Timer: 15, 30, 60 or 90 minutes, or "always on", which is 100 minutes and 100 in every heartbeat. The app's default is 30; a new time restarts a
+  running sleep mode.
+- Before starting, the app writes the sleep mode's own noise preference with `2B 04`; PairFree writes the noise mode in use, so the Home tab's choice
+  holds.
+- A game report from another phone shows as off and turning it on takes it over, as in the app; another phone's sleep mode is only shown.
+- The sleep mode lives on the phone's heartbeats, so PairFree has to stay connected (the status notification keeps the channel).
+- Not copied: the app plays sleep sounds it downloads (PairFree sends the music switch off), checks that the earbuds are worn or out of the case
+  before starting, silences its own greetings, and sends the standard time zone offset where PairFree sends the current one.
+- The game card's adaptive switch (tag 22) is left out: blocked: the app shows it only with Huawei's system accessory manager installed, which does
+  the adapting; checked: `GameModeFragment.K5` (its `com.huawei.audioaccessorymanager` metadata test) and `lr/k.C0`.
+- The press-and-hold gesture "game mode" (value 22) is in the gesture settings.
+
+Nothing here has met a FreeBuds Neo; the layouts are read from the app.

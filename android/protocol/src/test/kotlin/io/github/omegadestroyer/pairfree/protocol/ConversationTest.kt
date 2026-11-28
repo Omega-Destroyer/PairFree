@@ -30,6 +30,8 @@ import io.github.omegadestroyer.pairfree.protocol.sony.SonyParser
 import io.github.omegadestroyer.pairfree.protocol.sony.SonySession
 import io.github.omegadestroyer.pairfree.protocol.sony.SonyWire
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreTalk
+import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiModels
+import io.github.omegadestroyer.pairfree.protocol.huawei.HuaweiTalk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -272,6 +274,7 @@ class ConversationTest {
         for (model in OneplusModels.ALL + listOf(null)) opensAsItsSessionSays("OnePlus ${model?.id}") { OneplusTalk(model) }
         for (model in listOf("A3936", "A3951", "A6611", "")) opensAsItsSessionSays("Soundcore $model") { SoundcoreTalk(model) }
         opensAsItsSessionSays("AirPods") { AppleTalk() }
+        for (model in HuaweiModels.all + listOfNotNull(HuaweiModels.unknown("FreeBuds Next"))) opensAsItsSessionSays("Huawei ${model.name}") { HuaweiTalk(model) }
     }
 
     @Test

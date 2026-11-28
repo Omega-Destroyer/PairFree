@@ -1,0 +1,2256 @@
+{
+  "_about": "Exact static catalogue and protocol profiles. OpenFreebuds-only entries are separate from the supplied AI Life APK. See docs/huawei/MODELS.md.",
+  "products": [
+    {
+      "name": "FreeBuds 3",
+      "id": "004O",
+      "form": "EARBUDS",
+      "source": "apk",
+      "features": [
+        "legacy_anc",
+        "legacy_index",
+        "shark_tap",
+        "language"
+      ],
+      "aliases": [
+        "CM-H-SHARK",
+        "CM-SHK00",
+        "Shark",
+        "CM-SHK09",
+        "FreeBuds 3 Wired Charging Case"
+      ]
+    },
+    {
+      "name": "FreeBuds 3i",
+      "id": "ZA02",
+      "form": "EARBUDS",
+      "source": "apk",
+      "features": [
+        "walrus_tap",
+        "walrus_hold"
+      ],
+      "aliases": [
+        "WAL-CT025"
+      ]
+    },
+    {
+      "name": "HONOR FlyPods 3",
+      "id": "ZB02",
+      "form": "EARBUDS",
+      "source": "apk",
+      "features": [
+        "walrus_tap",
+        "walrus_hold"
+      ],
+      "aliases": [
+        "FlyPods 3",
+        "HUAWEI Walrus",
+        "Walrus-AT020"
+      ]
+    },
+    {
+      "name": "HONOR Magic Earbuds",
+      "id": "ZB04",
+      "form": "EARBUDS",
+      "source": "apk",
+      "features": [
+        "walrus_tap",
+        "walrus_hold"
+      ],
+      "aliases": [
+        "Magic Earbuds"
+      ]
+    },
+    {
+      "name": "FreeLace Pro",
+      "id": "ZA04",
+      "form": "HEADPHONES",
+      "source": "apk+openfreebuds",
+      "features": [
+        "anc",
+        "anc_levels",
+        "power_tap",
+        "single_hold",
+        "language",
+        "modern_battery",
+        "legacy_anc",
+        "power_tap_list"
+      ],
+      "aliases": [
+        "Nile",
+        "Nile-CN020"
+      ]
+    },
+    {
+      "name": "FreeGO Speaker",
+      "id": "ZA01",
+      "form": "SPEAKER",
+      "source": "apk",
+      "features": [],
+      "aliases": [
+        "CM530",
+        "HUAWEI_CM530",
+        "HUAWEI FreeGO"
+      ]
+    },
+    {
+      "name": "HUAWEI Eyewear",
+      "id": "ZC01",
+      "form": "HEADPHONES",
+      "source": "apk",
+      "features": [
+        "eyewear",
+        "eyewear_case",
+        "modern_battery",
+        "language"
+      ],
+      "aliases": [
+        "Eyewear",
+        "CMG0-PERRIER",
+        "CMG0-PER"
+      ]
+    },
+    {
+      "name": "HUAWEI Eyewear II",
+      "id": "ZC02",
+      "form": "HEADPHONES",
+      "source": "apk",
+      "features": [
+        "eyewear",
+        "fiji",
+        "modern_battery",
+        "language"
+      ],
+      "aliases": [
+        "Eyewear II",
+        "Fij-CG020"
+      ]
+    },
+    {
+      "name": "FreeBuds 4i",
+      "id": "FreeBuds 4i",
+      "form": "EARBUDS",
+      "source": "openfreebuds+audioconnect",
+      "features": [
+        "language",
+        "anc",
+        "double",
+        "hold",
+        "wear",
+        "fit",
+        "hold_cycle",
+        "rest"
+      ],
+      "app_ids": [
+        "ZA08"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "hold": [
+          10,
+          255
+        ]
+      }
+    },
+    {
+      "name": "FreeBuds 5i",
+      "id": "FreeBuds 5i",
+      "form": "EARBUDS",
+      "source": "openfreebuds+capture_reference+audioconnect",
+      "features": [
+        "language",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "double",
+        "double_call",
+        "triple",
+        "swipe",
+        "wear",
+        "latency",
+        "multipoint",
+        "quality",
+        "find",
+        "fit",
+        "hold_reject",
+        "rest"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "app_ids": [
+        "ZAA9",
+        "ZAAD"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "name": "FreeBuds 6i",
+      "id": "FreeBuds 6i",
+      "form": "EARBUDS",
+      "source": "openfreebuds+capture_reference+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "double",
+        "double_call",
+        "triple",
+        "hold",
+        "hold_right",
+        "swipe",
+        "wear",
+        "latency",
+        "multipoint",
+        "voice",
+        "find",
+        "fit",
+        "hold_cycle",
+        "hold_reject",
+        "quality",
+        "rest",
+        "spatial"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "app_ids": [
+        "ZAAK"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          10,
+          0,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "name": "FreeBuds Pro",
+      "id": "ZA07",
+      "form": "EARBUDS",
+      "source": "apk+openfreebuds",
+      "features": [
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "voice",
+        "swipe",
+        "hold",
+        "hold_right",
+        "language",
+        "multipoint",
+        "modern_battery",
+        "hold_assistant",
+        "mermaid_hold"
+      ],
+      "aliases": [
+        "MermaidTWS",
+        "T0003",
+        "T0003C"
+      ]
+    },
+    {
+      "name": "FreeBuds Pro 2",
+      "id": "FreeBuds Pro 2",
+      "form": "EARBUDS",
+      "source": "openfreebuds+capture_reference+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "anc_levels",
+        "swipe",
+        "wear",
+        "multipoint",
+        "dynamic",
+        "voice",
+        "latency",
+        "quality",
+        "pinch",
+        "find",
+        "rest",
+        "hd_call",
+        "fit",
+        "spatial"
+      ],
+      "presets": {
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "5": "Default",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "app_ids": [
+        "ZAA7"
+      ],
+      "gestures": {
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "name": "FreeBuds Pro 3",
+      "id": "FreeBuds Pro 3",
+      "form": "EARBUDS",
+      "source": "openfreebuds+capture_reference+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "voice",
+        "hold",
+        "hold_right",
+        "swipe",
+        "wear",
+        "latency",
+        "multipoint",
+        "pinch",
+        "quality",
+        "find",
+        "rest",
+        "pickup",
+        "case_sound",
+        "fit",
+        "hold_cycle",
+        "spatial"
+      ],
+      "presets": {
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "5": "Default",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "app_ids": [
+        "ZAAG"
+      ],
+      "gestures": {
+        "hold": [
+          10,
+          0,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "name": "FreeBuds Pro 5",
+      "id": "FreeBuds Pro 5",
+      "form": "EARBUDS",
+      "source": "openfreebuds+capture_reference+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "voice",
+        "double",
+        "hold",
+        "hold_right",
+        "swipe",
+        "wear",
+        "latency",
+        "multipoint",
+        "quality",
+        "head",
+        "single_anc",
+        "adaptive_volume",
+        "conversation",
+        "find",
+        "double_call",
+        "triple",
+        "pinch",
+        "pinch_hold",
+        "adaptive_awareness",
+        "rest",
+        "pickup",
+        "ear_tip",
+        "voice_control",
+        "case_sound",
+        "spatial",
+        "fit",
+        "hold_cycle",
+        "smart_charge",
+        "voice_wake"
+      ],
+      "presets": {
+        "20": "HUAWEI SOUND Balanced",
+        "21": "HUAWEI SOUND Voice",
+        "22": "HUAWEI SOUND Bass",
+        "23": "HUAWEI SOUND Classical",
+        "18": "Natural",
+        "19": "Concert hall",
+        "5": "Default",
+        "9": "Voices",
+        "2": "Bass boost",
+        "13": "Movie",
+        "15": "Podcast",
+        "14": "Gaming",
+        "16": "Punchy",
+        "17": "Adaptive"
+      },
+      "curves": {
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "app_ids": [
+        "ZAAV",
+        "ZAAW"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          21,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          0,
+          10,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curve_ids": {
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "name": "FreeBuds SE",
+      "id": "FreeBuds SE",
+      "form": "EARBUDS",
+      "source": "openfreebuds+audioconnect",
+      "features": [
+        "double",
+        "wear"
+      ],
+      "app_ids": [
+        "ZAA1"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "name": "FreeBuds SE 2",
+      "id": "FreeBuds SE 2",
+      "form": "EARBUDS",
+      "source": "openfreebuds+audioconnect",
+      "features": [
+        "double",
+        "double_call",
+        "triple",
+        "latency",
+        "find",
+        "hold_reject",
+        "wear"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "app_ids": [
+        "ZAAF"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ]
+      }
+    },
+    {
+      "name": "FreeBuds SE 4 ANC",
+      "id": "FreeBuds SE 4 ANC",
+      "form": "EARBUDS",
+      "source": "openfreebuds+capture_reference+audioconnect",
+      "features": [
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "double",
+        "double_call",
+        "triple",
+        "hold",
+        "hold_right",
+        "latency",
+        "find",
+        "hold_cycle",
+        "hold_reject",
+        "soh",
+        "wind_noise"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "app_ids": [
+        "ZAAT"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          10,
+          18,
+          19,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "name": "FreeBuds Studio",
+      "id": "ZA06",
+      "form": "HEADPHONES",
+      "source": "apk+openfreebuds",
+      "features": [
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "voice",
+        "wear",
+        "eq_write_only",
+        "modern_battery",
+        "studio_touch"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost"
+      },
+      "aliases": [
+        "M0001"
+      ]
+    },
+    {
+      "name": "FreeClip 2",
+      "id": "FreeClip 2",
+      "form": "EARBUDS",
+      "source": "openfreebuds+capture_reference+audioconnect",
+      "features": [
+        "language",
+        "spatial_scene",
+        "double",
+        "triple",
+        "hold",
+        "wear",
+        "latency",
+        "multipoint",
+        "case_sound",
+        "spatial",
+        "noisy_volume",
+        "drop",
+        "auto_lr",
+        "double_call",
+        "find",
+        "head",
+        "hold_right",
+        "pickup",
+        "quality",
+        "smart_charge",
+        "soh",
+        "swipe_sides",
+        "voice_control",
+        "voice_wake"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "app_ids": [
+        "ZAAS"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          5,
+          255
+        ],
+        "hold": [
+          0,
+          255
+        ],
+        "swipe": [
+          0,
+          1,
+          255
+        ]
+      }
+    },
+    {
+      "name": "FreeLace Pro 2",
+      "id": "FreeLace Pro 2",
+      "form": "HEADPHONES",
+      "source": "openfreebuds+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "modern_battery",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "voice",
+        "hold",
+        "latency",
+        "multipoint",
+        "hold_cycle",
+        "quality"
+      ],
+      "app_ids": [
+        "ZAAH"
+      ],
+      "gestures": {
+        "hold": [
+          10,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds 4",
+      "name": "FreeBuds 4",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "anc",
+        "two_modes",
+        "anc_levels",
+        "limited_levels",
+        "double",
+        "hold",
+        "hold_right",
+        "wear",
+        "find",
+        "rest",
+        "hd_call",
+        "pickup",
+        "multipoint"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "aliases": [
+        "T0004",
+        "FreeBuds 4 Wired Charging Case"
+      ],
+      "app_ids": [
+        "ZA09"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "hold": [
+          3,
+          15,
+          14,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds 4E",
+      "name": "FreeBuds 4E",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "anc",
+        "two_modes",
+        "anc_levels",
+        "limited_levels",
+        "double",
+        "hold",
+        "hold_right",
+        "wear",
+        "find",
+        "fit",
+        "multipoint",
+        "rest",
+        "triple"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost"
+      },
+      "app_ids": [
+        "ZAA4"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          3,
+          15,
+          14,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds 5",
+      "name": "FreeBuds 5",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "two_modes",
+        "anc_levels",
+        "limited_levels",
+        "dynamic",
+        "double",
+        "hold",
+        "hold_right",
+        "swipe",
+        "wear",
+        "multipoint",
+        "quality",
+        "double_call",
+        "triple",
+        "hold_reject",
+        "latency",
+        "find",
+        "rest",
+        "hd_call",
+        "spatial"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "aliases": [
+        "BTFT0013"
+      ],
+      "app_ids": [
+        "ZAAB"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          3,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds 6",
+      "name": "FreeBuds 6",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "two_modes",
+        "anc_levels",
+        "limited_levels",
+        "dynamic",
+        "wear",
+        "latency",
+        "multipoint",
+        "adaptive_volume",
+        "drop",
+        "double",
+        "double_call",
+        "triple",
+        "hold",
+        "hold_right",
+        "hold_reject",
+        "swipe",
+        "quality",
+        "find",
+        "head",
+        "single_anc",
+        "rest",
+        "pickup",
+        "case_sound",
+        "conversation",
+        "smart_charge",
+        "soh",
+        "spatial"
+      ],
+      "presets": {
+        "11": "Balanced",
+        "12": "Classical",
+        "0": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "aliases": [
+        "BTFT0020"
+      ],
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "app_ids": [
+        "ZAAL",
+        "ZAAQ"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          3,
+          0,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "id": "FreeBuds 7",
+      "name": "FreeBuds 7",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "double",
+        "triple",
+        "swipe",
+        "wear",
+        "latency",
+        "quality",
+        "case_sound",
+        "spatial",
+        "adaptive_volume",
+        "conversation",
+        "double_call",
+        "drop",
+        "find",
+        "fit",
+        "head",
+        "hold",
+        "hold_cycle",
+        "hold_right",
+        "multipoint",
+        "pickup",
+        "pinch",
+        "pinch_hold",
+        "rest",
+        "single_anc",
+        "smart_charge",
+        "voice_control"
+      ],
+      "presets": {
+        "18": "Natural",
+        "19": "Concert hall",
+        "5": "Default",
+        "9": "Voices",
+        "2": "Bass boost",
+        "13": "Movie",
+        "15": "Podcast",
+        "14": "Gaming",
+        "16": "Punchy"
+      },
+      "app_ids": [
+        "ZAB1"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          21,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          0,
+          10,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curves": {
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "curve_ids": {
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "id": "FreeBuds 7i",
+      "name": "FreeBuds 7i",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "alt_levels",
+        "custom_eq",
+        "custom_preview",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "double",
+        "triple",
+        "hold",
+        "hold_right",
+        "swipe",
+        "wear",
+        "latency",
+        "multipoint",
+        "quality",
+        "head",
+        "double_call",
+        "find",
+        "fit",
+        "hold_cycle",
+        "hold_reject",
+        "rest",
+        "single_anc",
+        "smart_charge",
+        "soh",
+        "spatial",
+        "voice"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "app_ids": [
+        "ZAAU"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          10,
+          0,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "id": "FreeBuds Pro 4",
+      "name": "FreeBuds Pro 4",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "language",
+        "custom_eq",
+        "custom_save",
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "voice",
+        "wear",
+        "swipe",
+        "multipoint",
+        "pinch",
+        "double",
+        "double_call",
+        "triple",
+        "hold",
+        "hold_right",
+        "latency",
+        "quality",
+        "find",
+        "head",
+        "rest",
+        "pickup",
+        "ear_tip",
+        "adaptive_volume",
+        "case_sound",
+        "conversation",
+        "fit",
+        "hold_cycle",
+        "smart_charge",
+        "soh",
+        "spatial"
+      ],
+      "aliases": [
+        "T0022",
+        "T0022C"
+      ],
+      "presets": {
+        "11": "Balanced",
+        "12": "Classical",
+        "5": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices"
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "app_ids": [
+        "ZAAM"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          10,
+          0,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "id": "FreeArc",
+      "name": "FreeArc",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "custom_eq",
+        "custom_save",
+        "double",
+        "triple",
+        "hold",
+        "hold_right",
+        "adaptive_volume",
+        "conversation",
+        "double_call",
+        "find",
+        "hold_reject",
+        "latency",
+        "multipoint",
+        "noisy_volume",
+        "smart_charge",
+        "soh",
+        "swipe_sides"
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices",
+        "10": "Lively"
+      },
+      "app_ids": [
+        "ZAAP"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          0,
+          20,
+          255
+        ],
+        "swipe": [
+          0,
+          1,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeClip",
+      "name": "FreeClip",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "modern_battery",
+        "auto_lr",
+        "case_sound",
+        "double",
+        "double_call",
+        "drop",
+        "find",
+        "head",
+        "latency",
+        "multipoint",
+        "noisy_volume",
+        "quality",
+        "spatial",
+        "triple",
+        "wear"
+      ],
+      "app_ids": [
+        "ZAAI"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          5,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeClip 2 (Collector's Edition)",
+      "name": "FreeClip 2 (Collector's Edition)",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "modern_battery",
+        "auto_lr",
+        "case_sound",
+        "double",
+        "double_call",
+        "drop",
+        "find",
+        "head",
+        "hold",
+        "hold_right",
+        "latency",
+        "multipoint",
+        "noisy_volume",
+        "pickup",
+        "quality",
+        "smart_charge",
+        "soh",
+        "spatial",
+        "swipe_sides",
+        "triple",
+        "voice_control",
+        "voice_wake",
+        "wear"
+      ],
+      "aliases": [
+        "FreeClip 2 Collector's Edition",
+        "FreeClip 2 典藏版"
+      ],
+      "app_ids": [
+        "ZAB2"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          5,
+          255
+        ],
+        "hold": [
+          0,
+          255
+        ],
+        "swipe": [
+          0,
+          1,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds SE 3",
+      "name": "FreeBuds SE 3",
+      "form": "EARBUDS",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "double",
+        "double_call",
+        "find",
+        "hold",
+        "hold_reject",
+        "hold_right",
+        "latency",
+        "triple"
+      ],
+      "app_ids": [
+        "ZAAO"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          18,
+          19,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds SE 5 MAX",
+      "name": "FreeBuds SE 5 MAX",
+      "form": "EARBUDS",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "anc",
+        "anc_levels",
+        "double",
+        "double_call",
+        "dynamic",
+        "find",
+        "hold",
+        "hold_cycle",
+        "hold_reject",
+        "hold_right",
+        "latency",
+        "quality",
+        "soh",
+        "triple",
+        "wind_noise"
+      ],
+      "app_ids": [
+        "2SFW"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          10,
+          18,
+          19,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds Neo",
+      "name": "FreeBuds Neo",
+      "form": "EARBUDS",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "adaptive_volume",
+        "anc",
+        "anc_levels",
+        "conversation",
+        "double",
+        "double_call",
+        "drop",
+        "dynamic",
+        "find",
+        "fit",
+        "head",
+        "hold",
+        "hold_cycle",
+        "hold_reject",
+        "hold_right",
+        "latency",
+        "multipoint",
+        "pickup",
+        "quality",
+        "rest",
+        "single_anc",
+        "smart_charge",
+        "spatial",
+        "swipe",
+        "triple",
+        "voice",
+        "voice_control",
+        "voice_wake",
+        "wear",
+        "smart_scenario"
+      ],
+      "app_ids": [
+        "ZAB4"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          10,
+          0,
+          22,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "presets": {
+        "5": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices",
+        "25": "Shooter games"
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201
+      }
+    },
+    {
+      "id": "FreeBuds Lipstick",
+      "name": "FreeBuds Lipstick",
+      "form": "EARBUDS",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "anc",
+        "anc_levels",
+        "double",
+        "find",
+        "fit",
+        "hd_call",
+        "hold",
+        "hold_right",
+        "limited_levels",
+        "multipoint",
+        "pickup",
+        "rest",
+        "two_modes",
+        "wear"
+      ],
+      "app_ids": [
+        "ZAA0"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "hold": [
+          3,
+          15,
+          14,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds Lipstick 2",
+      "name": "FreeBuds Lipstick 2",
+      "form": "EARBUDS",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "anc",
+        "anc_levels",
+        "double",
+        "double_call",
+        "dynamic",
+        "find",
+        "hd_call",
+        "hold",
+        "hold_reject",
+        "hold_right",
+        "latency",
+        "limited_levels",
+        "multipoint",
+        "quality",
+        "rest",
+        "spatial",
+        "swipe",
+        "triple",
+        "two_modes",
+        "wear"
+      ],
+      "app_ids": [
+        "ZAAJ"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          3,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "id": "FreeBuds Pro 2+",
+      "name": "FreeBuds Pro 2+",
+      "form": "EARBUDS",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "anc",
+        "anc_levels",
+        "dynamic",
+        "find",
+        "fit",
+        "hd_call",
+        "latency",
+        "multipoint",
+        "pinch",
+        "quality",
+        "rest",
+        "spatial",
+        "swipe",
+        "voice",
+        "wear"
+      ],
+      "aliases": [
+        "FreeBuds Pro 2 +"
+      ],
+      "app_ids": [
+        "ZAA6"
+      ],
+      "gestures": {
+        "swipe": [
+          0,
+          255
+        ]
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ],
+        "Sport": [
+          60,
+          20,
+          10,
+          10,
+          10,
+          0,
+          10,
+          0,
+          0,
+          0
+        ]
+      },
+      "curve_ids": {
+        "Symphony": 200,
+        "Hi-Fi Live": 201,
+        "Sport": 202
+      }
+    },
+    {
+      "id": "FreeClip 2 S",
+      "name": "FreeClip 2 S",
+      "form": "EARBUDS",
+      "source": "catalogue",
+      "features": [
+        "report_only"
+      ]
+    },
+    {
+      "id": "FreeLace",
+      "name": "FreeLace",
+      "form": "HEADPHONES",
+      "source": "catalogue",
+      "features": [
+        "report_only"
+      ],
+      "aliases": [
+        "FreeLace 活力版"
+      ]
+    },
+    {
+      "id": "FreeLace Lite",
+      "name": "FreeLace Lite",
+      "form": "HEADPHONES",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "wear"
+      ],
+      "app_ids": [
+        "ZAA2"
+      ]
+    },
+    {
+      "id": "FreeBuds Lite",
+      "name": "FreeBuds Lite",
+      "form": "EARBUDS",
+      "source": "catalogue",
+      "features": [
+        "report_only"
+      ]
+    },
+    {
+      "id": "HUAWEI Eyewear 2",
+      "name": "HUAWEI Eyewear 2",
+      "form": "HEADPHONES",
+      "source": "catalogue+audioconnect",
+      "features": [
+        "double",
+        "double_call",
+        "find",
+        "head",
+        "hold",
+        "hold_reject",
+        "hold_right",
+        "light",
+        "multipoint",
+        "noisy_volume",
+        "pair_new",
+        "swipe_sides",
+        "wear"
+      ],
+      "aliases": [
+        "Eyewear 2"
+      ],
+      "app_ids": [
+        "ZCA1"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          0,
+          255
+        ],
+        "hold": [
+          0,
+          15,
+          255
+        ],
+        "swipe": [
+          0,
+          1,
+          255
+        ]
+      }
+    },
+    {
+      "id": "HUAWEI Eyewear 3",
+      "name": "HUAWEI Eyewear 3",
+      "form": "HEADPHONES",
+      "source": "catalogue",
+      "features": [
+        "report_only"
+      ]
+    },
+    {
+      "id": "HUAWEI Sound",
+      "name": "HUAWEI Sound",
+      "form": "SPEAKER",
+      "source": "catalogue",
+      "features": [
+        "report_only"
+      ]
+    },
+    {
+      "id": "HUAWEI Sound X",
+      "name": "HUAWEI Sound X",
+      "form": "SPEAKER",
+      "source": "catalogue",
+      "features": [
+        "report_only"
+      ]
+    },
+    {
+      "id": "FreeBuds 4E 2024",
+      "name": "FreeBuds 4E 2024",
+      "form": "EARBUDS",
+      "source": "catalogue",
+      "features": [
+        "report_only"
+      ]
+    },
+    {
+      "name": "FreeBuds 4E (open fit)",
+      "id": "FreeBuds 4E (open fit)",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "double",
+        "hold",
+        "hold_right",
+        "triple"
+      ],
+      "aliases": [
+        "FreeBuds 4E 无降噪版"
+      ],
+      "app_ids": [
+        "ZAAN"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ],
+        "hold": [
+          15,
+          14,
+          255
+        ]
+      }
+    },
+    {
+      "name": "W Buds 2",
+      "id": "W Buds 2",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "anc",
+        "double",
+        "double_call",
+        "hold_cycle",
+        "triple"
+      ],
+      "aliases": [],
+      "app_ids": [
+        "ZAAX"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          4,
+          5,
+          255
+        ]
+      }
+    },
+    {
+      "name": "W Buds",
+      "id": "W Buds",
+      "form": "EARBUDS",
+      "source": "capture_reference+audioconnect",
+      "features": [
+        "anc",
+        "double",
+        "double_call",
+        "hold_cycle",
+        "triple"
+      ],
+      "aliases": [],
+      "app_ids": [
+        "ZAAA"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          4,
+          5,
+          255
+        ]
+      }
+    },
+    {
+      "name": "HONOR Earbuds 2 Lite",
+      "source": "audioconnect",
+      "features": [
+        "modern_battery"
+      ],
+      "id": "ZB05",
+      "form": "EARBUDS",
+      "aliases": [
+        "HONOR Earbuds 2 Lite"
+      ],
+      "app_ids": [
+        "ZB05"
+      ]
+    },
+    {
+      "name": "HUAWEI Eyewear (2022)",
+      "source": "audioconnect",
+      "features": [
+        "modern_battery",
+        "double",
+        "double_call",
+        "find",
+        "fit",
+        "hold_reject",
+        "multipoint",
+        "noisy_volume",
+        "pair_new",
+        "swipe_sides",
+        "wear"
+      ],
+      "id": "ZCA0",
+      "form": "EARBUDS",
+      "aliases": [],
+      "app_ids": [
+        "ZCA0"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          0,
+          255
+        ],
+        "swipe": [
+          0,
+          1,
+          255
+        ]
+      }
+    },
+    {
+      "name": "FreeBuds A1",
+      "source": "audioconnect",
+      "features": [
+        "modern_battery",
+        "double",
+        "double_call",
+        "find",
+        "hold_reject",
+        "latency",
+        "triple",
+        "wear"
+      ],
+      "id": "2SO9",
+      "form": "EARBUDS",
+      "aliases": [],
+      "app_ids": [
+        "2SO9"
+      ],
+      "gestures": {
+        "double": [
+          1,
+          2,
+          7,
+          0,
+          255
+        ],
+        "triple": [
+          2,
+          7,
+          255
+        ]
+      }
+    }
+  ]
+}

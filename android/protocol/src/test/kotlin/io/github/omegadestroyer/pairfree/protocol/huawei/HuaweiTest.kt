@@ -263,6 +263,24 @@ class HuaweiTest {
         assertTrue(clip.allowed(scene))
     }
 
+    @Test fun pairedDevicesAreListedActedOnAndKeptOutOfTheReport() {
+        val pro = talk("FreeBuds Pro 3")
+        fun host(index: Int, last: Int, name: String, connected: Int) = huaweiPacket(0x2b31, listOf(
+            HuaweiTlv(2, byteArrayOf(2)), HuaweiTlv(3, byteArrayOf(index.toByte())),
+            HuaweiTlv(4, byteArrayOf(last.toByte(), 0x55, 0x44, 0x33, 0x22, 0x11)), HuaweiTlv(5, byteArrayOf(connected.toByte())),
+            HuaweiTlv(7, byteArrayOf(0)), HuaweiTlv(8, byteArrayOf(1)), HuaweiTlv(9, name.encodeToByteArray()),
+        ))
+        assertFalse(pro.feed(host(0, 0x66, "Phone", 9).bytes()).changed, "the list is not complete yet")
+        pro.receive(host(1, 0x77, "Laptop", 0))
+        val connect = pro.change(SettingChange.Choice("hw_peer_connect", "Laptop"))!!.single()
+        assertEquals(0x2b33, connect.op)
+        assertArrayEquals(byteArrayOf(0x77, 0x55, 0x44, 0x33, 0x22, 0x11), connect.field(1))
+        assertTrue(pro.allowed(connect))
+        assertNull(pro.change(SettingChange.Choice("hw_peer_connect", "Phone")), "it is connected already")
+        assertFalse(pro.allowed(huaweiPacket(0x2b33, listOf(HuaweiTlv(3, connect.field(1)!!)))), "unpairing is never sent")
+        assertTrue(pro.reportLines.none { it.startsWith("2b31") })
+    }
+
     @Test fun theNewSwitchesAndEarTipsWaitForTheirReads() {
         val pro = talk("FreeBuds Pro 5")
         assertNull(pro.change(SettingChange.Toggle("hw_rest", true)))
@@ -314,6 +332,8 @@ class HuaweiTest {
                 0x2bb4 -> listOf(read.fields.first(), one(2), one(3), one(4, 2))
                 0x2b93 -> listOf(read.fields[0], read.fields[1], one(3, 255), one(4, 255))
                 0x2b5e -> listOf(HuaweiTlv(2, byteArrayOf(read.fields.single().value.single(), 1)))
+                0x2b31 -> listOf(HuaweiTlv(2, byteArrayOf(1)), HuaweiTlv(3, byteArrayOf(0)), HuaweiTlv(4, ByteArray(6) { 1 }),
+                    one(5, 0), one(7, 0), one(8, 0), HuaweiTlv(9, "Tablet".encodeToByteArray()))
                 else -> read.fields.map { if (it.tag == 3) HuaweiTlv(3, offered) else one(it.tag) } +
                     listOfNotNull(HuaweiTlv(3, offered).takeIf { op == 0x0120 || op == 0x2b17 }.takeIf { _ -> read.fields.none { it.tag == 3 } })
             }

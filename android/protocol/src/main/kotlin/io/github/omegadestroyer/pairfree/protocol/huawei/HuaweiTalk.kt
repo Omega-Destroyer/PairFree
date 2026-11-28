@@ -35,6 +35,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         else -> null
     }
     private val reportOnly = product.has("report_only")
+    private val peers = HuaweiPeers()
+    private var refreshPeers = false
 
     private val opening = buildList {
         add(batteryRead)
@@ -65,6 +67,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         if (product.has("find")) addAll((0..1).map { huaweiWrite(HuaweiCommand.RING_STATE, 1 to it) })
         if (product.has("language")) add(huaweiRead(HuaweiCommand.LANGUAGE_READ, 1, 2, 3))
         if (product.mayHaveEq && !product.has("eq_write_only")) add(huaweiRead(HuaweiCommand.EQ_READ, 2))
+        if (product.has("multipoint")) add(huaweiRead(HuaweiCommand.PEER_LIST, 1))
     }
 
     override val pacing: Pacing = Pacing(replyMs = 650, gapMs = 35)
@@ -106,6 +109,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
                 awarenessLevel()?.let { add(Setting.Level("hw_awareness_level", it, 0, 10)) }
             }
             if (noise.isNotEmpty()) add(SettingGroup("noise", SettingTab.HOME, noise))
+            val hosts = peers.rows()
+            if (hosts.isNotEmpty()) add(SettingGroup("hw_peers", SettingTab.DEVICE, hosts))
             val languages = languages()
             if (languages.isNotEmpty()) {
                 val current = reports[HuaweiCommand.LANGUAGE_READ]?.field(1)?.decodeToString()?.trimEnd('\u0000')?.takeIf { it in languages }
@@ -135,6 +140,8 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     }
 
     private fun remember(packet: HuaweiPacket) {
+        // The paired devices' list holds other devices' names and addresses.
+        if (packet.op == HuaweiCommand.PEER_LIST) return
         if (opening.none { it.op == packet.op } && packet.op != HuaweiCommand.BATTERY_NOTIFY) return
         val selectors = when (packet.op) {
             HuaweiFeature.OP, HuaweiCommand.PINCH_READ ->
@@ -203,6 +210,10 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
                     ringing[data[0].toInt()] = data[1].toInt() == 0
                     changed = true
                 }
+            } else if (op == HuaweiCommand.PEER_LIST && product.has("multipoint")) {
+                if (peers.receive(packet)) changed = true
+            } else if (op == HuaweiCommand.PEER_EVENT && product.has("multipoint")) {
+                refreshPeers = true
             } else if (op == HuaweiCommand.NOISE_EVENT && noiseRead != null && packet.scalar(1) in product.noiseModes) {
                 refreshNoise = true
             } else if (opening.any { it.op == op } && accept(packet)) {
@@ -288,9 +299,13 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         ?.substringBefore('\u0000')?.split(',')?.map(String::trim)?.filter { LOCALE.matches(it) }?.distinct().orEmpty()
 
     override fun takeOutbox(): List<HuaweiPacket> {
-        if (!refreshNoise) return emptyList()
+        val ops = buildSet {
+            if (refreshNoise) addAll(listOf(HuaweiCommand.NOISE_READ, HuaweiCommand.LEGACY_NOISE_READ))
+            if (refreshPeers) add(HuaweiCommand.PEER_LIST)
+        }
         refreshNoise = false
-        return opening.filter { it.op == HuaweiCommand.NOISE_READ || it.op == HuaweiCommand.LEGACY_NOISE_READ }
+        refreshPeers = false
+        return opening.filter { it.op in ops }
     }
 
     override fun takeReadBacks(): List<HuaweiPacket> = readBacks.also { readBacks = emptyList() }
@@ -305,6 +320,12 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     override fun change(change: SettingChange): List<HuaweiPacket>? {
         val key = change.key
         val mode = state.number(Command.ANC_MODE)
+        if (change is SettingChange.Choice && key in HuaweiPeers.KEYS) {
+            val write = peers.change(key, change.option) ?: return null
+            // The change shows in the list a moment later; the earbuds also say when it has.
+            readBacks = opening.filter { it.op == HuaweiCommand.PEER_LIST }
+            return listOf(write)
+        }
         if (change is SettingChange.Choice && key == SCENE) {
             if (!product.has("spatial_scene") || featureStates[HuaweiFeature.SPATIAL]?.scalar(3) == null) return null
             val value = SCENES.entries.firstOrNull { it.value == change.option }?.key ?: return null
@@ -395,6 +416,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     private fun permittedSettingsWrite(packet: HuaweiPacket): Boolean {
         val mode = state.number(Command.ANC_MODE)
         return when (packet.op) {
+            HuaweiCommand.PEER_PREFERRED, HuaweiCommand.PEER_EXECUTE -> peers.allows(packet)
             HuaweiCommand.NOISE_SET -> {
                 val data = packet.field(1) ?: return false
                 if (packet.fields.map(HuaweiTlv::tag) == listOf(1, 3, 4)) {

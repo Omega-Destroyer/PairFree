@@ -2283,6 +2283,9 @@
     <string name="setting_hw_scene_cinema">Cinema</string>
     <string name="setting_hw_scene_hall">Concert hall</string>
     <string name="setting_hw_wind_noise">Wind noise reduction</string>
+    <string name="setting_hw_peer_preferred">Preferred device</string>
+    <string name="setting_hw_peer_auto_on">Connect automatically</string>
+    <string name="setting_hw_peer_auto_off">Stop connecting automatically</string>
     <string name="setting_hw_rest">Rest reminders</string>
     <string name="setting_hw_hd_call">HD calls</string>
     <string name="setting_hw_pickup">Pickup mode</string>

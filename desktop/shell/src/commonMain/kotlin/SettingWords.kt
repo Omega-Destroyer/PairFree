@@ -77,7 +77,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_connection" -> "connection"
             "oneplus_sound_switches" -> "setting_group_sound"
             "oneplus_head_motion" -> "setting_group_head_motion"
-            "oneplus_peers", "sc_peers" -> "setting_group_peers"
+            "oneplus_peers", "sc_peers", "hw_peers" -> "setting_group_peers"
             else -> "setting_group_other"
         },
     )
@@ -527,8 +527,11 @@ class SettingWords(private val strings: DesktopStrings) {
         "hw_tips_foam" -> t("setting_hw_tips_foam")
         "hw_drop" -> t("setting_hw_drop")
         "multipoint" -> t("setting_multipoint")
-        "bose_peer_connect", "sc_peer_connect" -> t("setting_bose_peer_connect")
-        "bose_peer_disconnect", "sc_peer_disconnect" -> t("setting_bose_peer_disconnect")
+        "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> t("setting_bose_peer_connect")
+        "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> t("setting_bose_peer_disconnect")
+        "hw_peer_preferred" -> t("setting_hw_peer_preferred")
+        "hw_peer_auto_on" -> t("setting_hw_peer_auto_on")
+        "hw_peer_auto_off" -> t("setting_hw_peer_auto_off")
         "bose_peer_delete", "sc_peer_delete" -> t("setting_sh_peer_delete")
         "bose_pairing_mode", "sc_pairing_mode" -> t("setting_bose_pairing_mode")
         "auto_answer" -> t("setting_auto_answer")

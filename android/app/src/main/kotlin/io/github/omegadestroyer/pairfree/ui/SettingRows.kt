@@ -324,7 +324,7 @@ private fun groupTitle(key: String): String = stringResource(
         "ca_connection" -> R.string.connection
         "oneplus_sound_switches" -> R.string.setting_group_sound
         "oneplus_head_motion" -> R.string.setting_group_head_motion
-        "oneplus_peers", "sc_peers" -> R.string.setting_group_peers
+        "oneplus_peers", "sc_peers", "hw_peers" -> R.string.setting_group_peers
         else -> R.string.setting_group_other
     },
 )
@@ -778,8 +778,11 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "hw_tips_foam" -> stringResource(R.string.setting_hw_tips_foam)
     "hw_drop" -> stringResource(R.string.setting_hw_drop)
     "multipoint" -> stringResource(R.string.setting_multipoint)
-    "bose_peer_connect", "sc_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
-    "bose_peer_disconnect", "sc_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
+    "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
+    "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
+    "hw_peer_preferred" -> stringResource(R.string.setting_hw_peer_preferred)
+    "hw_peer_auto_on" -> stringResource(R.string.setting_hw_peer_auto_on)
+    "hw_peer_auto_off" -> stringResource(R.string.setting_hw_peer_auto_off)
     "bose_peer_delete", "sc_peer_delete" -> stringResource(R.string.setting_sh_peer_delete)
     "bose_pairing_mode", "sc_pairing_mode" -> stringResource(R.string.setting_bose_pairing_mode)
     "auto_answer" -> stringResource(R.string.setting_auto_answer)

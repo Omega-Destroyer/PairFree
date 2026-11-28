@@ -2809,6 +2809,12 @@ abstract class GenerateHuaweiTables : DefaultTask() {
                 "setOf(${strings(product["features"])}), linkedMapOf($presets)" +
                 (product["curves"] as? Map<*, *>)?.entries?.joinToString(", ", ", linkedMapOf(", ")") { (name, gains) ->
                     "${quote(name)} to listOf(${(gains as List<*>).joinToString(", ")})"
+                }.orEmpty() +
+                (product["curve_ids"] as? Map<*, *>)?.entries?.joinToString(", ", ", curveIds = mapOf(", ")") { (name, id) ->
+                    "${quote(name)} to $id"
+                }.orEmpty() +
+                (product["gestures"] as? Map<*, *>)?.entries?.joinToString(", ", ", gestures = mapOf(", ")") { (name, values) ->
+                    "${quote(name)} to listOf(${(values as List<*>).joinToString(", ")})"
                 }.orEmpty() + "),")
         }
         text.appendLine(")")

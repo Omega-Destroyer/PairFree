@@ -94,7 +94,10 @@ The [Huawei model audit](huawei/MODELS.md) pins the public references and keeps 
 | Difference | PairFree evidence | Reported |
 | --- | --- | --- |
 | The older OpenFreebuds Pro 3 profile labels preset 1 Bass and 2 Treble. | LibreBuds c7b0833 publishes a FreeBuds Pro 3 reply offering 2, 3, 5 and 9. PairFree uses the reported IDs with the matching profile labels. [Capture](https://github.com/librebuds/librebuds/blob/c7b0833/test-vectors/round2/equalizer.jsonl) | No |
-| LibreBuds and HuaweiPods offer settings the supplied AI Life app has no command for (spatial audio, rest reminders, paired devices and more). | The bundled plugin's `MbbProtocol` builds none of them: it is older than these models. PairFree takes them from the two projects, untried. | No |
+| LibreBuds and HuaweiPods offer settings the older AI Life app has no command for (spatial audio, rest reminders, paired devices and more). | HUAWEI Audio Connect 2.0.7.390 builds the same frames for them (docs/huawei/PROTOCOL.md section 15): confirmed from the maker's app, untried. | No |
+| Wind noise reduction is written as key 29 of `2B B4` for the FreeBuds SE 4 ANC. | Audio Connect's noise control screen writes `2B 94` and reads `2B 95` for the models its files flag for wind noise (the SE 4 ANC and SE 5 MAX). PairFree follows the app. | No |
+| The sound quality read (`2B A3`) is sent with an empty tag 1. | Audio Connect declares one byte for tag 1 and sends none (`d.q1`). PairFree follows the app. | No |
+| FreeBuds Pro 2 and 5i are offered press-and-hold choices. | Audio Connect's touch files for them (ZAA7, ZAA9, ZAAD) write no `2B 16` hold choice (the 5i only the call one), so PairFree offers none. | No |
 | The older OpenFreebuds EQ state request contains tags 1 through 8. | LibreBuds c7b0833 and HuaweiPods e2cf07e document the single tag 2 request, including FreeBuds 5 compatibility. [LibreBuds EQ facts](https://github.com/librebuds/librebuds/tree/c7b0833/android/protocol) | No |
 
 ## OpenSCQ30: the voice prompt of the V20i and V40i (A3876, A3878)

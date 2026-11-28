@@ -207,7 +207,7 @@ BRANDS = [
         notes="Skullcandy support is read from the Skullcandy app 5.0.6 and its SDK. It has not been tried with PairFree on any product yet.",
     ),
     dict(
-        slug="huawei", page="huawei", name="Huawei and Honor", app="HUAWEI AI Life",
+        slug="huawei", page="huawei", name="Huawei and Honor", app="HUAWEI Audio Connect (formerly AI Life)",
         title="Open-source HUAWEI AI Life alternative for FreeBuds",
         lead="PairFree is a free, open-source Android and Windows app that controls Huawei FreeBuds, FreeClip, FreeLace, Eyewear and Honor earbuds without HUAWEI AI Life: no account, no internet access.",
         does=[
@@ -216,7 +216,7 @@ BRANDS = [
             "Touch, pinch and swipe controls, wear detection, low latency, two devices at once and the paired devices.",
             "The newer models' spatial audio, head gestures, find my earbuds, rest reminders and case prompt sounds.",
         ],
-        notes="Huawei support is read from AI Life 11.0.2.305 for its older models and from LibreBuds, HuaweiPods and OpenFreebuds for the newer ones. It has not been tried with PairFree on any product yet.",
+        notes="Huawei support is read from Huawei's own apps (HUAWEI Audio Connect 2.0.7.390, and AI Life 11.0.2.305 for the oldest models), checked against LibreBuds, HuaweiPods and OpenFreebuds. It has not been tried with PairFree on any product yet.",
     ),
     dict(
         slug="oneplus", page="oneplus", name="OnePlus and OPPO", app="HeyMelody",

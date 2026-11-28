@@ -116,7 +116,7 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
     confirming?.let { key ->
         ConfirmDialog(
             title = stringResource(actionStart(key)),
-            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; "sc_neck_clear" -> R.string.setting_sc_neck_clear_body; "sc_hear_id_delete" -> R.string.setting_sc_hear_id_delete_body; else -> R.string.setting_restart_body }),
+            body = stringResource(when (key) { "power_off" -> R.string.setting_power_off_body; "sh_personalized_reset" -> R.string.setting_sh_personalized_reset_body; "jbl_case_saver_remove" -> R.string.setting_jbl_case_saver_remove_body; "sc_neck_clear" -> R.string.setting_sc_neck_clear_body; "sc_hear_id_delete" -> R.string.setting_sc_hear_id_delete_body; "hw_pair_new" -> R.string.setting_hw_pair_new_body; else -> R.string.setting_restart_body }),
             confirm = stringResource(actionStart(key)),
             onConfirm = { onChange(SettingChange.Press(key)) },
             onDismiss = { confirming = null },
@@ -255,7 +255,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
 private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove", "hw_eq_delete")
 
-private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear", "sc_hear_id_delete")
+private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear", "sc_hear_id_delete", "hw_pair_new")
 
 /** Actions that open another app or a page instead of sending anything: Google's Find Hub for Pixel Buds. */
 private val LINKS = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://play.google.com/store/apps/details?id=com.thetileapp.tile")
@@ -269,6 +269,7 @@ private fun groupTitle(key: String): String = stringResource(
         "hw_pinch" -> R.string.setting_hw_pinch
         "hw_find" -> R.string.setting_group_find_hub
         "hw_voice" -> R.string.setting_hw_voice
+        "hw_battery_health" -> R.string.setting_group_hw_battery_health
         "touch" -> R.string.setting_group_touch
         "ambient_customize" -> R.string.setting_group_ambient_customize
         "calls" -> R.string.setting_group_calls
@@ -779,6 +780,18 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "hw_tips_silicone" -> stringResource(R.string.setting_hw_tips_silicone)
     "hw_tips_foam" -> stringResource(R.string.setting_hw_tips_foam)
     "hw_drop" -> stringResource(R.string.setting_hw_drop)
+    "hw_swipe_side_left" -> stringResource(R.string.setting_hw_swipe_side_left)
+    "hw_swipe_side_right" -> stringResource(R.string.setting_hw_swipe_side_right)
+    "hw_voice_wake" -> stringResource(R.string.setting_hw_voice_wake)
+    "hw_auto_lr" -> stringResource(R.string.setting_hw_auto_lr)
+    "hw_smart_charge" -> stringResource(R.string.setting_hw_smart_charge)
+    "hw_light_call" -> stringResource(R.string.setting_hw_light_call)
+    "hw_light_media" -> stringResource(R.string.setting_hw_light_media)
+    "hw_cycles_left" -> stringResource(R.string.setting_hw_cycles_left)
+    "hw_cycles_right" -> stringResource(R.string.setting_hw_cycles_right)
+    "hw_adaptive_sensitivity" -> stringResource(R.string.setting_hw_adaptive_sensitivity)
+    "hw_pair_new" -> stringResource(R.string.setting_hw_pair_new)
+    "hw_scene_detection" -> stringResource(R.string.setting_hw_scene_detection)
     "multipoint" -> stringResource(R.string.setting_multipoint)
     "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
     "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
@@ -1330,6 +1343,10 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
     option == "hw_previous_track" -> getString(R.string.setting_hw_previous_track)
     option == "hw_assistant" -> getString(R.string.setting_hw_assistant)
     option == "hw_change_track" -> getString(R.string.setting_hw_change_track)
+    option == "hw_game_mode" -> getString(R.string.setting_hw_game_mode)
+    option == "hw_sensitivity_low" -> getString(R.string.setting_hw_sensitivity_low)
+    option == "hw_sensitivity_medium" -> getString(R.string.setting_hw_sensitivity_medium)
+    option == "hw_sensitivity_high" -> getString(R.string.setting_hw_sensitivity_high)
     option == "hw_face_translate" -> getString(R.string.setting_hw_face_translate)
     option == "hw_voice_memo" -> getString(R.string.setting_hw_voice_memo)
     option == "hw_pair_glasses" -> getString(R.string.setting_hw_pair_glasses)
@@ -2013,6 +2030,7 @@ private fun eqBandTitle(key: String): String? {
 
 private fun actionStart(key: String): Int = when (key) {
     "hw_ring_left", "hw_ring_right" -> R.string.setting_find_start
+    "hw_pair_new" -> R.string.setting_hw_pair_new_start
     "op_eq_new" -> R.string.setting_op_eq_new
     "find", "find_phone" -> R.string.setting_find_start
     "find_hub" -> R.string.setting_find_hub_open

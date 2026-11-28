@@ -12,6 +12,10 @@ public class HuaweiProduct internal constructor(
     internal val presets: Map<Int, String>,
     /** Sounds the maker's app makes itself: ten gains in tenths of a dB, written as a curve of the user's own. */
     internal val curves: Map<String, List<Int>> = emptyMap(),
+    /** The slot the maker's app saves each of [curves] in. */
+    internal val curveIds: Map<String, Int> = emptyMap(),
+    /** The values the maker's app can write for each touch gesture; empty where PairFree has no file of the app's for the model. */
+    internal val gestures: Map<String, List<Int>> = emptyMap(),
 ) {
     public val names: List<String> = listOf(name) + aliases
     public val model: Model = Model(id, names, "Huawei MBB", form = form, reportOnly = has("report_only"))

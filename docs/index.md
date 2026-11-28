@@ -21,7 +21,7 @@ The screens, the device drawings and the widget follow the look you choose:
 
 <p><img src="https://omega-destroyer.github.io/PairFree/screenshots/look-studio-light.png" width="250" alt="The Studio Light look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-material-you.png" width="250" alt="The Material You look"> <img src="https://omega-destroyer.github.io/PairFree/screenshots/look-sketchbook.png" width="250" alt="The Sketchbook look"></p>
 
-It covers 895 models from 18 brands. Pick yours:
+It covers 898 models from 18 brands. Pick yours:
 
 - [Open-source SOUNDPEATS app (a PeatsAudio alternative)](https://omega-destroyer.github.io/PairFree/open-source-soundpeats-app/): 88 SOUNDPEATS models
 - [Open-source Soundcore app (for Anker Soundcore earbuds)](https://omega-destroyer.github.io/PairFree/open-source-soundcore-app/): 83 Soundcore models
@@ -39,7 +39,7 @@ It covers 895 models from 18 brands. Pick yours:
 - [Open-source Sennheiser Smart Control alternative](https://omega-destroyer.github.io/PairFree/open-source-sennheiser-app/): 28 Sennheiser models
 - [Open-source Jabra Sound+ alternative](https://omega-destroyer.github.io/PairFree/open-source-jabra-app/): 34 Jabra models
 - [Open-source Skullcandy app alternative](https://omega-destroyer.github.io/PairFree/open-source-skullcandy-app/): 56 Skullcandy models
-- [Open-source HUAWEI AI Life alternative for FreeBuds](https://omega-destroyer.github.io/PairFree/open-source-huawei-app/): 49 Huawei and Honor models
+- [Open-source HUAWEI AI Life alternative for FreeBuds](https://omega-destroyer.github.io/PairFree/open-source-huawei-app/): 52 Huawei and Honor models
 - [Open-source HeyMelody alternative for OnePlus and OPPO earbuds](https://omega-destroyer.github.io/PairFree/open-source-oneplus-app/): 53 OnePlus and OPPO models
 
 ## What it controls

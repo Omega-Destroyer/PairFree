@@ -7,7 +7,7 @@ permalink: /open-source-huawei-app/
 
 PairFree is a free, open-source Android and Windows app that controls Huawei FreeBuds, FreeClip, FreeLace, Eyewear and Honor earbuds without HUAWEI AI Life: no account, no internet access.
 
-PairFree does not need HUAWEI AI Life to run, but only one app can hold the control connection to the earbuds at a time, so close HUAWEI AI Life first.
+PairFree does not need HUAWEI Audio Connect (formerly AI Life) to run, but only one app can hold the control connection to the earbuds at a time, so close HUAWEI Audio Connect (formerly AI Life) first.
 
 ## What you can control
 
@@ -26,9 +26,9 @@ Almost none of these brands makes a Windows app, so on a PC their earbuds are pl
 
 ## Huawei and Honor models
 
-PairFree knows 49 Huawei and Honor models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
+PairFree knows 52 Huawei and Honor models. No model of this brand has been tried on real earbuds with PairFree yet; support comes from the brand's own app and reports.
 
-Huawei support is read from AI Life 11.0.2.305 for its older models and from LibreBuds, HuaweiPods and OpenFreebuds for the newer ones. It has not been tried with PairFree on any product yet.
+Huawei support is read from Huawei's own apps (HUAWEI Audio Connect 2.0.7.390, and AI Life 11.0.2.305 for the oldest models), checked against LibreBuds, HuaweiPods and OpenFreebuds. It has not been tried with PairFree on any product yet.
 
 If your model is not marked as tried, a device report from you adds it: see [how to help](https://github.com/Omega-Destroyer/PairFree#help-add-your-model).
 
@@ -52,7 +52,7 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>FreeBuds Pro 2</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds Pro 3</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds Pro 5</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeBuds SE</td><td>Battery, Gestures</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds SE</td><td>Battery, Gestures, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds SE 2</td><td>Battery, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds SE 4 ANC</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds Studio</td><td>Battery, Noise control, Touch lock, EQ presets, Device settings</td><td>Bundled APK and public research</td><td>Awaiting PairFree hardware test</td></tr>
@@ -65,27 +65,30 @@ If your model is not marked as tried, a device report from you adds it: see [how
 <tr><td>FreeBuds 7</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 7i</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds Pro 4</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeArc</td><td>Battery, Gestures, EQ presets, Custom EQ</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeClip</td><td>Battery</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeClip 2 (Collector&#x27;s Edition)</td><td>Battery</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeBuds SE 3</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>FreeBuds SE 5 MAX</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>FreeBuds Neo</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>FreeBuds Lipstick</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>FreeBuds Lipstick 2</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>FreeBuds Pro 2+</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
+<tr><td>FreeArc</td><td>Battery, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeClip</td><td>Battery, Gestures, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeClip 2 (Collector&#x27;s Edition)</td><td>Battery, Gestures, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds SE 3</td><td>Battery, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds SE 5 MAX</td><td>Battery, Noise control, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds Neo</td><td>Battery, Noise control, Gestures, EQ presets, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds Lipstick</td><td>Battery, Noise control, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds Lipstick 2</td><td>Battery, Noise control, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds Pro 2+</td><td>Battery, Noise control, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeClip 2 S</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
 <tr><td>FreeLace</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>FreeLace Lite</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
+<tr><td>FreeLace Lite</td><td>Battery, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds Lite</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>HUAWEI Eyewear 2</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
+<tr><td>HUAWEI Eyewear 2</td><td>Battery, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>HUAWEI Eyewear 3</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
 <tr><td>HUAWEI Sound</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
 <tr><td>HUAWEI Sound X</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
 <tr><td>FreeBuds 4E 2024</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
-<tr><td>FreeBuds 4E (open fit)</td><td>Catalogue entry</td><td>Public research</td><td>Catalogue only</td></tr>
-<tr><td>W Buds 2</td><td>Catalogue entry</td><td>Public research</td><td>Catalogue only</td></tr>
-<tr><td>W Buds</td><td>Catalogue entry</td><td>Public research</td><td>Catalogue only</td></tr>
+<tr><td>FreeBuds 4E (open fit)</td><td>Battery, Gestures</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>W Buds 2</td><td>Battery, Noise control, Gestures</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>W Buds</td><td>Battery, Noise control, Gestures</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>HONOR Earbuds 2 Lite</td><td>Battery</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>HUAWEI Eyewear (2022)</td><td>Battery, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds A1</td><td>Battery, Gestures, Device settings</td><td>Catalogue</td><td>Awaiting PairFree hardware test</td></tr>
 </table>
 </div>
 

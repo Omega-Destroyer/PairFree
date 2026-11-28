@@ -57,29 +57,42 @@ internal fun HuaweiProduct.controls(): List<HuaweiControl> = buildList {
     }
     val cycle = mapOf(1 to "hw_off_anc", 2 to "hw_off_anc_aware", 3 to "hw_anc_aware", 4 to "hw_off_aware")
     fun gesture(key: String, read: Int, write: Int, tag: Int, options: Map<Int, String>, mask: Int? = null, both: Boolean = false, needsMask: Boolean = false) {
+        if (options.isEmpty()) return
         add(HuaweiControl(key, SettingTab.CONTROLS, read, write, tag, if (both) listOf(1, 2) else listOf(tag), options, mask, requiresOptions = needsMask))
     }
     fun taps(key: String, read: Int, write: Int, options: Map<Int, String>, needsMask: Boolean = false) {
         gesture("${key}_left", read, write, 1, options, 3, needsMask = needsMask)
         gesture("${key}_right", read, write, 2, options, 3, needsMask = needsMask)
     }
+    // Where the maker's app lists a gesture's values, those are the choices (without the ones that need the app itself).
+    fun offered(name: String, named: Map<Int, String>, otherwise: Map<Int, String>): Map<Int, String> =
+        gestures[name]?.let { values -> named.filterKeys { it in values } } ?: otherwise
+    val doubleChoices = offered("double", playback, playback)
+    val tripleChoices = offered("triple", mapOf(off, 2 to "hw_next_track", 7 to "hw_previous_track", 4 to "hw_cycle_noise"),
+        playback.filterKeys { it in setOf(2, 7, 255) })
+    val holdChoices = offered("hold", mapOf(off, 0 to "hw_assistant", 3 to "hw_cycle_noise", 10 to "hw_cycle_noise", 18 to "hw_volume_up",
+        19 to "hw_volume_down", 22 to "hw_game_mode"), hold)
+    val sideSwipe = offered("swipe", mapOf(off, 0 to "hw_change_volume", 1 to "hw_change_track"),
+        mapOf(off, 0 to "hw_change_volume", 1 to "hw_change_track"))
     when {
         has("shark_tap") -> taps("hw_double", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, shark)
         has("walrus_tap") -> taps("hw_double", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, walrus, needsMask = true)
-        has("double") -> taps("hw_double", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, playback)
+        has("double") -> taps("hw_double", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, doubleChoices)
     }
     if (has("double_call")) gesture("touch_double_call", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, 4, call)
-    if (has("triple")) taps("hw_triple", HuaweiCommand.TRIPLE_TAP_READ, HuaweiCommand.TRIPLE_TAP_SET, playback.filterKeys { it in setOf(2, 7, 255) })
+    if (has("triple")) taps("hw_triple", HuaweiCommand.TRIPLE_TAP_READ, HuaweiCommand.TRIPLE_TAP_SET, tripleChoices)
     if (has("walrus_hold")) {
         val options = mapOf(off, 3 to "hw_off_anc", 5 to "hw_off_anc_aware", 6 to "hw_anc_aware", 9 to "hw_off_aware")
         gesture("hw_hold", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 2, options, 3, needsMask = true)
     }
-    if (has("hold")) gesture("hw_hold_left", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 1, hold)
-    if (has("hold_right")) gesture("hw_hold_right", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 2, hold)
+    if (has("hold")) gesture("hw_hold_left", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 1, holdChoices)
+    if (has("hold_right")) gesture("hw_hold_right", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 2, holdChoices)
     if (has("hold_call")) gesture("hw_hold_call", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 4, call)
     if (has("hold_reject")) gesture("hw_hold_call", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 4, mapOf(off, 0 to "hw_reject_call"))
-    if (has("hold") && "two_modes" !in features && has("anc")) gesture("hw_cycle_left", HuaweiCommand.HOLD_CYCLE_READ, HuaweiCommand.HOLD_CYCLE_SET, 1, cycle)
-    if (has("hold_right") && "two_modes" !in features && has("anc")) gesture("hw_cycle_right", HuaweiCommand.HOLD_CYCLE_READ, HuaweiCommand.HOLD_CYCLE_SET, 2, cycle)
+    // Which noise modes a hold goes through: the app's own touch file says where it can be set.
+    val cycles = has("anc") && if (gestures.isEmpty()) "two_modes" !in features else has("hold_cycle")
+    if ((has("hold") || has("hold_cycle")) && cycles) gesture("hw_cycle_left", HuaweiCommand.HOLD_CYCLE_READ, HuaweiCommand.HOLD_CYCLE_SET, 1, cycle)
+    if (has("hold_right") && cycles) gesture("hw_cycle_right", HuaweiCommand.HOLD_CYCLE_READ, HuaweiCommand.HOLD_CYCLE_SET, 2, cycle)
     if (has("single_hold")) {
         val options = mapOf(off, 3 to "hw_off_anc", 5 to "hw_off_anc_aware", 6 to "hw_anc_aware", 9 to "hw_off_aware")
         add(HuaweiControl("hw_hold", SettingTab.CONTROLS, HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, tag = 2, writeTags = listOf(1),
@@ -87,6 +100,17 @@ internal fun HuaweiProduct.controls(): List<HuaweiControl> = buildList {
     }
     if (has("power_tap")) gesture("hw_power_tap", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, 1, mapOf(off, 12 to "hw_switch_device"), 3)
     if (has("swipe")) gesture("hw_swipe", HuaweiCommand.SWIPE_READ, HuaweiCommand.SWIPE_SET, 1, mapOf(off, 0 to "hw_change_volume"), both = true)
+    if (has("swipe_sides")) {
+        gesture("hw_swipe_side_left", HuaweiCommand.SWIPE_READ, HuaweiCommand.SWIPE_SET, 1, sideSwipe)
+        gesture("hw_swipe_side_right", HuaweiCommand.SWIPE_READ, HuaweiCommand.SWIPE_SET, 2, sideSwipe)
+    }
+    if (has("wind_noise")) add(HuaweiControl("hw_wind_noise", SettingTab.HOME, HuaweiCommand.WIND_READ, HuaweiCommand.WIND_SET))
+    // The app's noise screen of the models with dynamic noise cancelling also holds scene detection; shown once the earbuds answer.
+    if (has("dynamic") && gestures.isNotEmpty()) add(HuaweiControl("hw_scene_detection", SettingTab.HOME, HuaweiCommand.SCENE_DETECTION_READ,
+        HuaweiCommand.SCENE_DETECTION_SET, fallbackTag = 2))
+    if (has("voice_wake")) add(HuaweiControl("hw_voice_wake", SettingTab.DEVICE, HuaweiCommand.VOICE_RECOGNITION_READ,
+        HuaweiCommand.VOICE_RECOGNITION_SET, fallbackTag = 2))
+    if (has("auto_lr")) add(HuaweiControl("hw_auto_lr", SettingTab.DEVICE, HuaweiCommand.LEFT_RIGHT_READ, HuaweiCommand.LEFT_RIGHT_SET))
     if (has("wear")) add(HuaweiControl("hw_auto_pause", SettingTab.DEVICE, HuaweiCommand.WEAR_READ, HuaweiCommand.WEAR_SET))
     if (has("latency")) add(HuaweiControl("hw_low_latency", SettingTab.SOUND, HuaweiCommand.LOW_LATENCY, HuaweiCommand.LOW_LATENCY, tag = 2, writeTags = listOf(1)))
     if (has("eyewear")) {
@@ -128,7 +152,7 @@ internal enum class HuaweiFeature(val feature: String, val row: String, val code
     HEAD("head", "hw_head_control", 11),
     VOICE_CONTROL("voice_control", "hw_voice_control", 3),
     SPATIAL("spatial", "hw_spatial", 24, mapOf(0 to "hw_spatial_off", 2 to "hw_spatial_fixed", 1 to "hw_spatial_tracking")),
-    WIND("wind", "hw_wind_noise", 29),
+    SMART_CHARGE("smart_charge", "hw_smart_charge", 4),
     CONVERSATION("conversation", "hw_conversation", 27);
 
     fun read(): HuaweiPacket = huaweiPacket(OP, buildList {

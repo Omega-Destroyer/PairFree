@@ -612,8 +612,6 @@
   "HuaweiCommand.SERVICE_ABILITY": "not-applicable: no screen of the bundled app sends it; checked: no builder in MbbProtocol and no caller anywhere in the plugin",
   "HuaweiCommand.COMMAND_ABILITY": "not-applicable: no screen of the bundled app sends it; checked: no builder in MbbProtocol and no caller anywhere in the plugin",
   "HuaweiCommand.TIME": "not-applicable: the clock is AI Life's own upkeep, not a setting (docs/huawei/PROTOCOL.md section 9); checked: MbbProtocol.packageSetDeviceTime has no caller in the plugin",
-  "HuaweiCommand.VOICE_RECOGNITION_SET": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageVoiceRecogSetCmd has no caller",
-  "HuaweiCommand.VOICE_RECOGNITION_READ": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageVoiceRecogCheckCmd has no caller",
   "HuaweiCommand.VOICE_NOISE_SET": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageVoiceANCSetCmd has no caller",
   "HuaweiCommand.VOICE_NOISE_READ": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageVoiceANCCheckCmd has no caller",
   "HuaweiCommand.TOUCH_SENSITIVITY_SET": "not-applicable: no screen of the bundled app sends it; checked: MbbProtocol.packageConfig (CommandConfigEnum) has no caller",

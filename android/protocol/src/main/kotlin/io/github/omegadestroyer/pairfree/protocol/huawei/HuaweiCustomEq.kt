@@ -42,12 +42,12 @@ internal object HuaweiCustomEq {
     fun slotFor(slots: List<Slot>): Int? =
         slots.firstOrNull { it.name == name }?.id ?: slotIds.firstOrNull { id -> slots.none { it.id == id } }
 
-    fun frame(op: Int, slot: Int, operation: Int, gains: List<Double>): HuaweiPacket? {
+    fun frame(op: Int, slot: Int, operation: Int, gains: List<Double>, label: String = name): HuaweiPacket? {
         if (gains.size != bands.size || gains.any { !it.isFinite() || it !in -6.0..6.0 }) return null
         val raw = ByteArray(gains.size) { (gains[it] * 10).roundToInt().toByte() }
         return huaweiPacket(op, listOf(
             HuaweiTlv(1, byteArrayOf(slot.toByte())), HuaweiTlv(2, byteArrayOf(bands.size.toByte())),
-            HuaweiTlv(5, byteArrayOf(operation.toByte())), HuaweiTlv(3, raw), HuaweiTlv(4, name.encodeToByteArray()),
+            HuaweiTlv(5, byteArrayOf(operation.toByte())), HuaweiTlv(3, raw), HuaweiTlv(4, label.encodeToByteArray()),
         ))
     }
 

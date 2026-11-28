@@ -21,6 +21,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "hw_pinch" -> "setting_hw_pinch"
             "hw_find" -> "setting_group_find_hub"
             "hw_voice" -> "setting_hw_voice"
+            "hw_battery_health" -> "setting_group_hw_battery_health"
             "touch" -> "setting_group_touch"
             "ambient_customize" -> "setting_group_ambient_customize"
             "calls" -> "setting_group_calls"
@@ -527,6 +528,18 @@ class SettingWords(private val strings: DesktopStrings) {
         "hw_tips_silicone" -> t("setting_hw_tips_silicone")
         "hw_tips_foam" -> t("setting_hw_tips_foam")
         "hw_drop" -> t("setting_hw_drop")
+        "hw_swipe_side_left" -> t("setting_hw_swipe_side_left")
+        "hw_swipe_side_right" -> t("setting_hw_swipe_side_right")
+        "hw_voice_wake" -> t("setting_hw_voice_wake")
+        "hw_auto_lr" -> t("setting_hw_auto_lr")
+        "hw_smart_charge" -> t("setting_hw_smart_charge")
+        "hw_light_call" -> t("setting_hw_light_call")
+        "hw_light_media" -> t("setting_hw_light_media")
+        "hw_cycles_left" -> t("setting_hw_cycles_left")
+        "hw_cycles_right" -> t("setting_hw_cycles_right")
+        "hw_adaptive_sensitivity" -> t("setting_hw_adaptive_sensitivity")
+        "hw_pair_new" -> t("setting_hw_pair_new")
+        "hw_scene_detection" -> t("setting_hw_scene_detection")
         "multipoint" -> t("setting_multipoint")
         "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> t("setting_bose_peer_connect")
         "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> t("setting_bose_peer_disconnect")
@@ -1071,6 +1084,10 @@ class SettingWords(private val strings: DesktopStrings) {
         option == "hw_previous_track" -> t("setting_hw_previous_track")
         option == "hw_assistant" -> t("setting_hw_assistant")
         option == "hw_change_track" -> t("setting_hw_change_track")
+        option == "hw_game_mode" -> t("setting_hw_game_mode")
+        option == "hw_sensitivity_low" -> t("setting_hw_sensitivity_low")
+        option == "hw_sensitivity_medium" -> t("setting_hw_sensitivity_medium")
+        option == "hw_sensitivity_high" -> t("setting_hw_sensitivity_high")
         option == "hw_face_translate" -> t("setting_hw_face_translate")
         option == "hw_voice_memo" -> t("setting_hw_voice_memo")
         option == "hw_pair_glasses" -> t("setting_hw_pair_glasses")
@@ -1753,6 +1770,7 @@ class SettingWords(private val strings: DesktopStrings) {
 
     fun actionStart(key: String): String = when (key) {
         "hw_ring_left", "hw_ring_right" -> "setting_find_start"
+        "hw_pair_new" -> "setting_hw_pair_new_start"
         "op_eq_new" -> "setting_op_eq_new"
         "find", "find_phone" -> "setting_find_start"
         "find_hub" -> "setting_find_hub_open"

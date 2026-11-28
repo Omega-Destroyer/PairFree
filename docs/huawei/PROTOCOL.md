@@ -3,6 +3,8 @@
 Virtual follow-up, 2026-11-06: [model-specific scope and interventions](VIRTUAL_TESTING.md).
 No physical hardware was tested.
 
+The first source is now HUAWEI Audio Connect (section 15); sections 1 to 14 record the research before it.
+
 The [implementation](IMPLEMENTATION.md) runs through the Android and desktop shared driver.
 The [model audit](MODELS.md) records the APK routes, supplementary captures and outstanding features.
 
@@ -242,7 +244,7 @@ loader methods. The reference folder supplies AI Life 11.0.2.305 as one complete
 | Finding | The Studio and FreeBuds Pro panels open the Huawei find-my-phone app. PairFree's independent ring support for newer products uses a separate local command. |
 | Mermaid's archived smart-noise UI | The plugin manifest names three Mermaid noise activities whose class descriptors are absent from the outer and plugin DEX files. BaseNoiseControlActivity and BaseHeadsetSwitchActivity remain in the DEX without a reachable product-panel entry. The presenter forwards the smart strength and voice fields to BaseAudioDevice's empty three-argument method. Capture evidence is needed before giving those values a wire layout. |
 | Eyewear preferences | A fixed voice language is an MBB write. Follow system is an AI Life preference that sends the phone's locale on reconnect. The main screen also sends its clock as device-management command 01 05 with epoch seconds and signed UTC offset. These are app-managed behaviors. |
-| Later audio panels | The supplied bundle has no device route for the later fit-test, spatial audio, case-tone, multi-device centre or extended EQ panels. Their model matrices remain open for newer vendor artifacts and captures. |
+| Later audio panels | The supplied bundle has no device route for the later fit-test, spatial audio, case-tone, multi-device centre or extended EQ panels. HUAWEI Audio Connect has them (section 15). |
 
 
 See [the model audit](MODELS.md) for remaining features and [implementation](IMPLEMENTATION.md)
@@ -303,6 +305,57 @@ files and the per-product plugin files the app asks for.
 
 Raw replies are in `server_dump/huawei/`, not committed.
 
-Huawei's earbuds have since moved to a separate app, HUAWEI Audio Connect. Version 2.0.7.390, downloaded from Huawei's AppGallery on 2026-11-28
-(SHA-256 `9a3837d4045cb4ff263a856c7f5dd03e161dc0e597dd28e2b6bbb25a0994d319`), is not packed and holds per-product configurations. PairFree's newer
-models still rest on the public projects; reading this app is the open item `huawei-current-product-scope` in data/completeness.json.
+Huawei's earbuds have since moved to a separate app, HUAWEI Audio Connect (section 15).
+
+## 15. HUAWEI Audio Connect (read 2026-11-28)
+
+Version 2.0.7.390 (`com.huawei.smartaudio`), downloaded from Huawei's AppGallery, SHA-256
+`9a3837d4045cb4ff263a856c7f5dd03e161dc0e597dd28e2b6bbb25a0994d319`, signed by Huawei and not packed. Decompiled outside the repo
+(`E:/Builds/research/huawei-app-2026-11-28`); its credential files were not opened. It is the first source for every product it lists.
+
+**Where things are.** `Mbb` (an enum naming 174 commands), `audiobluetooth/layer/data/mbb/d` (`MbbAppLayer`: the builders and parsers), `p9.b` (the
+facade the screens call), `FeatureMbbState` (the keys of command `2B B4`), `eqadjust/bean/EqMode` (the equalizer numbers), and per product id the
+assets `config/config_<id>.json` (screen cards and flags), `touchsetting/`, `eqextend/` and `device_information.json`.
+`tools/import_huawei_app.py` turns the assets into `data/huawei/devices.json`: for a model with a screen or touch file, its features, gesture values,
+equalizer sounds and extended curves are the app's. The eight older products keep what AI Life's plugin showed; what the files do not speak of (voice
+prompt language, which models keep the user's own curves) is as before.
+
+**Confirmed.** The app's builders match what PairFree had taken from the public projects for noise control, paired devices, pickup, HD calls, the
+equalizer write (tags 1, 2, 5, 3, 4; operations preview 0, save 1, delete 2), find earbuds, rest reminders, low latency, quality, pinch, case tones
+and the keyed settings (3 voice control, 8 ear tips, 11 head control, 24 spatial audio, 29 wind noise, 2 adaptive audio, 5 one-ear noise
+cancelling, 7 drop detection, 27 conversation).
+
+**Added from it.**
+
+| Setting | Read / write | Payload |
+|---|---|---|
+| Ear tip fit test | `2B 26` / result `2B 27` | the phone plays a sound, then sends an empty tag 1; each result is tag 1: 0 left good, 1 left not, 2 right good, 3 right not, 4 and 5 left or right too noisy to tell; an empty tag 3 ends the test |
+| Wind noise reduction (the models flagged for it) | `2B 95` / `2B 94` | tag 1, on or off; the read declares one byte it does not carry |
+| Voice wake-up | `2B 02` / `2B 01` | read tag 1 = 0; write tag 1 |
+| Left and right detection (FreeClip) | `2B 9A` / `2B 99` | tag 1 |
+| Smart charging | `2B B4` | key 4 |
+| Extended sounds (Symphony, Hi-Fi Live, Sport) | `2B 49` | a curve saved in slot 200, 201 or 202, named by the slot number |
+
+The quality read (`2B A3`) declares one byte it does not carry, like the HD call and pickup reads.
+
+**Gestures.** The values each model's touch file writes are the choices PairFree offers: double tap (`01 1F`), triple tap (`01 25`), press and hold
+(`2B 16`: 0 assistant, 3 or 10 noise control, 18 and 19 volume, 22 game mode), the noise modes a hold goes through (`2B 18`), swipe (`2B 1E`, one
+setting or one per side) and pinch (`2B 92`). Values that only act through Huawei's own app or services are left out: quick play (15, and 5 on a
+triple tap), song recognition (14), workout summary (20) and recording (21).
+
+| Battery health | `2B B4` | read tag 1 = 13, empty tag 2; the reply's tags 2 and 3 are each earbud's charge cycles, 4 and 5 the batteries' serial numbers (dropped from the report) |
+| Adaptive volume strength | `2B B4` | key 2, tag 3: 0, 1 or 2 |
+| Eyewear light effects | `2B AE` | read declares tag 1 and carries none; reply tag 1 `00 call 01 media`, write the same four bytes as tag 2; 0 is on |
+| Eyewear pairing mode | `2B 8F` / `2B 90` | read tag 1; write tag 1 = 1, only from the confirmed button |
+| Scene detection | `2B 38` / `2B 39` | read tag 1; write tag 1, on or off |
+
+**The rest of the app's screens.**
+
+- *Smart scenario* (FreeBuds Neo): a sleep mode and a game focus the phone runs, writing keys 48 and 49 of `2B B4` with the phone's times, noise mode,
+  low latency and a connection lock (`smartscenario/manager/sleepmode/v`). Its commands are read; the registry item `huawei-smart-scenario` is open.
+- *Airplane and deep noise cancelling*: not separate settings. Deep is noise level 2 (offered as Ultra); the airplane marking is the phone's airplane
+  mode drawn on the card (`NoiseControlConstant`, `NoiseControlWidget.setAncFlyMode`).
+- *Hearing test, hearing aid and the Eyewear's neck health*: blocked: the screens are not in this APK; checked: the manifest, the DEX class names and
+  `drouter/core/hearingassistance`, which holds only the interfaces. `Mbb` names their commands (`2B 3A` to `2B 40`, `2B 71` to `2B 7C`) without
+  builders or parsers to give a layout.
+- *Open-lid reminder* (`2B 7F`): its builder has no caller in the app's screens.

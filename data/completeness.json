@@ -15,12 +15,91 @@
       "id": "huawei-current-product-scope",
       "brand": "huawei",
       "models": [
-        "catalogue-only profiles",
         "every product HUAWEI Audio Connect lists"
       ],
-      "status": "open",
-      "what": "Read HUAWEI Audio Connect 2.0.7.390 (com.huawei.smartaudio, not packed; in the Huawei reference APKs folder), Huawei's current earbud app: its product list, per-product configs (touch settings with their command bytes, equalizer curves, head control) and command builders, then correct what PairFree took from public projects and build the rest. AI Life 11.0.2.305 holds only older products.",
+      "status": "built",
+      "what": "HUAWEI Audio Connect 2.0.7.390 read: its product files import into devices.json (tools/import_huawei_app.py), its builders confirm the commands, and the fit test, wind noise, voice wake-up, left and right detection, smart charging, extended sounds and per-model gesture choices are built. None tried.",
       "reported": "Sourced from Huawei's AppGallery, 2026-11-28"
+    },
+    {
+      "id": "huawei-audio-connect-settings",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro 5",
+        "FreeBuds Pro 4",
+        "FreeClip 2",
+        "HUAWEI Eyewear 2"
+      ],
+      "status": "built",
+      "what": "Battery health (charge cycles), adaptive volume strength, Eyewear light effects and pairing mode, scene detection. Airplane and deep noise cancelling are the existing noise levels. Not tried.",
+      "reported": "Audio Connect read, 2026-11-28"
+    },
+    {
+      "id": "huawei-smart-scenario",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Neo"
+      ],
+      "status": "open",
+      "what": "Smart scenario: the sleep mode (2B B4 key 48, with times, noise, music, call mute) and game focus (low latency, connection lock, quick gesture; keys 48 and 49). Builders in E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/smartscenario/manager/sleepmode/v.java; the replies' layouts still to be read.",
+      "reported": "Audio Connect read, 2026-11-28"
+    },
+    {
+      "id": "huawei-hearing-and-neck",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro 5",
+        "FreeBuds Neo",
+        "HUAWEI Eyewear (2022)",
+        "HUAWEI Eyewear 2"
+      ],
+      "status": "needs-report",
+      "what": "Hearing test, hearing aid and neck health monitoring.",
+      "reported": "Audio Connect read, 2026-11-28",
+      "needs": "The Huawei component that holds these screens (a build or feature module that contains them), or a Bluetooth capture of the app running them.",
+      "read": [
+        {
+          "path": "E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/drouter/core/hearingassistance/HearingAidService.java",
+          "what": "interfaces only; no activity or command builder in the APK"
+        },
+        {
+          "path": "E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/datarouter/base/collector/mbb/Mbb.java",
+          "what": "names the commands, no layouts"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/huawei-app-2026-11-28/jadx/sources/com/huawei/audiodevicekit/drouter/core/hearingassistance",
+          "glob": "\\.java$",
+          "pattern": "HearingAidService",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "huawei-eyewear-2022-name",
+      "brand": "huawei",
+      "models": [
+        "HUAWEI Eyewear (2022)"
+      ],
+      "status": "needs-report",
+      "what": "The 2022 HUAWEI Eyewear (ZCA0) has the same product name as the first one AI Life describes; PairFree's entry for it is not matched by name.",
+      "reported": "Audio Connect read, 2026-11-28",
+      "needs": "The Bluetooth name of a 2022 HUAWEI Eyewear, or its device report.",
+      "read": [
+        {
+          "path": "E:/Builds/research/huawei-app-2026-11-28/unz/assets/device_information.json",
+          "what": "product names and ids; no Bluetooth name for ZCA0"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/huawei-app-2026-11-28/unz/assets",
+          "glob": "device_information\\.json$",
+          "pattern": "ZCA0",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "huawei-legacy-settings",
@@ -143,31 +222,11 @@
       "id": "huawei-fit-test",
       "brand": "huawei",
       "models": [
-        "FreeBuds Pro and later with an ear tip fit test"
+        "the models Audio Connect gives a fit test"
       ],
-      "status": "needs-report",
-      "what": "The ear tip fit test. The supplied app has none and no open source has its commands (HuaweiPods only hides another app's row for it).",
-      "reported": "Huawei branch completed, 2026-11-27",
-      "needs": "A Bluetooth capture of Huawei's app running the fit test on a model that has it, with the model and firmware.",
-      "read": [
-        {
-          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/protocol/mbb/MbbProtocol.java",
-          "what": "every command builder of the bundled plugin: none starts a fit test"
-        }
-      ],
-      "evidence": [
-        {
-          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/protocol/mbb",
-          "glob": "MbbProtocol\\.java$",
-          "pattern": "packageGetBatteryPercentCmd",
-          "expect": "some"
-        },
-        {
-          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/protocol/mbb",
-          "glob": "\\.java$",
-          "pattern": "fitTest|FitTest|TipFit"
-        }
-      ]
+      "status": "built",
+      "what": "The ear tip fit test (2B 26, result 2B 27), from HUAWEI Audio Connect. Not tried.",
+      "reported": "Huawei branch completed, 2026-11-27"
     },
     {
       "id": "huawei-hardware-validation",

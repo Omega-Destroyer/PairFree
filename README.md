@@ -116,8 +116,8 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | Momentum 5 Wireless |
 | [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
-| [Huawei and Honor](docs/devices/huawei.md) | 49 | — |
-| **Total: 18 brands** | **895** | **26 tried** |
+| [Huawei and Honor](docs/devices/huawei.md) | 52 | — |
+| **Total: 18 brands** | **898** | **26 tried** |
 <!-- devices-summary:end -->
 
 ## Coming next

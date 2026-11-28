@@ -1,6 +1,7 @@
 package io.github.omegadestroyer.pairfree.protocol.huawei
 
 import io.github.omegadestroyer.pairfree.protocol.Command
+import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Identify
 import io.github.omegadestroyer.pairfree.protocol.Maker
 import io.github.omegadestroyer.pairfree.protocol.Setting
@@ -260,7 +261,7 @@ class HuaweiTest {
     }
 
     @Test fun aCatalogueModelIsOnlyRead() {
-        val neo = talk("FreeBuds Neo")
+        val neo = talk("FreeClip 2 S")
         assertTrue(neo.start().all(neo::allowed))
         assertTrue(neo.start().any { it.op == 0x2b4a })
         neo.feed(huaweiPacket(0x2b4a, listOf(HuaweiTlv(1, byteArrayOf(1)), HuaweiTlv(2, byteArrayOf(1)), HuaweiTlv(3, byteArrayOf(1, 2)))).bytes())
@@ -268,6 +269,60 @@ class HuaweiTest {
         assertTrue(neo.eqPresetNames.isEmpty())
         assertFalse(neo.allowed(huaweiWrite(0x2b49, 1 to 1)))
         assertTrue(neo.reportLines.any { it.startsWith("2b4a:") })
+    }
+
+    @Test fun theFitTestStartsAndEndsAsTheAppDoes() {
+        val pro = talk("FreeBuds Pro 4")
+        val start = pro.startFitTest()!!.single()
+        assertArrayEquals(huaweiRead(0x2b26, 1).bytes(), start)
+        assertTrue(pro.allowed(huaweiRead(0x2b26, 1)))
+        pro.receive(huaweiWrite(0x2b27, 1 to 0))
+        assertNull(pro.state.fit)
+        pro.receive(huaweiWrite(0x2b27, 1 to 3))
+        assertEquals(FitResult(FitResult.Fit.GOOD, FitResult.Fit.NOT_FIT), pro.state.fit)
+        val end = pro.takeOutbox().first()
+        assertArrayEquals(huaweiRead(0x2b26, 3).bytes(), end.bytes())
+        assertTrue(pro.allowed(end))
+        assertFalse(pro.allowed(huaweiWrite(0x2b26, 1 to 1)))
+        assertNull(talk("FreeBuds SE 2").startFitTest())
+    }
+
+    @Test fun anExtendedSoundIsSavedInTheAppsOwnSlot() {
+        val pro = talk("FreeBuds Pro 4")
+        assertTrue(pro.eqPresetNames.none { it == "Symphony" })
+        pro.receive(huaweiPacket(0x2b4a, listOf(HuaweiTlv(2, byteArrayOf(5)), HuaweiTlv(3, byteArrayOf(5, 2, 3, 9)))))
+        val frame = pro.eqPresetFrames("Symphony")!!.single()
+        val gains = byteArrayOf(15, 15, 10, -5, 15, 25, 15, -5, 50, 45)
+        assertArrayEquals(huaweiPacket(0x2b49, listOf(HuaweiTlv(1, byteArrayOf(200.toByte())), HuaweiTlv(2, byteArrayOf(10)),
+            HuaweiTlv(5, byteArrayOf(1)), HuaweiTlv(3, gains), HuaweiTlv(4, "200".encodeToByteArray()))).bytes(), frame)
+        pro.receive(huaweiWrite(0x2b4a, 2 to 200))
+        assertEquals("Symphony", pro.eqReport?.preset)
+    }
+
+    @Test fun gestureChoicesAreTheAppsOwnForTheModel() {
+        val neo = talk("FreeBuds Neo")
+        neo.receive(huaweiWrite(0x2b17, 1 to 22, 2 to 255))
+        val hold = neo.groups.flatMap { it.settings }.single { it.key == "hw_hold_left" } as Setting.Choice
+        assertEquals("hw_game_mode", hold.value)
+        assertEquals(setOf("hw_gesture_off", "hw_assistant", "hw_cycle_noise", "hw_game_mode"), hold.options.toSet())
+    }
+
+    @Test fun batteryCyclesAreShownAndTheSerialsStayOutOfTheReport() {
+        val pro = talk("FreeBuds Pro 4")
+        val serial = "SERIAL0123456789".encodeToByteArray()
+        pro.receive(huaweiPacket(0x2bb4, listOf(HuaweiTlv(1, byteArrayOf(13)), HuaweiTlv(2, byteArrayOf(1, 4)), HuaweiTlv(3, byteArrayOf(0, 90)),
+            HuaweiTlv(4, serial), HuaweiTlv(5, serial))))
+        val rows = pro.groups.single { it.key == "hw_battery_health" }.settings
+        assertEquals(listOf("260", "90"), rows.map { (it as Setting.Information).value })
+        assertTrue(pro.reportLines.none { "53455249414c" in it })
+    }
+
+    @Test fun theGlassesLightIsWrittenAsTheAppDoes() {
+        val glasses = talk("HUAWEI Eyewear 2")
+        glasses.receive(huaweiPacket(0x2bae, listOf(HuaweiTlv(1, byteArrayOf(0, 0, 1, 1)))))
+        val write = glasses.change(SettingChange.Toggle("hw_light_media", true))!!.single()
+        assertArrayEquals(huaweiPacket(0x2bae, listOf(HuaweiTlv(2, byteArrayOf(0, 0, 1, 0)))).bytes(), write.bytes())
+        assertTrue(glasses.allowed(write))
     }
 
     /** The frames HuaweiPods (e2cf07e) writes out in full. */

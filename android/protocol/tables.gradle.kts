@@ -2791,6 +2791,8 @@ abstract class GenerateHuaweiTables : DefaultTask() {
                 check(key.matches(Regex("[A-Z_0-9]+")) && (value is String || value is Number))
                 text.appendLine("    public const val $key: ${if (value is String) "String" else "Int"} = ${groovy.json.JsonOutput.toJson(value)}")
             }
+            // What is never sent, as a set the session checks before anything else.
+            if (section.startsWith("never")) text.appendLine("    public val ALL: Set<Int> = setOf(${(raw as Map<String, Any>).values.joinToString(", ")})")
             text.appendLine("}")
         }
         val products = (JsonSlurper().parse(devicesJson.get().asFile) as Map<*, *>)["products"] as List<*>

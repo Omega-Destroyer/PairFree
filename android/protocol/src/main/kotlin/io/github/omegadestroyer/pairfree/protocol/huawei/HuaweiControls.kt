@@ -64,52 +64,52 @@ internal fun HuaweiProduct.controls(): List<HuaweiControl> = buildList {
         gesture("${key}_right", read, write, 2, options, 3, needsMask = needsMask)
     }
     when {
-        has("shark_tap") -> taps("hw_double", 0x0120, 0x011f, shark)
-        has("walrus_tap") -> taps("hw_double", 0x0120, 0x011f, walrus, needsMask = true)
-        has("double") -> taps("hw_double", 0x0120, 0x011f, playback)
+        has("shark_tap") -> taps("hw_double", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, shark)
+        has("walrus_tap") -> taps("hw_double", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, walrus, needsMask = true)
+        has("double") -> taps("hw_double", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, playback)
     }
-    if (has("double_call")) gesture("touch_double_call", 0x0120, 0x011f, 4, call)
-    if (has("triple")) taps("hw_triple", 0x0126, 0x0125, playback.filterKeys { it in setOf(2, 7, 255) })
+    if (has("double_call")) gesture("touch_double_call", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, 4, call)
+    if (has("triple")) taps("hw_triple", HuaweiCommand.TRIPLE_TAP_READ, HuaweiCommand.TRIPLE_TAP_SET, playback.filterKeys { it in setOf(2, 7, 255) })
     if (has("walrus_hold")) {
         val options = mapOf(off, 3 to "hw_off_anc", 5 to "hw_off_anc_aware", 6 to "hw_anc_aware", 9 to "hw_off_aware")
-        gesture("hw_hold", 0x2b17, 0x2b16, 2, options, 3, needsMask = true)
+        gesture("hw_hold", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 2, options, 3, needsMask = true)
     }
-    if (has("hold")) gesture("hw_hold_left", 0x2b17, 0x2b16, 1, hold)
-    if (has("hold_right")) gesture("hw_hold_right", 0x2b17, 0x2b16, 2, hold)
-    if (has("hold_call")) gesture("hw_hold_call", 0x2b17, 0x2b16, 4, call)
-    if (has("hold_reject")) gesture("hw_hold_call", 0x2b17, 0x2b16, 4, mapOf(off, 0 to "hw_reject_call"))
-    if (has("hold") && "two_modes" !in features && has("anc")) gesture("hw_cycle_left", 0x2b19, 0x2b18, 1, cycle)
-    if (has("hold_right") && "two_modes" !in features && has("anc")) gesture("hw_cycle_right", 0x2b19, 0x2b18, 2, cycle)
+    if (has("hold")) gesture("hw_hold_left", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 1, hold)
+    if (has("hold_right")) gesture("hw_hold_right", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 2, hold)
+    if (has("hold_call")) gesture("hw_hold_call", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 4, call)
+    if (has("hold_reject")) gesture("hw_hold_call", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 4, mapOf(off, 0 to "hw_reject_call"))
+    if (has("hold") && "two_modes" !in features && has("anc")) gesture("hw_cycle_left", HuaweiCommand.HOLD_CYCLE_READ, HuaweiCommand.HOLD_CYCLE_SET, 1, cycle)
+    if (has("hold_right") && "two_modes" !in features && has("anc")) gesture("hw_cycle_right", HuaweiCommand.HOLD_CYCLE_READ, HuaweiCommand.HOLD_CYCLE_SET, 2, cycle)
     if (has("single_hold")) {
         val options = mapOf(off, 3 to "hw_off_anc", 5 to "hw_off_anc_aware", 6 to "hw_anc_aware", 9 to "hw_off_aware")
-        add(HuaweiControl("hw_hold", SettingTab.CONTROLS, 0x2b17, 0x2b16, tag = 2, writeTags = listOf(1),
+        add(HuaweiControl("hw_hold", SettingTab.CONTROLS, HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, tag = 2, writeTags = listOf(1),
             choices = options, fallbackTag = 1))
     }
-    if (has("power_tap")) gesture("hw_power_tap", 0x0120, 0x011f, 1, mapOf(off, 12 to "hw_switch_device"), 3)
-    if (has("swipe")) gesture("hw_swipe", 0x2b1f, 0x2b1e, 1, mapOf(off, 0 to "hw_change_volume"), both = true)
-    if (has("wear")) add(HuaweiControl("hw_auto_pause", SettingTab.DEVICE, 0x2b11, 0x2b10))
-    if (has("latency")) add(HuaweiControl("hw_low_latency", SettingTab.SOUND, 0x2b6c, 0x2b6c, tag = 2, writeTags = listOf(1)))
+    if (has("power_tap")) gesture("hw_power_tap", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, 1, mapOf(off, 12 to "hw_switch_device"), 3)
+    if (has("swipe")) gesture("hw_swipe", HuaweiCommand.SWIPE_READ, HuaweiCommand.SWIPE_SET, 1, mapOf(off, 0 to "hw_change_volume"), both = true)
+    if (has("wear")) add(HuaweiControl("hw_auto_pause", SettingTab.DEVICE, HuaweiCommand.WEAR_READ, HuaweiCommand.WEAR_SET))
+    if (has("latency")) add(HuaweiControl("hw_low_latency", SettingTab.SOUND, HuaweiCommand.LOW_LATENCY, HuaweiCommand.LOW_LATENCY, tag = 2, writeTags = listOf(1)))
     if (has("eyewear")) {
         val eyewearTap = mapOf(off, 0 to "hw_assistant", 1 to "hw_play_pause")
-        gesture("hw_glasses_double_left", 0x0120, 0x011f, 1, eyewearTap)
-        gesture("hw_glasses_double_right", 0x0120, 0x011f, 2, eyewearTap)
-        add(HuaweiControl("hw_greeting", SettingTab.DEVICE, 0x2b0f, 0x2b0e))
-        add(HuaweiControl("hw_glasses_wear", SettingTab.DEVICE, 0x2b11, 0x2b10))
+        gesture("hw_glasses_double_left", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, 1, eyewearTap)
+        gesture("hw_glasses_double_right", HuaweiCommand.DOUBLE_TAP_READ, HuaweiCommand.DOUBLE_TAP_SET, 2, eyewearTap)
+        add(HuaweiControl("hw_greeting", SettingTab.DEVICE, HuaweiCommand.GREETING_READ, HuaweiCommand.GREETING_SET))
+        add(HuaweiControl("hw_glasses_wear", SettingTab.DEVICE, HuaweiCommand.WEAR_READ, HuaweiCommand.WEAR_SET))
     }
     if (has("fiji")) {
         val eyewearSwipe = mapOf(off, 0 to "hw_change_volume", 1 to "hw_change_track")
-        gesture("hw_swipe_left", 0x2b1f, 0x2b1e, 1, eyewearSwipe)
-        gesture("hw_swipe_right", 0x2b1f, 0x2b1e, 2, eyewearSwipe)
-        gesture("hw_glasses_press", 0x2b21, 0x2b20, 1,
+        gesture("hw_swipe_left", HuaweiCommand.SWIPE_READ, HuaweiCommand.SWIPE_SET, 1, eyewearSwipe)
+        gesture("hw_swipe_right", HuaweiCommand.SWIPE_READ, HuaweiCommand.SWIPE_SET, 2, eyewearSwipe)
+        gesture("hw_glasses_press", HuaweiCommand.SHORT_PRESS_READ, HuaweiCommand.SHORT_PRESS_SET, 1,
             mapOf(off, 0 to "hw_face_translate", 1 to "hw_voice_memo", 2 to "hw_pair_glasses"))
-        gesture("hw_glasses_hold", 0x2b17, 0x2b16, 1, mapOf(off, 9 to "hw_reject_call"))
-        add(HuaweiControl("hw_saving", SettingTab.DEVICE, 0x2b1d, 0x2b1c))
-        add(HuaweiControl("hw_adaptive_volume", SettingTab.SOUND, 0x2b23, 0x2b22))
+        gesture("hw_glasses_hold", HuaweiCommand.HOLD_READ, HuaweiCommand.HOLD_SET, 1, mapOf(off, 9 to "hw_reject_call"))
+        add(HuaweiControl("hw_saving", SettingTab.DEVICE, HuaweiCommand.SAVING_READ, HuaweiCommand.SAVING_SET))
+        add(HuaweiControl("hw_adaptive_volume", SettingTab.SOUND, HuaweiCommand.SMART_VOLUME_READ, HuaweiCommand.SMART_VOLUME_SET))
     }
-    if (has("studio_touch")) add(HuaweiControl("hw_touch_enabled", SettingTab.CONTROLS, 0x012d, 0x012c))
-    if (has("quality")) add(HuaweiControl("hw_quality", SettingTab.SOUND, 0x2ba3, 0x2ba2, tag = 2,
+    if (has("studio_touch")) add(HuaweiControl("hw_touch_enabled", SettingTab.CONTROLS, HuaweiCommand.TOUCH_ENABLE_READ, HuaweiCommand.TOUCH_ENABLE_SET))
+    if (has("quality")) add(HuaweiControl("hw_quality", SettingTab.SOUND, HuaweiCommand.QUALITY_READ, HuaweiCommand.QUALITY_SET, tag = 2,
         writeTags = listOf(1), capabilityTag = 1, readTags = listOf(1)))
-    if (has("multipoint")) add(HuaweiControl("multipoint", SettingTab.DEVICE, 0x2b2f, 0x2b2e))
+    if (has("multipoint")) add(HuaweiControl("multipoint", SettingTab.DEVICE, HuaweiCommand.MULTIPOINT_READ, HuaweiCommand.MULTIPOINT_SET))
 }
 
 internal enum class HuaweiFeature(val feature: String, val row: String, val code: Int) {
@@ -127,6 +127,6 @@ internal enum class HuaweiFeature(val feature: String, val row: String, val code
     fun write(on: Boolean): HuaweiPacket = huaweiWrite(OP, 1 to code, 2 to if (on) 1 else 0)
 
     companion object {
-        const val OP = 0x2bb4
+        const val OP = HuaweiCommand.KEYED_SETTING
     }
 }

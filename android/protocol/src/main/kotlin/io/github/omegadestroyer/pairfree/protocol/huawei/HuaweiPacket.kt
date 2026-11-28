@@ -87,19 +87,20 @@ public class HuaweiParser {
 
 /** Primary-source battery query, without broad identity/capability or big-data requests. */
 public object HuaweiReads {
-    public fun battery(): HuaweiPacket = HuaweiPacket(HuaweiCommand.BATTERY_SERVICE, HuaweiCommand.BATTERY_READ,
-        listOf(HuaweiTlv(HuaweiCommand.GLOBAL_TAG)))
+    public fun battery(): HuaweiPacket = HuaweiPacket(HuaweiCommand.BATTERY shr 8, HuaweiCommand.BATTERY and 0xff,
+        listOf(HuaweiTlv(HuaweiTag.BATTERY_GLOBAL)))
 }
 
 /** Battery tags only. Component ordering is additionally checked against OpenFreebuds, facts only. */
 public data class HuaweiBattery(val global: Int?, val left: Int?, val right: Int?, val case: Int?) {
     public companion object {
         public fun of(packet: HuaweiPacket): HuaweiBattery? {
-            if (packet.service != HuaweiCommand.BATTERY_SERVICE || packet.command !in listOf(HuaweiCommand.BATTERY_READ, HuaweiCommand.BATTERY_NOTIFY)) return null
+            val op = packet.service shl 8 or packet.command
+            if (op != HuaweiCommand.BATTERY && op != HuaweiCommand.BATTERY_NOTIFY) return null
             fun field(tag: Int): ByteArray? = packet.fields.singleOrNull { it.tag == tag }?.value
             fun percent(byte: Byte?): Int? = byte?.u()?.takeIf { it in 0..100 }
-            val components = field(HuaweiCommand.COMPONENT_TAG)?.takeIf { it.size == 3 }
-            return HuaweiBattery(percent(field(HuaweiCommand.GLOBAL_TAG)?.singleOrNull()),
+            val components = field(HuaweiTag.BATTERY_COMPONENT)?.takeIf { it.size == 3 }
+            return HuaweiBattery(percent(field(HuaweiTag.BATTERY_GLOBAL)?.singleOrNull()),
                 percent(components?.get(0)), percent(components?.get(1)), percent(components?.get(2)))
         }
     }

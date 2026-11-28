@@ -46,7 +46,7 @@ internal enum class HuaweiPinch(
         }
 
     companion object {
-        const val READ = 0x2b93
-        const val WRITE = 0x2b92
+        const val READ = HuaweiCommand.PINCH_READ
+        const val WRITE = HuaweiCommand.PINCH_SET
     }
 }

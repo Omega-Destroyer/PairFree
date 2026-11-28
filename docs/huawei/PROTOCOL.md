@@ -288,11 +288,18 @@ Only the answers to PairFree's own reads, by command: of the version reply the v
 and never the paired devices' list. A catalogue model, and a newer FreeBuds, FreeClip, FreeLace or FreeArc the table lacks, is asked the settings'
 reads only, for its report; nothing is shown or written.
 
-## 14. Huawei's server (research, 2026-11-27)
+## 14. Huawei's server (research, 2026-11-27 and 28)
 
-The app's product list and device plugins come from Huawei's guide server (`smarthome.hicloud.com/device/guide/`), which serves them to a plain `GET`
-with no token or signature. A research script outside the repo (`E:/Builds/research/huawei-tools/fetch_guide.py`) fetched the app's notification feed,
-list version and `mainHelp.json` (five headsets and two glasses, none newer than the bundled list). It stopped for good when `config.json`, a path the
-app requests, answered 403 (an earlier 403 was a path the app does not use). Raw replies are in `server_dump/huawei/`, not committed. The newer
-plugins were not fetched (open: data/completeness.json, `huawei-current-product-scope`).
+The app's product list and device plugins come from Huawei's guide server (`smarthome.hicloud.com/device/guide/`, and its delivery host
+`smarthome-drcn.dbankcdn.com`), which serves them to a plain `GET` with no token or signature. A research script outside the repo
+(`E:/Builds/research/huawei-tools/fetch_guide.py`) fetched, at the owner's word, the app's feed, list version, `mainHelp.json`, the two global plugin
+files and the per-product plugin files the app asks for.
 
+- Both hosts give the same list (version 1936). Its audio products are the eight the bundled app has: nothing newer.
+- The global plugin files list router add-ons only.
+- None of the per-product plugin files exist for the audio ids tried (all seven headset and eyewear ids on the first host, three on the second).
+  The storage answers a bare 403 `AccessDenied` for a file it lacks, while a file the list names is served anonymously; no reply asked for sign-in.
+- The route list's server for outside China (`smarthome-dra.things.hicloud.com`) does not resolve.
+
+Raw replies are in `server_dump/huawei/`, not committed. The newer models therefore rest on the public projects until a newer Huawei app or a user's
+report says more (data/completeness.json, `huawei-current-product-scope`).

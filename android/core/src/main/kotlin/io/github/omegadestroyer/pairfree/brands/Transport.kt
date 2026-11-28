@@ -55,7 +55,7 @@ interface GattChannel : ControlLink {
 class QcyFound(val target: LeTarget, val advert: QcyAdvert)
 
 /** The local date and time as the system shows them; [weekday] is 0 for Sunday. */
-class LocalTime(val year: Int, val month: Int, val day: Int, val weekday: Int, val hour: Int, val minute: Int, val second: Int)
+class LocalTime(val year: Int, val month: Int, val day: Int, val weekday: Int, val hour: Int, val minute: Int, val second: Int, val twentyFourHour: Boolean = true)
 
 /**
  * The Bluetooth of the system PairFree runs on, as the brands open their channels through it ([BrandSpec.open]): Android's

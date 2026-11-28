@@ -69,6 +69,17 @@
           "serial_number_and_firmware_version"
         ]
       },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3005"
+      },
       "state": [
         ["single_battery", 2],
         ["firmware", 5],
@@ -143,6 +154,17 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
+      },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3005"
       },
       "state": [
         ["single_battery", 2],
@@ -897,7 +919,7 @@
         ["skip", 4],
         ["serial", 16]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3201DeviceManager and A3201CmdConstants), not tried on the headphones. The older protocol the Life NC speaks has one request, `01 09`, that returns its whole state in a frame without a checksum: the level (0 to 5), the vibration switch, the custom button function (skipped), the volume limit's switch and value (0 to 16), the firmware (four characters), the serial and the name; the writes are `01 82` (vibration), `01 84` and `01 85` (the volume limit). Its equalizer is read and set by index (`02 01`, `02 81`), whose presets are in the app's native screen code, so none is offered.",
+      "notes": "Read from the Soundcore app 5.0.35 (A3201DeviceManager and A3201CmdConstants), not tried on the headphones. The older protocol the Life NC speaks has one request, `01 09`, that returns its whole state in a frame without a checksum: the level (0 to 5), the vibration switch, the custom button function (skipped), the volume limit's switch and value (0 to 16), the firmware (four characters), the serial and the name; the writes are `01 82` (vibration), `01 84` and `01 85` (the volume limit). Its equalizer is three presets, read and set by number (`02 01`, `02 81`; Soundcore 3.3.0's `A3201EQPresenter`: 0 original, 1 bass boost, 2 office).",
       "kind": "headphones",
       "checksum": false,
       "state_command": "0109",
@@ -1171,19 +1193,31 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3600",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3600"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
-        ["optional:skip", 35],
+        ["optional:equalizer", 12],
+        ["optional:skip", 23],
         ["optional:wearing_detection", 1],
         ["optional:voice_control", 2],
         ["optional:stereo_expansion", 2],
         ["optional:super_volume", 1],
         ["optional:manual_shutdown", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3600AnalysisService.e1), not tried: the head of the reply (TWS status, both levels, charging, both firmware versions, the serial). The rest and the command service are not read yet. No battery scale is shown: the parser does not give one."
+      "notes": "Read from the Soundcore app 5.0.35 (A3600AnalysisService.e1), not tried: the head of the reply (TWS status, both levels, charging, both firmware versions, the serial). The equalizer (record at packet byte 41: preset and ten bytes) is written as `A3600CmdService.s6` does, five presets and a custom curve; the rest of the reply is skipped. No battery scale is shown: the parser does not give one."
     },
     {
       "model": "A3850",
@@ -1204,12 +1238,23 @@
           "offset": 0
         }
       },
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3040"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
-        ["skip", 22],
+        ["equalizer", 22],
         ["skip", 12],
         ["skip", 1],
         ["light", 2],
@@ -1229,7 +1274,7 @@
           "microphone"
         ]
       },
-      "notes": "Read from Soundcore 3.3.0's A3850AnalysisService, not from OpenSCQ30 or a recording. Skipped: the equalizer, the button block, the sound mode cycle and the light colour and mode. The dongle's own commands (0F xx) are not built. Nothing has been tried on a VR P10."
+      "notes": "Read from Soundcore 3.3.0's A3850AnalysisService, not from OpenSCQ30 or a recording. Skipped: the button block, the sound mode cycle and the light colour and mode. The dongle's own commands (0F xx) are not built. Nothing has been tried on a VR P10."
     },
     {
       "model": "A3871",
@@ -1253,6 +1298,17 @@
           "dual_connections",
           "a3876_volume_balance"
         ]
+      },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero2"
       },
       "state": [
         ["tws_status", 2],
@@ -1315,6 +1371,17 @@
           "a3876_volume_balance"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero2"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
@@ -1373,6 +1440,17 @@
           "auto_power_off"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero2"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
@@ -1424,6 +1502,17 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero3"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
@@ -1431,7 +1520,7 @@
         ["serial", 16],
         ["skip", 5],
         ["case_battery", 1],
-        ["skip", 22],
+        ["equalizer", 22],
         ["block", 0],
         ["skip", 1],
         ["ldac", 1],
@@ -1447,7 +1536,7 @@
         ["optional:skip", 3],
         ["optional:audio_wakeup", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3874AnalysisService), not from OpenSCQ30 and not tried on the earbuds: the head, the equalizer block skipped, the length-prefixed button block skipped, then LDAC, two devices, auto power off, the balance, the tones, game mode and the voice wake. No battery scale is in the parser (it clamps 0 to 9), so no battery is shown until a report settles it."
+      "notes": "Read from the Soundcore app 5.0.35 (A3874AnalysisService), not from OpenSCQ30 and not tried on the earbuds: the head, the equalizer block, the length-prefixed button block skipped, then LDAC, two devices, auto power off, the balance, the tones, game mode and the voice wake. No battery scale is in the parser (it clamps 0 to 9), so no battery is shown until a report settles it."
     },
     {
       "model": "A3875",
@@ -1467,6 +1556,17 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3875",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero3"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
@@ -1474,7 +1574,7 @@
         ["serial", 16],
         ["skip", 5],
         ["case_battery", 1],
-        ["skip", 22],
+        ["equalizer", 22],
         ["block", 0],
         ["sound_modes", 2],
         ["skip", 1],
@@ -1492,7 +1592,7 @@
         ["optional:skip", 2],
         ["optional:anc_sensor", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3875AnalysisService.e1 and A3875CmdService), not tried on the earbuds: the head, the equalizer and button blocks skipped, the noise mode (two bytes, written with 06 81), LDAC, two devices, auto power off, the tones, game mode, the voice wake and the noise sensor enhancement. Its balance is stored in a way the app does not read back (clamped to 0 to 9), so it is not offered. No battery scale is in the parser."
+      "notes": "Read from the Soundcore app 5.0.35 (A3875AnalysisService.e1 and A3875CmdService), not tried on the earbuds: the head, the equalizer block, the button block skipped, the noise mode (two bytes, written with 06 81), LDAC, two devices, auto power off, the tones, game mode, the voice wake and the noise sensor enhancement. Its balance is stored in a way the app does not read back (clamped to 0 to 9), so it is not offered. No battery scale is in the parser."
     },
     {
       "model": "A3876",
@@ -3239,15 +3339,91 @@
           "offset": 0
         }
       },
+      "eq": {
+        "write": "a3955",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_long",
+              "right_long",
+              "left_triple",
+              "right_triple"
+            ],
+            "presses": {
+              "single": {
+                "id": 2,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              }
+            }
+          }
+        ],
+        "reset": true
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
         ["equalizer", 22],
-        ["skip", 49],
+        ["hear_id_status", 1],
+        ["custom_hear_id", 48],
         ["skip", 1],
-        ["skip", 24],
+        ["buttons", 16],
+        ["skip", 8],
         ["sound_mode_cycle", 1],
         ["sound_modes", 6],
         ["skip", 4],
@@ -3288,10 +3464,11 @@
           "in_ear_tone",
           "low_battery_prompt",
           "ambient_sound_prompt",
-          "press_sensitivity"
+          "press_sensitivity",
+          "button_configuration"
         ]
       },
-      "notes": "Read from Soundcore 3.3.0's A3953AnalysisService (docs/soundcore/PROTOCOL.md, the A3953 section), not from OpenSCQ30 or a recording. The HearID block (49 bytes), the button block (24 bytes, preceded by its length byte) and the personalised ANC test fields are skipped: the equalizer and touch controls are not built yet. The reply is at least 163 bytes; spatial audio, the health block, the colour and press sensitivity come after that on longer replies."
+      "notes": "Read from Soundcore 3.3.0's A3953AnalysisService (docs/soundcore/PROTOCOL.md, the A3953 section), not from OpenSCQ30 or a recording. Touch controls are the first 16 bytes of the button block, as the Liberty 4 NC's (`A3953AnalysisService.T0`, written with `04 81` and `04 83`); the other 8 bytes of the block and the personalised ANC test fields are skipped. The equalizer is written as 5.0.35 writes it (`CmmBtCmdService.t6`/`p6`, the P40i's layout), with the HearID block after the age byte; not tried. The reply is at least 163 bytes; spatial audio, the health block, the colour and press sensitivity come after that on longer replies."
     },
     {
       "model": "A3954",
@@ -3639,6 +3816,17 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
+      },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3005"
       },
       "state": [
         ["single_battery", 2],
@@ -4431,6 +4619,17 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "k20i"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
@@ -4445,7 +4644,7 @@
         ["touch_tone", 1],
         ["auto_power_off", 2]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3994AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the P30i's (A3959) up to the buttons, then the noise mode selection byte and the colour (skipped), the game mode, the touch tone and the auto power off switch and index; it has no noise modes. The touch controls are the shared `04 81` writes with the model's actions. No equalizer: its command service holds a preset table of its own and a sound-mode write the P30i's does not. The battery's scale is not in the parser, so none is shown.",
+      "notes": "Read from the Soundcore app 5.0.35 (A3994AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the P30i's (A3959) up to the buttons, then the noise mode selection byte and the colour (skipped), the game mode, the touch tone and the auto power off switch and index; it has no noise modes. The touch controls are the shared `04 81` writes with the model's actions. The equalizer is one curve, written with 02 83 (`CmmBtCmdService.q6`), with the K20i's own presets (`K20IEQGainValues`); not tried. The battery's scale is not in the parser, so none is shown.",
       "buttons": {
         "groups": [
           {
@@ -4479,12 +4678,23 @@
           "offset": 0
         }
       },
+      "eq": {
+        "write": "drc",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3040"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
-        ["skip", 22],
+        ["equalizer", 22],
         ["skip", 12],
         ["skip", 1],
         ["skip", 1],
@@ -4510,7 +4720,7 @@
           "adaptive_noise"
         ]
       },
-      "notes": "Read from Soundcore 3.3.0's A6610AnalysisService, not from OpenSCQ30 or a recording. Skipped: the equalizer, the button block, the current sleep mode, the play time, the voice prompt, the colour and the sleep sound (id, whether it is loaded, volume); the press sensitivity (firmware 252 and later) and the play countdown follow on longer replies. Nothing has been tried on a Sleep A10."
+      "notes": "Read from Soundcore 3.3.0's A6610AnalysisService, not from OpenSCQ30 or a recording. Skipped: the button block, the current sleep mode, the play time, the voice prompt, the colour and the sleep sound (id, whether it is loaded, volume); the press sensitivity (firmware 252 and later) and the play countdown follow on longer replies. Nothing has been tried on a Sleep A10."
     },
     {
       "model": "A6611",
@@ -5345,6 +5555,30 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "interleaved",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
@@ -5375,7 +5609,7 @@
         ["skip", 3],
         ["pressure_sensitivity", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1200AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the Liberty 5's (A3957) in the same order up to the hearing protection block; after it the app reads a 3D effect mode, the dual device audio focus and the hearing loss overlay (skipped here), then the EQ compensation, wear detection, touch tone and game mode switches, the touch lock, music rush and audio wake-up switches (skipped: no command known), the AI chat language and the connected device count (skipped), and the press sensitivity. Its command service is the Liberty 5's but for the manual noise level's range (0 to 3 here, 1 to 5 there), so the mode switch, the switches and the touch controls are offered. The equalizer is not: which presets the Liberty Buds have is not read (docs/soundcore/EQ_MODEL_SELECTION in the research notes names its holder only). The buttons' length byte is taken as the Liberty 5's (10).",
+      "notes": "Read from the Soundcore app 5.0.35 (D1200AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the Liberty 5's (A3957) in the same order up to the hearing protection block; after it the app reads a 3D effect mode, the dual device audio focus and the hearing loss overlay (skipped here), then the EQ compensation, wear detection, touch tone and game mode switches, the touch lock, music rush and audio wake-up switches (skipped: no command known), the AI chat language and the connected device count (skipped), and the press sensitivity. Its command service is the Liberty 5's but for the manual noise level's range (0 to 3 here, 1 to 5 there), so the mode switch, the switches and the touch controls are offered. The equalizer is written as the P31i's (`CmmBtCmdService.n6`), with the standard presets its data holder lists; not tried. The buttons' length byte is taken as the Liberty 5's (10).",
       "buttons": {
         "groups": [
           {
@@ -5638,7 +5872,8 @@
         ["touch_tone", 1],
         ["low_battery_prompt", 1],
         ["in_ear_tone", 1],
-        ["auto_power_off", 2]
+        ["auto_power_off", 2],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5683,7 +5918,8 @@
         [26, 0, "bit", 0],
         [26, 0, "bit", 1],
         [26, 0, "bit", 3],
-        [25, 0, 2]
+        [25, 0, 2],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5760,7 +5996,8 @@
         ["touch_tone", 1],
         ["low_battery_prompt", 1],
         ["in_ear_tone", 1],
-        ["auto_power_off", 2]
+        ["auto_power_off", 2],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro Max and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5805,7 +6042,8 @@
         [26, 0, "bit", 0],
         [26, 0, "bit", 1],
         [26, 0, "bit", 3],
-        [25, 0, 2]
+        [25, 0, 2],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -6422,7 +6660,8 @@
         ["listening_mode_prompt", 1],
         ["auto_power_off_prompt", 1],
         ["incoming_calls_during_bluetooth", 1],
-        ["prompt_language", 1]
+        ["prompt_language", 1],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1302AnalysisService.e1 and D1302CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -6440,15 +6679,14 @@
         [16, 0, "pack"],
         [17, 0, "pack"],
         [18, 0, "pack"],
-        [26, 0, "bit",
-          0],
-        [26, 0, "bit",
-          1],
+        [26, 0, "bit", 0],
+        [26, 0, "bit", 1],
         [26, 0, "bit", 6],
         [26, 0, "bit", 5],
         [26, 0, "bit", 2],
         [27, 2, "bit", 7],
-        [64, 0, "opt"]
+        [64, 0, "opt"],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -6566,6 +6804,30 @@
           "serial_number_and_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3035",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3035",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 1,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
       "state": [
         ["single_battery", 2],
         ["firmware", 5],
@@ -6588,7 +6850,7 @@
         ["optional:wearing_detection", 1],
         ["optional:audio_wakeup", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1402AnalysisService.e1 and D1402CmdService), not from OpenSCQ30 and not tried on the headphones. Its head is the Space One Pro's (A3062) up to the HearID block; its button block (five bytes) and the tail are its own: after the six noise mode bytes come the colour, a 3D mode, easy chat (switch and time), the ambient sound notice, the power-on battery notice, LDAC, dual connections, the auto power off switch and index, and the hearing protection (switch, limit, third byte). Shown: the noise mode (its six-byte write is the Space One Pro's), LDAC, dual connections, auto power off and the high volume limit. Not offered: the equalizer (its command service has no HearID write), the one-button controls (single, double and long press as raw bytes) and the records after the hearing protection. No battery scale is shown: the parser does not give one.",
+      "notes": "Read from the Soundcore app 5.0.35 (D1402AnalysisService.e1 and D1402CmdService), not from OpenSCQ30 and not tried on the headphones. Its head is the Space One Pro's (A3062) up to the HearID block; its button block (five bytes) and the tail are its own: after the six noise mode bytes come the colour, a 3D mode, easy chat (switch and time), the ambient sound notice, the power-on battery notice, LDAC, dual connections, the auto power off switch and index, and the hearing protection (switch, limit, third byte). Shown: the noise mode (its six-byte write is the Space One Pro's), LDAC, dual connections, auto power off and the high volume limit. The equalizer is written as the Space One's (`CmmBtCmdService.o6`, one curve, smoothed), with preset position 2 sent as 32382 (Bass Booster); not tried. Not offered: the one-button controls (single, double and long press as raw bytes) and the records after the hearing protection. No battery scale is shown: the parser does not give one.",
       "kind": "headphones"
     },
     {

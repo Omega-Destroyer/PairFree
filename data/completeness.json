@@ -876,11 +876,181 @@
       "id": "soundcore-case-channels",
       "brand": "soundcore",
       "models": [
-        "Liberty 5 Pro pair, Sleep Earbuds 4 pair (D1203-Box, D1204-Box, D1302-Box, D1303-Box)"
+        "Liberty 5 Pro (D1203)",
+        "Liberty 5 Pro Max (D1204)",
+        "Sleep Earbuds 4 Pro (D1302)"
       ],
-      "status": "open",
-      "what": "The charging cases' own connections and settings (case language and the rest) are not built or explained. Includes the Sleep Earbuds 4 pair sound playback and falling-asleep settings (13 08 and the rest over the case link).",
+      "status": "built",
+      "what": "The charging cases' own links: the case's address from the earbuds, the clock, the firmware version, and on the Sleep case its notification and sleep switches (41 88) and pausing its sound (13 08). Not tried on a case. The rest is soundcore-case-rest, -picture and -sounds.",
       "reported": "read of the settings screens, 2026-11-27"
+    },
+    {
+      "id": "soundcore-case-picture",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 5 Pro, Liberty 5 Pro Max"
+      ],
+      "status": "blocked",
+      "what": "A picture of the user's own on the case screen. The app writes it with the case's firmware updater.",
+      "reported": "the case link worked through, 2026-11-27",
+      "rule": "never send firmware update traffic",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/BleWallpaperOtaUploader.java",
+          "what": "implements the BES updater's listeners and runs its OTATask"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper",
+          "glob": "BleWallpaperOtaUploader\\.java$",
+          "pattern": "OTATask",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-case-sounds",
+      "brand": "soundcore",
+      "models": [
+        "Sleep Earbuds 4 Pro (D1302)"
+      ],
+      "status": "blocked",
+      "what": "Choosing another sleep sound for the case. The list of sounds and their ids comes from Anker's server.",
+      "reported": "the case link worked through, 2026-11-27",
+      "rule": "no code calls any brand's servers",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager/D1302AmbienceManager.java",
+          "what": "gets its sounds through MaskAudioApi, built by AKRetrofitFactory (the server), and downloads each"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager",
+          "glob": "D1302AmbienceManager\\.java$",
+          "pattern": "D2\\(\\)",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-case-picture-delete",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 5 Pro, Liberty 5 Pro Max"
+      ],
+      "status": "blocked",
+      "what": "Removing pictures from the case screen (FA 02). The app names them by the ids of the list it gets from Anker's server.",
+      "reported": "the case link worked through, 2026-11-27",
+      "rule": "no code calls any brand's servers",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/viewmodel/A3956CustomPicPersonVM.java",
+          "what": "the ids to delete come from the WallPaperApi list"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/viewmodel",
+          "glob": "A3956CustomPicPersonVM\\.java$",
+          "pattern": "WallPaperApi",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-case-breathing",
+      "brand": "soundcore",
+      "models": [
+        "Sleep Earbuds 4 Pro (D1302)"
+      ],
+      "status": "blocked",
+      "what": "The breathing exercise. Its sounds are downloaded from Anker's server.",
+      "reported": "the case link worked through, 2026-11-27",
+      "rule": "no code calls any brand's servers",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager/BreatheAudioDownloadManager.java",
+          "what": "downloads /sleep/breath/*.mp3 from Anker's hosts"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager",
+          "glob": "BreatheAudioDownloadManager\\.java$",
+          "pattern": "sleep/breath",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-case-language",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 5 Pro"
+      ],
+      "status": "not-applicable",
+      "what": "A voice language setting. The app has no control for it: it sets the language itself after reading the earbuds' state.",
+      "reported": "the case link worked through, 2026-11-27",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/A3956MainActivity$eventAdapter$1.java",
+          "what": "setVoiceLanguage is called from getDeviceInfoCallback, not from a row"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/more/A3956MoreDataProvider.java",
+          "what": "no language row"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/more",
+          "glob": "A3956MoreDataProvider\\.java$",
+          "pattern": "(?i)language",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956",
+          "glob": "A3956MainActivity\\$eventAdapter\\$1\\.java$",
+          "pattern": "setVoiceLanguage",
+          "expect": "some"
+        }
+      ]
+    },
+    {
+      "id": "soundcore-hearid-p41i-test",
+      "brand": "soundcore",
+      "models": [
+        "P41i (A3937)"
+      ],
+      "status": "not-applicable",
+      "what": "A hearing test on the P41i. Its sound screen lists HearID, but its data provider does not open any test for it (the P40i's does); a stored result can only be switched, which PairFree does.",
+      "reported": "HearID worked through, 2026-11-27",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3937/provider/A3937SoundEffectsDataProvider.java",
+          "what": "no actionNext: the base one returns false"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3955/provider/A3955SoundEffectsDataProvider.java",
+          "what": "the P40i's actionNext opens A3953HearIdDataActivity"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3937/provider",
+          "glob": "A3937SoundEffectsDataProvider\\.java$",
+          "pattern": "actionNext",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3955/provider",
+          "glob": "A3955SoundEffectsDataProvider\\.java$",
+          "pattern": "A3953HearIdDataActivity",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "soundcore-sleep-earbuds-4-sounds",
@@ -903,14 +1073,128 @@
       "reported": "the audit added for issue #79, 2026-11-27"
     },
     {
+      "id": "soundcore-liberty4-space2-eq",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 4 (A3953)",
+        "Space 2 (D1402)"
+      ],
+      "status": "built",
+      "what": "The equalizer of the Liberty 4 and the Space 2 and the Liberty 4's touch controls, which their notes had left unbuilt without a registry entry. Built 2026-11-27, not tried.",
+      "reported": "HearID worked through, 2026-11-27"
+    },
+    {
+      "id": "soundcore-missing-eq",
+      "brand": "soundcore",
+      "models": [
+        "A3004C, A3012, A300B, A3201, A3600, A3850, A3871, A3872, A3873, A3874, A3875, A3994, A6610, D1200"
+      ],
+      "status": "built",
+      "what": "The equalizer on fourteen models that had none, from the app's own write paths and preset tables; the Life NC's three presets as a choice. Not tried. The Sleep earbuds are soundcore-sleep-eq.",
+      "reported": "HearID worked through, 2026-11-27"
+    },
+    {
+      "id": "soundcore-sleep-eq",
+      "brand": "soundcore",
+      "models": [
+        "Sleep A30 (D1301), Sleep Earbuds 4 pair (D1302, D1303)"
+      ],
+      "status": "not-applicable",
+      "what": "An equalizer on the Sleep earbuds. Their screens have none.",
+      "reported": "missing equalizers worked through, 2026-11-27",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1301",
+          "what": "no sound effects or equalizer screen is opened from any of its classes"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302",
+          "what": "no sound effects or equalizer screen is opened from any of its classes"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1303",
+          "what": "no sound effects or equalizer screen is opened from any of its classes"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1301",
+          "glob": ".*\\.java$",
+          "pattern": "SoundEffects|EqActivity|EQActivity|typeEQ|setEqDetails",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302",
+          "glob": ".*\\.java$",
+          "pattern": "SoundEffects|EqActivity|EQActivity|typeEQ|setEqDetails",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1303",
+          "glob": ".*\\.java$",
+          "pattern": "SoundEffects|EqActivity|EQActivity|typeEQ|setEqDetails",
+          "expect": "none"
+        }
+      ]
+    },
+    {
       "id": "soundcore-hearid",
       "brand": "soundcore",
       "models": [
-        "the models with HearID (Space One, Space Q45, Space A40, Liberty 3 Pro, Liberty 4 and later)"
+        "Space A40 (A3936)",
+        "Liberty Air 2 Pro (A3951)",
+        "Liberty 2 Pro+ (A3930)",
+        "Liberty 3 Pro (A3952)",
+        "Space One (A3035)",
+        "Liberty 4 NC (A3947)",
+        "P40i (A3955)",
+        "Sport X20 (A3968)",
+        "Space Q45 (A3040)",
+        "Space One Pro (A3062)",
+        "Liberty 2 Pro (A3909)",
+        "Liberty Air 2 (A3910)",
+        "Liberty 2 (A3913)",
+        "Liberty 4 (A3953)",
+        "Space 2 (D1402)"
+      ],
+      "status": "built",
+      "what": "HearID on fifteen models: the oldest test on three, the older test on four and HearID 3 on eight (the app's tones and correction), writing the result, switching it and deleting it. Not tried on earbuds. The rest is soundcore-hearid-other. HearID 3's comparison over music (the user's own) is built too.",
+      "reported": "the app's command table, worked through 2026-11-27"
+    },
+    {
+      "id": "soundcore-hearid-other",
+      "brand": "soundcore",
+      "models": [
+        "AeroFit 2 Pro (A3875, HearID 5)"
       ],
       "status": "open",
-      "what": "HearID, the hearing test that makes an EQ: start and cancel the test (03 83), write the result (03 82, 03 85), switch and reset (03 81, 03 84) are not built. The app's tones and compensation have not been read.",
-      "reported": "the app's command table, worked through 2026-11-27"
+      "what": "HearID 5, whose logic is in libhid_app.so: not analysed.",
+      "reported": "HearID worked through, 2026-11-27"
+    },
+    {
+      "id": "soundcore-hearid-flutter",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 4 Pro family and Liberty 5 (the Flutter hearing test)"
+      ],
+      "status": "blocked",
+      "what": "The Flutter hearing test. Its thresholds become gains through a trained network whose weights the app bundles; the owner decided on 2026-11-27 that PairFree does not ship them.",
+      "reported": "HearID worked through, 2026-11-27",
+      "rule": "a decision the owner has reserved",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/nl2/NL2Util.java",
+          "what": "nl2Calculate, native, loads assets/model_parameters"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/nl2",
+          "glob": "NL2Util\\.java$",
+          "pattern": "model_parameters",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "soundcore-personal-anc",

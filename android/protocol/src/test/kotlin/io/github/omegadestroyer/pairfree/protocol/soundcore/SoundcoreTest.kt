@@ -758,7 +758,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(55, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10 and the Life Q20+")
+        assertEquals(70, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10, the Life Q20+, the Liberty 4, the Space 2 and thirteen more read from the app 2026-11-27")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!
@@ -1076,7 +1076,7 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(58, withButtons.size)
+        assertEquals(59, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
             // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.

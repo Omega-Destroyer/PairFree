@@ -893,7 +893,7 @@
       "status": "blocked",
       "what": "A picture of the user's own on the case screen. The app writes it with the case's firmware updater.",
       "reported": "the case link worked through, 2026-11-27",
-      "rule": "never send firmware update traffic",
+      "rule": "firmware",
       "read": [
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/BleWallpaperOtaUploader.java",
@@ -918,11 +918,15 @@
       "status": "blocked",
       "what": "Choosing another sleep sound for the case. The list of sounds and their ids comes from Anker's server.",
       "reported": "the case link worked through, 2026-11-27",
-      "rule": "no code calls any brand's servers",
+      "rule": "server authentication",
       "read": [
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager/D1302AmbienceManager.java",
           "what": "gets its sounds through MaskAudioApi, built by AKRetrofitFactory (the server), and downloads each"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/commonkit/aknetwork/config/HeaderBuilder.java",
+          "what": "the app's requests carry an Authorization field, a client id and credential, ECDH encryption, openudid and the device's id"
         }
       ],
       "evidence": [
@@ -930,6 +934,12 @@
           "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager",
           "glob": "D1302AmbienceManager\\.java$",
           "pattern": "D2\\(\\)",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/commonkit/aknetwork/config",
+          "glob": "HeaderBuilder\\.java$",
+          "pattern": "ENCRYPT_APP_PUBLICKEY",
           "expect": "some"
         }
       ]
@@ -943,11 +953,15 @@
       "status": "blocked",
       "what": "Removing pictures from the case screen (FA 02). The app names them by the ids of the list it gets from Anker's server.",
       "reported": "the case link worked through, 2026-11-27",
-      "rule": "no code calls any brand's servers",
+      "rule": "server authentication",
       "read": [
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/viewmodel/A3956CustomPicPersonVM.java",
           "what": "the ids to delete come from the WallPaperApi list"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/commonkit/aknetwork/config/HeaderBuilder.java",
+          "what": "the app's requests carry an Authorization field, a client id and credential, ECDH encryption, openudid and the device's id"
         }
       ],
       "evidence": [
@@ -955,6 +969,12 @@
           "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/wallpaper/viewmodel",
           "glob": "A3956CustomPicPersonVM\\.java$",
           "pattern": "WallPaperApi",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/commonkit/aknetwork/config",
+          "glob": "HeaderBuilder\\.java$",
+          "pattern": "ENCRYPT_APP_PUBLICKEY",
           "expect": "some"
         }
       ]
@@ -966,9 +986,9 @@
         "Sleep Earbuds 4 Pro (D1302)"
       ],
       "status": "blocked",
-      "what": "The breathing exercise. Its sounds are downloaded from Anker's server.",
+      "what": "The breathing exercise. The phone plays sounds it downloads from Anker's server: PairFree has no internet permission and ships none of Anker's audio.",
       "reported": "the case link worked through, 2026-11-27",
-      "rule": "no code calls any brand's servers",
+      "rule": "permission the owner has not allowed",
       "read": [
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302/manager/BreatheAudioDownloadManager.java",
@@ -1000,7 +1020,7 @@
         },
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a3956/more/A3956MoreDataProvider.java",
-          "what": "no language row"
+          "what": "the More screen's rows hold no language setting for the case or the earbuds"
         }
       ],
       "evidence": [
@@ -1180,7 +1200,7 @@
       "status": "blocked",
       "what": "The Flutter hearing test. Its thresholds become gains through a trained network whose weights the app bundles; the owner decided on 2026-11-27 that PairFree does not ship them.",
       "reported": "HearID worked through, 2026-11-27",
-      "rule": "a decision the owner has reserved",
+      "rule": "decision the owner has reserved",
       "read": [
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/nl2/NL2Util.java",
@@ -1265,7 +1285,7 @@
       "status": "blocked",
       "what": "The sleep report. The earbuds give only time stamps with a type code (01 10); the app uploads them and Anker's server returns the deep, light and awake times it shows.",
       "reported": "the Sleep A10 worked through, 2026-11-27",
-      "rule": "no code calls any brand's servers",
+      "rule": "server authentication",
       "read": [
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/devicecmd/manager/product/a6610/A6610AnalysisService.java",
@@ -1278,6 +1298,10 @@
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/netbean/a6610/StatisticsSleep.java",
           "what": "the server's reply: deep, light and wake times"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/commonkit/aknetwork/config/HeaderBuilder.java",
+          "what": "the app's requests carry an Authorization field, a client id and credential, ECDH encryption, openudid and the device's id"
         }
       ],
       "evidence": [
@@ -1292,6 +1316,12 @@
           "glob": "StatisticsSleep\\.java$",
           "pattern": "deepTime",
           "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/commonkit/aknetwork/config",
+          "glob": "HeaderBuilder\\.java$",
+          "pattern": "ENCRYPT_APP_PUBLICKEY",
+          "expect": "some"
         }
       ]
     },
@@ -1304,7 +1334,7 @@
       "status": "blocked",
       "what": "Putting a sound on the Sleep A10 and choosing it (01 A4). The app sends the sound with the earbuds' firmware updater (A6610OtaActivity, A6610WqOtaUpgrade), from its server's catalogue; PairFree sends no firmware update traffic of this chip. The A30's upload, which the owner allowed, is another updater.",
       "reported": "the Sleep A10 worked through, 2026-11-27",
-      "rule": "never send firmware update traffic",
+      "rule": "firmware",
       "read": [
         {
           "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/a6610/ota/A6610OtaActivity.java",

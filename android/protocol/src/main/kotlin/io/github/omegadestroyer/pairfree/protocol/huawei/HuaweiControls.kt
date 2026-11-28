@@ -109,13 +109,19 @@ internal fun HuaweiProduct.controls(): List<HuaweiControl> = buildList {
     if (has("studio_touch")) add(HuaweiControl("hw_touch_enabled", SettingTab.CONTROLS, HuaweiCommand.TOUCH_ENABLE_READ, HuaweiCommand.TOUCH_ENABLE_SET))
     if (has("quality")) add(HuaweiControl("hw_quality", SettingTab.SOUND, HuaweiCommand.QUALITY_READ, HuaweiCommand.QUALITY_SET, tag = 2,
         writeTags = listOf(1), capabilityTag = 1, readTags = listOf(1)))
+    if (has("rest")) add(HuaweiControl("hw_rest", SettingTab.DEVICE, HuaweiCommand.REST_READ, HuaweiCommand.REST_SET))
+    if (has("hd_call")) add(HuaweiControl("hw_hd_call", SettingTab.SOUND, HuaweiCommand.HD_CALL_READ, HuaweiCommand.HD_CALL_SET))
+    if (has("pickup")) add(HuaweiControl("hw_pickup", SettingTab.SOUND, HuaweiCommand.PICKUP_READ, HuaweiCommand.PICKUP_SET,
+        choices = mapOf(1 to "hw_pickup_voices", 0 to "hw_pickup_surroundings")))
     if (has("multipoint")) add(HuaweiControl("multipoint", SettingTab.DEVICE, HuaweiCommand.MULTIPOINT_READ, HuaweiCommand.MULTIPOINT_SET))
 }
 
-internal enum class HuaweiFeature(val feature: String, val row: String, val code: Int) {
+/** A setting behind the one keyed command: a switch, or a choice when [choices] holds its values. */
+internal enum class HuaweiFeature(val feature: String, val row: String, val code: Int, val choices: Map<Int, String> = emptyMap()) {
     ADAPTIVE_VOLUME("adaptive_volume", "hw_adaptive_volume", 2),
     SINGLE_ANC("single_anc", "hw_single_anc", 5),
     DROP("drop", "hw_drop", 7),
+    EAR_TIP("ear_tip", "hw_ear_tip", 8, mapOf(1 to "hw_tips_silicone", 2 to "hw_tips_foam")),
     HEAD("head", "hw_head_control", 11),
     CONVERSATION("conversation", "hw_conversation", 27);
 
@@ -124,7 +130,9 @@ internal enum class HuaweiFeature(val feature: String, val row: String, val code
         if (this@HuaweiFeature != HEAD) add(HuaweiTlv(2))
     })
 
-    fun write(on: Boolean): HuaweiPacket = huaweiWrite(OP, 1 to code, 2 to if (on) 1 else 0)
+    fun write(on: Boolean): HuaweiPacket = write(if (on) 1 else 0)
+    fun write(value: Int): HuaweiPacket = huaweiWrite(OP, 1 to code, 2 to value)
+    fun accepts(value: Int?): Boolean = if (choices.isEmpty()) value == 0 || value == 1 else value in choices
 
     companion object {
         const val OP = HuaweiCommand.KEYED_SETTING

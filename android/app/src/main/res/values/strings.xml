@@ -2270,6 +2270,14 @@
     <string name="setting_hw_adaptive_volume">Adaptive volume</string>
     <string name="setting_hw_conversation">Conversation awareness</string>
     <string name="setting_hw_head_control">Head gestures</string>
+    <string name="setting_hw_rest">Rest reminders</string>
+    <string name="setting_hw_hd_call">HD calls</string>
+    <string name="setting_hw_pickup">Pickup mode</string>
+    <string name="setting_hw_pickup_voices">Voices</string>
+    <string name="setting_hw_pickup_surroundings">Surroundings</string>
+    <string name="setting_hw_ear_tip">Ear tip type</string>
+    <string name="setting_hw_tips_silicone">Silicone tips</string>
+    <string name="setting_hw_tips_foam">Memory foam tips</string>
     <string name="setting_hw_drop">Drop detection</string>
     <string name="setting_hw_gesture_off">No action</string>
     <string name="setting_hw_play_pause">Play or pause</string>

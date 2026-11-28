@@ -1,4 +1,4 @@
-﻿package io.github.omegadestroyer.pairfree.protocol.huawei
+package io.github.omegadestroyer.pairfree.protocol.huawei
 
 import io.github.omegadestroyer.pairfree.protocol.BandEqReport
 import kotlin.math.roundToInt
@@ -30,6 +30,13 @@ internal object HuaweiCustomEq {
             Slot(id, label, gains)
         }
         return slots.takeIf { it.map(Slot::id).distinct().size == it.size }
+    }
+
+    /** The slot records with their names blanked, for the device report: a name is the user's own words. */
+    fun unnamed(records: ByteArray): ByteArray {
+        val out = records.copyOf()
+        for (start in out.indices step recordSize) for (i in start + nameOffset until minOf(start + recordSize, out.size)) out[i] = 0
+        return out
     }
 
     fun slotFor(slots: List<Slot>): Int? =

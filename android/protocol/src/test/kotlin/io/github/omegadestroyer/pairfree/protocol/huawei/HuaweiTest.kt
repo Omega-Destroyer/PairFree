@@ -227,7 +227,46 @@ class HuaweiTest {
         assertFalse(glasses.feed(huaweiPacket(0x0107, listOf(arbitraryField)).bytes()).changed)
         glasses.receive(huaweiPacket(0x0107, listOf(HuaweiTlv(7, "1.0.2.42 (build)".encodeToByteArray()), arbitraryField)))
         assertEquals("1.0.2.42", glasses.state.firmware?.version)
-        assertTrue("0107" in glasses.readsAnswered)
+        val line = glasses.reportLines.single { it.startsWith("0107:") }
+        assertTrue("09=" in line && "393837363534" !in line, "an unrequested field's bytes stay out of the report: $line")
+    }
+
+    @Test fun theReportBlanksCustomEqualizerNames() {
+        val pro = talk("FreeBuds Pro 3")
+        val record = byteArrayOf(100, 10) + ByteArray(10) + "Somebody's".encodeToByteArray().copyOf(24)
+        pro.feed(huaweiPacket(0x2b4a, listOf(HuaweiTlv(2, byteArrayOf(100)), HuaweiTlv(8, record))).bytes())
+        val line = pro.reportLines.single { it.startsWith("2b4a:") }
+        assertTrue("536f6d65626f6479" !in line, line)
+    }
+
+    @Test fun aCatalogueModelIsOnlyRead() {
+        val neo = talk("FreeBuds Neo")
+        assertTrue(neo.start().all(neo::allowed))
+        assertTrue(neo.start().any { it.op == 0x2b4a })
+        neo.feed(huaweiPacket(0x2b4a, listOf(HuaweiTlv(1, byteArrayOf(1)), HuaweiTlv(2, byteArrayOf(1)), HuaweiTlv(3, byteArrayOf(1, 2)))).bytes())
+        assertTrue(neo.groups.isEmpty())
+        assertTrue(neo.eqPresetNames.isEmpty())
+        assertFalse(neo.allowed(huaweiWrite(0x2b49, 1 to 1)))
+        assertTrue(neo.reportLines.any { it.startsWith("2b4a:") })
+    }
+
+    @Test fun theNewSwitchesAndEarTipsWaitForTheirReads() {
+        val pro = talk("FreeBuds Pro 5")
+        assertNull(pro.change(SettingChange.Toggle("hw_rest", true)))
+        pro.receive(huaweiWrite(0x2b61, 1 to 0))
+        val rest = pro.change(SettingChange.Toggle("hw_rest", true))!!.single()
+        assertEquals(0x2b60, rest.op)
+        assertTrue(pro.allowed(rest))
+        pro.receive(huaweiWrite(0x2b42, 1 to 0))
+        val pickup = pro.change(SettingChange.Choice("hw_pickup", "hw_pickup_voices"))!!.single()
+        assertEquals(0x2b41, pickup.op)
+        assertEquals(1, pickup.scalar(1))
+        pro.receive(huaweiWrite(0x2bb4, 1 to 8, 2 to 1))
+        val tips = pro.change(SettingChange.Choice("hw_ear_tip", "hw_tips_foam"))!!.single()
+        assertEquals(2, tips.scalar(2))
+        assertTrue(pro.allowed(tips))
+        assertFalse(pro.allowed(huaweiWrite(0x2bb4, 1 to 8, 2 to 3)))
+        assertFalse(pro.allowed(huaweiPacket(0x010d, listOf(HuaweiTlv(1, byteArrayOf(1))))), "factory reset is never sent")
     }
 
     @Test fun studioTouchUsesItsExactQueryAndWaitsForState() {

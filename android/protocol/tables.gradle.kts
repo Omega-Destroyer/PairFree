@@ -2806,7 +2806,10 @@ abstract class GenerateHuaweiTables : DefaultTask() {
             }
             text.appendLine("    HuaweiProduct(${quote(product["id"])}, ${quote(product["name"])}, " +
                 "listOf(${strings(product["aliases"])}), io.github.omegadestroyer.pairfree.protocol.Form.${product["form"]}, " +
-                "setOf(${strings(product["features"])}), linkedMapOf($presets)),")
+                "setOf(${strings(product["features"])}), linkedMapOf($presets)" +
+                (product["curves"] as? Map<*, *>)?.entries?.joinToString(", ", ", linkedMapOf(", ")") { (name, gains) ->
+                    "${quote(name)} to listOf(${(gains as List<*>).joinToString(", ")})"
+                }.orEmpty() + "),")
         }
         text.appendLine(")")
         val target = outputDir.get().asFile.resolve("io/github/omegadestroyer/pairfree/protocol/huawei/HuaweiTables.kt")

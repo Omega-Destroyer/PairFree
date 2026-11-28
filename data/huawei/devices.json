@@ -242,13 +242,54 @@
         "custom_save",
         "latency",
         "quality",
-        "pinch"
+        "pinch",
+        "hold_assistant",
+        "find",
+        "rest",
+        "hd_call"
       ],
       "presets": {
-        "5": "Default",
         "2": "Bass boost",
         "3": "Treble boost",
-        "9": "Voices"
+        "5": "Default",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
       }
     },
     {
@@ -271,13 +312,54 @@
         "custom_eq",
         "custom_save",
         "hold_assistant",
-        "pinch"
+        "pinch",
+        "quality",
+        "find",
+        "rest",
+        "pickup"
       ],
       "presets": {
-        "5": "Default",
         "2": "Bass boost",
         "3": "Treble boost",
-        "9": "Voices"
+        "5": "Default",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
       }
     },
     {
@@ -311,17 +393,41 @@
         "hold_assistant",
         "pinch",
         "pinch_hold",
-        "adaptive_awareness"
+        "adaptive_awareness",
+        "rest",
+        "pickup",
+        "ear_tip"
       ],
       "presets": {
-        "5": "Balanced",
         "2": "Bass boost",
+        "3": "Treble boost",
+        "5": "Balanced",
         "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
         "13": "Movie",
         "14": "Gaming",
         "15": "Podcast",
         "16": "Punchy",
-        "17": "Adaptive"
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "curves": {
+        "HUAWEI SOUND Classical": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
       }
     },
     {
@@ -457,12 +563,28 @@
         "hold",
         "hold_right",
         "wear",
-        "hold_toggle"
+        "hold_toggle",
+        "find",
+        "rest",
+        "hd_call",
+        "pickup"
       ],
       "presets": {
         "1": "Default",
         "2": "Bass boost",
-        "3": "Treble boost"
+        "3": "Treble boost",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
       },
       "aliases": [
         "T0004",
@@ -515,13 +637,28 @@
         "hold_toggle",
         "double_call",
         "triple",
-        "hold_reject"
+        "hold_reject",
+        "latency",
+        "find",
+        "rest",
+        "hd_call"
       ],
       "presets": {
         "1": "Default",
         "2": "Bass boost",
         "3": "Treble boost",
-        "9": "Voices"
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
       },
       "aliases": [
         "BTFT0013"
@@ -552,19 +689,63 @@
         "hold_reject",
         "hold_toggle",
         "hold_assistant",
-        "swipe"
+        "swipe",
+        "quality",
+        "find",
+        "head",
+        "single_anc",
+        "rest",
+        "pickup",
+        "custom_eq",
+        "custom_save"
       ],
       "presets": {
         "0": "Default",
+        "1": "Default",
         "2": "Bass boost",
         "3": "Treble boost",
         "9": "Voices",
+        "10": "Lively",
         "11": "Balanced",
-        "12": "Classical"
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
       },
       "aliases": [
         "BTFT0020"
-      ]
+      ],
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      }
     },
     {
       "id": "FreeBuds 7",
@@ -639,12 +820,70 @@
         "swipe",
         "language",
         "multipoint",
-        "pinch"
+        "pinch",
+        "double",
+        "double_call",
+        "triple",
+        "hold",
+        "hold_right",
+        "hold_assistant",
+        "latency",
+        "quality",
+        "find",
+        "head",
+        "rest",
+        "pickup",
+        "ear_tip",
+        "custom_eq",
+        "custom_save"
       ],
       "aliases": [
         "T0022",
         "T0022C"
-      ]
+      ],
+      "presets": {
+        "1": "Default",
+        "2": "Bass boost",
+        "3": "Treble boost",
+        "9": "Voices",
+        "10": "Lively",
+        "11": "Balanced",
+        "12": "Classical",
+        "13": "Movie",
+        "14": "Gaming",
+        "15": "Podcast",
+        "16": "Punchy",
+        "17": "Adaptive",
+        "18": "Natural",
+        "19": "Concert hall",
+        "25": "Shooter games"
+      },
+      "curves": {
+        "Symphony": [
+          15,
+          15,
+          10,
+          -5,
+          15,
+          25,
+          15,
+          -5,
+          50,
+          45
+        ],
+        "Hi-Fi Live": [
+          -5,
+          20,
+          30,
+          10,
+          0,
+          0,
+          -25,
+          -10,
+          10,
+          0
+        ]
+      }
     },
     {
       "id": "FreeArc",
@@ -687,7 +926,8 @@
         "modern_battery"
       ],
       "aliases": [
-        "FreeClip 2 Collector's Edition"
+        "FreeClip 2 Collector's Edition",
+        "FreeClip 2 典藏版"
       ]
     },
     {
@@ -742,6 +982,9 @@
       "source": "catalogue",
       "features": [
         "report_only"
+      ],
+      "aliases": [
+        "FreeBuds Pro 2 +"
       ]
     },
     {
@@ -760,6 +1003,9 @@
       "source": "catalogue",
       "features": [
         "report_only"
+      ],
+      "aliases": [
+        "FreeLace 活力版"
       ]
     },
     {
@@ -787,6 +1033,9 @@
       "source": "catalogue",
       "features": [
         "report_only"
+      ],
+      "aliases": [
+        "Eyewear 2"
       ]
     },
     {
@@ -824,6 +1073,38 @@
       "features": [
         "report_only"
       ]
+    },
+    {
+      "name": "FreeBuds 4E (open fit)",
+      "id": "FreeBuds 4E (open fit)",
+      "form": "EARBUDS",
+      "source": "capture_reference",
+      "features": [
+        "report_only"
+      ],
+      "aliases": [
+        "FreeBuds 4E 无降噪版"
+      ]
+    },
+    {
+      "name": "W Buds 2",
+      "id": "W Buds 2",
+      "form": "EARBUDS",
+      "source": "capture_reference",
+      "features": [
+        "report_only"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "W Buds",
+      "id": "W Buds",
+      "form": "EARBUDS",
+      "source": "capture_reference",
+      "features": [
+        "report_only"
+      ],
+      "aliases": []
     }
   ]
 }

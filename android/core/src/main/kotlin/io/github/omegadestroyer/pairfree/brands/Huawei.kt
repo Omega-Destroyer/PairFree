@@ -20,7 +20,7 @@ object HuaweiSpec : BrandSpec(Brand.HUAWEI) {
     override val officialApp = "HUAWEI AI Life"
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
-        HuaweiModels.fromName(name)?.takeUnless { it.model.reportOnly }?.let {
+        HuaweiModels.fromName(name)?.let {
             Paired(address, name, brand, Wire.SPP_UUID, it.id)
         }
 
@@ -69,8 +69,8 @@ private class HuaweiDriver(host: DriverHost, private val product: HuaweiProduct)
             appendLine("Firmware:        ${current.state.firmware?.version ?: "unknown"}")
             reportApp(info)
             appendLine()
-            appendLine("Validated replies to PairFree's settings reads (service and command):")
-            current.readsAnswered.forEach { appendLine("  $it") }
+            appendLine("The last answer to each of PairFree's reads (service and command, then tag=bytes in hex):")
+            current.reportLines.forEach { appendLine("  $it") }
         }
     }
 }

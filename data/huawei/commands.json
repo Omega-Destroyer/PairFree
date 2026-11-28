@@ -60,10 +60,16 @@
     "NOISE_READ": 11050,
     "MULTIPOINT_SET": 11054,
     "MULTIPOINT_READ": 11055,
+    "PICKUP_SET": 11073,
+    "PICKUP_READ": 11074,
+    "HD_CALL_SET": 11077,
+    "HD_CALL_READ": 11078,
     "EQ_SET": 11081,
     "EQ_READ": 11082,
     "RING": 11101,
     "RING_STATE": 11102,
+    "REST_SET": 11104,
+    "REST_READ": 11105,
     "LOW_LATENCY": 11116,
     "PINCH_SET": 11154,
     "PINCH_READ": 11155,
@@ -141,6 +147,12 @@
     "PINCH_READ": "public",
     "QUALITY_SET": "public",
     "QUALITY_READ": "public",
-    "KEYED_SETTING": "public"
+    "KEYED_SETTING": "public",
+    "PICKUP_SET": "LibreBuds",
+    "PICKUP_READ": "LibreBuds",
+    "HD_CALL_SET": "LibreBuds",
+    "HD_CALL_READ": "LibreBuds",
+    "REST_SET": "LibreBuds",
+    "REST_READ": "LibreBuds"
   }
 }

@@ -10,6 +10,8 @@ public class HuaweiProduct internal constructor(
     public val form: Form,
     internal val features: Set<String>,
     internal val presets: Map<Int, String>,
+    /** Sounds the maker's app makes itself: ten gains in tenths of a dB, written as a curve of the user's own. */
+    internal val curves: Map<String, List<Int>> = emptyMap(),
 ) {
     public val names: List<String> = listOf(name) + aliases
     public val model: Model = Model(id, names, "Huawei MBB", form = form, reportOnly = has("report_only"))

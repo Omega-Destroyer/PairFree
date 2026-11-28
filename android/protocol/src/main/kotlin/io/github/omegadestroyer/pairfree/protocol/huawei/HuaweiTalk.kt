@@ -34,9 +34,13 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         product.has("legacy_anc") -> huaweiRead(HuaweiCommand.LEGACY_NOISE_READ, 1)
         else -> null
     }
+    private val reportOnly = product.has("report_only")
+
     private val opening = buildList {
         add(batteryRead)
         add(huaweiRead(HuaweiCommand.VERSION, 7))
+        // A catalogue model has no profile: ask what the others answer, for its device report. Reads only; nothing is shown or written.
+        if (reportOnly) addAll(PROBE.map { (op, tags) -> huaweiRead(op, *tags) })
         noiseRead?.let(::add)
         if (product.has("anc") && product.has("legacy_anc")) add(huaweiRead(HuaweiCommand.LEGACY_NOISE_READ, 1))
         if (product.has("legacy_index")) add(huaweiRead(HuaweiCommand.LEGACY_INDEX_READ, 1))
@@ -74,7 +78,10 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
             if (pinchReports.isNotEmpty()) add(SettingGroup("hw_pinch", SettingTab.CONTROLS,
                 pinch.flatMap { slot -> pinchReports[slot]?.let(slot::rows).orEmpty() }))
             val switches = features.mapNotNull { feature ->
-                featureStates[feature]?.scalar(2)?.let { Setting.Toggle(feature.row, it == 1) }
+                featureStates[feature]?.scalar(2)?.let { value ->
+                    if (feature.choices.isEmpty()) Setting.Toggle(feature.row, value == 1)
+                    else Setting.Choice(feature.row, feature.choices[value], feature.choices.values.toList())
+                }
             }
             val headActions = HEAD_ACTIONS.mapNotNull { (key, tag) ->
                 featureStates[HuaweiFeature.HEAD]?.takeIf { it.scalar(2) == 1 }?.scalar(tag)?.let {
@@ -104,18 +111,42 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
             }
         }
 
-    /** Command IDs only. Device reports contain no raw payload, addresses, serials or custom names. */
-    public val readsAnswered: List<String> get() = buildList {
-        addAll(reports.keys.map { it.toString(16).padStart(4, '0') })
-        if (featureStates.isNotEmpty()) add("2bb4")
-        if (ringing.isNotEmpty()) add("2b5e")
-        if (pinchReports.isNotEmpty()) add("2b93")
+    /** The last answer to each of PairFree's reads, by command and the read's own selectors. */
+    private val answered = LinkedHashMap<String, HuaweiPacket>()
+
+    /**
+     * The device report's lines: command, then each field as tag=bytes. Only answers to PairFree's own reads are kept, none of
+     * which names a device: of the version reply the version number alone, and the custom equalizer slots with their names blanked.
+     */
+    public val reportLines: List<String> get() = answered.map { (key, packet) ->
+        "$key: " + packet.fields.joinToString(" ") { field ->
+            "${hex(field.tag)}=" + reported(packet.op, field).joinToString("") { hex(it.toInt() and 0xff) }
+        }
+    }
+
+    private fun hex(value: Int): String = value.toString(16).padStart(2, '0')
+
+    private fun reported(op: Int, field: HuaweiTlv): ByteArray = when {
+        op == HuaweiCommand.VERSION -> if (field.tag == 7) field.value.copyOf(minOf(field.value.size, 24)) else byteArrayOf()
+        op == HuaweiCommand.EQ_READ && field.tag == 8 -> HuaweiCustomEq.unnamed(field.value)
+        else -> field.value.copyOf()
+    }
+
+    private fun remember(packet: HuaweiPacket) {
+        if (opening.none { it.op == packet.op } && packet.op != HuaweiCommand.BATTERY_NOTIFY) return
+        val selectors = when (packet.op) {
+            HuaweiFeature.OP, HuaweiCommand.PINCH_READ ->
+                packet.fields.filter { it.tag == 1 || (packet.op == HuaweiCommand.PINCH_READ && it.tag == 2) }
+                    .joinToString("") { field -> "." + field.value.joinToString("") { hex(it.toInt() and 0xff) } }
+            else -> ""
+        }
+        answered[packet.op.toString(16).padStart(4, '0') + selectors] = packet
     }
 
     override fun start(): List<HuaweiPacket> = opening
     override fun poll(): List<HuaweiPacket> = listOf(batteryRead)
     override fun bytes(message: HuaweiPacket): ByteArray =
-        message.bytes(emptyLastTlvDeclaresValue = message.op == HuaweiCommand.TOUCH_ENABLE_READ && isRead(message))
+        message.bytes(emptyLastTlvDeclaresValue = message.op in BARE_READS && isRead(message))
     override fun answers(sent: HuaweiPacket, got: Any): Boolean {
         if (got !is HuaweiPacket) return false
         if (sent.op == HuaweiCommand.BATTERY && got.op == HuaweiCommand.BATTERY_NOTIFY) return true
@@ -137,13 +168,15 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
 
     override fun allowed(message: HuaweiPacket): Boolean =
         message.op !in HuaweiNever.ALL && message.service !in HuaweiNeverservice.ALL &&
-            (isRead(message) || isEqWrite(message) || permittedSettingsWrite(message))
+            (isRead(message) || (!reportOnly && (isEqWrite(message) || permittedSettingsWrite(message))))
 
     override fun feed(bytes: ByteArray): Fed {
         val packets = parser.feed(bytes)
         var changed = false
         for (packet in packets) {
             val op = packet.op
+            remember(packet)
+            if (reportOnly && op != HuaweiCommand.BATTERY && op != HuaweiCommand.BATTERY_NOTIFY && op != HuaweiCommand.VERSION) continue
             if (op == HuaweiCommand.BATTERY || op == HuaweiCommand.BATTERY_NOTIFY) {
                 if (updateBattery(packet)) {
                     reports[op] = packet
@@ -152,7 +185,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
             } else if (op == HuaweiFeature.OP) {
                 val feature = features.firstOrNull { it.code == packet.scalar(1) }
                 val value = packet.scalar(2)
-                if (feature != null && value in 0..1) {
+                if (feature != null && feature.accepts(value)) {
                     featureStates[feature] = packet
                     changed = true
                 }
@@ -270,8 +303,16 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     override fun change(change: SettingChange): List<HuaweiPacket>? {
         val key = change.key
         val mode = state.number(Command.ANC_MODE)
+        if (change is SettingChange.Choice) {
+            val feature = features.firstOrNull { it.row == key && it in featureStates && it.choices.isNotEmpty() }
+            val value = feature?.choices?.entries?.firstOrNull { it.value == change.option }?.key
+            if (feature != null && value != null) {
+                readBacks = listOf(feature.read())
+                return listOf(feature.write(value))
+            }
+        }
         if (change is SettingChange.Toggle) {
-            val feature = features.firstOrNull { it.row == key && it in featureStates }
+            val feature = features.firstOrNull { it.row == key && it in featureStates && it.choices.isEmpty() }
             if (feature != null) {
                 readBacks = listOf(feature.read())
                 return listOf(feature.write(change.on))
@@ -364,7 +405,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
                 val feature = features.firstOrNull { it.code == packet.scalar(1) } ?: return false
                 val report = featureStates[feature] ?: return false
                 val tags = packet.fields.map(HuaweiTlv::tag)
-                if (tags == listOf(1, 2)) packet.scalar(2) in 0..1
+                if (tags == listOf(1, 2)) feature.accepts(packet.scalar(2))
                 else feature == HuaweiFeature.HEAD && report.scalar(2) == 1 &&
                     HEAD_ACTIONS.values.any { tags == listOf(1, it) && report.scalar(it) != null && packet.scalar(it) in HEAD_CHOICES }
             }
@@ -417,7 +458,9 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     override val eqRestoresOnConnect: Boolean = false
     override val eqReportsState: Boolean get() = !product.has("eq_write_only")
     private val selections: Map<Int, String> get() = presets + namedSlots
-    override val eqPresetNames: List<String> get() = selections.values.toList()
+    /** The sounds the maker's app makes itself, offered where PairFree can write a curve of the user's own. */
+    private val curveNames: List<String> get() = if (customSlot != null) product.curves.keys.toList() else emptyList()
+    override val eqPresetNames: List<String> get() = if (reportOnly) emptyList() else selections.values.toList() + curveNames
     override val eqReport: BandEqReport? get() = reports[HuaweiCommand.EQ_READ]?.scalar(2)?.let { active ->
         val slot = slots?.singleOrNull { it.id == active }
         if (slot != null && slot.id == customSlot) slot.report()
@@ -426,9 +469,10 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     override val eqPresetGains: Map<String, List<Double>>
         get() = if (eqBandsHz.isEmpty()) emptyMap() else slots.orEmpty().associate { slot ->
             namedSlots.getValue(slot.id) to slot.gains.map { it / 10.0 }
-        }
-    override fun eqPresetFrames(name: String): List<ByteArray>? =
-        selections.entries.firstOrNull { it.value == name }?.key?.let { listOf(huaweiWrite(HuaweiCommand.EQ_SET, 1 to it).bytes()) }
+        } + product.curves.mapValues { (_, gains) -> gains.map { it / 10.0 } }
+    override fun eqPresetFrames(name: String): List<ByteArray>? = if (name in curveNames)
+        eqCustomFramesDb(product.curves.getValue(name).map { it / 10.0 }, 0)
+    else selections.entries.firstOrNull { it.value == name }?.key?.let { listOf(huaweiWrite(HuaweiCommand.EQ_SET, 1 to it).bytes()) }
     override fun eqCustomFrames(gains: List<Int>): List<ByteArray>? = eqCustomFramesDb(gains.map(Int::toDouble), 0)
     override fun eqCustomFramesDb(gains: List<Double>, preampDb: Int): List<ByteArray>? {
         val slot = customSlot ?: return null
@@ -451,5 +495,19 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         val VERSION_NUMBER = Regex("^[vV]?[0-9]{1,4}(?:\\.[0-9]{1,4}){1,4}(?![.0-9])")
         val LOCALE = Regex("[a-zA-Z]{2,3}([-_][a-zA-Z0-9]{2,8}){0,3}")
         val STANDARD_PRESETS = mapOf(1 to "Default", 2 to "Bass boost", 3 to "Treble boost", 9 to "Voices")
+
+        /** Reads whose request declares one byte it does not carry, as the vendor app sends them (the Studio's touch switch; LibreBuds). */
+        val BARE_READS = setOf(HuaweiCommand.TOUCH_ENABLE_READ, HuaweiCommand.HD_CALL_READ, HuaweiCommand.PICKUP_READ)
+
+        /** What a catalogue model is asked for its report: the settings' reads alone. */
+        val PROBE: List<Pair<Int, IntArray>> = listOf(
+            HuaweiCommand.NOISE_READ to intArrayOf(1), HuaweiCommand.LEGACY_NOISE_READ to intArrayOf(1),
+            HuaweiCommand.DOUBLE_TAP_READ to intArrayOf(1, 2, 3), HuaweiCommand.TRIPLE_TAP_READ to intArrayOf(1, 2),
+            HuaweiCommand.HOLD_READ to intArrayOf(1, 2, 3), HuaweiCommand.HOLD_CYCLE_READ to intArrayOf(1, 2),
+            HuaweiCommand.SWIPE_READ to intArrayOf(1, 2), HuaweiCommand.WEAR_READ to intArrayOf(1),
+            HuaweiCommand.LANGUAGE_READ to intArrayOf(1, 2, 3), HuaweiCommand.EQ_READ to intArrayOf(2),
+            HuaweiCommand.MULTIPOINT_READ to intArrayOf(1), HuaweiCommand.LOW_LATENCY to intArrayOf(2),
+            HuaweiCommand.QUALITY_READ to intArrayOf(1),
+        )
     }
 }

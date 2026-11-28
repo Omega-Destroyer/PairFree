@@ -20,7 +20,7 @@ object HuaweiSpec : BrandSpec(Brand.HUAWEI) {
     override val officialApp = "HUAWEI AI Life"
 
     override fun paired(address: String, name: String, uuids: List<String>): Paired? =
-        HuaweiModels.fromName(name)?.let {
+        (HuaweiModels.fromName(name) ?: HuaweiModels.unknown(name))?.let {
             Paired(address, name, brand, Wire.SPP_UUID, it.id)
         }
 
@@ -36,7 +36,8 @@ object HuaweiSpec : BrandSpec(Brand.HUAWEI) {
 
     override fun mayHaveEq(device: Paired): Boolean = product(device)?.mayHaveEq == true
 
-    private fun product(device: Paired): HuaweiProduct? = HuaweiModels.of(device.model) ?: HuaweiModels.fromName(device.name)
+    private fun product(device: Paired): HuaweiProduct? =
+        HuaweiModels.of(device.model) ?: HuaweiModels.fromName(device.name) ?: HuaweiModels.unknown(device.name)
 }
 
 private class HuaweiDriver(host: DriverHost, private val product: HuaweiProduct) : TalkDriver<HuaweiPacket, HuaweiTalk>(host) {

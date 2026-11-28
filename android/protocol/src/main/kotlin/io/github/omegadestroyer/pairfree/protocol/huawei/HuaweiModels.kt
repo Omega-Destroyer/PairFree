@@ -31,6 +31,18 @@ public object HuaweiModels {
 
     public fun of(id: String?): HuaweiProduct? = all.firstOrNull { it.id == id }
 
+    /** The words only Huawei's and Honor's audio products carry: a newer one than the table is listed for a report alone. */
+    private val LINES = listOf("FreeBuds", "FreeClip", "FreeLace", "FreeArc", "FlyPods")
+
+    /** A name of Huawei's that the table does not hold, as a product that is only read; null for any other name. */
+    public fun unknown(name: String): HuaweiProduct? {
+        val words = name.split(' ', '-', '_')
+        return if (words.none { word -> LINES.any { it.equals(word, ignoreCase = true) } }) null
+        else HuaweiProduct(UNKNOWN, name.trim(), emptyList(), Form.EARBUDS, setOf("report_only", "modern_battery"), emptyMap())
+    }
+
+    private const val UNKNOWN = "unknown"
+
     /** Standard SPP is used by many vendors. Only the known product names identify Huawei. */
     public fun fromName(name: String): HuaweiProduct? {
         val trimmed = name.trim()

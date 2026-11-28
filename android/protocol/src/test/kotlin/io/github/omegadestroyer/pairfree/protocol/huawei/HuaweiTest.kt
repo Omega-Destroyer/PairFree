@@ -5,6 +5,7 @@ import io.github.omegadestroyer.pairfree.protocol.Identify
 import io.github.omegadestroyer.pairfree.protocol.Maker
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
+import io.github.omegadestroyer.pairfree.protocol.deadControls
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -283,6 +284,39 @@ class HuaweiTest {
         val mermaid = talk("FreeBuds Pro")
         assertFalse(mermaid.allowed(query))
         assertFalse(mermaid.allowed(lock))
+    }
+
+    /** A session whose every read was answered with a plausible value. */
+    private fun answered(product: HuaweiProduct): HuaweiTalk {
+        val talk = HuaweiTalk(product)
+        val offered = byteArrayOf(-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        for (read in talk.start()) {
+            val op = read.service shl 8 or read.command
+            fun one(tag: Int, value: Int = 1) = HuaweiTlv(tag, byteArrayOf(value.toByte()))
+            val fields = when (op) {
+                0x0108 -> listOf(one(1, 80), HuaweiTlv(2, byteArrayOf(80, 81, 60)))
+                0x0107 -> listOf(HuaweiTlv(7, "1.2.3".encodeToByteArray()))
+                0x2b2a -> listOf(HuaweiTlv(1, byteArrayOf(0, 1)))
+                0x0c02 -> listOf(HuaweiTlv(1, "en-GB".encodeToByteArray()), HuaweiTlv(3, "en-GB,zh-CN".encodeToByteArray()))
+                0x2b4a -> listOf(one(1), one(2), HuaweiTlv(3, byteArrayOf(1, 2, 3, 5, 9)))
+                0x2bb4 -> listOf(read.fields.first(), one(2), one(3), one(4, 2))
+                0x2b93 -> listOf(read.fields[0], read.fields[1], one(3, 255), one(4, 255))
+                0x2b5e -> listOf(HuaweiTlv(2, byteArrayOf(read.fields.single().value.single(), 1)))
+                else -> read.fields.map { if (it.tag == 3) HuaweiTlv(3, offered) else one(it.tag) } +
+                    listOfNotNull(HuaweiTlv(3, offered).takeIf { op == 0x0120 || op == 0x2b17 }.takeIf { _ -> read.fields.none { it.tag == 3 } })
+            }
+            talk.feed(HuaweiPacket(read.service, read.command, fields).bytes())
+        }
+        return talk
+    }
+
+    /** Every control shown for every model writes something (ShownControls.kt). */
+    @Test fun everyShownControlWrites() {
+        val dead = HuaweiModels.all.flatMap { product ->
+            deadControls(product.name, { answered(product) }, { it.state }, { it.groups },
+                { talk, command, value -> talk.set(command, value) }, { talk, change -> talk.change(change)?.also { list -> assertTrue(list.all(talk::allowed), "${product.name} $change") } })
+        }
+        assertEquals(emptyList<String>(), dead)
     }
 
     private fun talk(name: String): HuaweiTalk = HuaweiTalk(checkNotNull(HuaweiModels.fromName(name)))

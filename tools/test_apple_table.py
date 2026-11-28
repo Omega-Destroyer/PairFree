@@ -21,7 +21,7 @@ class AppleTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(gen.load()["devices"]), s["models"])
-        self.assertEqual(["AirPods Max 2", "AirPods Pro 3"], s["tested"], "users' reports on Android 17 (issues #3 and #81)")
+        self.assertEqual(["AirPods Max 2", "AirPods Pro 2 (USB-C)", "AirPods Pro 3"], s["tested"], "users' reports on Android 17 (issues #3, #81 and #85)")
 
     def test_rows(self):
         rows = gen.rows(gen.load()["devices"])

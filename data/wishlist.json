@@ -42,6 +42,24 @@
       "brand": "motorola",
       "what": "Motorola Moto Buds (companion app com.motorola.motobuds): a new vendor. The issue holds a long protocol write-up from a user's reading of the app (RFCOMM service fc9d9fe0-4899-11ee-be56-0242ac120002 and BLE service fc9d9ff0-..., a PDU with a HEAD magic, CRC32 and an opcode registry); none of it is checked against the app or earbuds yet, and no Motorola APK is among the reference APKs.",
       "reported": "issue #80"
+    },
+    {
+      "id": "android-codec-switch",
+      "brand": "all",
+      "what": "Switch the phone between LDAC, AAC and SBC from PairFree. No public Android API lets an app set or read the codec in use; the earbuds' own LDAC switch is offered where a model has one.",
+      "reported": "issue #84"
+    },
+    {
+      "id": "dell-eb525",
+      "brand": "dell",
+      "what": "Dell Pro Plus earbuds EB525: a new vendor. PairFree does not list them, so no report can be made from the app; Dell's app is not among the reference APKs.",
+      "reported": "issue #87"
+    },
+    {
+      "id": "samsung-manager-holds-channel",
+      "brand": "samsung",
+      "what": "When a Samsung earbuds manager package (com.samsung.accessory.atticmgr and its siblings) is installed it holds the channel and PairFree's closes every few seconds; say so on the connect screen.",
+      "reported": "issue #73"
     }
   ]
 }

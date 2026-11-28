@@ -1,0 +1,25 @@
+Brand:           Apple (AirPods or Beats)
+Model:           AirPods Pro 2 (USB-C) (model number A3048)
+Firmware:        71.2256000021000000.6663
+App:             PairFree 0.18.0
+OS:              Android 17 (API 37, Google, build CP4A.261105.040.A1) _**(This report doesn't show that the OS is not stock Android and is rather GrapheneOS Build 2026111801)**_
+Captured:        2026-11-27 18:41 UTC
+
+Battery (count, then component, 01, level, status, 01 each), as hex:
+  03 04 01 64 01 01 02 01 64 01 01 08 01 64 01 01
+Settings the AirPods reported (control command id: value, as hex):
+  0d: 03
+  1b: 02
+  18: 00
+  17: 00
+  25: 01
+  23: 00
+  1f: 50 50
+  24: 20 03
+  28: 01
+  26: 01
+  29: 01
+  2c: 02
+  2f: 00
+  33: 00
+  2e: 32

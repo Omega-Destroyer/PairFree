@@ -1,5 +1,5 @@
 {
   "_about": "The owner's file (the release gate's hook refuses an agent's edits to it). ceilings: the most open entries the older audits may hold (python tools/gap_audit.py: gap-audit entries; data/doc_gaps_baseline.json: sentence-level gaps); lower them as the items are built, never raise them without a reason written in `why`. waived: items of data/completeness.json the owner lets a release go out without, each with `id`, `why` and `date`.",
   "ceilings": {"gap_audit_open": 4, "doc_gaps_baseline": 70},
-  "waived": []
+  "waived": [{"id": "soundcore-hearid-other", "why": "HearID 5 only tunes the AeroFit 2 Pro, which has presets and a custom equalizer; porting its library is a large job.", "date": "2026-11-27"}]
 }

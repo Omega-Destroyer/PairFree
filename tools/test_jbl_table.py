@@ -31,7 +31,7 @@ class JblTable(unittest.TestCase):
     def test_summary(self):
         s = gen.summary()
         self.assertEqual(len(self.data["devices"]), s["models"])
-        self.assertEqual(["Live Buds 3"], s["tested"], "the Live Buds 3, from a report in issue #4")
+        self.assertEqual(["Endurance Peak 4", "Live Buds 3", "Tour Pro 3"], s["tested"], "users' reports (issues #4, #86 and #1)")
 
     def test_rows(self):
         flex2 = self.row("210E")

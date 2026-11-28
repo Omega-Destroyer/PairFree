@@ -138,7 +138,9 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
         val p = message.payload
         if (p.isEmpty() || message.dataType == SonyWire.ACK) return false
         val table = if (message.dataType == SonyWire.TABLE2) 2 else 1
-        _replies["$table ${p.u8(0).hex2()}${if (p.size > 1) " " + p.u8(1).hex2() else ""}"] = p.copyOf()
+        // Table 2's paired devices (30 to 3D) hold other devices' names and addresses: the report keeps four bytes of them.
+        val kept = if (table == 2 && p.u8(0) in PERIPHERAL) p.copyOf(minOf(p.size, 4)) else p.copyOf()
+        _replies["$table ${p.u8(0).hex2()}${if (p.size > 1) " " + p.u8(1).hex2() else ""}"] = kept
         val before = Snapshot(state, groups)
         if (table == 2) {
             if (tableSet == 1 && (p.u8(0) == S1T2.VOICE_GUIDANCE_RET_PARAM || p.u8(0) == S1T2.VOICE_GUIDANCE_NTFY_PARAM) &&
@@ -813,6 +815,7 @@ public class SonySession(tableSet: Int, public val model: SonyModel? = null) : S
     private fun Int.hex2(): String = toString(16).padStart(2, '0')
 
     public companion object {
+        private val PERIPHERAL = 0x30..0x3D
         private val S1 = SonyCommand.Set1
         private val S1T2 = SonyCommand.Set1Table2
         private val S2 = SonyCommand.Set2

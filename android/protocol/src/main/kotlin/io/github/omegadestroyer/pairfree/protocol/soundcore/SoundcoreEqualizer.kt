@@ -202,6 +202,10 @@ public object SoundcoreEqualizer {
             "drc" -> listOf(w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); eq(target); target.channels.forEach { drc(it) } })
             "a3388" -> listOf(w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); eq(target) })
             "a3876" -> listOf(w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); curve(first(target)); drc(first(target)) })
+            // The AeroFit 2 Pro keeps a curve for two earbuds and one for a single earbud (`A3875CmdService.r6`); both get the one chosen.
+            "a3875" -> listOf(
+                w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); repeat(2) { curve(first(target)); drc(first(target)) } },
+            )
             "hear_id", "hear_id_forced" -> listOf(hearIdPacket(w, spec, target, hearId!!, gender, age))
             "a3035" -> listOf(
                 w.packet(SET_EQUALIZER_WITH_HEAR_ID) {

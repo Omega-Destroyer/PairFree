@@ -758,7 +758,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(57, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10, the Life Q20+, the Liberty 4 and the Space 2")
+        assertEquals(69, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10, the Life Q20+, the Liberty 4, the Space 2 and twelve more read from the app 2026-11-27")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!

@@ -1,5 +1,5 @@
 {
- "_about": "Equalizer preset sets for Soundcore models, by the name each model's eq.presets uses in devices.json. custom_preset is the preset number of a custom curve (null: the model has none), band_hz the visible bands, hidden_bands the values sent for bands past them with a custom curve, custom_range the slider range of a custom curve, each in the model's own units. Presets carry their number, OpenSCQ30's key, an English name and the curve the app sends.",
+ "_about": "Equalizer preset sets for Soundcore models, by the name each model's eq.presets uses in devices.json. custom_preset is the preset number of a custom curve (null: the model has none), band_hz the visible bands, hidden_bands the values sent for bands past them with a custom curve, custom_range the slider range of a custom curve, each in the model's own units. Presets carry their number, OpenSCQ30's key, an English name and the curve the app sends. aero2 (AeroFit, AeroFit Pro, V30i), aero3 (the AeroFit 2 pair) and k20i are the Soundcore app 5.0.35's tables (AeroNew2/AeroNew3/K20IEQGainValues, with their command positions).",
  "source": {
   "project": "OpenSCQ30",
   "url": "https://github.com/Oppzippy/OpenSCQ30",
@@ -4591,6 +4591,1197 @@
       60,
       50,
       40,
+      0,
+      -120
+     ]
+    }
+   ]
+  },
+  "aero2": {
+   "custom_preset": 65278,
+   "band_hz": [
+    100,
+    200,
+    400,
+    800,
+    1600,
+    3200,
+    6400,
+    12800
+   ],
+   "hidden_bands": [
+    0,
+    0
+   ],
+   "custom_range": [
+    -60,
+    60
+   ],
+   "presets": [
+    {
+     "id": 0,
+     "key": "SoundcoreSignature",
+     "name": "Soundcore Signature",
+     "values": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 1,
+     "key": "Acoustic",
+     "name": "Acoustic",
+     "values": [
+      40,
+      10,
+      20,
+      20,
+      40,
+      40,
+      40,
+      20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 2,
+     "key": "BassBooster",
+     "name": "Bass Booster",
+     "values": [
+      40,
+      30,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 30,
+     "key": "VolumeBooster",
+     "name": "Volume Booster",
+     "values": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      60,
+      50,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 4,
+     "key": "Classical",
+     "name": "Classical",
+     "values": [
+      30,
+      30,
+      -20,
+      -20,
+      0,
+      20,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 19,
+     "key": "Podcast",
+     "name": "Podcast",
+     "values": [
+      -30,
+      -20,
+      10,
+      20,
+      20,
+      10,
+      0,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 6,
+     "key": "Dance",
+     "name": "Dance",
+     "values": [
+      20,
+      -30,
+      -10,
+      10,
+      20,
+      20,
+      10,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 7,
+     "key": "Deep",
+     "name": "Deep",
+     "values": [
+      20,
+      10,
+      30,
+      30,
+      20,
+      -20,
+      -40,
+      -50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 8,
+     "key": "Electronic",
+     "name": "Electronic",
+     "values": [
+      30,
+      20,
+      -20,
+      20,
+      10,
+      20,
+      30,
+      30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 9,
+     "key": "Flat",
+     "name": "Flat",
+     "values": [
+      -20,
+      -20,
+      -10,
+      0,
+      0,
+      0,
+      -20,
+      -20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 10,
+     "key": "HipHop",
+     "name": "Hip Hop",
+     "values": [
+      20,
+      30,
+      -10,
+      -10,
+      20,
+      -10,
+      20,
+      30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 11,
+     "key": "Jazz",
+     "name": "Jazz",
+     "values": [
+      20,
+      20,
+      -20,
+      -20,
+      0,
+      20,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 12,
+     "key": "Latin",
+     "name": "Latin",
+     "values": [
+      0,
+      0,
+      -20,
+      -20,
+      -20,
+      0,
+      30,
+      50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 13,
+     "key": "Lounge",
+     "name": "Lounge",
+     "values": [
+      -10,
+      20,
+      40,
+      30,
+      0,
+      -20,
+      20,
+      10,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 14,
+     "key": "Piano",
+     "name": "Piano",
+     "values": [
+      0,
+      30,
+      30,
+      20,
+      40,
+      50,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 15,
+     "key": "Pop",
+     "name": "Pop",
+     "values": [
+      -10,
+      10,
+      30,
+      30,
+      10,
+      -10,
+      -20,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 16,
+     "key": "RnB",
+     "name": "RnB",
+     "values": [
+      60,
+      20,
+      -20,
+      -20,
+      20,
+      30,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 17,
+     "key": "Rock",
+     "name": "Rock",
+     "values": [
+      30,
+      20,
+      -10,
+      -10,
+      10,
+      30,
+      40,
+      50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 18,
+     "key": "SmallSpeakers",
+     "name": "Small Speakers",
+     "values": [
+      40,
+      30,
+      10,
+      0,
+      -20,
+      -30,
+      -40,
+      -40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 5,
+     "key": "SpokenWord",
+     "name": "Spoken Word",
+     "values": [
+      -30,
+      20,
+      40,
+      40,
+      30,
+      20,
+      0,
+      -20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 20,
+     "key": "TrebleBooster",
+     "name": "Treble Booster",
+     "values": [
+      0,
+      0,
+      -20,
+      0,
+      -10,
+      -50,
+      50,
+      10,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 21,
+     "key": "TrebleReducer",
+     "name": "Treble Reducer",
+     "values": [
+      0,
+      0,
+      0,
+      -20,
+      -30,
+      -40,
+      -40,
+      -60,
+      0,
+      -120
+     ]
+    }
+   ]
+  },
+  "aero3": {
+   "custom_preset": 65278,
+   "band_hz": [
+    100,
+    200,
+    400,
+    800,
+    1600,
+    3200,
+    6400,
+    12800
+   ],
+   "hidden_bands": [
+    0,
+    0
+   ],
+   "custom_range": [
+    -60,
+    60
+   ],
+   "presets": [
+    {
+     "id": 0,
+     "key": "SoundcoreSignature",
+     "name": "Soundcore Signature",
+     "values": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 1,
+     "key": "Balanced",
+     "name": "Balanced",
+     "values": [
+      32,
+      -6,
+      -18,
+      20,
+      -7,
+      -52,
+      12,
+      5,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 2,
+     "key": "BassBooster",
+     "name": "Bass Booster",
+     "values": [
+      40,
+      30,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 30,
+     "key": "VolumeBooster",
+     "name": "Volume Booster",
+     "values": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      60,
+      50,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 4,
+     "key": "Classical",
+     "name": "Classical",
+     "values": [
+      30,
+      30,
+      -20,
+      -20,
+      0,
+      20,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 19,
+     "key": "Podcast",
+     "name": "Podcast",
+     "values": [
+      8,
+      -16,
+      2,
+      4,
+      9,
+      -40,
+      8,
+      -8,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 6,
+     "key": "Dance",
+     "name": "Dance",
+     "values": [
+      20,
+      -30,
+      -10,
+      10,
+      20,
+      20,
+      10,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 7,
+     "key": "Deep",
+     "name": "Deep",
+     "values": [
+      20,
+      10,
+      30,
+      30,
+      20,
+      -20,
+      -40,
+      -50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 8,
+     "key": "Electronic",
+     "name": "Electronic",
+     "values": [
+      30,
+      20,
+      -20,
+      20,
+      10,
+      20,
+      30,
+      30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 9,
+     "key": "Flat",
+     "name": "Flat",
+     "values": [
+      -20,
+      -20,
+      -10,
+      0,
+      0,
+      0,
+      -20,
+      -20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 10,
+     "key": "HipHop",
+     "name": "Hip Hop",
+     "values": [
+      20,
+      30,
+      -10,
+      -10,
+      20,
+      -10,
+      20,
+      30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 11,
+     "key": "Jazz",
+     "name": "Jazz",
+     "values": [
+      20,
+      20,
+      -20,
+      -20,
+      0,
+      20,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 12,
+     "key": "Latin",
+     "name": "Latin",
+     "values": [
+      0,
+      0,
+      -20,
+      -20,
+      -20,
+      0,
+      30,
+      50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 13,
+     "key": "Lounge",
+     "name": "Lounge",
+     "values": [
+      -10,
+      20,
+      40,
+      30,
+      0,
+      -20,
+      20,
+      10,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 14,
+     "key": "Piano",
+     "name": "Piano",
+     "values": [
+      0,
+      30,
+      30,
+      20,
+      40,
+      50,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 15,
+     "key": "Pop",
+     "name": "Pop",
+     "values": [
+      -10,
+      10,
+      30,
+      30,
+      10,
+      -10,
+      -20,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 16,
+     "key": "RnB",
+     "name": "RnB",
+     "values": [
+      60,
+      20,
+      -20,
+      -20,
+      20,
+      30,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 17,
+     "key": "Rock",
+     "name": "Rock",
+     "values": [
+      40,
+      -6,
+      -24,
+      16,
+      -10,
+      -45,
+      27,
+      5,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 18,
+     "key": "SmallSpeakers",
+     "name": "Small Speakers",
+     "values": [
+      40,
+      30,
+      10,
+      0,
+      -20,
+      -30,
+      -40,
+      -40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 5,
+     "key": "SpokenWord",
+     "name": "Spoken Word",
+     "values": [
+      -30,
+      20,
+      40,
+      40,
+      30,
+      20,
+      0,
+      -20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 20,
+     "key": "TrebleBooster",
+     "name": "Treble Booster",
+     "values": [
+      0,
+      0,
+      -20,
+      0,
+      -10,
+      -50,
+      50,
+      10,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 21,
+     "key": "TrebleReducer",
+     "name": "Treble Reducer",
+     "values": [
+      0,
+      0,
+      0,
+      -20,
+      -30,
+      -40,
+      -40,
+      -60,
+      0,
+      -120
+     ]
+    }
+   ]
+  },
+  "k20i": {
+   "custom_preset": 65278,
+   "band_hz": [
+    100,
+    200,
+    400,
+    800,
+    1600,
+    3200,
+    6400,
+    12800
+   ],
+   "hidden_bands": [
+    0,
+    0
+   ],
+   "custom_range": [
+    -60,
+    60
+   ],
+   "presets": [
+    {
+     "id": 0,
+     "key": "SoundcoreSignature",
+     "name": "Soundcore Signature",
+     "values": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 1,
+     "key": "Acoustic",
+     "name": "Acoustic",
+     "values": [
+      40,
+      10,
+      20,
+      20,
+      40,
+      40,
+      40,
+      20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 2,
+     "key": "BassBooster",
+     "name": "Bass Booster",
+     "values": [
+      40,
+      30,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 3,
+     "key": "BassReducer",
+     "name": "Bass Reducer",
+     "values": [
+      0,
+      -50,
+      -60,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 4,
+     "key": "Classical",
+     "name": "Classical",
+     "values": [
+      30,
+      30,
+      -20,
+      -20,
+      0,
+      20,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 5,
+     "key": "Podcast",
+     "name": "Podcast",
+     "values": [
+      -30,
+      20,
+      40,
+      40,
+      30,
+      20,
+      0,
+      -20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 6,
+     "key": "Dance",
+     "name": "Dance",
+     "values": [
+      20,
+      -30,
+      -10,
+      10,
+      20,
+      20,
+      10,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 7,
+     "key": "Deep",
+     "name": "Deep",
+     "values": [
+      20,
+      10,
+      30,
+      30,
+      20,
+      -20,
+      -40,
+      -50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 8,
+     "key": "Electronic",
+     "name": "Electronic",
+     "values": [
+      30,
+      20,
+      -20,
+      20,
+      10,
+      20,
+      30,
+      30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 9,
+     "key": "Flat",
+     "name": "Flat",
+     "values": [
+      -20,
+      -20,
+      -10,
+      0,
+      0,
+      0,
+      -20,
+      -20,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 10,
+     "key": "HipHop",
+     "name": "Hip Hop",
+     "values": [
+      20,
+      30,
+      -10,
+      -10,
+      20,
+      -10,
+      20,
+      30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 11,
+     "key": "Jazz",
+     "name": "Jazz",
+     "values": [
+      20,
+      20,
+      -20,
+      -20,
+      0,
+      20,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 12,
+     "key": "Latin",
+     "name": "Latin",
+     "values": [
+      0,
+      0,
+      -20,
+      -20,
+      -20,
+      0,
+      30,
+      50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 13,
+     "key": "Lounge",
+     "name": "Lounge",
+     "values": [
+      -10,
+      20,
+      40,
+      30,
+      0,
+      -20,
+      20,
+      10,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 14,
+     "key": "Piano",
+     "name": "Piano",
+     "values": [
+      0,
+      30,
+      30,
+      20,
+      40,
+      50,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 15,
+     "key": "Pop",
+     "name": "Pop",
+     "values": [
+      -10,
+      10,
+      30,
+      30,
+      10,
+      -10,
+      -20,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 16,
+     "key": "RnB",
+     "name": "RnB",
+     "values": [
+      60,
+      20,
+      -20,
+      -20,
+      20,
+      30,
+      30,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 17,
+     "key": "Rock",
+     "name": "Rock",
+     "values": [
+      30,
+      20,
+      -10,
+      -10,
+      10,
+      30,
+      40,
+      50,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 18,
+     "key": "SmallSpeakers",
+     "name": "Small Speakers",
+     "values": [
+      40,
+      30,
+      10,
+      0,
+      -20,
+      -30,
+      -40,
+      -40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 19,
+     "key": "SpokenWord",
+     "name": "Spoken Word",
+     "values": [
+      -30,
+      -20,
+      10,
+      20,
+      20,
+      10,
+      0,
+      -30,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 20,
+     "key": "TrebleBooster",
+     "name": "Treble Booster",
+     "values": [
+      -20,
+      -20,
+      -20,
+      -10,
+      10,
+      20,
+      20,
+      40,
+      0,
+      -120
+     ]
+    },
+    {
+     "id": 21,
+     "key": "TrebleReducer",
+     "name": "Treble Reducer",
+     "values": [
+      0,
+      0,
+      0,
+      -20,
+      -30,
+      -40,
+      -40,
+      -60,
       0,
       -120
      ]

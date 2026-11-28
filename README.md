@@ -19,7 +19,7 @@ does what the Android app does for the same earbuds, in a window made for a mous
 | **Android** 12 or later | [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) or the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest) (the same signed APK) |
 | **Windows** 10 or 11, 64-bit | `PairFree.exe` from the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest). Put it anywhere and run it. |
 
-Latest release: v0.18.1. Your earbuds must be paired in the phone's or PC's Bluetooth settings first. A few brands need a newer Android:
+Latest release: v0.19.0. Your earbuds must be paired in the phone's or PC's Bluetooth settings first. A few brands need a newer Android:
 AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel
 ([AirPods and Beats](docs/devices/apple.md)); they are not on Windows.
 

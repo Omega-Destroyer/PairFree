@@ -816,7 +816,8 @@ keeping a result writes back what the earbuds held.
 The Flutter test (Liberty 4 Pro family and Liberty 5): blocked: its gains come from a trained network the app bundles, which the owner decided (2026-11-27)
 PairFree does not ship; checked: `NL2Util` (native, `assets/model_parameters`), the Dart code of `hearing_test_vm`.
 
-**Not built:** HearID 5 (AeroFit 2 Pro) (open: data/completeness.json, `soundcore-hearid-other`). The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
+**Not built:** HearID 5 (AeroFit 2 Pro), left out for now by the owner's decision (2026-11-27) and still open (data/completeness.json, `soundcore-hearid-other`);
+checked: `HidAppWrapper` (native), the exported symbols of `libhid_app.so` (a preference agent), the A3875 `hearid5` screens. The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
 microphone permission.
 
 ## Charging cases (2026-11-27)

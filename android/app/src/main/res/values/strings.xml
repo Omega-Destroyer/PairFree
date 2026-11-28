@@ -2286,6 +2286,10 @@
     <string name="setting_hw_peer_preferred">Preferred device</string>
     <string name="setting_hw_peer_auto_on">Connect automatically</string>
     <string name="setting_hw_peer_auto_off">Stop connecting automatically</string>
+    <string name="setting_hw_eq_delete">Delete a saved sound</string>
+    <string name="setting_hw_eq_delete_body">Delete the sound %1$s from the earbuds? This cannot be undone.</string>
+    <string name="setting_hw_eq_delete_confirm">Delete</string>
+    <string name="setting_hw_saved_sounds">Saved on the earbuds</string>
     <string name="setting_hw_rest">Rest reminders</string>
     <string name="setting_hw_hd_call">HD calls</string>
     <string name="setting_hw_pickup">Pickup mode</string>

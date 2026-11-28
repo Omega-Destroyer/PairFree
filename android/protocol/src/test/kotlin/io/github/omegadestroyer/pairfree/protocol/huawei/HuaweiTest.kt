@@ -281,6 +281,16 @@ class HuaweiTest {
         assertTrue(pro.reportLines.none { it.startsWith("2b31") })
     }
 
+    @Test fun aSavedSoundIsDeletedWithItsOwnRecord() {
+        val pro = talk("FreeBuds Pro 3")
+        val record = byteArrayOf(100, 10) + ByteArray(10) { it.toByte() } + "Mine".encodeToByteArray().copyOf(24)
+        pro.receive(huaweiPacket(0x2b4a, listOf(HuaweiTlv(2, byteArrayOf(100)), HuaweiTlv(8, record))))
+        val delete = pro.change(SettingChange.Choice("hw_eq_delete", "Custom 1: Mine"))!!.single()
+        assertEquals(2, delete.scalar(5))
+        assertEquals(100, delete.scalar(1))
+        assertTrue(pro.allowed(delete))
+    }
+
     @Test fun theNewSwitchesAndEarTipsWaitForTheirReads() {
         val pro = talk("FreeBuds Pro 5")
         assertNull(pro.change(SettingChange.Toggle("hw_rest", true)))

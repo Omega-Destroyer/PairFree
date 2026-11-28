@@ -109,6 +109,9 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
                 awarenessLevel()?.let { add(Setting.Level("hw_awareness_level", it, 0, 10)) }
             }
             if (noise.isNotEmpty()) add(SettingGroup("noise", SettingTab.HOME, noise))
+            val saved = deletable()
+            if (saved.isNotEmpty()) add(SettingGroup("hw_saved_sounds", SettingTab.SOUND,
+                listOf(Setting.Choice(DELETE_SOUND, null, saved.keys.toList()))))
             val hosts = peers.rows()
             if (hosts.isNotEmpty()) add(SettingGroup("hw_peers", SettingTab.DEVICE, hosts))
             val languages = languages()
@@ -320,6 +323,11 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
     override fun change(change: SettingChange): List<HuaweiPacket>? {
         val key = change.key
         val mode = state.number(Command.ANC_MODE)
+        if (change is SettingChange.Choice && key == DELETE_SOUND) {
+            val slot = deletable()[change.option] ?: return null
+            readBacks = eqReadBack()
+            return listOf(HuaweiCustomEq.delete(HuaweiCommand.EQ_SET, slot))
+        }
         if (change is SettingChange.Choice && key in HuaweiPeers.KEYS) {
             val write = peers.change(key, change.option) ?: return null
             // The change shows in the list a moment later; the earbuds also say when it has.
@@ -513,8 +521,14 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         return HuaweiCustomEq.frame(HuaweiCommand.EQ_SET, slot, operation, gains)?.let { listOf(it.bytes()) }
     }
 
+    /** The curves saved on the earbuds that can be removed, by the names the equalizer shows them under. */
+    private fun deletable(): Map<String, HuaweiCustomEq.Slot> =
+        if (reportOnly || customOperation == null) emptyMap()
+        else slots.orEmpty().associateBy { namedSlots.getValue(it.id) }
+
     public fun isEqWrite(packet: HuaweiPacket): Boolean {
         if (packet.op != HuaweiCommand.EQ_SET) return false
+        if (deletable().values.any { slot -> HuaweiCustomEq.delete(HuaweiCommand.EQ_SET, slot).bytes().contentEquals(packet.bytes()) }) return true
         if (packet.fields.size == 1) return packet.scalar(1) in selections
         val slot = customSlot ?: return false
         val operation = customOperation ?: return false
@@ -530,6 +544,7 @@ public class HuaweiTalk(private val product: HuaweiProduct) : SessionTalk<Huawei
         val STANDARD_PRESETS = mapOf(1 to "Default", 2 to "Bass boost", 3 to "Treble boost", 9 to "Voices")
 
         const val SCENE = "hw_spatial_scene"
+        const val DELETE_SOUND = "hw_eq_delete"
         val SCENES = mapOf(0 to "hw_scene_default", 1 to "hw_scene_theater", 2 to "hw_scene_cinema", 3 to "hw_scene_hall")
 
         /** Reads whose request declares one byte it does not carry, as the vendor app sends them (the Studio's touch switch; LibreBuds). */

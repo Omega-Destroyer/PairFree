@@ -51,6 +51,14 @@ internal object HuaweiCustomEq {
         ))
     }
 
+    private const val DELETE = 2
+
+    /** Removes a saved slot: its own record back with operation 2 (LibreBuds, `EqOperation.DELETE`). */
+    fun delete(op: Int, slot: Slot): HuaweiPacket = huaweiPacket(op, listOf(
+        HuaweiTlv(1, byteArrayOf(slot.id.toByte())), HuaweiTlv(2, byteArrayOf(bands.size.toByte())), HuaweiTlv(5, byteArrayOf(DELETE.toByte())),
+        HuaweiTlv(3, ByteArray(bands.size) { slot.gains[it].toByte() }), HuaweiTlv(4, slot.name.encodeToByteArray()),
+    ))
+
     fun allows(packet: HuaweiPacket, slot: Int, operation: Int): Boolean =
         packet.fields.map(HuaweiTlv::tag) == listOf(1, 2, 5, 3, 4) && packet.scalar(1) == slot &&
             packet.scalar(2) == bands.size && packet.scalar(5) == operation &&

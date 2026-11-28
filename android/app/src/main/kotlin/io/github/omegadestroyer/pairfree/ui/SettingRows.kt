@@ -135,10 +135,11 @@ internal fun SettingGroups(groups: List<SettingGroup>, tab: SettingTab, onChange
         )
     }
     confirmingChoice?.let { change ->
+        val sound = change.key == "hw_eq_delete"
         ConfirmDialog(
             title = settingTitle(change.key),
-            body = stringResource(R.string.setting_sh_peer_delete_body, change.option),
-            confirm = stringResource(R.string.setting_sh_peer_delete_confirm),
+            body = stringResource(if (sound) R.string.setting_hw_eq_delete_body else R.string.setting_sh_peer_delete_body, change.option),
+            confirm = stringResource(if (sound) R.string.setting_hw_eq_delete_confirm else R.string.setting_sh_peer_delete_confirm),
             onConfirm = { onChange(change) },
             onDismiss = { confirmingChoice = null },
             destructive = true,
@@ -252,7 +253,7 @@ private val TOUCH_SIDES = setOf("left", "right", "whole", "case", "dial")
 
 /** Actions the user confirms first: restarting and powering off the earbuds (EarFun's). */
 /** Choices whose pick the user confirms first: deleting a paired device from the earbuds' list. */
-private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove")
+private val CONFIRM_CHOICES = setOf("sh_peer_delete", "bose_peer_delete", "sc_peer_delete", "sc_dongle_remove", "hw_eq_delete")
 
 private val CONFIRM_KEYS = setOf("restart", "power_off", "sh_personalized_reset", "jbl_case_saver_remove", "sc_neck_clear", "sc_hear_id_delete")
 
@@ -325,6 +326,7 @@ private fun groupTitle(key: String): String = stringResource(
         "oneplus_sound_switches" -> R.string.setting_group_sound
         "oneplus_head_motion" -> R.string.setting_group_head_motion
         "oneplus_peers", "sc_peers", "hw_peers" -> R.string.setting_group_peers
+        "hw_saved_sounds" -> R.string.setting_hw_saved_sounds
         else -> R.string.setting_group_other
     },
 )
@@ -781,6 +783,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "bose_peer_connect", "sc_peer_connect", "hw_peer_connect" -> stringResource(R.string.setting_bose_peer_connect)
     "bose_peer_disconnect", "sc_peer_disconnect", "hw_peer_disconnect" -> stringResource(R.string.setting_bose_peer_disconnect)
     "hw_peer_preferred" -> stringResource(R.string.setting_hw_peer_preferred)
+    "hw_eq_delete" -> stringResource(R.string.setting_hw_eq_delete)
     "hw_peer_auto_on" -> stringResource(R.string.setting_hw_peer_auto_on)
     "hw_peer_auto_off" -> stringResource(R.string.setting_hw_peer_auto_off)
     "bose_peer_delete", "sc_peer_delete" -> stringResource(R.string.setting_sh_peer_delete)

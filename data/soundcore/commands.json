@@ -34,6 +34,8 @@
      "note": "Body: 1 on, 0 off."},
     {"id": "surround_sound", "command": "0286", "source": "openscq30", "confirmed": ["A3936", "A3959"],
      "note": "3D sound in the Soundcore app. Body: 1 on, 0 off."},
+    {"id": "equalizer_preset", "command": "0201", "source": "soundcore_app",
+     "note": "The Life NC's equalizer preset by number: no body to ask; the reply's one byte is 0 original, 1 bass boost, 2 office (Soundcore 3.3.0 `A3201DeviceManager.T`, `A3201EQPresenter`)."},
     {"id": "equalizer", "command": "0281", "source": "openscq30",
      "note": "The EQ without correction: the preset number, then each earbud's curve. The Motion+ (A3116) takes only a one-byte preset number here. Layout: docs/soundcore/PROTOCOL.md section 8."},
     {"id": "equalizer_with_drc", "command": "0283", "source": "openscq30", "confirmed": ["A6611"],

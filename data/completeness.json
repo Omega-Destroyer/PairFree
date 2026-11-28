@@ -1087,11 +1087,55 @@
       "id": "soundcore-missing-eq",
       "brand": "soundcore",
       "models": [
-        "A3004C, A3012, A300B, A3201, A3600, A3850, A3871, A3872, A3873, A3874, A3875, A3994, A6610, D1200, D1301, D1302, D1303"
+        "A3004C, A3012, A300B, A3201, A3600, A3850, A3871, A3872, A3873, A3874, A3875, A3994, A6610, D1200"
       ],
-      "status": "open",
-      "what": "These models have no equalizer in PairFree. For some their notes say why (A3201, A3994, D1200) or that the block was skipped (A3012, A3850, A3874, A3875, A6610); the rest say nothing. Whether the app offers one on each has not been checked model by model.",
+      "status": "built",
+      "what": "The equalizer on fourteen models that had none, from the app's own write paths and preset tables; the Life NC's three presets as a choice. Not tried. The Sleep earbuds are soundcore-sleep-eq.",
       "reported": "HearID worked through, 2026-11-27"
+    },
+    {
+      "id": "soundcore-sleep-eq",
+      "brand": "soundcore",
+      "models": [
+        "Sleep A30 (D1301), Sleep Earbuds 4 pair (D1302, D1303)"
+      ],
+      "status": "not-applicable",
+      "what": "An equalizer on the Sleep earbuds. Their screens have none.",
+      "reported": "missing equalizers worked through, 2026-11-27",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1301",
+          "what": "no sound effects or equalizer screen is opened from any of its classes"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302",
+          "what": "no sound effects or equalizer screen is opened from any of its classes"
+        },
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1303",
+          "what": "no sound effects or equalizer screen is opened from any of its classes"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1301",
+          "glob": ".*\\.java$",
+          "pattern": "SoundEffects|EqActivity|EQActivity|typeEQ|setEqDetails",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1302",
+          "glob": ".*\\.java$",
+          "pattern": "SoundEffects|EqActivity|EQActivity|typeEQ|setEqDetails",
+          "expect": "none"
+        },
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/oceanwing/soundcore/activity/d1303",
+          "glob": ".*\\.java$",
+          "pattern": "SoundEffects|EqActivity|EQActivity|typeEQ|setEqDetails",
+          "expect": "none"
+        }
+      ]
     },
     {
       "id": "soundcore-hearid",
@@ -1121,11 +1165,36 @@
       "id": "soundcore-hearid-other",
       "brand": "soundcore",
       "models": [
-        "AeroFit 2 Pro (A3875, HearID 5); Liberty 4 Pro family and Liberty 5 (Flutter)"
+        "AeroFit 2 Pro (A3875, HearID 5)"
       ],
       "status": "open",
-      "what": "HearID 5 (the AeroFit 2 Pro, libhid_app.so, not analysed) and the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones). The Flutter test's thresholds become gains through NL2Util.nl2Calculate (libscnativelib.so) with a trained network whose weights the app bundles (assets/model_parameters): whether PairFree may ship or replace those is the owner's decision.",
+      "what": "HearID 5, whose logic is in libhid_app.so: not analysed.",
       "reported": "HearID worked through, 2026-11-27"
+    },
+    {
+      "id": "soundcore-hearid-flutter",
+      "brand": "soundcore",
+      "models": [
+        "Liberty 4 Pro family and Liberty 5 (the Flutter hearing test)"
+      ],
+      "status": "blocked",
+      "what": "The Flutter hearing test. Its thresholds become gains through a trained network whose weights the app bundles; the owner decided on 2026-11-27 that PairFree does not ship them.",
+      "reported": "HearID worked through, 2026-11-27",
+      "rule": "a decision the owner has reserved",
+      "read": [
+        {
+          "path": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/nl2/NL2Util.java",
+          "what": "nl2Calculate, native, loads assets/model_parameters"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/SOUNDCORE-unpacker-2026-11-19/fresh-run/decompiled/sources/com/anker/nl2",
+          "glob": "NL2Util\\.java$",
+          "pattern": "model_parameters",
+          "expect": "some"
+        }
+      ]
     },
     {
       "id": "soundcore-personal-anc",

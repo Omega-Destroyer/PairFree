@@ -919,7 +919,7 @@
         ["skip", 4],
         ["serial", 16]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3201DeviceManager and A3201CmdConstants), not tried on the headphones. The older protocol the Life NC speaks has one request, `01 09`, that returns its whole state in a frame without a checksum: the level (0 to 5), the vibration switch, the custom button function (skipped), the volume limit's switch and value (0 to 16), the firmware (four characters), the serial and the name; the writes are `01 82` (vibration), `01 84` and `01 85` (the volume limit). Its equalizer is read and set by index (`02 01`, `02 81`), whose presets are in the app's native screen code, so none is offered.",
+      "notes": "Read from the Soundcore app 5.0.35 (A3201DeviceManager and A3201CmdConstants), not tried on the headphones. The older protocol the Life NC speaks has one request, `01 09`, that returns its whole state in a frame without a checksum: the level (0 to 5), the vibration switch, the custom button function (skipped), the volume limit's switch and value (0 to 16), the firmware (four characters), the serial and the name; the writes are `01 82` (vibration), `01 84` and `01 85` (the volume limit). Its equalizer is three presets, read and set by number (`02 01`, `02 81`; Soundcore 3.3.0's `A3201EQPresenter`: 0 original, 1 bass boost, 2 office).",
       "kind": "headphones",
       "checksum": false,
       "state_command": "0109",
@@ -1193,19 +1193,31 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3600",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3600"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
-        ["optional:skip", 35],
+        ["optional:equalizer", 12],
+        ["optional:skip", 23],
         ["optional:wearing_detection", 1],
         ["optional:voice_control", 2],
         ["optional:stereo_expansion", 2],
         ["optional:super_volume", 1],
         ["optional:manual_shutdown", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3600AnalysisService.e1), not tried: the head of the reply (TWS status, both levels, charging, both firmware versions, the serial). The rest and the command service are not read yet. No battery scale is shown: the parser does not give one."
+      "notes": "Read from the Soundcore app 5.0.35 (A3600AnalysisService.e1), not tried: the head of the reply (TWS status, both levels, charging, both firmware versions, the serial). The equalizer (record at packet byte 41: preset and ten bytes) is written as `A3600CmdService.s6` does, five presets and a custom curve; the rest of the reply is skipped. No battery scale is shown: the parser does not give one."
     },
     {
       "model": "A3850",

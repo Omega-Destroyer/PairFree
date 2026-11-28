@@ -315,6 +315,7 @@ private fun groupTitle(key: String): String = stringResource(
         "sc_tests" -> R.string.setting_sc_tests
         "sc_limit" -> R.string.setting_hearing_protection
         "sc_hear_id" -> R.string.setting_sc_hear_id
+        "sc_life_nc" -> R.string.setting_eq_preset
         "sc_case" -> R.string.setting_sc_case
         "ca_touch" -> R.string.setting_ca_touch_actions
         "ca_connection" -> R.string.connection
@@ -447,6 +448,7 @@ private fun settingTitle(key: String): String = if (key.startsWith("jb_")) strin
     "sc_max_volume_switch" -> stringResource(R.string.setting_sc_max_volume_switch)
     "sc_max_volume" -> stringResource(R.string.setting_sc_max_volume)
     "sc_hear_id" -> stringResource(R.string.setting_sc_hear_id)
+    "sc_life_nc_eq" -> stringResource(R.string.setting_sc_life_nc_eq)
     "sc_case_firmware" -> stringResource(R.string.setting_sc_case_firmware)
     "sc_case_notifications" -> stringResource(R.string.setting_sc_case_notifications)
     "sc_case_low_battery" -> stringResource(R.string.setting_sc_case_low_battery)
@@ -1357,6 +1359,11 @@ internal fun Context.optionLabel(key: String, option: String): String = when {
         "assistant" -> R.string.setting_ca_assistant
         "nap" -> R.string.setting_sc_action_nap
         else -> R.string.action_none
+    })
+    key == "sc_life_nc_eq" -> getString(when (option) {
+        "sc_life_nc_bass" -> R.string.setting_sc_life_nc_bass
+        "sc_life_nc_office" -> R.string.setting_sc_life_nc_office
+        else -> R.string.setting_sc_life_nc_original
     })
     key == "sc_press_sensitivity" -> getString(when (option) {
         "low" -> R.string.setting_sc_press_low

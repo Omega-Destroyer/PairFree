@@ -813,8 +813,10 @@ it and the mean (inertia and both pulls 0.3, kept within 6 dB). The final offset
 where smaller, plus 0.5 dB. The app plays its own clip (`liberty/hearid_preference.mp3`); PairFree asks the listener to play music of their own. Leaving without
 keeping a result writes back what the earbuds held.
 
-**Not built:** HearID 5 (AeroFit 2 Pro) and the Flutter test (Liberty 4 Pro family and Liberty 5), whose gains come from a trained network the app bundles
-(`NL2Util`, `assets/model_parameters`) (open: data/completeness.json, `soundcore-hearid-other`). The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
+The Flutter test (Liberty 4 Pro family and Liberty 5): blocked: its gains come from a trained network the app bundles, which the owner decided (2026-11-27)
+PairFree does not ship; checked: `NL2Util` (native, `assets/model_parameters`), the Dart code of `hearing_test_vm`.
+
+**Not built:** HearID 5 (AeroFit 2 Pro) (open: data/completeness.json, `soundcore-hearid-other`). The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
 microphone permission.
 
 ## Charging cases (2026-11-27)
@@ -853,3 +855,21 @@ for the Liberty 5 Pro: it sets it itself (`A3956MainActivity.setVoiceLanguage`).
 -70, -60, -55 dB (A3910 -73, -80, -70, -70, -63, -55, -52; A3913 -75, -75, -70, -72, -67, -55, -55), 6 dB up to start; the same staircase. Each ear is moved
 against its own 1.6 kHz result. The result is `03 82` [gender][age][left 8][right 8][time, high byte first] in whole values (12 flat; the eighth is 12), the
 switch `03 81 [on]`, delete `03 84` (`A3909DeviceManager`).
+
+## The remaining equalizers (2026-11-27)
+
+From the Soundcore app 5.0.35's command services; none tried. Presets are written with the curves of the app's tables.
+
+| Models | Write | Presets |
+|---|---|---|
+| Q20i Plus, Q21i NC, H30i | `02 83`, one curve and its correction (as the Q20i's) | the Q11i's |
+| AeroFit, AeroFit Pro, V30i | `02 83`, one curve and its correction (`q6`) | `AeroNew2EQGainValues` |
+| AeroFit 2, AeroFit 2 Pro | the same; the Pro twice, for two earbuds and for one (`A3875CmdService.r6`) | `AeroNew3EQGainValues` |
+| K20i | `02 83`, one curve | `K20IEQGainValues` |
+| Liberty Buds | `03 87` (`n6`, the P31i's) | standard |
+| VR P10 | `02 81`, both curves, no correction (`s6`) | standard without Bass Booster, which is its bass switch |
+| Sleep A10 | `02 83`, both curves and corrections (`A6`) | the same |
+| Frames | `02 81`: preset, nine bytes of tone, nine of curve, `58` (`A3600CmdService.s6`) | `A3600EqConstants` |
+| Life NC | `02 01` asks the preset, `02 81 [n]` sets it: 0 original, 1 bass boost, 2 office (3.3.0) | by number |
+
+The Sleep A30 and the Sleep Earbuds 4 pair have no equalizer screen in the app.

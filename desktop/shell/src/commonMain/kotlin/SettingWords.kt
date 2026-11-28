@@ -68,6 +68,7 @@ class SettingWords(private val strings: DesktopStrings) {
             "sc_tests" -> "setting_sc_tests"
             "sc_limit" -> "setting_hearing_protection"
             "sc_hear_id" -> "setting_sc_hear_id"
+            "sc_life_nc" -> "setting_eq_preset"
             "sc_case" -> "setting_sc_case"
             "ca_touch" -> "setting_ca_touch_actions"
             "ca_connection" -> "connection"
@@ -196,6 +197,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
         "sc_hear_id" -> t("setting_sc_hear_id")
+        "sc_life_nc_eq" -> t("setting_sc_life_nc_eq")
         "sc_case_firmware" -> t("setting_sc_case_firmware")
         "sc_case_notifications" -> t("setting_sc_case_notifications")
         "sc_case_low_battery" -> t("setting_sc_case_low_battery")
@@ -1099,6 +1101,11 @@ class SettingWords(private val strings: DesktopStrings) {
             "assistant" -> "setting_ca_assistant"
             "nap" -> "setting_sc_action_nap"
             else -> "action_none"
+        })
+        key == "sc_life_nc_eq" -> t(when (option) {
+            "sc_life_nc_bass" -> "setting_sc_life_nc_bass"
+            "sc_life_nc_office" -> "setting_sc_life_nc_office"
+            else -> "setting_sc_life_nc_original"
         })
         key == "sc_press_sensitivity" -> t(when (option) {
             "low" -> "setting_sc_press_low"

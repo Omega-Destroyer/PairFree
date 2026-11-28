@@ -5787,6 +5787,114 @@
      ]
     }
    ]
+  },
+  "a3600": {
+   "custom_preset": 65278,
+   "band_hz": [
+    100,
+    200,
+    400,
+    800,
+    1600,
+    3200,
+    6400,
+    12800
+   ],
+   "hidden_bands": [
+    0,
+    0
+   ],
+   "custom_range": [
+    -60,
+    60
+   ],
+   "presets": [
+    {
+     "id": 0,
+     "key": "SoundcoreSignature",
+     "name": "Soundcore Signature",
+     "values": [
+      20,
+      -20,
+      120,
+      -50,
+      20,
+      -60,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": 1,
+     "key": "Acoustic",
+     "name": "Acoustic",
+     "values": [
+      20,
+      -20,
+      120,
+      -50,
+      20,
+      -60,
+      -50,
+      0,
+      -50,
+      0
+     ]
+    },
+    {
+     "id": 2,
+     "key": "Dance",
+     "name": "Dance",
+     "values": [
+      20,
+      -20,
+      120,
+      -50,
+      20,
+      -60,
+      50,
+      -50,
+      0,
+      0
+     ]
+    },
+    {
+     "id": 3,
+     "key": "VocalBooster",
+     "name": "Vocal Booster",
+     "values": [
+      20,
+      -20,
+      120,
+      -50,
+      20,
+      -60,
+      -50,
+      50,
+      0,
+      0
+     ]
+    },
+    {
+     "id": 4,
+     "key": "Classical",
+     "name": "Classical",
+     "values": [
+      20,
+      -20,
+      120,
+      -50,
+      20,
+      -60,
+      50,
+      0,
+      50,
+      0
+     ]
+    }
+   ]
   }
  }
 }

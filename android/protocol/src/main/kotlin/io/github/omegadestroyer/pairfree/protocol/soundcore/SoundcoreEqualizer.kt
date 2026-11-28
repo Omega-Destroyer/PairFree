@@ -202,6 +202,7 @@ public object SoundcoreEqualizer {
             "drc" -> listOf(w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); eq(target); target.channels.forEach { drc(it) } })
             "a3388" -> listOf(w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); eq(target) })
             "a3876" -> listOf(w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); curve(first(target)); drc(first(target)) })
+            "a3600" -> listOf(framesPacket(w, spec, target))
             // The AeroFit 2 Pro keeps a curve for two earbuds and one for a single earbud (`A3875CmdService.r6`); both get the one chosen.
             "a3875" -> listOf(
                 w.packet(SET_EQUALIZER_WITH_DRC) { preset(target); repeat(2) { curve(first(target)); drc(first(target)) } },
@@ -279,6 +280,26 @@ public object SoundcoreEqualizer {
 
     private fun sameCurves(a: SoundcoreEqConfig, b: SoundcoreEqConfig) =
         a.channels.size == b.channels.size && a.channels.indices.all { a.channels[it].contentEquals(b.channels[it]) }
+
+    /**
+     * The Frames' write (`A3600CmdService.s6`): the preset, nine bytes of tone, nine of curve and one byte more, with no
+     * check byte of its own. A preset sends its curve in whole dB over 100 and the curve part flat at 100; a custom curve
+     * sends the app's fixed tone and the curve on the usual scale.
+     */
+    private fun framesPacket(w: Writer, spec: SoundcoreEqSpec, target: SoundcoreEqConfig): SoundcorePacket {
+        val curve = first(target) ?: IntArray(spec.bands)
+        val custom = target.preset == spec.presetSet.customPreset
+        return w.packet(SET_EQUALIZER) {
+            preset(target)
+            repeat(FRAMES_BANDS) { byte(100 + (if (custom) FRAMES_TONE[it] else curve[it] / 10)) }
+            repeat(FRAMES_BANDS) { byte(if (custom) curve[it].coerceIn(spec.min, spec.max) - spec.min else 100) }
+            byte(FRAMES_LAST)
+        }
+    }
+
+    private const val FRAMES_BANDS = 9
+    private const val FRAMES_LAST = 88
+    private val FRAMES_TONE = intArrayOf(2, -2, 12, -5, 2, -6, 0, 0, 0)
 
     // OpenSCQ30's SetEqualizerAndCustomHearId.
     private fun hearIdPacket(w: Writer, spec: SoundcoreEqSpec, target: SoundcoreEqConfig, h: SoundcoreHearId, gender: Int, age: Int): SoundcorePacket {

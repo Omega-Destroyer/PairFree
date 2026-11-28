@@ -47,8 +47,13 @@ public class SoundcoreSession(public val model: String) : FitTest {
 
     /** The requests for the lists the earbuds keep besides their state: the paired devices, and the VR P10's dongles. */
     public fun requestLists(): List<ByteArray> = listOfNotNull(if (listsPeers) requestPeers() else null) +
+        // The Life NC's equalizer preset is not in its state: it is asked for by itself.
+        listOfNotNull(if (model == "A3201") SoundcorePacket.build(SoundcoreCommand.EQUALIZER_PRESET, checksum = checksum) else null) +
         if (dongle == null) emptyList() else listOf(SoundcoreCommand.DONGLE_INFO, SoundcoreCommand.DONGLE_LOW_POWER_STATE).map { SoundcorePacket.build(it, checksum = checksum) }
     private val tests = SoundcoreTests(layout?.features ?: emptySet())
+
+    /** The Life NC's preset number, once it has said. */
+    private var lifeNcPreset: Int? = null
 
     /** Whether the earbuds' list of paired devices is worth asking for: their last state shows two devices at once, switched on. */
     public val listsPeers: Boolean get() = lastState?.flag("dual_connections_enabled") == true
@@ -67,6 +72,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
         // The Life NC asks for its state with `01 09` ([SoundcoreCommand.DEVICE_INFO]) and answers under it.
         val command = if (packet.command == SoundcoreCommand.DEVICE_INFO && layout?.stateCommand == SoundcoreCommand.DEVICE_INFO) SoundcoreCommand.STATE else packet.command
         when (command) {
+            SoundcoreCommand.EQUALIZER_PRESET -> if (model == "A3201") {
+                lifeNcPreset = body.u8(0).takeIf { it < LIFE_NC_PRESETS.size }
+                return true
+            }
             SoundcoreCommand.DUAL_CONNECTIONS_DEVICES -> return peers.receive(body)
             SoundcoreCommand.HEALTH_READINGS -> return health?.receive(body) == true
             SoundcoreCommand.POSTURE_CALIBRATE, SoundcoreCommand.POSTURE_HISTORY, SoundcoreCommand.POSTURE_ANGLE -> return neck?.receive(command, body) == true
@@ -232,6 +241,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
                 SoundcoreHearingId.rows(model, s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_hear_id", SettingTab.SOUND, it) },
+                lifeNcPreset?.let { SettingGroup("sc_life_nc", SettingTab.SOUND, listOf(Setting.Choice(LIFE_NC_EQ, LIFE_NC_PRESETS.getOrNull(it), LIFE_NC_PRESETS))) },
                 peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
                 dongle?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_dongle", SettingTab.DEVICE, it) },
                 if (lastState != null) health?.rows()?.let { SettingGroup("sc_health", SettingTab.DEVICE, it) } else null,
@@ -658,6 +668,12 @@ public class SoundcoreSession(public val model: String) : FitTest {
         }
         tests.change(change)?.let { return it }
         if (change.key == SoundcoreHearingId.SWITCH || change.key == SoundcoreHearingId.DELETE) return hearIdChange(s, change)
+        if (change.key == LIFE_NC_EQ && change is SettingChange.Choice) {
+            val index = LIFE_NC_PRESETS.indexOf(change.option)
+            if (model != "A3201" || lifeNcPreset == null || index < 0) return null
+            lifeNcPreset = index
+            return listOf(SoundcorePacket(SoundcoreCommand.EQUALIZER, byteArrayOf(index.toByte())))
+        }
         if (change.key == SoundcoreSleepPlayer.ALARM && change is SettingChange.Choice) {
             val packets = secondOfDay()?.let { SoundcoreSleepPlayer.alarm(change.option, Clock.System.now().epochSeconds, it) } ?: return null
             alarmSet = change.option.trim()
@@ -878,6 +894,11 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private val DOUBLE_PRESS_OPTIONS = listOf("none", "bass")
         private const val HOLD = "sc_mfb_hold"
         private class Hold(val option: String, val state: Int, val write: Int)
+
+        private const val LIFE_NC_EQ = "sc_life_nc_eq"
+
+        /** The Life NC's presets by number (`A3201EQPresenter`). */
+        private val LIFE_NC_PRESETS = listOf("sc_life_nc_original", "sc_life_nc_bass", "sc_life_nc_office")
         private val HOLD_ACTIONS = listOf(Hold("assistant", 0, 5), Hold("nap", 3, 13), Hold("none", 5, 15))
         private const val LANGUAGE_FIELD = "prompt_language"
         private const val SLEEP_LANGUAGE = "voice_language_1307"

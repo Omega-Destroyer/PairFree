@@ -197,6 +197,10 @@ class SoundcoreDriver(host: DriverHost, private val device: Paired) : TalkDriver
             override fun testing(running: Boolean) {
                 talk?.let { write(it.session.hearingTest(running)) }
             }
+            override fun preview(result: SoundcoreHearingResult): Boolean = talk?.session?.hearingPreview(result)?.let(::write) ?: false
+            override fun restore() {
+                talk?.session?.hearingRestore()?.let(::write)
+            }
             override fun save(result: SoundcoreHearingResult): Boolean = talk?.session?.hearingSave(result)?.let(::write) ?: false
         }
     }

@@ -414,13 +414,27 @@ public object SoundcoreHearingId {
     /** Stores [result], made at [time] (seconds since 1970), and turns HearID on. */
     public fun save(model: String, state: SoundcoreState?, result: SoundcoreHearingResult, time: Long): SoundcorePacket? {
         if (isFirst(model)) return firstSave(state, result, time)
+        // The A40 reports no gender; the app writes 0 there after a test. The others keep what they report.
+        val gender = state?.field("gender")?.get(0)?.toInt()?.and(0xFF)?.takeIf { it != 0xFF } ?: 0
+        val age = state?.field("age_range")?.get(0)?.toInt()?.and(0xFF)?.takeIf { it != 0xFF } ?: 0
+        return written(model, state, result, gender, age, time)
+    }
+
+    /** [result] as something to listen to for a moment: the app's temporary write, with its marker for the age and no time. */
+    public fun preview(model: String, state: SoundcoreState?, result: SoundcoreHearingResult): SoundcorePacket? =
+        written(model, state, result, 1, TEMPORARY, 0)
+
+    /** Puts back what the earbuds held in [before]: its result and switch, or none. */
+    public fun restore(model: String, before: SoundcoreState?): SoundcorePacket? {
+        val h = held(model, before) ?: return null
+        return if (hasResult(h.data)) switched(h, before!!, h.on) else deleted(h)
+    }
+
+    private fun written(model: String, state: SoundcoreState?, result: SoundcoreHearingResult, gender: Int, age: Int, time: Long): SoundcorePacket? {
         val h = held(model, state) ?: return null
         val ears = listOf(result.left, result.right)
         val curves: List<IntArray?> = List(h.layout.channels) { c -> IntArray(h.layout.bands) { band -> ears[c].getOrElse(band) { LOWEST } } }
         val real: List<IntArray?> = List(h.config.channels.size) { c -> applied(h.eq, ears[c]) }
-        // The A40 reports no gender; the app writes 0 there after a test. The others keep what they report.
-        val gender = state?.field("gender")?.get(0)?.toInt()?.and(0xFF)?.takeIf { it != 0xFF } ?: 0
-        val age = state?.field("age_range")?.get(0)?.toInt()?.and(0xFF)?.takeIf { it != 0xFF } ?: 0
         return packet(h, h.data.genre, gender, age, true, curves, time, 0, curves, real)
     }
 
@@ -519,6 +533,7 @@ public object SoundcoreHearingId {
     private const val LOWEST = -120
     private const val FLAT = 12
     private const val HIGHEST = 134
+    private const val TEMPORARY = 0xFE
 
     /** The EQ write formats (data/soundcore/devices.json) that differ here. */
     private const val AS_IS = "a3062"

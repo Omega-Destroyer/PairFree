@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import kotlin.random.Random
 
 class SoundcoreHearingTest {
     private fun a40(): SoundcoreState {
@@ -118,6 +119,35 @@ class SoundcoreHearingTest {
         assertEquals(2, SoundcoreHearingId.rows("A3909", held).size)
         assertEquals(0x0381, SoundcoreHearingId.change("A3909", held, SettingChange.Toggle(SoundcoreHearingId.SWITCH, false))!!.command)
         assertEquals(0x0384, SoundcoreHearingId.change("A3909", held, SettingChange.Press(SoundcoreHearingId.DELETE))!!.command)
+    }
+
+    @Test
+    fun theComparisonOverMusic() {
+        val test = SoundcoreHearingResult(IntArray(8) { if (it == 7) 60 else 0 }, IntArray(8))
+        val first = SoundcoreHearingPreference(test, Random(1))
+        // Round one compares the third and second of the app's twelve offsets, added to the result and held within 6 dB.
+        assertArrayEquals(intArrayOf(24, 18, 0, 0, -10, -10, -15, -15), first.a().right)
+        assertArrayEquals(intArrayOf(24, 18, 0, 0, -10, -10, -15, 45), first.a().left)
+        assertArrayEquals(intArrayOf(-10, -10, 0, 0, 13, 16, 13, 15), first.b().right)
+        repeat(SoundcoreHearingPreference.ROUNDS) {
+            assertNull(first.result())
+            first.choose(it % 2 == 0)
+        }
+        assertTrue(first.finished)
+        assertTrue(first.result()!!.right.all { it in -60..60 })
+        // Never a difference: nothing was preferred, so the result gains the half dB alone.
+        val none = SoundcoreHearingPreference(test, Random(2))
+        repeat(SoundcoreHearingPreference.ROUNDS) { none.choose(null) }
+        assertArrayEquals(IntArray(8) { 5 }, none.result()!!.right)
+        assertEquals(60, none.result()!!.left[7])
+
+        val state = a40()
+        val preview = SoundcoreHearingId.preview("A3936", state, test)!!.body
+        assertEquals(1, preview[24].toInt())
+        assertEquals(0xFE.toByte(), preview[25])
+        // Nothing held before: putting it back removes the result.
+        val back = SoundcoreHearingId.restore("A3936", state)!!.body
+        assertEquals(92, back.size)
     }
 
     @Test

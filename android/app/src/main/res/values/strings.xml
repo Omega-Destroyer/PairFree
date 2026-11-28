@@ -1473,6 +1473,15 @@
     <string name="sc_hearing_quieter">Quieter</string>
     <string name="sc_hearing_louder">Louder</string>
     <string name="sc_hearing_keep">I can just hear it</string>
+    <string name="sc_preference_start">Fine-tune with music</string>
+    <string name="sc_preference_round">Round %1$d of %2$d</string>
+    <string name="sc_preference_intro">Play music you know well and keep it playing. Listen to A and to B, then say which you prefer.</string>
+    <string name="sc_preference_a">Listen to A</string>
+    <string name="sc_preference_b">Listen to B</string>
+    <string name="sc_preference_prefer_a">I prefer A</string>
+    <string name="sc_preference_prefer_b">I prefer B</string>
+    <string name="sc_preference_same">No difference</string>
+    <string name="sc_preference_stop">Stop comparing</string>
     <string name="sc_hearing_yes">I hear it</string>
     <string name="sc_hearing_no">I don\'t hear it</string>
     <string name="sc_hearing_again">Start this tone again</string>

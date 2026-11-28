@@ -429,6 +429,12 @@ interface SoundcoreHearingHost {
     /** The earbuds are told the test starts, or that it has ended. */
     fun testing(running: Boolean)
 
+    /** Plays [result] for a moment while the listener compares (HearID 3's music step); false when it could not be sent. */
+    fun preview(result: io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingResult): Boolean
+
+    /** Puts back what the earbuds held before the first [preview]; nothing when there was none or a result was saved since. */
+    fun restore()
+
     /** Stores [result] in the earbuds and turns HearID on; false when it could not be sent. */
     fun save(result: io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingResult): Boolean
 }

@@ -28,6 +28,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import io.github.omegadestroyer.pairfree.R
 import io.github.omegadestroyer.pairfree.brands.SoundcoreHearingHost
 import io.github.omegadestroyer.pairfree.hearing.TonePlayer
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingPreference
+import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingResult
 import io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingRun
 import io.github.omegadestroyer.pairfree.ui.theme.Look
 import kotlinx.coroutines.delay
@@ -49,6 +51,10 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
     var busy by remember { mutableStateOf(false) }
     var silent by remember { mutableStateOf(false) }
     var applied by remember { mutableStateOf<Boolean?>(null) }
+    // HearID 3's second step, comparing variants over the listener's own music, and the variant now playing.
+    var comparing by remember { mutableStateOf<SoundcoreHearingPreference?>(null) }
+    var playing by remember { mutableStateOf<Boolean?>(null) }
+    var tuned by remember { mutableStateOf<SoundcoreHearingResult?>(null) }
     // Bumped after every answer: the run is not state, and each bump starts the tone it now asks for.
     var step by remember { mutableIntStateOf(0) }
 
@@ -63,6 +69,7 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
 
     fun leave() {
         stopTest()
+        host.restore()
         onClose()
     }
     BackHandler(onBack = ::leave)
@@ -73,6 +80,7 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
         onDispose {
             lifecycle.removeObserver(observer)
             stopTest()
+            host.restore()
         }
     }
     LaunchedEffect(testing) {
@@ -116,8 +124,43 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
             Text(stringResource(R.string.sc_hearing_title), Modifier.weight(1f), style = Look.type.title)
             AppButton(stringResource(R.string.capture_close), ::leave)
         }
-        val result = step.let { run.result() }
+        val result = tuned ?: step.let { run.result() }
+        val compare = comparing
         when {
+            compare != null -> {
+                val round = step.let { compare.round }
+                Panel {
+                    Text(stringResource(R.string.sc_preference_round, round, SoundcoreHearingPreference.ROUNDS), style = Look.type.number)
+                    LevelBar((round - 1) * 100 / SoundcoreHearingPreference.ROUNDS)
+                }
+                Text(stringResource(R.string.sc_preference_intro), color = c.secondaryText)
+                fun listen(first: Boolean) {
+                    if (host.preview(if (first) compare.a() else compare.b())) playing = first else applied = false
+                }
+                fun choose(preferA: Boolean?) {
+                    compare.choose(preferA)
+                    playing = null
+                    if (compare.finished) {
+                        tuned = compare.result()
+                        comparing = null
+                    }
+                    step++
+                }
+                AppButton(stringResource(R.string.sc_preference_a), { listen(true) }, Modifier.fillMaxWidth(), primary = playing == true)
+                AppButton(stringResource(R.string.sc_preference_b), { listen(false) }, Modifier.fillMaxWidth(), primary = playing == false)
+                if (applied == false) Text(stringResource(R.string.sc_hearing_failed), color = c.destructive)
+                AppButton(stringResource(R.string.sc_preference_prefer_a), { choose(true) }, Modifier.fillMaxWidth(), enabled = playing != null)
+                AppButton(stringResource(R.string.sc_preference_prefer_b), { choose(false) }, Modifier.fillMaxWidth(), enabled = playing != null)
+                AppButton(stringResource(R.string.sc_preference_same), { choose(null) }, Modifier.fillMaxWidth(), enabled = playing != null)
+                AppButton(
+                    stringResource(R.string.sc_preference_stop),
+                    {
+                        host.restore()
+                        comparing = null
+                    },
+                    Modifier.fillMaxWidth(),
+                )
+            }
             result != null -> {
                 Text(stringResource(R.string.sc_hearing_done), color = c.secondaryText)
                 Panel {
@@ -144,6 +187,18 @@ internal fun SoundcoreHearingScreen(host: SoundcoreHearingHost, onClose: () -> U
                 }
                 if (applied != true) {
                     AppButton(stringResource(R.string.sc_hearing_apply), { applied = host.save(result) }, Modifier.fillMaxWidth(), primary = true)
+                    if (!host.spec.perEar && tuned == null) {
+                        AppButton(
+                            stringResource(R.string.sc_preference_start),
+                            {
+                                applied = null
+                                playing = null
+                                comparing = SoundcoreHearingPreference(result)
+                                step++
+                            },
+                            Modifier.fillMaxWidth(),
+                        )
+                    }
                 }
                 AppButton(stringResource(R.string.capture_close), ::leave, Modifier.fillMaxWidth())
             }

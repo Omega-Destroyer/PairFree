@@ -1084,6 +1084,16 @@
       "reported": "HearID worked through, 2026-11-27"
     },
     {
+      "id": "soundcore-missing-eq",
+      "brand": "soundcore",
+      "models": [
+        "A3004C, A3012, A300B, A3201, A3600, A3850, A3871, A3872, A3873, A3874, A3875, A3994, A6610, D1200, D1301, D1302, D1303"
+      ],
+      "status": "open",
+      "what": "These models have no equalizer in PairFree. For some their notes say why (A3201, A3994, D1200) or that the block was skipped (A3012, A3850, A3874, A3875, A6610); the rest say nothing. Whether the app offers one on each has not been checked model by model.",
+      "reported": "HearID worked through, 2026-11-27"
+    },
+    {
       "id": "soundcore-hearid",
       "brand": "soundcore",
       "models": [
@@ -1104,17 +1114,17 @@
         "Space 2 (D1402)"
       ],
       "status": "built",
-      "what": "HearID on fifteen models: the oldest test on three, the older test on four and HearID 3 on eight (the app's tones and correction), writing the result, switching it and deleting it. Not tried on earbuds. The rest is soundcore-hearid-other.",
+      "what": "HearID on fifteen models: the oldest test on three, the older test on four and HearID 3 on eight (the app's tones and correction), writing the result, switching it and deleting it. Not tried on earbuds. The rest is soundcore-hearid-other. HearID 3's comparison over music (the user's own) is built too.",
       "reported": "the app's command table, worked through 2026-11-27"
     },
     {
       "id": "soundcore-hearid-other",
       "brand": "soundcore",
       "models": [
-        "Liberty 5 Pro, Liberty 4 Pro family and Liberty 5; the music preference step on the HearID 3 models; the P41i (A3937)"
+        "AeroFit 2 Pro (A3875, HearID 5); Liberty 4 Pro family and Liberty 5 (Flutter)"
       ],
       "status": "open",
-      "what": "Left of HearID: the music preference step after HearID 3 (A3953HearIdPreferenceActivity; whether it needs the app's own music is not settled); HearID 5 (A3875, libhid_app.so); the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones).",
+      "what": "HearID 5 (the AeroFit 2 Pro, libhid_app.so, not analysed) and the Flutter test (HearId3FlutterActivity, libapp.so; the earbuds play the tones). The Flutter test's thresholds become gains through NL2Util.nl2Calculate (libscnativelib.so) with a trained network whose weights the app bundles (assets/model_parameters): whether PairFree may ship or replace those is the owner's decision.",
       "reported": "HearID worked through, 2026-11-27"
     },
     {

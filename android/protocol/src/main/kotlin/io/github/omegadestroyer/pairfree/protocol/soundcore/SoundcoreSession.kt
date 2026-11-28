@@ -617,9 +617,30 @@ public class SoundcoreSession(public val model: String) : FitTest {
         if (SoundcoreHearingSpec.of(model) == null) emptyList()
         else listOf(SoundcorePacket(SoundcoreCommand.HEARING_TEST, byteArrayOf(if (running) 1 else 0)))
 
+    /** What the earbuds held when the listener began comparing, to be put back if they leave without keeping a result. */
+    private var beforePreview: SoundcoreState? = null
+
+    /** The temporary write of one variant, or null when the last state cannot carry it. */
+    public fun hearingPreview(result: SoundcoreHearingResult): List<SoundcorePacket>? {
+        val before = beforePreview ?: lastState ?: return null
+        val packet = SoundcoreHearingId.preview(model, before, result) ?: return null
+        beforePreview = before
+        return listOf(packet)
+    }
+
+    /** Ends a comparison without keeping anything: what was held before, or null when nothing was previewed. */
+    public fun hearingRestore(): List<SoundcorePacket>? {
+        val before = beforePreview ?: return null
+        beforePreview = null
+        return SoundcoreHearingId.restore(model, before)?.let(::listOf)
+    }
+
     /** The write that stores a finished test's [result] and turns HearID on, or null when the last state cannot carry it. */
     public fun hearingSave(result: SoundcoreHearingResult): List<SoundcorePacket>? =
-        SoundcoreHearingId.save(model, lastState, result, Clock.System.now().epochSeconds)?.let(::listOf)
+        SoundcoreHearingId.save(model, beforePreview ?: lastState, result, Clock.System.now().epochSeconds)?.let {
+            beforePreview = null
+            listOf(it)
+        }
 
     /**
      * The packets for a change to one of [groups], or null when it is not one of them. The change shows at once;

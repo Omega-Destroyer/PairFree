@@ -806,8 +806,15 @@ write; on plays the result (type 0), the custom result (type 1) or the result mi
 HearID parts (`CmmBtCmdService.Y`, `A3951DeviceManager.O1`). `03 81`, `03 82`, `03 84` are the same three actions on older models whose service does not
 override them; none of the four models above uses them.
 
-**Not built:** the music preference step the app offers after HearID 3, HearID 5 (Liberty 5 Pro), and the Flutter test (Liberty 4 Pro family and
-Liberty 5) (open: data/completeness.json, `soundcore-hearid-other`). The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
+**The comparison over music** (`A3953HearIdPreferenceM`), offered after HearID 3: six rounds of A against B or no difference. Each variant is the result plus an
+offset, held within 6 dB, and is played by writing it with gender 1, age `FE` and no time. Rounds one and two compare fixed pairs of twelve starting offsets;
+later ones a random offset against the first unlike it (cosine similarity at most 0.354 to 0.6, rising by round). After a preference some offsets move towards
+it and the mean (inertia and both pulls 0.3, kept within 6 dB). The final offset is 0.4 of the last choice plus 0.8 of the mean, raised to a peak of 2.5 dB
+where smaller, plus 0.5 dB. The app plays its own clip (`liberty/hearid_preference.mp3`); PairFree asks the listener to play music of their own. Leaving without
+keeping a result writes back what the earbuds held.
+
+**Not built:** HearID 5 (AeroFit 2 Pro) and the Flutter test (Liberty 4 Pro family and Liberty 5), whose gains come from a trained network the app bundles
+(`NL2Util`, `assets/model_parameters`) (open: data/completeness.json, `soundcore-hearid-other`). The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
 microphone permission.
 
 ## Charging cases (2026-11-27)

@@ -1,6 +1,28 @@
 # Huawei and Honor devices
 
-PairFree uses the Huawei MBB settings protocol over Bluetooth Classic. The earbuds, speaker or glasses must already be paired in the system Bluetooth settings. Controls appear after the device answers their reads, and firmware can affect which controls are available.
+PairFree is a free, open-source app that controls Huawei and Honor audio devices without HUAWEI AI Life. **No Huawei or Honor product has been tried with PairFree yet**: nobody on the
+project owns one, so every model relies on reports from people who do.
+
+The earbuds, speaker or glasses must already be paired in the phone's or PC's Bluetooth settings. A setting appears only once the device has answered
+for it, so firmware decides what you see.
+
+What PairFree shows, where the model has it:
+- **Home:** the battery (each earbud and the case), noise control with its levels, and the switches such as head gestures, drop reminders and spatial audio.
+- **Sound:** the earbuds' equalizer sounds, your own ten-band curve and the saved ones (with deleting), low latency, sound quality or connection, HD calls
+  and the recording pickup mode.
+- **Controls:** double and triple tap, press and hold, swipe and pinch.
+- **Device:** wear detection, two devices at once and the paired devices (connect, disconnect, connect automatically, preferred), rest reminders, case
+  prompt sounds, voice prompt language, and finding each earbud.
+
+Where it comes from: the older models from AI Life 11.0.2.305, Huawei's own app; the newer ones from the open-source LibreBuds, HuaweiPods and
+OpenFreebuds, which used real earbuds. Models in the table as "Catalogue only" show their battery and firmware and take a device report; a newer FreeBuds,
+FreeClip, FreeLace or FreeArc that the table lacks is listed the same way.
+
+**Not covered:** the ear tip fit test (no source has its commands), unpairing a paired device, firmware updates, and what AI Life does on the phone or with
+an account.
+
+**Help wanted:** copy the device report from the Device tab and open an issue with it. It holds the answers to PairFree's own reads, with no device names or
+addresses.
 
 [Model research and coverage](../huawei/MODELS.md) · [Protocol](../huawei/PROTOCOL.md) · [Implementation and validation](../huawei/IMPLEMENTATION.md)
 
@@ -31,10 +53,10 @@ PairFree uses the Huawei MBB settings protocol over Bluetooth Classic. The earbu
 <tr><td>FreeBuds 4</td><td>Battery, Noise control, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 4E</td><td>Battery, Noise control, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 5</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeBuds 6</td><td>Battery, Noise control, Gestures, EQ presets, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds 6</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 7</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeBuds 7i</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
-<tr><td>FreeBuds Pro 4</td><td>Battery, Noise control, Gestures, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
+<tr><td>FreeBuds Pro 4</td><td>Battery, Noise control, Gestures, EQ presets, Custom EQ, Device settings</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeArc</td><td>Battery, Gestures, EQ presets, Custom EQ</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeClip</td><td>Battery</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
 <tr><td>FreeClip 2 (Collector&#x27;s Edition)</td><td>Battery</td><td>Public research</td><td>Awaiting PairFree hardware test</td></tr>
@@ -53,5 +75,8 @@ PairFree uses the Huawei MBB settings protocol over Bluetooth Classic. The earbu
 <tr><td>HUAWEI Sound</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
 <tr><td>HUAWEI Sound X</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
 <tr><td>FreeBuds 4E 2024</td><td>Catalogue entry</td><td>Catalogue</td><td>Catalogue only</td></tr>
+<tr><td>FreeBuds 4E (open fit)</td><td>Catalogue entry</td><td>Public research</td><td>Catalogue only</td></tr>
+<tr><td>W Buds 2</td><td>Catalogue entry</td><td>Public research</td><td>Catalogue only</td></tr>
+<tr><td>W Buds</td><td>Catalogue entry</td><td>Public research</td><td>Catalogue only</td></tr>
 </table>
 <!-- huawei-table:end -->

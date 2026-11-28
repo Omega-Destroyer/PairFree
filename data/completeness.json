@@ -16,38 +16,11 @@
       "brand": "huawei",
       "models": [
         "catalogue-only profiles",
-        "newer AI Life audio accessories"
+        "every product HUAWEI Audio Connect lists"
       ],
-      "status": "needs-report",
-      "what": "Newer models' features and wire layouts from Huawei itself. The supplied app and Huawei's own server hold nothing newer than its eight audio products; PairFree's newer models rest on public projects.",
-      "reported": "AI Life APK and server audit, 2026-11-27",
-      "needs": "A newer Huawei audio app (a later AI Life, or Huawei's current earbud app) from the owner, or a user's device report or Bluetooth capture of Huawei's app, with model and firmware.",
-      "read": [
-        {
-          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/jadx/resources/assets/main_help.json",
-          "what": "the bundled product list: audio entries 004O, ZA01, ZA02, ZA04, ZB02, ZB04, ZC01, ZC02, none newer"
-        },
-        {
-          "path": "X:/Coding/PairFree/PairFree/server_dump/huawei/smarthome-drcn.dbankcdn.com_device_guide_ver_ailife_202007_mainHelp.json",
-          "what": "the server's list (version 1936, the same from smarthome.hicloud.com), fetched 2026-11-28: the same eight audio products"
-        },
-        {
-          "path": "X:/Coding/PairFree/PairFree/server_dump/huawei/smarthome.hicloud.com_device_guide_pluginconfig_pluginconfig_new.json",
-          "what": "router add-ons only; no audio plugin"
-        },
-        {
-          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/jadx/sources/cafebabe/yj.java",
-          "what": "the per-product plugin requests (plugin/pluginInfoV2.json, pluginInfo.json, version.json): the server has none for the audio ids tried"
-        }
-      ],
-      "evidence": [
-        {
-          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/jadx/resources/assets",
-          "glob": "main_help\\.json$",
-          "pattern": "CMG0-PERRIER",
-          "expect": "some"
-        }
-      ]
+      "status": "open",
+      "what": "Read HUAWEI Audio Connect 2.0.7.390 (com.huawei.smartaudio, not packed; in the Huawei reference APKs folder), Huawei's current earbud app: its product list, per-product configs (touch settings with their command bytes, equalizer curves, head control) and command builders, then correct what PairFree took from public projects and build the rest. AI Life 11.0.2.305 holds only older products.",
+      "reported": "Sourced from Huawei's AppGallery, 2026-11-28"
     },
     {
       "id": "huawei-legacy-settings",

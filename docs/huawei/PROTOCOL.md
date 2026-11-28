@@ -301,5 +301,8 @@ files and the per-product plugin files the app asks for.
   The storage answers a bare 403 `AccessDenied` for a file it lacks, while a file the list names is served anonymously; no reply asked for sign-in.
 - The route list's server for outside China (`smarthome-dra.things.hicloud.com`) does not resolve.
 
-Raw replies are in `server_dump/huawei/`, not committed. The newer models therefore rest on the public projects until a newer Huawei app or a user's
-report says more (data/completeness.json, `huawei-current-product-scope`).
+Raw replies are in `server_dump/huawei/`, not committed.
+
+Huawei's earbuds have since moved to a separate app, HUAWEI Audio Connect. Version 2.0.7.390, downloaded from Huawei's AppGallery on 2026-11-28
+(SHA-256 `9a3837d4045cb4ff263a856c7f5dd03e161dc0e597dd28e2b6bbb25a0994d319`), is not packed and holds per-product configurations. It is not read yet;
+until it is, the newer models rest on the public projects (data/completeness.json, `huawei-current-product-scope`, open).

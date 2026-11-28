@@ -336,7 +336,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 (app["features"] as List<*>? ?: emptyList<Any>()) + (d["extra_features"] as List<*>? ?: emptyList<Any>())) -
                 (app["lacks"] as List<*>? ?: emptyList<Any>()).toSet()).distinct().joinToString(", ", "setOf(", ")") { str(it) }
             val vendorIds = (d["vendor_ids"] as List<*>? ?: emptyList<Any>()).joinToString(", ", "setOf(", ")") { str(it) }
-            // A model that answers in tag-length-value records: [tag, at, size] bytes, [tag, at, "bit", n], or [tag, at, "lo" | "hi" | "pack" | "level"].
+            // A model that answers in tag-length-value records: [tag, at, size] bytes, [tag, at, "bit", n], or [tag, at, "opt" | "lo" | "hi" | "pack" | "level"].
             @Suppress("UNCHECKED_CAST")
             val tlvItems = d["tlv"] as List<List<Any?>>?
             val tlv = if (tlvItems == null) "" else tlvItems.joinToString(", ", ", tlv = listOf(", ")") { item ->
@@ -346,6 +346,7 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
                 when (kind) {
                     is Number -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BYTES, ${kind.toInt()})"
                     "bit" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.BIT, 1, ${(item[3] as Number).toInt()})"
+                    "opt" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.OPTIONAL)"
                     "lo" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.LOW)"
                     "hi" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.HIGH)"
                     "pack" -> "SoundcoreTlv($tag, $at, SoundcoreTlv.Op.PACK)"
@@ -418,7 +419,8 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
         val sets = (JsonSlurper().parse(eqPresetsJson.get().asFile) as Map<String, Any?>).getValue("sets") as Map<String, Map<String, Any?>>
         out.appendLine()
         out.appendLine("/** The EQ preset sets in data/soundcore/eq_presets.json, read from OpenSCQ30. */")
-        out.appendLine("internal val SOUNDCORE_PRESET_SETS: Map<String, SoundcorePresetSet> = mapOf(")
+        // One function a set: the whole map in one initializer is too large a method for the JVM.
+        val functions = mutableListOf<Pair<String, String>>()
         for ((name, s) in sets) {
             @Suppress("UNCHECKED_CAST")
             val presets = (s.getValue("presets") as List<Map<String, Any?>>).joinToString(",\n        ", "listOf(\n        ", ",\n    )") { p ->
@@ -426,9 +428,13 @@ abstract class GenerateSoundcoreTables : DefaultTask() {
             }
             val custom = (s["custom_preset"] as Number?)?.toInt()?.toString() ?: "null"
             val range = s.getValue("custom_range") as List<*>
-            out.appendLine("    ${str(name)} to SoundcorePresetSet($custom, listOf(${ints(s["band_hz"])}), listOf(${ints(s["hidden_bands"])}), " +
-                "${(range[0] as Number).toInt()}, ${(range[1] as Number).toInt()}, $presets),")
+            val function = "soundcorePresets${functions.size}"
+            functions += name to function
+            out.appendLine("private fun $function(): SoundcorePresetSet = SoundcorePresetSet($custom, listOf(${ints(s["band_hz"])}), listOf(${ints(s["hidden_bands"])}), " +
+                "${(range[0] as Number).toInt()}, ${(range[1] as Number).toInt()}, $presets)")
         }
+        out.appendLine("internal val SOUNDCORE_PRESET_SETS: Map<String, SoundcorePresetSet> = mapOf(")
+        for ((name, function) in functions) out.appendLine("    ${str(name)} to $function(),")
         out.appendLine(")")
 
         out.appendLine()

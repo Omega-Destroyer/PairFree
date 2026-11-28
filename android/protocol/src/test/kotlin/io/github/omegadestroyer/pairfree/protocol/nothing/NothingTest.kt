@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.nothing
 
+import io.github.omegadestroyer.pairfree.protocol.deadControls
 import io.github.omegadestroyer.pairfree.protocol.Command
 import io.github.omegadestroyer.pairfree.protocol.FitResult
 import io.github.omegadestroyer.pairfree.protocol.Form
@@ -527,4 +528,13 @@ class NothingTest {
     }
 
     private fun ancNumber(name: String): Int = Command.ANC_MODE.labels.entries.first { it.value == name }.key
+
+    /** Every control shown from this brand's test states writes something (ShownControls.kt). */
+    @Test
+    fun everyShownControlWrites() {
+        val dead = NothingModels.ALL.flatMap { m ->
+            deadControls(m.name, { session(m.productId) }, { it.state }, { it.groups }, { s, c, v -> s.set(c, v) }, { s, c -> s.change(c) })
+        }
+        assertEquals(emptyList<String>(), dead)
+    }
 }

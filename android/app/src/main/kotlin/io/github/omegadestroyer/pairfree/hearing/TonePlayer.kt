@@ -2,6 +2,7 @@ package io.github.omegadestroyer.pairfree.hearing
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
@@ -25,6 +26,10 @@ class TonePlayer(context: Context) {
 
     /** True while another app plays audio, which would sound at full volume during the test. */
     val musicActive: Boolean get() = audio.isMusicActive
+
+    /** True while the phone has Bluetooth earbuds or headphones to play to, so a tone does not come out of its speaker. */
+    val bluetoothOutput: Boolean
+        get() = audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).any { it.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || it.type == BLE_HEADSET }
 
     fun begin() {
         if (savedVolume == null) savedVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
@@ -137,6 +142,37 @@ class TonePlayer(context: Context) {
         t.play()
     }
 
+    /**
+     * Three short beeps of [hz], at [db] dB full scale, in one earbud, over and over until [stop]: the Liberty 3 Pro's hearing test, whose app plays recordings timed this
+     * way (beeps of about 0.2 s starting at 0.30, 0.66 and 1.00 s of 1.57 s).
+     */
+    fun playBeeps(hz: Int, db: Double, side: Int) {
+        stop()
+        val amplitude = minOf(10.0.pow(db / 20.0), 1.0)
+        val frames = RATE * 157 / 100
+        val samples = FloatArray(frames * 2)
+        for ((from, to) in listOf(30 to 52, 66 to 86, 100 to 122)) {
+            val first = RATE * from / 100
+            val last = RATE * to / 100
+            for (i in first until last) {
+                val edge = min(1.0, min(i - first, last - 1 - i).toDouble() / FADE_FRAMES)
+                val v = (amplitude * edge * sin(2 * PI * hz * (i - first) / RATE)).toFloat()
+                samples[2 * i] = if (side == RIGHT) 0f else v
+                samples[2 * i + 1] = if (side == LEFT) 0f else v
+            }
+        }
+        val t = AudioTrack.Builder()
+            .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
+            .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_FLOAT).setSampleRate(RATE).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
+            .setTransferMode(AudioTrack.MODE_STATIC)
+            .setBufferSizeInBytes(samples.size * Float.SIZE_BYTES)
+            .build()
+        t.write(samples, 0, samples.size, AudioTrack.WRITE_BLOCKING)
+        t.setLoopPoints(0, frames, -1)
+        track = t
+        t.play()
+    }
+
     /** Plays [mono] (made at [rate]) in both ears over and over until [stop]: QCY's fit test sound. */
     fun playLoop(mono: FloatArray, rate: Int) {
         stop()
@@ -175,5 +211,8 @@ class TonePlayer(context: Context) {
         /** The rate of the warble tones the hearing test of JBL's PersoniFi plays. */
         const val WARBLE_RATE = 48000
         private const val FADE_FRAMES = 480
+
+        /** [AudioDeviceInfo.TYPE_BLE_HEADSET], named from Android 12. */
+        private const val BLE_HEADSET = 26
     }
 }

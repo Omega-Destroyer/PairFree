@@ -40,6 +40,8 @@ number for every model. No vendor-app-versus-public-project disagreement was est
 
 ## 2. Transport and opening
 
+**A second service (issue #78, 2026-11-27).** The app's server whitelist code (`WhitelistRepositoryServerImpl`) lists `00001107-D102-11E1-9B23-00025B00A5A5` beside `079A`, and a user's Enco Buds2 Pro lists only `00001107`, so PairFree opens that one on earbuds that do not list `079A`. Whether they answer the same frames there is not confirmed.
+
 The bundled entries all set `supportSpp` true and specify RFCOMM service
 `0000079A-D102-11E1-9B23-00025B00A5A5`. The SDK also has a GATT path using that service, write
 `0100079A-D102-11E1-9B23-00025B00A5A5` and notify `0200079A-D102-11E1-9B23-00025B00A5A5`, plus an extended

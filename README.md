@@ -19,7 +19,7 @@ does what the Android app does for the same earbuds, in a window made for a mous
 | **Android** 12 or later | [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) or the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest) (the same signed APK) |
 | **Windows** 10 or 11, 64-bit | `PairFree.exe` from the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest). Put it anywhere and run it. |
 
-Latest release: v0.18.0. Your earbuds must be paired in the phone's or PC's Bluetooth settings first. A few brands need a newer Android:
+Latest release: v0.18.1. Your earbuds must be paired in the phone's or PC's Bluetooth settings first. A few brands need a newer Android:
 AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel
 ([AirPods and Beats](docs/devices/apple.md)); they are not on Windows.
 
@@ -75,6 +75,7 @@ The same screens and the same earbuds' settings, laid out for a window: a sideba
 battery and a menu for noise control and equalizer profiles. Settings live in one readable file, `PairFree.toml`, beside the program. It needs Windows 10
 (version 1809) or 11 and the earbuds paired in Windows' Bluetooth settings; every brand is there except AirPods and the Beats on Apple's chips, which
 Windows gives programs no way to reach. See [PairFree for Windows](docs/WINDOWS.md).
+On Windows, the Bose QuietComfort Ultra Headphones (2nd Gen) can also be set over their USB-C cable, from the next release on.
 
 ## Looks
 
@@ -103,8 +104,8 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
 | [Sony](docs/devices/sony.md) | 24 | WF-1000XM5, WF-1000XM6 |
 | [Bose](docs/devices/bose.md) | 22 | — |
-| [JBL](docs/devices/jbl.md) | 112 | Live Buds 3 |
-| [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Pro 3 |
+| [JBL](docs/devices/jbl.md) | 112 | Endurance Peak 4, Live Buds 3, Tour Pro 3 |
+| [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Max 2, AirPods Pro 2 (USB-C), AirPods Pro 3 |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | Nothing Ear |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 | [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY MeloBuds Pro, QCY T13 ANC2 |
@@ -116,8 +117,20 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
 | [Huawei and Honor](docs/devices/huawei.md) | 46 | — |
-| **Total: 18 brands** | **892** | **22 tried** |
+| **Total: 18 brands** | **892** | **26 tried** |
 <!-- devices-summary:end -->
+
+## Coming next
+
+Brands PairFree does not support yet, in the order they are planned:
+
+1. Huawei
+2. Baseus
+3. Fairbuds
+4. Motorola (Moto Buds)
+5. Dell
+
+If you own a pair and want to help test one, [open an issue](https://github.com/Omega-Destroyer/PairFree/issues).
 
 ## Help add your model
 

@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.samsung
 
+import io.github.omegadestroyer.pairfree.protocol.deadControls
 import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
@@ -335,5 +336,14 @@ class SamsungSessionTest {
         val frames = s.frames(listOf(packet(SamsungMessage.RESET), packet(SamsungMessage.FIND_MY_EARBUDS_STOP)))
         assertEquals(1, frames.size)
         assertEquals(SamsungMessage.FIND_MY_EARBUDS_STOP, SamsungPacket.parse(frames.single())!!.id)
+    }
+
+    /** Every control shown from this brand's test states writes something (ShownControls.kt). */
+    @Test
+    fun everyShownControlWrites() {
+        val dead = cases.map { it.str("model") }.distinct().flatMap { m ->
+            deadControls(m, { connected(m) }, { it.state }, { it.groups }, { s, c, v -> s.set(c, v) }, { s, c -> s.change(c) })
+        }
+        assertEquals(emptyList<String>(), dead)
     }
 }

@@ -73,7 +73,8 @@ internal class SettingRows(
     private val links = mapOf("find_hub" to "https://www.google.com/android/find", "sk_tile" to "https://www.tile.com/")
 
     fun panels(): List<Widget> {
-        val mine = groups.filter { it.tab == tab }
+        // Where the phone makes the find sound (Soundcore's Space A40 and others), only Android plays it for now.
+        val mine = groups.filter { it.tab == tab && it.settings.none { s -> s.key == "find_phone" } }
         val out = mutableListOf<Widget>()
         var i = 0
         while (i < mine.size) {

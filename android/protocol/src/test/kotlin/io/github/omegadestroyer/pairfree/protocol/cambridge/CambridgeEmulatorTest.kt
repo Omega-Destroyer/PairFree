@@ -1,5 +1,6 @@
 package io.github.omegadestroyer.pairfree.protocol.cambridge
 
+import io.github.omegadestroyer.pairfree.protocol.deadControls
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
 import io.github.omegadestroyer.pairfree.protocol.repoFile
@@ -64,5 +65,16 @@ class CambridgeEmulatorTest {
         val expected = capture.getValue("frames").jsonArray.map { it.jsonPrimitive.content.hexBytes() }
         assertEquals(expected.size, frames.size)
         expected.zip(frames).forEach { (vendor, pairfree) -> assertArrayEquals(vendor, pairfree) }
+    }
+
+    /** Every control shown from this brand's test states writes something (ShownControls.kt). */
+    @Test
+    fun everyShownControlWrites() {
+        val dead = CambridgeModels.ALL.flatMap { m ->
+            val name = m.names.firstOrNull() ?: return@flatMap emptyList()
+            if (CambridgeModels.fromName(name) == null) emptyList()
+            else runCatching { session(name) }.getOrNull()?.let { _ -> deadControls(name, { session(name) }, { it.state }, { it.groups }, { _, _, _ -> null }, { s, c -> s.change(c) }) }.orEmpty()
+        }
+        assertEquals(emptyList<String>(), dead)
     }
 }

@@ -8,8 +8,8 @@ which was tried on the QC Ultra Headphones (2nd Gen), QC Ultra Earbuds (2nd Gen)
 Headphones, QC35, QC Earbuds, QC45 and Ultra Open Earbuds. Where the two differ, Bose's app
 wins. The standby timer's choices and its "never" come from
 [based-connect](https://github.com/Denton-L/based-connect) (Denton Liu, GPL-3.0: facts only),
-which controls the QC35. Nothing here has been tried with PairFree yet; a device report from any model helps
-([device page](../devices/bose.md)).
+which controls the QC35. PairFree's USB connection has been tested on the QC Ultra Headphones (2nd Gen) on Windows.
+Device reports help confirm support for other models and transports ([device page](../devices/bose.md)).
 
 The data is in `data/bose/`: `commands.json` (every function block and function, the operators
 and the error codes), `devices.json` (the models by product id) and `test_vectors.json`
@@ -25,6 +25,17 @@ The QuietComfort Earbuds (product `402F`, tried with bosectl) list no standard s
 Bose's app knows a device as Bose's by its services (`BluetoothService.isBoseDevice`): a 16-bit
 UUID `FEBE` or `FDD2`, or a UUID starting `F4C93A79-D04F-4565` ("Bragi"). PairFree uses the
 same test on the services the phone lists for a paired device, else "Bose" in its name.
+
+On Windows the QC Ultra Headphones (2nd Gen) also expose BMAP over USB HID (USB
+`05a7:4082`, interface 0, usage page `ff00`, usage `01`). The data is the same BMAP
+packet as below. Use output report `0c`, followed by the packet length as two big-endian
+bytes and the packet. Input report `0d` starts with the BMAP packet immediately after the
+report ID. Pad writes to the collection's maximum report size (1023 bytes on the tested
+device) and use the BMAP packet's own length to discard padding on reads (676 bytes max).
+For example, the battery GET `02 02 01 00` goes out as `0c 00 04 02 02 01 00` plus padding.
+This is the same framing [documented for the NC 700](https://github.com/iclemens/bose#bose-protocol),
+verified on QC Ultra Headphones (2nd Gen) firmware `10.12.14+gde0210e`. The wired connection
+uses Windows' built-in HID driver and does not require Bluetooth pairing.
 
 ## 2. Packets
 
@@ -105,6 +116,8 @@ Spatial audio is AudioManagement 5.15 (Bose's `SpatialAudioModeTypes`): GET answ
 The noise cancelling level: on models with AudioModes' settings (31.10, section 7) PairFree
 writes it there, as bosectl does, and the CNC step and that value count the same way in
 bosectl. Elsewhere it writes 1.5.
+On the QC Ultra Headphones (2nd Gen), the wire step runs from 0 (strongest cancellation)
+to 10 (most ambient sound). PairFree shows cancellation strength, with 10 as the strongest.
 
 ## 7. Listening modes (AudioModes, block 31)
 
@@ -116,7 +129,9 @@ bosectl. Elsewhere it writes 1.5.
   `00 02`, Bose's `AudioModesPrompt`), user slot, set up, favourite, the name (32 bytes, zero
   padded), then the mode's settings (44, 47 or 48 bytes in all, by model).
 - **31.10 settings:** the noise cancelling level, auto CNC, spatial audio (0 off, 1 room,
-  2 head), wind block and ANC, a byte each; SETGET writes all five.
+  2 head), wind block and ANC, a byte each; SETGET writes all five. On the QC Ultra
+  Headphones (2nd Gen), the Wind Block and ANC controls update their respective fields and
+  preserve the other bytes. The immersive audio control uses the same live configuration.
 
 PairFree offers the firmware's modes and the user slots that are set up, by their names, and
 switches with START 31.3. It does not change the modes themselves.

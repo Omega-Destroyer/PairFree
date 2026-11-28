@@ -30,13 +30,16 @@ public class SoundcoreTouch private constructor(public val state: SoundcoreState
 
     private val cycleTws = offers("ambient_sound_mode_cycle_tws")
 
+    /** The modes this model's button can cycle through, in the order the screens list them. */
+    public val noiseCycleModes: List<AmbientMode> = CYCLE_BITS.map { it.first }.filter { it != AmbientMode.ADAPTIVE || offers("ambient_sound_mode_cycle_adaptive") }
+
     /** The noise modes the noise-control action cycles through, or null on models without the setting. */
     public val noiseCycle: Set<AmbientMode>?
         get() {
             if (!offers("ambient_sound_mode_cycle") && !cycleTws) return null
             val byte = state.byte(CYCLE) ?: return null
             val bits = if (cycleTws && !SoundcoreButtons.tws(state)) byte shr 4 else byte and 0xF
-            return CYCLE_BITS.filter { (_, bit) -> bits and bit != 0 }.map { it.first }.toSet()
+            return CYCLE_BITS.filter { (mode, bit) -> mode in noiseCycleModes && bits and bit != 0 }.map { it.first }.toSet()
         }
 
     public val canReset: Boolean get() = spec?.reset == true && groups.isNotEmpty()
@@ -67,8 +70,11 @@ public class SoundcoreTouch private constructor(public val state: SoundcoreState
     /** Null when the model has no cycle setting, or [modes] is empty. */
     public fun setNoiseCycle(modes: Set<AmbientMode>): SoundcoreButtons.Change? {
         if (noiseCycle == null || modes.isEmpty()) return null
-        val bits = CYCLE_BITS.filter { it.first in modes }.sumOf { it.second }
         val old = state.byte(CYCLE) ?: return null
+        // Bits of modes this model does not list are sent back as the earbuds reported them.
+        val offered = CYCLE_BITS.filter { it.first in noiseCycleModes }.sumOf { it.second }
+        val held = if (cycleTws && !SoundcoreButtons.tws(state)) old shr 4 else old and 0xF
+        val bits = (held and offered.inv() and 0xF) or CYCLE_BITS.filter { it.first in modes && it.first in noiseCycleModes }.sumOf { it.second }
         val byte = when {
             !cycleTws -> bits
             SoundcoreButtons.tws(state) -> (old and 0xF0) or bits
@@ -92,7 +98,7 @@ public class SoundcoreTouch private constructor(public val state: SoundcoreState
         private const val CYCLE = "sound_mode_cycle"
 
         /** OpenSCQ30's bits for each mode in the cycle byte. */
-        private val CYCLE_BITS = listOf(AmbientMode.NOISE_CANCELLING to 1, AmbientMode.TRANSPARENCY to 2, AmbientMode.NORMAL to 4)
+        private val CYCLE_BITS = listOf(AmbientMode.NOISE_CANCELLING to 1, AmbientMode.TRANSPARENCY to 2, AmbientMode.NORMAL to 4, AmbientMode.ADAPTIVE to 8)
 
         public fun of(state: SoundcoreState): SoundcoreTouch = SoundcoreTouch(state, SoundcoreButtonSpec.of(state.layout.model))
     }

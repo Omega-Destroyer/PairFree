@@ -64,11 +64,20 @@ class SettingWords(private val strings: DesktopStrings) {
             "ca_sound" -> "setting_ca_sound"
             "ca_case" -> "setting_ca_case_group"
             "sc_device" -> "setting_sc_device"
+            "sc_neck" -> "setting_sc_neck"
+            "sc_player" -> "setting_sc_player"
+            "sc_health" -> "setting_sc_health"
+            "sc_dongle" -> "setting_sc_dongle"
+            "sc_tests" -> "setting_sc_tests"
+            "sc_limit" -> "setting_hearing_protection"
+            "sc_hear_id" -> "setting_sc_hear_id"
+            "sc_life_nc" -> "setting_eq_preset"
+            "sc_case" -> "setting_sc_case"
             "ca_touch" -> "setting_ca_touch_actions"
             "ca_connection" -> "connection"
             "oneplus_sound_switches" -> "setting_group_sound"
             "oneplus_head_motion" -> "setting_group_head_motion"
-            "oneplus_peers" -> "setting_group_peers"
+            "oneplus_peers", "sc_peers" -> "setting_group_peers"
             else -> "setting_group_other"
         },
     )
@@ -76,6 +85,7 @@ class SettingWords(private val strings: DesktopStrings) {
     fun groupNote(key: String): String? = when (key) {
         "ef_cycle" -> t("setting_group_ef_cycle_note")
         "find" -> t("setting_find_note")
+        "find_phone" -> t("setting_find_phone_note")
         "sh_fit" -> t("setting_sh_fit_note")
         "sh_auracast" -> t("setting_sh_auracast_note")
         "find_hub" -> t("setting_find_hub_note")
@@ -189,6 +199,65 @@ class SettingWords(private val strings: DesktopStrings) {
         "sc_vibration" -> t("setting_sc_vibration")
         "sc_max_volume_switch" -> t("setting_sc_max_volume_switch")
         "sc_max_volume" -> t("setting_sc_max_volume")
+        "sc_hear_id" -> t("setting_sc_hear_id")
+        "sc_life_nc_eq" -> t("setting_sc_life_nc_eq")
+        "sc_case_firmware" -> t("setting_sc_case_firmware")
+        "sc_case_notifications" -> t("setting_sc_case_notifications")
+        "sc_case_low_battery" -> t("setting_sc_case_low_battery")
+        "sc_case_charging_reminder" -> t("setting_sc_case_charging_reminder")
+        "sc_case_data_sync" -> t("setting_sc_case_data_sync")
+        "sc_case_sleep_report" -> t("setting_sc_case_sleep_report")
+        "sc_case_noise_alert" -> t("setting_sc_case_noise_alert")
+        "sc_case_biosync" -> t("setting_sc_case_biosync")
+        "sc_case_sleep_check" -> t("setting_sc_case_sleep_check")
+        "sc_case_sound" -> t("setting_sc_case_sound")
+        "sc_a10_alarm" -> t("setting_sc_a10_alarm")
+        "sc_calibrate_in_ear_result" -> t("setting_sc_calibrate_in_ear_result")
+        "sc_calibrate_neck_result" -> t("setting_sc_calibrate_neck_result")
+        "sc_neck_report" -> t("setting_sc_neck_report")
+        "sc_neck_tilt_front" -> t("setting_sc_neck_tilt_front")
+        "sc_neck_tilt_side" -> t("setting_sc_neck_tilt_side")
+        "sc_neck_angle" -> t("setting_sc_neck_angle")
+        "sc_anc_sensor" -> t("setting_sc_anc_sensor")
+        "sc_voice_wake" -> t("setting_sc_voice_wake")
+        "sc_a10_volume" -> t("setting_sc_a10_volume")
+        "sc_a10_play_time" -> t("setting_sc_a10_play_time")
+        "sc_a10_countdown" -> t("setting_sc_a10_countdown")
+        "sc_heart_rate" -> t("setting_sc_heart_rate")
+        "sc_heart_rate_value" -> t("setting_sc_heart_rate_value")
+        "sc_blood_oxygen" -> t("setting_sc_blood_oxygen")
+        "sc_steps" -> t("setting_sc_steps")
+        "sc_sedentary" -> t("setting_sc_sedentary")
+        "sc_sitting_posture" -> t("setting_sc_sitting_posture")
+        "sc_dongle_connect" -> t("setting_sc_dongle_connect")
+        "sc_dongle_remove" -> t("setting_sc_dongle_remove")
+        "sc_dongle_type" -> t("setting_sc_dongle_type")
+        "sc_dongle_low_power" -> t("setting_sc_dongle_low_power")
+        "sc_calibrate_table_result" -> t("setting_sc_calibrate_table_result")
+        "sc_calibrate_worn_result" -> t("setting_sc_calibrate_worn_result")
+        "sc_personal_anc_result" -> t("setting_sc_personal_anc_result")
+        "sc_voice_language" -> t("setting_sc_voice_language")
+        "sc_open_surround" -> t("setting_sc_open_surround")
+        "sc_open_surround_level" -> t("setting_sc_open_surround_level")
+        "sc_voice_commands" -> t("setting_sc_voice_commands")
+        "sc_super_volume" -> t("setting_sc_super_volume")
+        "sc_manual_shutdown" -> t("setting_sc_manual_shutdown")
+        "sc_light_mode" -> t("setting_sc_light_mode")
+        "sc_light_colour" -> t("setting_sc_light_colour")
+        "sc_volume_limit" -> t("setting_sc_volume_limit")
+        "sc_volume_limit_db" -> t("setting_sc_volume_limit_db")
+        "sc_mode_voice_prompt", "sc_voice_prompt" -> t("setting_sc_mode_voice_prompt")
+        "sc_voice_tone" -> t("setting_sc_voice_tone")
+        "sc_battery_alert" -> t("setting_sc_battery_alert")
+        "sc_nc_double_press" -> t("setting_sc_nc_double_press")
+        "sc_mfb_hold" -> t("setting_sc_mfb_hold")
+        "sc_volume_balance" -> t("setting_sc_volume_balance")
+        "sc_power_off_tone" -> t("setting_sc_power_off_tone")
+        "sc_connect_tone" -> t("setting_sc_connect_tone")
+        "sc_easy_chat" -> t("setting_sc_easy_chat")
+        "sc_sound_field" -> t("setting_sc_sound_field")
+        "sc_call_noise" -> t("setting_sc_call_noise")
+        "sc_voice_pickup" -> t("setting_sc_voice_pickup")
         "sc_in_ear_tone" -> t("setting_sc_in_ear_tone")
         "sc_bass_up" -> t("setting_sc_bass_up")
         "sc_spatial_audio" -> t("setting_sc_spatial_audio")
@@ -366,6 +435,8 @@ class SettingWords(private val strings: DesktopStrings) {
         "bose_touch_controls" -> t("touch_controls")
         "bose_auto_volume" -> t("setting_bose_auto_volume")
         "bose_cnc_persistence" -> t("setting_bose_cnc_persistence")
+        "bose_anc" -> t("setting_bose_anc")
+        "bose_wind_block" -> t("setting_bose_wind_block")
         "bose_alert_ringtone" -> t("setting_bose_alert_ringtone")
         "bose_alert_haptics" -> t("setting_bose_alert_haptics")
         "voice_guidance" -> t("setting_voice_guidance")
@@ -384,7 +455,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "bose_button_128" -> t("setting_bose_button_shortcut")
         "audio_mode" -> t("setting_audio_mode")
         "anr" -> t("setting_anr")
-        "noise_level" -> t("setting_noise_level")
+        "noise_level", "bose_anc_level" -> t("setting_noise_level")
         "eq_bass" -> t("setting_eq_bass")
         "eq_low_mid" -> t("setting_eq_low_mid")
         "eq_mid" -> t("setting_eq_mid")
@@ -435,10 +506,10 @@ class SettingWords(private val strings: DesktopStrings) {
         "hw_head_control" -> t("setting_hw_head_control")
         "hw_drop" -> t("setting_hw_drop")
         "multipoint" -> t("setting_multipoint")
-        "bose_peer_connect" -> t("setting_bose_peer_connect")
-        "bose_peer_disconnect" -> t("setting_bose_peer_disconnect")
-        "bose_peer_delete" -> t("setting_sh_peer_delete")
-        "bose_pairing_mode" -> t("setting_bose_pairing_mode")
+        "bose_peer_connect", "sc_peer_connect" -> t("setting_bose_peer_connect")
+        "bose_peer_disconnect", "sc_peer_disconnect" -> t("setting_bose_peer_disconnect")
+        "bose_peer_delete", "sc_peer_delete" -> t("setting_sh_peer_delete")
+        "bose_pairing_mode", "sc_pairing_mode" -> t("setting_bose_pairing_mode")
         "auto_answer" -> t("setting_auto_answer")
         "voice_prompts" -> t("setting_voice_prompts")
         "jbl_smart_audio_video" -> t("setting_jbl_smart_audio_video")
@@ -805,6 +876,11 @@ class SettingWords(private val strings: DesktopStrings) {
     }
 
     fun settingNote(key: String): String? = when (key) {
+        "sc_easy_chat" -> t("setting_sc_easy_chat_note")
+        "sc_voice_wake" -> t("setting_sc_voice_wake_note")
+        "sc_hear_id" -> t("setting_sc_hear_id_note")
+        "sc_a10_alarm" -> t("setting_sc_a10_alarm_note")
+        "sc_call_noise" -> t("setting_sc_call_noise_note")
         "bose_default_mode" -> t("setting_bose_default_mode_note")
         "bose_modes_persist" -> t("setting_bose_modes_persist_note")
         "bose_latency" -> t("setting_bose_latency_note")
@@ -863,6 +939,7 @@ class SettingWords(private val strings: DesktopStrings) {
         "dsee" -> t("setting_dsee_note")
         "connection_priority" -> t("setting_sony_connection_priority_note")
         "noise_level" -> t("setting_noise_level_note")
+        "bose_anc_level" -> t("setting_bose_anc_level_note")
         "talk_thru" -> t("setting_talk_thru_note")
         "adaptive" -> t("setting_adaptive_audio_note")
         "adaptive_level" -> t("setting_adaptive_level_note")
@@ -1074,7 +1151,44 @@ class SettingWords(private val strings: DesktopStrings) {
             "assistant" -> "setting_ca_assistant"
             else -> "action_none"
         })
+        key.startsWith("sc_calibrate_") || key == "sc_personal_anc_result" -> t(if (option == "passed") "setting_sc_passed" else "setting_sc_failed")
+        key == "sc_neck_report" -> t(if (option == "on") "on" else "action_off")
+        key == "sc_dongle_type" -> t(when (option) {
+            "oculus" -> "setting_sc_dongle_oculus"
+            "playstation" -> "setting_sc_dongle_playstation"
+            "pc" -> "setting_sc_dongle_pc"
+            "switch" -> "setting_sc_dongle_switch"
+            "phone" -> "setting_sc_dongle_phone"
+            else -> "setting_sc_dongle_other"
+        })
+        key == "sc_voice_language" -> t(if (option == "chinese") "setting_sc_language_chinese" else "setting_sc_language_english")
+        key == "sc_light_mode" -> t(when (option) {
+            "breathing" -> "setting_sc_light_breathing"
+            "on" -> "setting_sc_light_on"
+            else -> "setting_sc_light_saving"
+        })
+        key == "sc_light_colour" -> t(when (option) {
+            "violet" -> "setting_sc_colour_violet"
+            "coral" -> "setting_sc_colour_coral"
+            "pink" -> "setting_sc_colour_pink"
+            "blue" -> "setting_sc_colour_blue"
+            else -> "setting_sc_colour_purple"
+        })
+        key == "sc_nc_double_press" || key == "sc_mfb_hold" -> t(when (option) {
+            "bass" -> "setting_sc_action_bass"
+            "assistant" -> "setting_ca_assistant"
+            "nap" -> "setting_sc_action_nap"
+            else -> "action_none"
+        })
+        key == "sc_life_nc_eq" -> t(when (option) {
+            "sc_life_nc_bass" -> "setting_sc_life_nc_bass"
+            "sc_life_nc_office" -> "setting_sc_life_nc_office"
+            else -> "setting_sc_life_nc_original"
+        })
         key == "sc_press_sensitivity" -> t(when (option) {
+            "low" -> "setting_sc_press_low"
+            "medium" -> "setting_sc_press_medium"
+            "high" -> "setting_sc_press_high"
             "softest" -> "setting_sc_press_softest"
             "soft" -> "setting_sc_press_soft"
             "normal" -> "setting_sc_press_normal"
@@ -1442,7 +1556,8 @@ class SettingWords(private val strings: DesktopStrings) {
         )
         key == "sleep_listening_mode" || key == "sleep_default_listening_mode" ->
             t(if (option == "local") "setting_sleep_mode_local" else "setting_sleep_mode_bluetooth")
-        key == "sleep_timer" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("action_off")
+        (key == "sc_a10_play_time" || key == "sc_a10_countdown") && option == "keep" -> t("setting_sc_keep_playing")
+        key == "sleep_timer" || key == "sc_a10_play_time" || key == "sc_a10_countdown" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("action_off")
         key == "auto_off" && option == "when_taken_off" -> t("shutdown_when_taken_off")
         key == "auto_off" -> option.toIntOrNull()?.let { t("shutdown_minutes", it) } ?: t("shutdown_never")
         key == "connection_priority" -> t(
@@ -1578,6 +1693,12 @@ class SettingWords(private val strings: DesktopStrings) {
                 else -> t("setting_balance_middle")
             }
         }
+        "sc_volume_limit_db", "a3954_volume_limit_db" -> t("db", value.toString())
+        "sc_volume_balance" -> when {
+            value < 0 -> t("setting_balance_left", -value)
+            value > 0 -> t("setting_balance_right", value)
+            else -> t("setting_balance_middle")
+        }
         "balance" -> {
             val middle = max / 2
             when {
@@ -1607,7 +1728,7 @@ class SettingWords(private val strings: DesktopStrings) {
     fun actionStart(key: String): String = when (key) {
         "hw_ring_left", "hw_ring_right" -> "setting_find_start"
         "op_eq_new" -> "setting_op_eq_new"
-        "find" -> "setting_find_start"
+        "find", "find_phone" -> "setting_find_start"
         "find_hub" -> "setting_find_hub_open"
         "sk_tile" -> "setting_sk_tile_open"
         "nc_optimizer" -> "setting_nc_optimizer_start"
@@ -1618,6 +1739,19 @@ class SettingWords(private val strings: DesktopStrings) {
         "sh_find_left" -> "setting_sh_find_left"
         "sh_find_right" -> "setting_sh_find_right"
         "sh_fit_test" -> "setting_sh_fit_start"
+        "sc_calibrate_table" -> "setting_sc_calibrate_table"
+        "sc_calibrate_worn" -> "setting_sc_calibrate_worn"
+        "sc_personal_anc" -> "setting_sc_personal_anc"
+        "sc_personal_anc_reset" -> "setting_sc_personal_anc_reset"
+        "sc_calibrate_in_ear" -> "setting_sc_calibrate_in_ear"
+        "sc_calibrate_neck" -> "setting_sc_calibrate_neck"
+        "sc_neck_history" -> "setting_sc_neck_history"
+        "sc_neck_clear" -> "setting_sc_neck_clear"
+        "sc_hear_id_delete" -> "setting_sc_hear_id_delete"
+        "sc_a10_play" -> "setting_sc_a10_play"
+        "sc_a10_pause" -> "setting_sc_a10_pause"
+        "sc_a10_alarm_clear" -> "setting_sc_a10_alarm_clear"
+        "sc_dongle_disconnect" -> "setting_sc_dongle_disconnect"
         "jbl_seal_check" -> "setting_jbl_seal_check"
         "jbl_case_saver_remove" -> "setting_jbl_case_saver_remove"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scan"
@@ -1632,10 +1766,12 @@ class SettingWords(private val strings: DesktopStrings) {
 
     fun actionStop(key: String): String = when (key) {
         "hw_ring_left", "hw_ring_right" -> "setting_find_stop"
-        "find" -> "setting_find_stop"
+        "find", "find_phone" -> "setting_find_stop"
         "nc_optimizer" -> "setting_nc_optimizer_stop"
         "sh_find_left", "sh_find_right" -> "setting_find_stop"
         "sh_fit_test" -> "setting_sh_fit_cancel"
+        "sc_calibrate_table", "sc_calibrate_worn", "sc_calibrate_in_ear", "sc_calibrate_neck" -> "setting_sc_calibrating"
+        "sc_personal_anc" -> "setting_sc_personal_anc_cancel"
         "jbl_seal_check", "jbl_noise_check", "jbl_canal_test" -> "setting_jbl_testing"
         "jbl_auracast_scan" -> "setting_jbl_auracast_scanning"
         else -> "setting_action_stop"

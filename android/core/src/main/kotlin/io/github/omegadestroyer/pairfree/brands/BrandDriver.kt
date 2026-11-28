@@ -417,6 +417,26 @@ sealed interface OwnHearingTest {
 
     /** QCY's personalised listening test (docs/qcy/PROTOCOL.md section 8), on the 8 models whose panel has it. */
     data class Qcy(val spec: io.github.omegadestroyer.pairfree.protocol.qcy.QcyPersonal) : OwnHearingTest
+
+    /** Soundcore's HearID test (docs/soundcore/PROTOCOL.md, HearID), on the models whose screen in its app was read. */
+    data class Soundcore(val spec: io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingSpec) : OwnHearingTest
+}
+
+/** What Soundcore's hearing test needs of the open channel. Implemented by the Soundcore driver. */
+interface SoundcoreHearingHost {
+    val spec: io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingSpec
+
+    /** The earbuds are told the test starts, or that it has ended. */
+    fun testing(running: Boolean)
+
+    /** Plays [result] for a moment while the listener compares (HearID 3's music step); false when it could not be sent. */
+    fun preview(result: io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingResult): Boolean
+
+    /** Puts back what the earbuds held before the first [preview]; nothing when there was none or a result was saved since. */
+    fun restore()
+
+    /** Stores [result] in the earbuds and turns HearID on; false when it could not be sent. */
+    fun save(result: io.github.omegadestroyer.pairfree.protocol.soundcore.SoundcoreHearingResult): Boolean
 }
 
 /**

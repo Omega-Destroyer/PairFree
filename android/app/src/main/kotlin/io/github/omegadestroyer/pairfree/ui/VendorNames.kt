@@ -186,6 +186,7 @@ internal object VendorNames {
         "Vibrant" to R.string.vendor_vibrant,
         "Vocal" to R.string.vendor_vocal,
         "Vocal Attenuation" to R.string.vendor_vocal_attenuation,
+        "Vocal Booster" to R.string.vendor_vocal_booster,
         "Vocal Enhancement" to R.string.vendor_vocal_enhancement,
         "Vocal boost" to R.string.vendor_vocal_boost,
         "Vocal booster" to R.string.preset_name_vocal_booster,

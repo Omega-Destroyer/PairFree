@@ -95,3 +95,10 @@ The [Huawei model audit](huawei/MODELS.md) pins the public references and keeps 
 | --- | --- | --- |
 | The older OpenFreebuds Pro 3 profile labels preset 1 Bass and 2 Treble. | LibreBuds c7b0833 publishes a FreeBuds Pro 3 reply offering 2, 3, 5 and 9. PairFree uses the reported IDs with the matching profile labels. [Capture](https://github.com/librebuds/librebuds/blob/c7b0833/test-vectors/round2/equalizer.jsonl) | No |
 | The older OpenFreebuds EQ state request contains tags 1 through 8. | LibreBuds c7b0833 and HuaweiPods e2cf07e document the single tag 2 request, including FreeBuds 5 compatibility. [LibreBuds EQ facts](https://github.com/librebuds/librebuds/tree/c7b0833/android/protocol) | No |
+
+## OpenSCQ30: the voice prompt of the V20i and V40i (A3876, A3878)
+
+OpenSCQ30 (commit bc77a29) sets `voice_prompt` on these with `01 90` (`common/modules/flag.rs`, `flag!(VoicePrompt)`). The Soundcore app 5.0.35 shows
+their "voice prompt" switch from the state byte its parser names the touch tone (`A3876AnalysisService`, `A3878AnalysisService`) and writes it as the touch
+tone, `01 83` (`A3876MoreDataProvider`, `SoundcoreMoreVM.sendTouchToneCmd`). PairFree follows the app. Not tried on the earbuds, so which of the two (or
+both) the earbuds take is not known.

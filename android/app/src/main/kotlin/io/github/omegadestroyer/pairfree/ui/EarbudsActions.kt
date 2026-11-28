@@ -50,6 +50,9 @@ interface EarbudsActions {
     /** The open channel's hold for JBL's PersoniFi hearing test, or null where the earbuds have none. */
     fun jblPersonifi(): io.github.omegadestroyer.pairfree.brands.PersonifiHost? = null
 
+    /** The open channel's part in Soundcore's HearID test, or null where the earbuds have none. */
+    fun soundcoreHearing(): io.github.omegadestroyer.pairfree.brands.SoundcoreHearingHost? = null
+
     /** The Sleep A30's sound upload, or null where the earbuds have none. */
     fun sleepUploader(): io.github.omegadestroyer.pairfree.sleep.SleepUploader? = null
 

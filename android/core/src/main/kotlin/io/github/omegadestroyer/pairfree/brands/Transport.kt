@@ -4,6 +4,7 @@ import io.github.omegadestroyer.pairfree.bluetooth.ControlLink
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblModel
 import io.github.omegadestroyer.pairfree.protocol.jbl.JblRace
 import io.github.omegadestroyer.pairfree.protocol.qcy.QcyAdvert
+import kotlinx.io.IOException
 
 /**
  * A Bluetooth LE device a channel can be opened to: the earbuds' classic address where their LE side answers on it
@@ -55,7 +56,7 @@ interface GattChannel : ControlLink {
 class QcyFound(val target: LeTarget, val advert: QcyAdvert)
 
 /** The local date and time as the system shows them; [weekday] is 0 for Sunday. */
-class LocalTime(val year: Int, val month: Int, val day: Int, val weekday: Int, val hour: Int, val minute: Int, val second: Int)
+class LocalTime(val year: Int, val month: Int, val day: Int, val weekday: Int, val hour: Int, val minute: Int, val second: Int, val twentyFourHour: Boolean = true)
 
 /**
  * The Bluetooth of the system PairFree runs on, as the brands open their channels through it ([BrandSpec.open]): Android's
@@ -102,6 +103,9 @@ interface Transport {
 
     /** The classic serial channel (RFCOMM) to the service [uuid] of the device at [address]. */
     fun serial(address: String, uuid: String, log: (String) -> Unit): ControlLink
+
+    /** A wired device's USB control channel, identified by its local device key. */
+    fun usb(address: String): ControlLink = throw IOException("USB control is unavailable on this system")
 
     fun gatt(target: LeTarget, spec: GattSpec, log: (String) -> Unit): GattChannel
 

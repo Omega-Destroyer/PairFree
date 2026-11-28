@@ -67,6 +67,7 @@ class LabelWords(private val strings: DesktopStrings) {
         "bass_up" -> t("action_bass_up")
         "lights" -> t("action_lights")
         "noise_canceling" -> t("action_noise_cancelling")
+        "transparency" -> t("anc_transparency")
         "change_mode" -> t("action_change_mode")
         "white_noise" -> t("action_white_noise")
         "translate" -> t("action_translate")

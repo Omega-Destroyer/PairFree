@@ -69,6 +69,17 @@
           "serial_number_and_firmware_version"
         ]
       },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3005"
+      },
       "state": [
         ["single_battery", 2],
         ["firmware", 5],
@@ -143,6 +154,17 @@
           "single_battery",
           "serial_number_and_firmware_version"
         ]
+      },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3005"
       },
       "state": [
         ["single_battery", 2],
@@ -504,6 +526,9 @@
     },
     {
       "model": "A3035",
+      "extra_features": [
+        "wear_calibration"
+      ],
       "names": [
         "Soundcore Space One",
         "soundcore CS 30Q"
@@ -597,6 +622,9 @@
     },
     {
       "model": "A3040",
+      "extra_features": [
+        "wear_calibration"
+      ],
       "names": [
         "Soundcore Space Q45"
       ],
@@ -637,11 +665,12 @@
         ["skip", 6],
         ["ldac", 1],
         ["dual_connections_enabled", 1],
-        ["skip", 2],
+        ["skip", 1],
+        ["prompt_language", 1],
         ["auto_power_off", 2],
         ["limit_high_volume", 3],
         ["voice_prompt", 1],
-        ["low_battery_prompt", 1],
+        ["battery_alert", 1],
         ["skip", 5],
         ["hear_id", 58]
       ],
@@ -890,7 +919,7 @@
         ["skip", 4],
         ["serial", 16]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3201DeviceManager and A3201CmdConstants), not tried on the headphones. The older protocol the Life NC speaks has one request, `01 09`, that returns its whole state in a frame without a checksum: the level (0 to 5), the vibration switch, the custom button function (skipped), the volume limit's switch and value (0 to 16), the firmware (four characters), the serial and the name; the writes are `01 82` (vibration), `01 84` and `01 85` (the volume limit). Its equalizer is read and set by index (`02 01`, `02 81`), whose presets are in the app's native screen code, so none is offered.",
+      "notes": "Read from the Soundcore app 5.0.35 (A3201DeviceManager and A3201CmdConstants), not tried on the headphones. The older protocol the Life NC speaks has one request, `01 09`, that returns its whole state in a frame without a checksum: the level (0 to 5), the vibration switch, the custom button function (skipped), the volume limit's switch and value (0 to 16), the firmware (four characters), the serial and the name; the writes are `01 82` (vibration), `01 84` and `01 85` (the volume limit). Its equalizer is three presets, read and set by number (`02 01`, `02 81`; Soundcore 3.3.0's `A3201EQPresenter`: 0 original, 1 bass boost, 2 office).",
       "kind": "headphones",
       "checksum": false,
       "state_command": "0109",
@@ -1070,6 +1099,7 @@
     },
     {
       "model": "A3388",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore AeroClip"
       ],
@@ -1163,16 +1193,37 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3600",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3600"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
-        ["serial", 16]
+        ["serial", 16],
+        ["optional:equalizer", 12],
+        ["optional:skip", 23],
+        ["optional:wearing_detection", 1],
+        ["optional:voice_control", 2],
+        ["optional:stereo_expansion", 2],
+        ["optional:super_volume", 1],
+        ["optional:manual_shutdown", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3600AnalysisService.e1), not tried: the head of the reply (TWS status, both levels, charging, both firmware versions, the serial). The rest and the command service are not read yet. No battery scale is shown: the parser does not give one."
+      "notes": "Read from the Soundcore app 5.0.35 (A3600AnalysisService.e1), not tried: the head of the reply (TWS status, both levels, charging, both firmware versions, the serial). The equalizer (record at packet byte 41: preset and ten bytes) is written as `A3600CmdService.s6` does, five presets and a custom curve; the rest of the reply is skipped. No battery scale is shown: the parser does not give one."
     },
     {
       "model": "A3850",
+      "extra_features": [
+        "dongle"
+      ],
       "names": [
         "Soundcore VR P10"
       ],
@@ -1187,15 +1238,26 @@
           "offset": 0
         }
       },
+      "eq": {
+        "write": "plain",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3040"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
-        ["skip", 22],
+        ["equalizer", 22],
         ["skip", 12],
         ["skip", 1],
-        ["skip", 2],
+        ["light", 2],
         ["super_hearing", 1],
         ["call_mix", 1],
         ["microphone", 1]
@@ -1212,10 +1274,11 @@
           "microphone"
         ]
       },
-      "notes": "Read from Soundcore 3.3.0's A3850AnalysisService, not from OpenSCQ30 or a recording. Skipped: the equalizer, the button block, the sound mode cycle and the light colour and mode. The dongle's own commands (0F xx) are not built. Nothing has been tried on a VR P10."
+      "notes": "Read from Soundcore 3.3.0's A3850AnalysisService, not from OpenSCQ30 or a recording. Skipped: the button block, the sound mode cycle and the light colour and mode. The dongle's own commands (0F xx) are not built. Nothing has been tried on a VR P10."
     },
     {
       "model": "A3871",
+      "extra_features": ["find_device_phone"],
       "names": [
         "soundcore AeroFit Pro"
       ],
@@ -1235,6 +1298,17 @@
           "dual_connections",
           "a3876_volume_balance"
         ]
+      },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero2"
       },
       "state": [
         ["tws_status", 2],
@@ -1297,6 +1371,17 @@
           "a3876_volume_balance"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero2"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
@@ -1355,6 +1440,17 @@
           "auto_power_off"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero2"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
@@ -1389,6 +1485,9 @@
     },
     {
       "model": "A3874",
+      "extra_features": ["find_device",
+"touch_tone",
+"auto_power_off_durations"],
       "names": [
         "soundcore AeroFit 2",
         "AeroFit 2 AI Assistant"
@@ -1403,18 +1502,47 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero3"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
         ["dual_firmware", 10],
         ["serial", 16],
         ["skip", 5],
-        ["case_battery", 1]
+        ["case_battery", 1],
+        ["equalizer", 22],
+        ["block", 0],
+        ["skip", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["skip", 1],
+        ["volume_balance", 1],
+        ["skip", 2],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["skip", 1],
+        ["gaming_mode", 1],
+        ["optional:skip", 3],
+        ["optional:audio_wakeup", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3871AnalysisService.e1, one class for the A3871, A3872 and A3873; A3874AnalysisService), not from OpenSCQ30 and not tried on the earbuds. Its head is the V20i's (A3876); the rest has firmware-gated fields and a command service of its own (A3874CmdService), so only the battery, firmware and serial are read. The battery's scale is not in the parser (it clamps 0 to 9), so no battery is shown until a report settles it."
+      "notes": "Read from the Soundcore app 5.0.35 (A3874AnalysisService), not from OpenSCQ30 and not tried on the earbuds: the head, the equalizer block, the length-prefixed button block skipped, then LDAC, two devices, auto power off, the balance, the tones, game mode and the voice wake. No battery scale is in the parser (it clamps 0 to 9), so no battery is shown until a report settles it."
     },
     {
       "model": "A3875",
+      "extra_features": ["find_device",
+"auto_power_off_durations",
+"sound_modes"],
       "names": [
         "soundcore AeroFit 2 Pro"
       ],
@@ -1428,18 +1556,47 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3875",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "aero3"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery_level", 2],
         ["dual_firmware", 10],
         ["serial", 16],
         ["skip", 5],
-        ["case_battery", 1]
+        ["case_battery", 1],
+        ["equalizer", 22],
+        ["block", 0],
+        ["sound_modes", 2],
+        ["skip", 1],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["auto_power_off", 2],
+        ["skip", 2],
+        ["skip", 1],
+        ["low_battery_prompt", 1],
+        ["gaming_mode", 1],
+        ["skip", 7],
+        ["audio_wakeup", 1],
+        ["skip", 2],
+        ["in_ear_tone", 1],
+        ["optional:skip", 2],
+        ["optional:anc_sensor", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3875AnalysisService.e1), not tried on the earbuds: the head of the reply (TWS status, both levels, both firmware versions, the serial, the case's firmware and level). The rest holds length-prefixed blocks and the app's own EQ structure, which are not read yet. The battery's scale is not in the parser (it clamps 0 to 9), so none is shown."
+      "notes": "Read from the Soundcore app 5.0.35 (A3875AnalysisService.e1 and A3875CmdService), not tried on the earbuds: the head, the equalizer block, the button block skipped, the noise mode (two bytes, written with 06 81), LDAC, two devices, auto power off, the tones, game mode, the voice wake and the noise sensor enhancement. Its balance is stored in a way the app does not read back (clamped to 0 to 9), so it is not offered. No battery scale is in the parser."
     },
     {
       "model": "A3876",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore V20i"
       ],
@@ -1477,7 +1634,7 @@
         ["buttons", 8],
         ["colorful_lights", 7],
         ["skip", 1],
-        ["voice_prompt", 1],
+        ["voice_tone", 1],
         ["auto_power_off", 2],
         ["skip", 1],
         ["gaming_mode", 1],
@@ -1515,6 +1672,7 @@
     },
     {
       "model": "A3878",
+      "extra_features": ["find_device"],
       "names": [
         "soundcore V40i"
       ],
@@ -1546,7 +1704,7 @@
         ["buttons", 8],
         ["skip", 7],
         ["skip", 1],
-        ["voice_prompt", 1],
+        ["voice_tone", 1],
         ["auto_power_off", 2],
         ["skip", 1],
         ["gaming_mode", 1],
@@ -2324,9 +2482,7 @@
       "ldac_excludes": [
         "multipoint"
       ],
-      "extra_features": [
-        "surround_sound"
-      ],
+      "extra_features": ["surround_sound", "find_device_phone"],
       "notes": [
         "LDAC on turns two devices off, and LDAC off turns it back on. With LDAC off, two devices can be turned off and on by itself.",
         "Every LDAC or two-devices change makes the earbuds restart their connection; the control channel closes and can be opened again a few seconds later."
@@ -2350,6 +2506,7 @@
     },
     {
       "model": "A3937",
+      "extra_features": ["find_device"],
       "names": [
         "soundcore P41i"
       ],
@@ -2590,6 +2747,7 @@
     },
     {
       "model": "A3944",
+      "extra_features": ["find_device_phone"],
       "names": [
         "Soundcore Life P2 Mini",
         "soundcore P2 Mini"
@@ -2724,6 +2882,8 @@
     },
     {
       "model": "A3947",
+      "extra_features": ["find_device_phone",
+"personal_anc"],
       "names": [
         "Soundcore Liberty 4 NC"
       ],
@@ -2837,6 +2997,7 @@
     },
     {
       "model": "A3948",
+      "extra_features": ["find_device_phone"],
       "names": [
         "Soundcore A20i",
         "soundcore A25i"
@@ -3052,6 +3213,9 @@
     },
     {
       "model": "A3952",
+      "extra_features": [
+        "personal_anc"
+      ],
       "names": [
         "Soundcore Liberty 3 Pro"
       ],
@@ -3105,7 +3269,7 @@
         ["ldac", 1],
         ["skip", 2],
         ["wearing_tone", 1],
-        ["skip", 1],
+        ["prompt_language", 1],
         ["auto_power_off", 2]
       ],
       "eq": {
@@ -3154,6 +3318,9 @@
     },
     {
       "model": "A3953",
+      "extra_features": [
+        "heart_rate"
+      ],
       "names": [
         "Soundcore Liberty 4"
       ],
@@ -3172,15 +3339,91 @@
           "offset": 0
         }
       },
+      "eq": {
+        "write": "a3955",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
+      "buttons": {
+        "groups": [
+          {
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_long",
+              "right_long",
+              "left_triple",
+              "right_triple"
+            ],
+            "presses": {
+              "single": {
+                "id": 2,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "tws",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "common"
+              }
+            }
+          }
+        ],
+        "reset": true
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
         ["equalizer", 22],
-        ["skip", 49],
+        ["hear_id_status", 1],
+        ["custom_hear_id", 48],
         ["skip", 1],
-        ["skip", 24],
+        ["buttons", 16],
+        ["skip", 8],
         ["sound_mode_cycle", 1],
         ["sound_modes", 6],
         ["skip", 4],
@@ -3197,7 +3440,9 @@
         ["low_battery_prompt", 1],
         ["ambient_sound_prompt", 1],
         ["optional:spatial_audio", 3],
-        ["optional:skip", 4],
+        ["optional:sedentary_reminder", 1],
+        ["optional:sitting_posture", 1],
+        ["optional:skip", 2],
         ["optional:color", 1],
         ["optional:press_sensitivity", 1]
       ],
@@ -3219,10 +3464,11 @@
           "in_ear_tone",
           "low_battery_prompt",
           "ambient_sound_prompt",
-          "press_sensitivity"
+          "press_sensitivity",
+          "button_configuration"
         ]
       },
-      "notes": "Read from Soundcore 3.3.0's A3953AnalysisService (docs/soundcore/PROTOCOL.md, the A3953 section), not from OpenSCQ30 or a recording. The HearID block (49 bytes), the button block (24 bytes, preceded by its length byte) and the personalised ANC test fields are skipped: the equalizer and touch controls are not built yet. The reply is at least 163 bytes; spatial audio, the health block, the colour and press sensitivity come after that on longer replies."
+      "notes": "Read from Soundcore 3.3.0's A3953AnalysisService (docs/soundcore/PROTOCOL.md, the A3953 section), not from OpenSCQ30 or a recording. Touch controls are the first 16 bytes of the button block, as the Liberty 4 NC's (`A3953AnalysisService.T0`, written with `04 81` and `04 83`); the other 8 bytes of the block and the personalised ANC test fields are skipped. The equalizer is written as 5.0.35 writes it (`CmmBtCmdService.t6`/`p6`, the P40i's layout), with the HearID block after the age byte; not tried. The reply is at least 163 bytes; spatial audio, the health block, the colour and press sensitivity come after that on longer replies."
     },
     {
       "model": "A3954",
@@ -3346,6 +3592,7 @@
     },
     {
       "model": "A3955",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore P40i"
       ],
@@ -3446,6 +3693,7 @@
     },
     {
       "model": "A3957",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore Liberty 5"
       ],
@@ -3569,6 +3817,17 @@
           "serial_number_and_firmware_version"
         ]
       },
+      "eq": {
+        "write": "drc",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3005"
+      },
       "state": [
         ["single_battery", 2],
         ["firmware", 5],
@@ -3591,6 +3850,7 @@
     },
     {
       "model": "A3958",
+      "extra_features": ["find_device"],
       "names": [
         "soundcore A30i"
       ],
@@ -3667,6 +3927,7 @@
     },
     {
       "model": "A3959",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore P30i",
         "Soundcore R50i NC"
@@ -3830,6 +4091,7 @@
     },
     {
       "model": "A3968",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore Sport X20"
       ],
@@ -4340,6 +4602,7 @@
     },
     {
       "model": "A3994",
+      "extra_features": ["find_device"],
       "names": [
         "soundcore K20i"
       ],
@@ -4356,6 +4619,17 @@
           "serial_number_and_dual_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3876",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "k20i"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
@@ -4370,7 +4644,7 @@
         ["touch_tone", 1],
         ["auto_power_off", 2]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (A3994AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the P30i's (A3959) up to the buttons, then the noise mode selection byte and the colour (skipped), the game mode, the touch tone and the auto power off switch and index; it has no noise modes. The touch controls are the shared `04 81` writes with the model's actions. No equalizer: its command service holds a preset table of its own and a sound-mode write the P30i's does not. The battery's scale is not in the parser, so none is shown.",
+      "notes": "Read from the Soundcore app 5.0.35 (A3994AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the P30i's (A3959) up to the buttons, then the noise mode selection byte and the colour (skipped), the game mode, the touch tone and the auto power off switch and index; it has no noise modes. The touch controls are the shared `04 81` writes with the model's actions. The equalizer is one curve, written with 02 83 (`CmmBtCmdService.q6`), with the K20i's own presets (`K20IEQGainValues`); not tried. The battery's scale is not in the parser, so none is shown.",
       "buttons": {
         "groups": [
           {
@@ -4389,6 +4663,7 @@
     },
     {
       "model": "A6610",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore Sleep A10"
       ],
@@ -4403,23 +4678,36 @@
           "offset": 0
         }
       },
+      "eq": {
+        "write": "drc",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3040"
+      },
       "state": [
         ["tws_status", 2],
         ["dual_battery", 4],
         ["dual_firmware", 10],
         ["serial", 16],
-        ["skip", 22],
+        ["equalizer", 22],
         ["skip", 12],
         ["skip", 1],
         ["skip", 1],
         ["smart_play", 1],
-        ["skip", 1],
+        ["play_time", 1],
         ["adaptive_noise", 1],
         ["skip", 1],
         ["skip", 1],
-        ["skip", 3],
+        ["skip", 1],
+        ["has_sleep_music", 1],
+        ["music_volume", 1],
         ["optional:press_sensitivity", 1],
-        ["optional:skip", 2]
+        ["optional:play_countdown", 2]
       ],
       "soundcore_app": {
         "version": "3.3.0",
@@ -4432,7 +4720,7 @@
           "adaptive_noise"
         ]
       },
-      "notes": "Read from Soundcore 3.3.0's A6610AnalysisService, not from OpenSCQ30 or a recording. Skipped: the equalizer, the button block, the current sleep mode, the play time, the voice prompt, the colour and the sleep sound (id, whether it is loaded, volume); the press sensitivity (firmware 252 and later) and the play countdown follow on longer replies. Nothing has been tried on a Sleep A10."
+      "notes": "Read from Soundcore 3.3.0's A6610AnalysisService, not from OpenSCQ30 or a recording. Skipped: the button block, the current sleep mode, the play time, the voice prompt, the colour and the sleep sound (id, whether it is loaded, volume); the press sensitivity (firmware 252 and later) and the play countdown follow on longer replies. Nothing has been tried on a Sleep A10."
     },
     {
       "model": "A6611",
@@ -4497,12 +4785,13 @@
         "checked": "recording",
         "note": "Recorded from the Soundcore app (data/soundcore/reports/A6611_03.22.txt): 04 81 with the side, the press (0 double, 5 triple) and the action byte, the state's high four bits kept and the new action in the low four; the earbuds then store the low four bits in both halves. F turns a tap off. The order is the one OpenSCQ30's device faker gives. A reset to the defaults (04 82) was not recorded, so PairFree does not offer it."
       },
-      "extra_features": ["sleep_timer"],
+      "extra_features": ["sleep_timer", "find_device"],
       "reports": ["data/soundcore/reports/A6611_03.22.txt"],
       "notes": "OpenSCQ30's library does not support the Sleep A20; its device faker holds a Sleep A20's state reply (131 bytes) with what each byte is, as far as OpenSCQ30 knows, and a user's recording of the Soundcore app (GitHub issue #8) confirmed the EQ (bytes 30-51), the touch controls (53-56) and the sleep timer (67-70: 1 on or 2 off, the minutes as two bytes, little-endian, then a byte the app sends back as it is; 15 85 writes it, 15 03 reads it). Not yet confirmed, so not offered: the alarm (58-61), sleep mode (65), touch tone (75), the low battery prompt (76) and the auto power-off and mode switch prompts (124-125)."
     },
     {
       "model": "D1101",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore C50i"
       ],
@@ -4571,6 +4860,12 @@
     },
     {
       "model": "D1102",
+      "extra_features": [
+        "find_device",
+        "touch_tone",
+        "auto_power_off_long",
+        "indexed_switches"
+      ],
       "names": [
         "soundcore AeroClip 2 Pro"
       ],
@@ -4586,70 +4881,344 @@
         ]
       },
       "state": [
-        ["tws_status", 2],
-        ["dual_battery", 4],
-        ["dual_firmware", 10],
-        ["serial", 16],
-        ["case_battery", 1],
-        ["buttons", 12],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "tws_status",
+          2
+        ],
+        [
+          "dual_battery",
+          4
+        ],
+        [
+          "dual_firmware",
+          10
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "case_battery",
+          1
+        ],
+        [
+          "buttons",
+          12
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "touch_tone",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "in_ear_tone",
+          1
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ],
+        [
+          "power_off_tone",
+          1
+        ],
+        [
+          "connect_tone",
+          1
+        ],
+        [
+          "easy_chat",
+          1
+        ],
+        [
+          "volume_balance",
+          1
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35: the app builds the AeroClip 2 Pro with D1105AnalysisService and D1105CmdService (constructed with its code; neither branches on it), so its records and touch writes are the AeroClip 2's. Its data source lists other actions: translate, ask or answer and recording besides the playback ones, and no white noise. Only the touch controls and the equalizer are offered. The battery's scale is not in the parser. Not tried on the earbuds. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35: the app builds the AeroClip 2 Pro with D1105AnalysisService and D1105CmdService (constructed with its code; neither branches on it), so its records and touch writes are the AeroClip 2's. Its data source lists other actions: translate, ask or answer and recording besides the playback ones, and no white noise. Only the touch controls and the equalizer are offered. The battery's scale is not in the parser. Not tried on the earbuds. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): touch_tone, low_battery_prompt, in_ear_tone, wearing_detection, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "buttons": {
         "groups": [
           {
-            "fields": ["buttons"],
-            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_triple",
+              "right_triple",
+              "left_long",
+              "right_long",
+              "left_slide_up",
+              "right_slide_up",
+              "left_slide_down",
+              "right_slide_down"
+            ],
             "ignore_enabled": true,
             "wide": true,
             "command": "048C",
             "presses": {
-              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
-              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1102"},
-              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1102"},
-              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1102"},
-              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+              "single": {
+                "id": 2,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "minimal"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1102"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1102"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1102"
+              },
+              "slide_up": {
+                "id": 6,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "slide_down": {
+                "id": 7,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              }
             }
           }
         ]
       },
       "tlv": [
-        [1, 0, 1],
-        [2, 0, 1],
-        [3, 1, 1],
-        [4, 1, 1],
-        [3, 0, 1],
-        [4, 0, 1],
-        [5, 0, 5],
-        [6, 0, 5],
-        [7, 0, 16],
-        [8, 1, 1],
-        [13, 0, "pack"],
-        [14, 0, "pack"],
-        [15, 0, "pack"],
-        [16, 0, "pack"],
-        [17, 0, "pack"],
-        [18, 0, "pack"],
-        [19, 0, "pack"],
-        [20, 0, "pack"],
-        [21, 0, "pack"],
-        [22, 0, "pack"],
-        [23, 0, "pack"],
-        [24, 0, "pack"],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          1
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          4,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          6,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          8,
+          1,
+          1
+        ],
+        [
+          13,
+          0,
+          "pack"
+        ],
+        [
+          14,
+          0,
+          "pack"
+        ],
+        [
+          15,
+          0,
+          "pack"
+        ],
+        [
+          16,
+          0,
+          "pack"
+        ],
+        [
+          17,
+          0,
+          "pack"
+        ],
+        [
+          18,
+          0,
+          "pack"
+        ],
+        [
+          19,
+          0,
+          "pack"
+        ],
+        [
+          20,
+          0,
+          "pack"
+        ],
+        [
+          21,
+          0,
+          "pack"
+        ],
+        [
+          22,
+          0,
+          "pack"
+        ],
+        [
+          23,
+          0,
+          "pack"
+        ],
+        [
+          24,
+          0,
+          "pack"
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          26,
+          0,
+          "bit",
+          0
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          26,
+          0,
+          "bit",
+          3
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          25,
+          0,
+          2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          4
+        ],
+        [
+          27,
+          1,
+          "bit",
+          6
+        ],
+        [
+          60,
+          0,
+          1
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "eq_normalized": {
         "table": "d1105"
       }
     },
     {
       "model": "D1105",
+      "extra_features": [
+        "find_device",
+        "auto_power_off_long",
+        "indexed_switches"
+      ],
       "names": [
         "Anker AeroClip 2"
       ],
@@ -4666,63 +5235,288 @@
         ]
       },
       "state": [
-        ["tws_status", 2],
-        ["dual_battery", 4],
-        ["dual_firmware", 10],
-        ["serial", 16],
-        ["case_battery", 1],
-        ["buttons", 12],
-        ["dual_connections_enabled", 1],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "tws_status",
+          2
+        ],
+        [
+          "dual_battery",
+          4
+        ],
+        [
+          "dual_firmware",
+          10
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "case_battery",
+          1
+        ],
+        [
+          "buttons",
+          12
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ],
+        [
+          "volume_balance",
+          1
+        ],
+        [
+          "audio_wakeup",
+          1
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the game mode (its command is not read), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1105AnalysisService.e1, D1105CmdService; its records 1 to 27 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the touch controls (the triple tap is the white noise switch, action 19) and the dual connections switch (bit 3 of record 27). Not offered: the game mode (its command is not read), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): low_battery_prompt, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "tlv": [
-        [1, 0, 1],
-        [2, 0, 1],
-        [3, 1, 1],
-        [4, 1, 1],
-        [3, 0, 1],
-        [4, 0, 1],
-        [5, 0, 5],
-        [6, 0, 5],
-        [7, 0, 16],
-        [8, 1, 1],
-        [13, 0, "pack"],
-        [14, 0, "pack"],
-        [15, 0, "pack"],
-        [16, 0, "pack"],
-        [17, 0, "pack"],
-        [18, 0, "pack"],
-        [19, 0, "pack"],
-        [20, 0, "pack"],
-        [21, 0, "pack"],
-        [22, 0, "pack"],
-        [23, 0, "pack"],
-        [24, 0, "pack"],
-        [27, 0, "bit",
-          3],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          1
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          4,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          6,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          8,
+          1,
+          1
+        ],
+        [
+          13,
+          0,
+          "pack"
+        ],
+        [
+          14,
+          0,
+          "pack"
+        ],
+        [
+          15,
+          0,
+          "pack"
+        ],
+        [
+          16,
+          0,
+          "pack"
+        ],
+        [
+          17,
+          0,
+          "pack"
+        ],
+        [
+          18,
+          0,
+          "pack"
+        ],
+        [
+          19,
+          0,
+          "pack"
+        ],
+        [
+          20,
+          0,
+          "pack"
+        ],
+        [
+          21,
+          0,
+          "pack"
+        ],
+        [
+          22,
+          0,
+          "pack"
+        ],
+        [
+          23,
+          0,
+          "pack"
+        ],
+        [
+          24,
+          0,
+          "pack"
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          25,
+          0,
+          2
+        ],
+        [
+          60,
+          0,
+          1
+        ],
+        [
+          54,
+          0,
+          "opt"
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "buttons": {
         "groups": [
           {
-            "fields": ["buttons"],
-            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_triple",
+              "right_triple",
+              "left_long",
+              "right_long",
+              "left_slide_up",
+              "right_slide_up",
+              "left_slide_down",
+              "right_slide_down"
+            ],
             "ignore_enabled": true,
             "wide": true,
             "command": "048C",
             "presses": {
-              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
-              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "white_noise"},
-              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"},
-              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "without_sound_modes"}
+              "single": {
+                "id": 2,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "minimal"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "white_noise"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "slide_up": {
+                "id": 6,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              },
+              "slide_down": {
+                "id": 7,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "without_sound_modes"
+              }
             }
           }
         ]
@@ -4733,6 +5527,7 @@
     },
     {
       "model": "D1200",
+      "extra_features": ["find_device"],
       "names": [
         "Liberty Buds"
       ],
@@ -4759,6 +5554,30 @@
           "case_battery_level_custom",
           "serial_number_and_dual_firmware_version"
         ]
+      },
+      "eq": {
+        "write": "interleaved",
+        "channels": 2,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "type_2",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 2,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
       },
       "state": [
         ["tws_status", 2],
@@ -4790,7 +5609,7 @@
         ["skip", 3],
         ["pressure_sensitivity", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1200AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the Liberty 5's (A3957) in the same order up to the hearing protection block; after it the app reads a 3D effect mode, the dual device audio focus and the hearing loss overlay (skipped here), then the EQ compensation, wear detection, touch tone and game mode switches, the touch lock, music rush and audio wake-up switches (skipped: no command known), the AI chat language and the connected device count (skipped), and the press sensitivity. Its command service is the Liberty 5's but for the manual noise level's range (0 to 3 here, 1 to 5 there), so the mode switch, the switches and the touch controls are offered. The equalizer is not: which presets the Liberty Buds have is not read (docs/soundcore/EQ_MODEL_SELECTION in the research notes names its holder only). The buttons' length byte is taken as the Liberty 5's (10).",
+      "notes": "Read from the Soundcore app 5.0.35 (D1200AnalysisService.e1), not from OpenSCQ30 and not tried on the earbuds. Its reads are the Liberty 5's (A3957) in the same order up to the hearing protection block; after it the app reads a 3D effect mode, the dual device audio focus and the hearing loss overlay (skipped here), then the EQ compensation, wear detection, touch tone and game mode switches, the touch lock, music rush and audio wake-up switches (skipped: no command known), the AI chat language and the connected device count (skipped), and the press sensitivity. Its command service is the Liberty 5's but for the manual noise level's range (0 to 3 here, 1 to 5 there), so the mode switch, the switches and the touch controls are offered. The equalizer is written as the P31i's (`CmmBtCmdService.n6`), with the standard presets its data holder lists; not tried. The buttons' length byte is taken as the Liberty 5's (10).",
       "buttons": {
         "groups": [
           {
@@ -4812,6 +5631,7 @@
     },
     {
       "model": "D1202",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore P31i"
       ],
@@ -4911,6 +5731,7 @@
     },
     {
       "model": "D1202C",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore R60i NC"
       ],
@@ -5009,6 +5830,13 @@
     },
     {
       "model": "D1203",
+      "extra_features": [
+        "find_device",
+        "touch_tone",
+        "auto_power_off_durations",
+        "indexed_switches",
+        "indexed_dual_connections"
+      ],
       "names": [
         "soundcore Liberty 5 Pro"
       ],
@@ -5034,7 +5862,18 @@
         ["sound_modes", 7],
         ["eq_index", 2],
         ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        ["hear_id_time", 4],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["wearing_detection", 1],
+        ["easy_chat", 1],
+        ["sound_field", 1],
+        ["voice_pickup", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["in_ear_tone", 1],
+        ["auto_power_off", 2],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5069,7 +5908,18 @@
         [38, 1, 1],
         [11, 0, 2],
         [51, 1, 1],
-        [51, 2, 4]
+        [51, 2, 4],
+        [27, 0, "bit", 2],
+        [27, 0, "bit", 3],
+        [27, 1, "bit", 0],
+        [27, 1, "bit", 6],
+        [27, 3, "bit", 5],
+        [27, 7, "bit", 1],
+        [26, 0, "bit", 0],
+        [26, 0, "bit", 1],
+        [26, 0, "bit", 3],
+        [25, 0, 2],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5104,6 +5954,13 @@
     },
     {
       "model": "D1204",
+      "extra_features": [
+        "find_device",
+        "touch_tone",
+        "auto_power_off_durations",
+        "indexed_switches",
+        "indexed_dual_connections"
+      ],
       "names": [
         "soundcore Liberty 5 Pro Max"
       ],
@@ -5129,7 +5986,18 @@
         ["sound_modes", 7],
         ["eq_index", 2],
         ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        ["hear_id_time", 4],
+        ["ldac", 1],
+        ["dual_connections_enabled", 1],
+        ["wearing_detection", 1],
+        ["easy_chat", 1],
+        ["sound_field", 1],
+        ["voice_pickup", 1],
+        ["touch_tone", 1],
+        ["low_battery_prompt", 1],
+        ["in_ear_tone", 1],
+        ["auto_power_off", 2],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (A3956AnalysisService.e1 and A3956CmdService, which the Liberty 5 Pro Max and its twin share; records 1 to 27 and 36 to 46 are the Liberty Buds 2's). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the service's own seven-byte write: mode, automation, transparency option, the two level bytes as the earbuds report them, two multi-scene bytes) and the touch controls (`04 8C`, with the actions the model's data source lists, translate and ask or answer among them). Not offered: the switches whose screens were not read, and the case's own channel (D1203-Box, D1204-Box). The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
       "tlv": [
@@ -5164,7 +6032,18 @@
         [38, 1, 1],
         [11, 0, 2],
         [51, 1, 1],
-        [51, 2, 4]
+        [51, 2, 4],
+        [27, 0, "bit", 2],
+        [27, 0, "bit", 3],
+        [27, 1, "bit", 0],
+        [27, 1, "bit", 6],
+        [27, 3, "bit", 5],
+        [27, 7, "bit", 1],
+        [26, 0, "bit", 0],
+        [26, 0, "bit", 1],
+        [26, 0, "bit", 3],
+        [25, 0, 2],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5199,6 +6078,7 @@
     },
     {
       "model": "D1205",
+      "extra_features": ["find_device"],
       "names": [
         "soundcore P42i"
       ],
@@ -5273,81 +6153,404 @@
         ]
       },
       "state": [
-        ["tws_status", 2],
-        ["dual_battery", 4],
-        ["dual_firmware", 10],
-        ["serial", 16],
-        ["case_battery", 1],
-        ["buttons", 12],
-        ["sound_modes", 8],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "tws_status",
+          2
+        ],
+        [
+          "dual_battery",
+          4
+        ],
+        [
+          "dual_firmware",
+          10
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "case_battery",
+          1
+        ],
+        [
+          "buttons",
+          12
+        ],
+        [
+          "sound_modes",
+          8
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "sound_mode_cycle",
+          1
+        ],
+        [
+          "ldac",
+          1
+        ],
+        [
+          "gaming_mode",
+          1
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "touch_tone",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "in_ear_tone",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ],
+        [
+          "press_sensitivity",
+          1
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1206AnalysisService.e1 and D1206CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's own write has eight bytes, which the `sound_modes` block rebuilds from records 36, 37, 38 and the bits of 27) and the touch controls (records 13 to 24: two bytes each, with both earbuds in and with one; the write is `04 8C` with them as two bytes). Not offered: the switches of records 26 and 27 (their screens were not read), the touch lock, the sleep and AI settings. The triple tap's recording action depends on a firmware predicate and is not listed. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: the more screen (D1206MoreDataProvider, restored by the 2026-11-19 unpacker run) lists wear detection, two devices, the wear, touch and low battery tones, press sensitivity (firmware 1.77 to 1.99 and 2.77 to 2.99), the sound mode, the fit test, auto power off and find. Records 25 to 27 give all of them but press sensitivity; game mode is on the main screen.",
       "tlv": [
-        [1, 0, 1],
-        [2, 0, 1],
-        [3, 1, 1],
-        [4, 1, 1],
-        [3, 0, 1],
-        [4, 0, 1],
-        [5, 0, 5],
-        [6, 0, 5],
-        [7, 0, 16],
-        [8, 1, 1],
-        [13, 0, "pack"],
-        [14, 0, "pack"],
-        [15, 0, "pack"],
-        [16, 0, "pack"],
-        [17, 0, "pack"],
-        [18, 0, "pack"],
-        [19, 0, "pack"],
-        [20, 0, "pack"],
-        [21, 0, "pack"],
-        [22, 0, "pack"],
-        [23, 0, "pack"],
-        [24, 0, "pack"],
-        [36, 0, 1],
-        [37, 0, "level"],
-        [27, 4, "bit",
-          0],
-        [36, 1, 1],
-        [27, 1, "bit",
-          3],
-        [255, 0, 1],
-        [38, 0, 1],
-        [255, 0, 1],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          1
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          4,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          6,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          8,
+          1,
+          1
+        ],
+        [
+          13,
+          0,
+          "pack"
+        ],
+        [
+          14,
+          0,
+          "pack"
+        ],
+        [
+          15,
+          0,
+          "pack"
+        ],
+        [
+          16,
+          0,
+          "pack"
+        ],
+        [
+          17,
+          0,
+          "pack"
+        ],
+        [
+          18,
+          0,
+          "pack"
+        ],
+        [
+          19,
+          0,
+          "pack"
+        ],
+        [
+          20,
+          0,
+          "pack"
+        ],
+        [
+          21,
+          0,
+          "pack"
+        ],
+        [
+          22,
+          0,
+          "pack"
+        ],
+        [
+          23,
+          0,
+          "pack"
+        ],
+        [
+          24,
+          0,
+          "pack"
+        ],
+        [
+          36,
+          0,
+          1
+        ],
+        [
+          37,
+          0,
+          "level"
+        ],
+        [
+          27,
+          4,
+          "bit",
+          0
+        ],
+        [
+          36,
+          1,
+          1
+        ],
+        [
+          27,
+          1,
+          "bit",
+          3
+        ],
+        [
+          255,
+          0,
+          1
+        ],
+        [
+          38,
+          0,
+          1
+        ],
+        [
+          255,
+          0,
+          1
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          46,
+          0,
+          1
+        ],
+        [
+          27,
+          0,
+          "bit",
+          2
+        ],
+        [
+          27,
+          0,
+          "bit",
+          1
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          26,
+          0,
+          "bit",
+          0
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          26,
+          0,
+          "bit",
+          3
+        ],
+        [
+          25,
+          0,
+          2
+        ],
+        [
+          58,
+          0,
+          "opt"
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "buttons": {
         "groups": [
           {
-            "fields": ["buttons"],
-            "order": ["left_single", "right_single", "left_double", "right_double", "left_triple", "right_triple", "left_long", "right_long", "left_slide_up", "right_slide_up", "left_slide_down", "right_slide_down"],
+            "fields": [
+              "buttons"
+            ],
+            "order": [
+              "left_single",
+              "right_single",
+              "left_double",
+              "right_double",
+              "left_triple",
+              "right_triple",
+              "left_long",
+              "right_long",
+              "left_slide_up",
+              "right_slide_up",
+              "left_slide_down",
+              "right_slide_down"
+            ],
             "ignore_enabled": true,
             "wide": true,
             "command": "048C",
             "presses": {
-              "single": {"id": 2, "enabled": "none", "action": "tws", "off": "each_side", "actions": "minimal"},
-              "double": {"id": 0, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
-              "triple": {"id": 5, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
-              "long": {"id": 1, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
-              "slide_up": {"id": 6, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"},
-              "slide_down": {"id": 7, "enabled": "none", "action": "tws", "off": "each_side", "actions": "d1206"}
+              "single": {
+                "id": 2,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "minimal"
+              },
+              "double": {
+                "id": 0,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1206"
+              },
+              "triple": {
+                "id": 5,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1206"
+              },
+              "long": {
+                "id": 1,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1206"
+              },
+              "slide_up": {
+                "id": 6,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1206"
+              },
+              "slide_down": {
+                "id": 7,
+                "enabled": "none",
+                "action": "tws",
+                "off": "each_side",
+                "actions": "d1206"
+              }
             }
           }
         ]
       },
       "eq_normalized": {
         "table": "d1206"
-      }
+      },
+      "extra_features": [
+        "ambient_sound_mode_cycle_tws",
+        "ambient_sound_mode_cycle_adaptive",
+        "find_device",
+        "touch_tone",
+        "auto_power_off_durations",
+        "indexed_switches",
+        "press_sensitivity_3"
+      ]
     },
     {
       "model": "D1301",
+      "extra_features": ["find_device"],
       "names": [
         "Soundcore Sleep A30",
         "Soundcore Sleep A30 Special"
@@ -5422,6 +6625,12 @@
     },
     {
       "model": "D1302",
+      "extra_features": ["find_device",
+"d1301_noise_canceling_prompt",
+"d1301_listening_mode_prompt",
+"d1301_auto_power_off_prompt",
+"d1301_incoming_calls_during_bluetooth_mode",
+"voice_language_1307"],
       "names": [
         "Anker Sleep Earbuds 4 Pro"
       ],
@@ -5446,7 +6655,13 @@
         ["case_battery", 1],
         ["buttons", 4],
         ["touch_tone", 1],
-        ["low_battery_prompt", 1]
+        ["low_battery_prompt", 1],
+        ["noise_canceling_prompt", 1],
+        ["listening_mode_prompt", 1],
+        ["auto_power_off_prompt", 1],
+        ["incoming_calls_during_bluetooth", 1],
+        ["prompt_language", 1],
+        ["case_address", 6]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1302AnalysisService.e1 and D1302CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -5464,10 +6679,14 @@
         [16, 0, "pack"],
         [17, 0, "pack"],
         [18, 0, "pack"],
-        [26, 0, "bit",
-          0],
-        [26, 0, "bit",
-          1]
+        [26, 0, "bit", 0],
+        [26, 0, "bit", 1],
+        [26, 0, "bit", 6],
+        [26, 0, "bit", 5],
+        [26, 0, "bit", 2],
+        [27, 2, "bit", 7],
+        [64, 0, "opt"],
+        [41, 0, 6]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5486,6 +6705,12 @@
     },
     {
       "model": "D1303",
+      "extra_features": ["find_device",
+"d1301_noise_canceling_prompt",
+"d1301_listening_mode_prompt",
+"d1301_auto_power_off_prompt",
+"d1301_incoming_calls_during_bluetooth_mode",
+"voice_language_1307"],
       "names": [
         "Anker Sleep Earbuds 4"
       ],
@@ -5510,7 +6735,12 @@
         ["case_battery", 1],
         ["buttons", 4],
         ["touch_tone", 1],
-        ["low_battery_prompt", 1]
+        ["low_battery_prompt", 1],
+        ["noise_canceling_prompt", 1],
+        ["listening_mode_prompt", 1],
+        ["auto_power_off_prompt", 1],
+        ["incoming_calls_during_bluetooth", 1],
+        ["prompt_language", 1]
       ],
       "notes": "Read from the Soundcore app 5.0.35 (D1303AnalysisService.e1 and D1303CmdService). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the double and triple taps (records 15 to 18, written as `04 81` with the shared service; the actions are the model's data source's: volume, previous, next, play and pause, noise cancelling, change mode) and the touch tone and low battery prompt bits of record 26. Not offered: the sleep sounds, playback timers, clean reminder and the recording and transfer records (31 to 33, 81, 106), whose screens were not read.",
       "tlv": [
@@ -5531,7 +6761,12 @@
         [26, 0, "bit",
           0],
         [26, 0, "bit",
-          1]
+          1],
+        [26, 0, "bit", 6],
+        [26, 0, "bit", 5],
+        [26, 0, "bit", 2],
+        [27, 2, "bit", 7],
+        [64, 0, "opt"]
       ],
       "tlv_private": [7, 41],
       "buttons": {
@@ -5550,6 +6785,9 @@
     },
     {
       "model": "D1402",
+      "extra_features": [
+        "wear_calibration"
+      ],
       "names": [
         "Space 2"
       ],
@@ -5566,6 +6804,30 @@
           "serial_number_and_firmware_version"
         ]
       },
+      "eq": {
+        "write": "a3035",
+        "channels": 1,
+        "bands": 10,
+        "range": [
+          -120,
+          134
+        ],
+        "digits": 1,
+        "presets": "a3035",
+        "hear_id": {
+          "field": "custom_hear_id",
+          "channels": 1,
+          "bands": 10,
+          "parts": [
+            "enabled",
+            "curve",
+            "time",
+            "type",
+            "custom",
+            "genre2"
+          ]
+        }
+      },
       "state": [
         ["single_battery", 2],
         ["firmware", 5],
@@ -5578,14 +6840,17 @@
         ["skip", 1],
         ["skip", 1],
         ["skip", 2],
-        ["skip", 1],
-        ["skip", 1],
+        ["sound_mode_voice_prompt", 1],
+        ["battery_alert", 1],
         ["ldac", 1],
         ["dual_connections_enabled", 1],
         ["auto_power_off", 2],
-        ["limit_high_volume", 3]
+        ["limit_high_volume", 3],
+        ["optional:skip", 3],
+        ["optional:wearing_detection", 1],
+        ["optional:audio_wakeup", 1]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1402AnalysisService.e1 and D1402CmdService), not from OpenSCQ30 and not tried on the headphones. Its head is the Space One Pro's (A3062) up to the HearID block; its button block (five bytes) and the tail are its own: after the six noise mode bytes come the colour, a 3D mode, easy chat (switch and time), the ambient sound notice, the power-on battery notice, LDAC, dual connections, the auto power off switch and index, and the hearing protection (switch, limit, third byte). Shown: the noise mode (its six-byte write is the Space One Pro's), LDAC, dual connections, auto power off and the high volume limit. Not offered: the equalizer (its command service has no HearID write), the one-button controls (single, double and long press as raw bytes) and the records after the hearing protection. No battery scale is shown: the parser does not give one.",
+      "notes": "Read from the Soundcore app 5.0.35 (D1402AnalysisService.e1 and D1402CmdService), not from OpenSCQ30 and not tried on the headphones. Its head is the Space One Pro's (A3062) up to the HearID block; its button block (five bytes) and the tail are its own: after the six noise mode bytes come the colour, a 3D mode, easy chat (switch and time), the ambient sound notice, the power-on battery notice, LDAC, dual connections, the auto power off switch and index, and the hearing protection (switch, limit, third byte). Shown: the noise mode (its six-byte write is the Space One Pro's), LDAC, dual connections, auto power off and the high volume limit. The equalizer is written as the Space One's (`CmmBtCmdService.o6`, one curve, smoothed), with preset position 2 sent as 32382 (Bass Booster); not tried. Not offered: the one-button controls (single, double and long press as raw bytes) and the records after the hearing protection. No battery scale is shown: the parser does not give one.",
       "kind": "headphones"
     },
     {
@@ -5630,38 +6895,202 @@
         ]
       },
       "state": [
-        ["single_battery", 2],
-        ["firmware", 5],
-        ["serial", 16],
-        ["sound_modes", 6],
-        ["limit_high_volume", 3],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "single_battery",
+          2
+        ],
+        [
+          "firmware",
+          5
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "sound_modes",
+          6
+        ],
+        [
+          "limit_high_volume",
+          3
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ],
+        [
+          "ambient_sound_prompt",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "nc_double_press",
+          1
+        ],
+        [
+          "mfb_long_press",
+          1
+        ],
+        [
+          "audio_wakeup",
+          1
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "kind": "headphones",
       "tlv": [
-        [3, 1, 1],
-        [3, 0, 1],
-        [5, 0, 5],
-        [7, 0, 16],
-        [36, 0, 1],
-        [37, 0, "swap"],
-        [36, 2, 1],
-        [36, 1, 1],
-        [27, 1, "bit",
-          3],
-        [37, 1, "hi"],
-        [39, 0, 3],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          36,
+          0,
+          1
+        ],
+        [
+          37,
+          0,
+          "swap"
+        ],
+        [
+          36,
+          2,
+          1
+        ],
+        [
+          36,
+          1,
+          1
+        ],
+        [
+          27,
+          1,
+          "bit",
+          3
+        ],
+        [
+          37,
+          1,
+          "hi"
+        ],
+        [
+          39,
+          0,
+          3
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          25,
+          0,
+          2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          6
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          72,
+          1,
+          "opt"
+        ],
+        [
+          73,
+          0,
+          "opt"
+        ],
+        [
+          54,
+          0,
+          "opt"
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "eq_normalized": {
         "table": "d1406"
-      }
+      },
+      "extra_features": [
+        "auto_power_off_long",
+        "indexed_switches",
+        "wear_calibration"
+      ]
     },
     {
       "model": "D1407",
@@ -5679,38 +7108,212 @@
         ]
       },
       "state": [
-        ["single_battery", 2],
-        ["firmware", 5],
-        ["serial", 16],
-        ["sound_modes", 6],
-        ["limit_high_volume", 3],
-        ["eq_index", 2],
-        ["hear_id_state", 1],
-        ["hear_id_time", 4]
+        [
+          "single_battery",
+          2
+        ],
+        [
+          "firmware",
+          5
+        ],
+        [
+          "serial",
+          16
+        ],
+        [
+          "sound_modes",
+          6
+        ],
+        [
+          "limit_high_volume",
+          3
+        ],
+        [
+          "eq_index",
+          2
+        ],
+        [
+          "hear_id_state",
+          1
+        ],
+        [
+          "hear_id_time",
+          4
+        ],
+        [
+          "wearing_detection",
+          1
+        ],
+        [
+          "dual_connections_enabled",
+          1
+        ],
+        [
+          "auto_power_off",
+          2
+        ],
+        [
+          "ambient_sound_prompt",
+          1
+        ],
+        [
+          "low_battery_prompt",
+          1
+        ],
+        [
+          "call_noise",
+          1
+        ],
+        [
+          "nc_double_press",
+          1
+        ],
+        [
+          "mfb_long_press",
+          1
+        ],
+        [
+          "audio_wakeup",
+          1
+        ]
       ],
-      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds. ",
+      "notes": "Read from the Soundcore app 5.0.35 (D1406AnalysisService.e1 and D1406CmdService, which the Space 2 Pro and Pro Max share). It answers the state request in tag, length and value records (docs/soundcore/PROTOCOL.md section 14), which PairFree turns into the fixed body `state` describes (`tlv`). The battery levels are read but not shown: the app clamps them (0 to 100) and the scale is not in its code, so a device report settles it. Not tried on the earbuds. Shown: the noise mode (the app's write has six bytes, `sound_modes` rebuilds them from records 36, 37 and 27) and the high volume limit (record 39). Not offered: the touch controls (records 72 and 73 hold its one button's two presses and a long press, in a form PairFree's buttons do not have), the nap timer and the other records. The equalizer is the `03 8A` parametric format (docs/soundcore/PROTOCOL.md section 14): a preset sends its command position and its filters from the app's table, a custom curve eight peaking filters at 100 Hz to 12.8 kHz. The write is rebuilt from the app's code and not tried on the earbuds.  2026-11-27: from the restored method bodies of its more screen and parser (records 25 to 27): wearing_detection, dual_connections_enabled, auto_power_off; auto power off offers 30 minutes, 1, 3 and 5 hours.",
       "kind": "headphones",
       "tlv": [
-        [3, 1, 1],
-        [3, 0, 1],
-        [5, 0, 5],
-        [7, 0, 16],
-        [36, 0, 1],
-        [37, 0, "swap"],
-        [36, 2, 1],
-        [36, 1, 1],
-        [27, 1, "bit",
-          3],
-        [37, 1, "hi"],
-        [39, 0, 3],
-        [11, 0, 2],
-        [51, 1, 1],
-        [51, 2, 4]
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          5,
+          0,
+          5
+        ],
+        [
+          7,
+          0,
+          16
+        ],
+        [
+          36,
+          0,
+          1
+        ],
+        [
+          37,
+          0,
+          "swap"
+        ],
+        [
+          36,
+          2,
+          1
+        ],
+        [
+          36,
+          1,
+          1
+        ],
+        [
+          27,
+          1,
+          "bit",
+          3
+        ],
+        [
+          37,
+          1,
+          "hi"
+        ],
+        [
+          39,
+          0,
+          3
+        ],
+        [
+          11,
+          0,
+          2
+        ],
+        [
+          51,
+          1,
+          1
+        ],
+        [
+          51,
+          2,
+          4
+        ],
+        [
+          27,
+          1,
+          "bit",
+          0
+        ],
+        [
+          27,
+          0,
+          "bit",
+          3
+        ],
+        [
+          25,
+          0,
+          2
+        ],
+        [
+          26,
+          0,
+          "bit",
+          6
+        ],
+        [
+          26,
+          0,
+          "bit",
+          1
+        ],
+        [
+          27,
+          7,
+          "bit",
+          0
+        ],
+        [
+          72,
+          1,
+          "opt"
+        ],
+        [
+          73,
+          0,
+          "opt"
+        ],
+        [
+          54,
+          0,
+          "opt"
+        ]
       ],
-      "tlv_private": [7, 41],
+      "tlv_private": [
+        7,
+        41
+      ],
       "eq_normalized": {
         "table": "d1406"
-      }
+      },
+      "extra_features": [
+        "auto_power_off_long",
+        "indexed_switches",
+        "wear_calibration"
+      ]
     }
   ]
 }

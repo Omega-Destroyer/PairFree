@@ -18,14 +18,20 @@ public class SoundcoreTalk(model: String) : SessionTalk<ByteArray>() {
     public val session: SoundcoreSession = SoundcoreSession(model)
     private val parser = SoundcoreParser(checksum = session.layout?.checksum ?: true)
     private var wrote = false
+    private var askedLists = false
+    private var outbox: List<ByteArray> = emptyList()
     override val state: EarbudState get() = session.state
     override val groups: List<SettingGroup> get() = session.groups
     override val fitTest: FitTest get() = session
     override val pacing: Pacing = Pacing()
     override fun start(): List<ByteArray> = listOf(session.requestState())
-    override fun poll(): List<ByteArray> = listOf(session.requestState())
+    override fun poll(): List<ByteArray> = withPeers()
     override fun bytes(message: ByteArray): ByteArray = message
-    override fun takeReadBacks(): List<ByteArray> = if (wrote) listOf(session.requestState()).also { wrote = false } else emptyList()
+    override fun takeReadBacks(): List<ByteArray> = if (wrote) withPeers().also { wrote = false } else emptyList()
+    override fun takeOutbox(): List<ByteArray> = outbox.also { outbox = emptyList() }
+
+    /** The state request, and the lists the earbuds keep besides it. */
+    private fun withPeers(): List<ByteArray> = listOf(session.requestState()) + session.requestLists()
     override fun set(command: Command, value: Int): List<ByteArray>? = session.set(command, value)?.let { written(listOf(it)) }
     override fun change(change: SettingChange): List<ByteArray>? = session.change(change)?.let { written(session.frames(it)) }
 
@@ -37,6 +43,11 @@ public class SoundcoreTalk(model: String) : SessionTalk<ByteArray>() {
         for (packet in parser.feed(bytes)) guarded {
             log?.invoke("recv $packet")
             if (session.receive(packet)) changed = true
+            // The first state that shows there are lists (two devices switched on, or a dongle): ask at once rather than at the next poll.
+            if (!askedLists && session.lastState != null && session.requestLists().isNotEmpty()) {
+                askedLists = true
+                outbox = session.requestLists()
+            }
         }
         return Fed(changed)
     }

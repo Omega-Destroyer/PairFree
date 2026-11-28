@@ -39,7 +39,11 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
 
     /** Each answer by its read key (command and selector bytes), the bytes after the subcommand: the session's whole state, and the device report's. */
     private val replies = LinkedHashMap<String, ByteArray>()
-    public val answered: Map<String, ByteArray> get() = replies
+
+    /** The keys the earbuds answered a request under: a report keeps those whole, and four bytes of what they only sent unasked. */
+    private val asked = HashSet<String>()
+    public val answered: Map<String, ByteArray>
+        get() = replies.mapValues { (key, body) -> if (key in asked) body else body.copyOf(minOf(body.size, 4)) }
 
     private var outbox = emptyList<JabraPacket>()
     private var readBacks = emptyList<JabraPacket>()
@@ -200,7 +204,10 @@ public class JabraSession(public val model: JabraModel) : SessionTalk<JabraPacke
                     val sub = packet.sub ?: return@guarded
                     val body = packet.body
                     val key = keyOf(packet.main, sub, body, selectorCounts[(packet.main shl 8) or sub] ?: 0)
-                    if (packet.isReply) answers += key
+                    if (packet.isReply) {
+                        answers += key
+                        asked += key
+                    }
                     changed = handle(packet.main, sub, body, key, packet.isReply) || changed
                 }
             }

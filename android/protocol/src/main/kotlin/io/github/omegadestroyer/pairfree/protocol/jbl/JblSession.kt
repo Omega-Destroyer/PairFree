@@ -397,7 +397,7 @@ public class JblSession(initial: JblModel) {
             JblEq41.REPLY -> eqParts(p)
             JblEq41.DEVICE_FIN -> if (p.isNotEmpty() && p.u8(0) == JblEq41.REPLY) eqPartsDone()
             else -> if (extras.reportsAa(packet.command)) {
-                _replies[key(packet.command)] = p.copyOf()
+                _replies[key(packet.command)] = harmanReportable(packet.command, p)
                 extras.aa(packet.command, p)
             }
         }
@@ -420,7 +420,7 @@ public class JblSession(initial: JblModel) {
             _replies["p4." + id.toString(16).padStart(4, '0')] = v.copyOf()
             when (id) {
                 JblP4.FEATURE_PRODUCT_ID -> if (v.size >= 2) productIdIs(JblP4Packet.u16(v, 0))
-                JblP4.FEATURE_FIRMWARE -> firmware = v.joinToString(".") { (it.toInt() and 0xFF).toString() }
+                JblP4.FEATURE_FIRMWARE -> versionIs(v.map { it.toInt() and 0xFF })
                 JblP4.FEATURE_BATTERY_LEFT -> p4Battery(Command.BATTERY_LEFT, v)
                 JblP4.FEATURE_BATTERY_RIGHT -> if (model.form != Form.HEADPHONES) p4Battery(Command.BATTERY_RIGHT, v)
                 JblP4.FEATURE_BATTERY_CASE -> if (model.form != Form.HEADPHONES) p4Battery(Command.BATTERY_CASE, v)
@@ -465,7 +465,7 @@ public class JblSession(initial: JblModel) {
             for (i in INFO_MAC until minOf(INFO_MAC + MAC_BYTES, r.size)) r[i] = 0
         }
         if (p.size >= INFO_PID + 2) productIdIs((p.u8(INFO_PID + 1) shl 8) or p.u8(INFO_PID))
-        if (p.size >= INFO_FIRMWARE + 3) firmware = "${p.u8(INFO_FIRMWARE)}.${p.u8(INFO_FIRMWARE + 1)}.${p.u8(INFO_FIRMWARE + 2)}"
+        if (p.size >= INFO_FIRMWARE + 3) versionIs(listOf(p.u8(INFO_FIRMWARE), p.u8(INFO_FIRMWARE + 1), p.u8(INFO_FIRMWARE + 2)))
     }
 
     /** A status reply: the type, then its values (JBL's HandleParse.parseDevStatus and parseDeviceAllStatus). */
@@ -572,7 +572,7 @@ public class JblSession(initial: JblModel) {
         _replies[key(JblCommand.FEATURE, id)] = v.copyOf()
         when (id) {
             JblFeature.PRODUCT_ID -> if (v.size >= 2) productIdIs((v.u8(1) shl 8) or v.u8(0))
-            JblFeature.FIRMWARE -> if (v.size >= 3) firmware = "${v.u8(0)}.${v.u8(1)}.${v.u8(2)}"
+            JblFeature.FIRMWARE -> if (v.size >= 3) versionIs(listOf(v.u8(0), v.u8(1), v.u8(2)))
             JblFeature.AUTO_OFF -> if (v.size >= 3) {
                 autoOffOn = v.u8(0) == 1
                 autoOffMinutes = v.u8(1) or (v.u8(2) shl 8)
@@ -590,6 +590,11 @@ public class JblSession(initial: JblModel) {
     private fun unitBattery(command: Command, v: ByteArray) {
         if (v.size < 2) return
         state = state.copy(values = state.values + (command to Value.Number(level(v.u8(1)))))
+    }
+
+    /** The firmware from its bytes; every byte FF means the earbuds have none to give for the moment (a Tour Pro 3 after a change, issue #1), so the last version stays. */
+    private fun versionIs(bytes: List<Int>) {
+        if (bytes.isNotEmpty() && bytes.any { it != 0xFF }) firmware = bytes.joinToString(".")
     }
 
     /** The product id names the model where two share a name; a model of another kind is read afresh. */
@@ -1024,7 +1029,43 @@ public class JblSession(initial: JblModel) {
         }
         // NV keys only when short (the settings): the chip and model names are kept as text, and what else a long key
         // holds is not known.
-        if (p.status == 0 || (p.id == JblRace.NV_READ && p.payload.size <= RACE_SHORT_NV)) _replies[raceKey(p)] = p.payload.copyOf()
+        if (p.id == JblRace.NV_READ) {
+            if (p.payload.size <= RACE_SHORT_NV) _replies[raceKey(p)] = p.payload.copyOf()
+        } else if (p.status == 0) {
+            _replies[raceKey(p)] = raceReportable(p)
+        }
+    }
+
+    /**
+     * What the device report keeps of a RACE answer. The earbuds also send messages of their own: one (`0055`, issue #1)
+     * lists other devices' names and addresses. Only an answer to what PairFree itself reads or writes is kept whole, the
+     * charging case's address blanked; of any other, the first four bytes.
+     */
+    private fun raceReportable(p: RacePacket): ByteArray {
+        val known = p.id in REPORTED_RACE ||
+            (p.id == JblRace.HM_PASSTHROUGH && p.payload.size > 2 && (p.payload[2].toInt() and 0xFF) == JblCommand.GET_SET_FEATURE)
+        if (!known) return p.payload.copyOf(minOf(p.payload.size, UNKNOWN_REPORTED))
+        val kept = p.payload.copyOf()
+        if (p.id == JblRace.CASE_FEATURE_GET) for (i in RACE_CASE_ADDRESS until minOf(RACE_CASE_ADDRESS + MAC_BYTES, kept.size)) kept[i] = 0
+        return kept
+    }
+
+    /** A Harman answer for the report: the smart case's pages (`A4`) hold the case's address under id 193, blanked here. */
+    private fun harmanReportable(command: Int, p: ByteArray): ByteArray {
+        val kept = p.copyOf()
+        if (command != JblCommand.CHARGING_CASE_FEATURE) return kept
+        var at = 1
+        while (at < kept.size) {
+            val id = kept[at].toInt() and 0xFF
+            val size = when (id) {
+                CASE_VERSION_ID -> 3
+                CASE_ADDRESS_ID -> MAC_BYTES
+                else -> 1
+            }
+            if (id == CASE_ADDRESS_ID) for (i in at + 1 until minOf(at + 1 + size, kept.size)) kept[i] = 0
+            at += 1 + size
+        }
+        return kept
     }
 
     /**
@@ -1291,6 +1332,24 @@ public class JblSession(initial: JblModel) {
         const val RACE_MODEL_NAME_END = 40
         const val AE_MODEL_AT = 29
         const val RACE_SHORT_NV = 8
+
+        /** What a report shows of a message PairFree does not know, and where the case's address lies. */
+        const val UNKNOWN_REPORTED = 4
+        const val RACE_CASE_ADDRESS = 13
+        const val CASE_VERSION_ID = 192
+        const val CASE_ADDRESS_ID = 193
+
+        /** The RACE commands PairFree reads or writes, whose answers a report keeps whole. */
+        val REPORTED_RACE: Set<Int> = setOf(
+            JblRace.PUSH_STATUS, JblRace.AGENT_CHANNEL, JblRace.FIRMWARE, JblRace.AE_INFO, JblRace.BATTERY, JblRace.CASE_BATTERY,
+            JblRace.ANC, JblRace.MMI_GET, JblRace.MMI_SET, JblRace.CONFIG_GET, JblRace.CONFIG_SET, JblRace.AUTO_OFF_OLD, JblRace.IN_EAR_OLD,
+            JblRace.KEY_EVENT, JblRace.BALANCE_GET, JblRace.BALANCE_SET, JblRace.SAFE_SOUND_GET, JblRace.SAFE_SOUND_SET,
+            JblRace.SPATIAL_GET, JblRace.SPATIAL_SET, JblRace.LIMITER_GET, JblRace.LIMITER_SET, JblRace.SMART_TALK_GET, JblRace.SMART_TALK_SET,
+            JblRace.HI_RES_GET, JblRace.HI_RES_SET, JblRace.LOW_VOLUME_EQ_GET, JblRace.LOW_VOLUME_EQ_SET, JblRace.FIND_ME,
+            JblRace.PSAP_GET, JblRace.PSAP_SET, JblRace.CASE_DISPLAY_GET, JblRace.CASE_DISPLAY_SET, JblRace.CASE_FEATURE_GET,
+            JblRace.CASE_FEATURE_SET, JblRace.PERSONIFI_STATUS_GET, JblRace.ENV_INFO, JblRace.ENV_INFO_1562, JblRace.LEAKAGE,
+            JblRace.ENV_STATUS, JblRace.FULL_ADAPTIVE,
+        )
 
         /** The agent (the earbud the phone talks to) and the other one, as RACE numbers them. */
         const val RACE_AGENT = 0

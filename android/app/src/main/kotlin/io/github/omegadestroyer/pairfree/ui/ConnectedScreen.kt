@@ -152,6 +152,13 @@ internal fun ConnectedScreen(
         JblPersonifiScreen(host, onClose = { hearingTest = false })
         return
     }
+    val soundcoreHearing = if (ownHearing is OwnHearingTest.Soundcore) remember(device.address, state) { actions.soundcoreHearing() } else null
+    if (hearingTest && soundcoreHearing != null) {
+        // As the Oneplus test: the hold on the channel that was there when the screen opened stays until it closes.
+        val host = remember { soundcoreHearing }
+        SoundcoreHearingScreen(host, onClose = { hearingTest = false })
+        return
+    }
     val qcyHearing = ownHearing as? OwnHearingTest.Qcy
     if (hearingTest && qcyHearing != null) {
         QcyPersonalScreen(qcyHearing.spec, actions::sendFrames, onClose = { hearingTest = false })
@@ -179,7 +186,7 @@ internal fun ConnectedScreen(
                 Tab.SOUND -> SoundScreen(
                     eq, eqActions, if (Brands[device.brand].offersRecording) actions::openCapture else null, settings, actions::changeSetting,
                     unavailableNote = Brands[device.brand].eqNote(device).text,
-                    onHearingTest = if (samsungHearing || qcyHearing != null || jblPersonifi != null || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
+                    onHearingTest = if (samsungHearing || qcyHearing != null || jblPersonifi != null || soundcoreHearing != null || oneplusTest != null || hearing != null) ({ hearingTest = true }) else null,
                     onFinder = if (eq != null && eq.target.hasCustom) ({ finder = true }) else null,
                 )
                 Tab.CONTROLS -> ControlsScreen(device, state, actions, touch, settings)

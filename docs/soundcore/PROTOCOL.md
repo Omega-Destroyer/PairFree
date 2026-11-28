@@ -534,7 +534,7 @@ Source: `com/oceanwing/devicecmd/manager/l/n/a.java` (`A3953AnalysisService`) of
 | | 4 | health: sedentary reminder, sitting posture, abnormal heart rate alarm, its threshold |
 | (replies longer than 163 bytes) | 1+1 | device colour (one character) and press sensitivity |
 
-Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Not built yet for the model: the equalizer (the app writes `03 87` or `02 81`; the HearID part is 49 bytes here, not the 48 of the A3947's), the touch controls (the 24-byte button block), and the HearID and ANC tests. Nothing has been tried on a Liberty 4.
+Built (2026-11-13): the layout is in `data/soundcore/devices.json` (the HearID block, the button block with its length byte and the personalised ANC test fields are skipped; every other row of the table is read), so the Liberty 4 shows its battery with the case, firmware, noise mode (written with the existing `06 81` block write, as `A3953CmdService.q1` builds it), LDAC (`01 FF`), two devices at once (`0B 84`) and, as earbud settings, wear detection (`01 81`), bass boost (`02 84`), in-ear beep (`01 8C`), low battery prompt (`10 82`), ambient sound prompt (`10 83`), spatial audio (`10 81`: switch, effect, mode, the last two kept) and automatic power off (`01 86`: switch and duration index, the index kept), plus the press sensitivity (`04 85`, levels 0 to 4: softest, soft, normal, firm, firmest). Every command is named by its callback in `CMM2_COMMANDS.md`. Since built: the equalizer (`03 87`, the P40i's layout), HearID and the touch controls (the first 16 bytes of the button block, as the Liberty 4 NC's). Nothing has been tried on a Liberty 4.
 
 ## 14. The Soundcore app 5.0.35 (2026-11-15)
 
@@ -576,12 +576,18 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   `stateCommand` in `devices.json`), returns its whole state in a frame with no checksum (the level 0 to 5, the vibration switch, the custom button
   function, the volume limit's switch and value 0 to 16, the firmware as four characters, the serial and the name); the writes are `01 82`, `01 84` and
   `01 85`. Its equalizer is read and set by index (`02 01`, `02 81`) and its presets are in a native screen, so none is offered.
-  **Switch bits of the tag-length-value models** (records 26 and 27: the prompts, the touch lock, LDAC, 3D mode, adaptive volume, side tone and the
-  rest): blocked: which of them each model shows is the model's "more" data provider, whose bodies are empty stubs in the restored app; checked:
-  `D1206MoreDataProvider` (6 of its 9 methods are stubs), `D1206MainActivity` (57 stubs, 12 native methods), `A3954AncFragmentVM` and the other
-  models' main view models. The bits are read; offering a switch the model does not have would write to a bit it ignores. A device report from the
-  model (or the Soundcore app's screens recorded) settles which to offer.
-- **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
+  **Switches of the tag-length-value models** (records 25 to 27; read from the restored method bodies on 2026-11-27). Each model shows what its settings
+  screen (`<code>MoreDataProvider`) lists. On the models whose command service says `d6` (D1102, D1105, D1203, D1204, D1206, D1406, D1407; the Liberty 5 Pro
+  pair is the app's A3956 and A3956X code) the app writes a switch as its bit in these records and 1 or 0: `41 87 <bit> <on>` for the tones of record 26
+  (0 touch tone, 1 low battery, 2 power off, 3 in-ear, 4 connect, 6 ambient sound) and `41 88 <bit> <on>` for record 27 (1 game mode, 2 LDAC, 8 wear
+  detection, 14 easy chat, 29 sound field rendering, 56 incoming call noise reduction, 57 voice input enhancement; 3 two devices on D1203 and D1204 only,
+  the others keep `0B 84`). PairFree 0.18.0 and earlier sent these models the older commands (`01 81`, `01 83`, `01 87`, `01 8C`, `01 FF`, `10 82`).
+  Also read and built: the Liberty Buds 2's press sensitivity (`04 85`, 0 low to 2 high, record 58, firmware 1.77 to 1.99 and 2.77 to 2.99) and the fit
+  test of it and the Liberty 5 Pro pair (`09 01`); the AeroClip 2 pair's balance (`10 8C`, 100 plus -6 to 6, record 60); the Space 2 Pro pair's voice prompt
+  screen (its two switches are the ambient sound prompt and the low battery tone); and the Sleep Earbuds 4 pair's tones, which are the Sleep A30's
+  switches (`10 75`, `10 77`, `10 9E`, `10 9F`; call alert is record 27 bit 23). None of this has been tried on earbuds.
+  Open in `data/completeness.json`: the Space 2 Pro pair's AI chat page and the Liberty 5 Pro pair's and Sleep Earbuds' case channels.
+  - **Tag-length-value models (D1105, D1102, D1206, D1203, D1204, D1406, D1407, D1302, D1303).** These answer `01 01` with records `tag, length, value`
   from the first byte (`ParseCommonCmdUtils.a`) and pack switches into bits. `data/soundcore/devices.json` gives such a model a `tlv` list, which turns
   the records into the fixed body its `state` fields describe: `[tag, at, n]` takes n bytes, `[tag, at, "bit", b]` a bit as 0 or 1, `"lo"` and
   `"hi"` a nibble, `"pack"` the touch control's two bytes (with both earbuds in, with one) as OpenSCQ30's one nibble-packed byte, `"level"` and
@@ -594,8 +600,11 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
   automation, wind, 0, multi-scene, 0), seven on the Liberty 5 Pro pair (mode, automation, transparency option, two level bytes as reported, two
   multi-scene bytes), six on the Space 2 pair. Offered: the Liberty Buds 2's and the Liberty 5 Pro pair's noise mode and touch controls, the AeroClip 2's
   touch controls (triple tap: white noise) and dual connections, the AeroClip 2 Pro's touch controls (its own action list), the Space 2 pair's noise
-  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. Not offered: the switches of records 26 and 27 whose screens were not read, the Space 2's one-button records (72, 73), the
-  sleep sounds and playback records (31 to 33, 81, 106) of the Sleep Earbuds 4, and the case's own channels (D1203-Box, D1204-Box, D1302-Box, D1303-Box).
+  mode and high volume limit, the Sleep Earbuds 4 pair's double and triple taps and two switches. The Space 2
+  Pro pair's buttons are records 72 (the noise button: one press, two presses; written with `04 8C`, 255 nothing or 7 powerful bass) and 73 (the
+  multi-function button held: `04 61`, the phone's assistant, nap mode or nothing; the app's own assistant, translation and recording need the Soundcore app
+  and are left out). The Sleep Earbuds' voice prompt language is `13 07` (record 64). Still open in `data/completeness.json`: the cases' own
+  links (D1203-Box, D1204-Box, D1302-Box, D1303-Box), which carry the Sleep Earbuds' sound playback.
 - **Liberty 4 Pro (A3954).** `A3954AnalysisService.e1` confirms the layout field by field, including pull request 42's change: after the spatial audio
   triple come `easyChatOn`, then the dual-device audio focus byte (skipped), then the EQ compensation byte (sound leak compensation). The app's sound modes
   write (`A3954CmdService.M0`) is five bytes: the mode (0 to 3), the slider (1 to 11), the automatic pressure update, wind noise suppression, and 0xFF. The
@@ -699,3 +708,169 @@ Git). What PairFree took from it, and what it did to the models and to pull requ
 - **Not recoverable from the app.** The online product catalogue (HTTP 401 without an account) and the screens' view models (native code in the 5.0.35
   restoration). The Sleep A30's audio upload is in the research branch's `SLEEP_A30_UPLOAD_PROTOCOL_5_0_35.md`; PairFree builds none of it
   (section 13).
+
+## Issues 76 and 79 (2026-11-27)
+
+- **Liberty Buds 2 (D1206).** A user's report: LDAC is record 27 bit 2 (`D1206AnalysisService`), written with `01 FF`; the button actions include 4 (the app's `CUSTOM_BTN_TRANS_INDEX`, transparency) and 8 (`CUSTOM_BTN_ANC_SWITCH_INDEX`, the ambient sound switch); record 46 holds the modes it cycles (noise cancelling 1, transparency 2, normal 4, adaptive 8; high four bits with one earbud), written with `06 82`. PairFree shows an LDAC or game mode switch only where the state holds the field, never from the `01 7F` or `01 11` notice alone.
+- **Find Earbuds.** `10 89`, three bytes: left, right, case (1 beeps, 0 stops; `CmmBtCmdService.r0`, `finddevice/CmmFindDeviceHandler`); the earbuds report the same three under `01 09`. Models by the app's per-model screens (`FindDeviceType`): `find_device` (the earbuds beep) and `find_device_phone` (A3871, A3936, A3944, A3947, A3948: the phone plays the sound, `finddevice/AppFindDeviceHandler`; PairFree plays its own tone, not the app's clip).
+- **The restored method bodies.** The 2026-11-19 unpacker run restored method bodies that earlier notes in this document call empty stubs (`D1206MoreDataProvider` among them). Those notes are to be re-read; open in `data/completeness.json` (`soundcore-stub-blockers-stale`).
+
+## The app's command table, worked through (2026-11-27)
+
+Traced in Soundcore 5.0.35 from each command's constant to the screens that send it. None of it has been tried on earbuds with PairFree.
+
+- **Voice prompts.** The Space One, Space One Pro, Space Q45 and Space 2 send the sound mode voice prompt as `01 AE`; the Space One, Q45 and Space 2 send the
+  battery level announced at power on as `01 AF` (OpenSCQ30 sends both the same). The V20i and V40i send their voice prompt as the touch tone, `01 83`.
+- **High volume limit.** `20 82`, the switch and the limit in dB (75 to 100, steps of 5), on every model whose app has the hearing protection screen and whose
+  state holds the field; the Liberty 4 Pro's has a third byte.
+- **Paired devices** (two devices switched on): the list is the answer to `0B 01` (packet count, packet number, then per device a length, connected, six address
+  bytes and the name); `0B 81` disconnects, `0B 82` connects, `0B 83` forgets (PairFree asks first), each with the address; `0B 85` with no body lets another
+  device pair. The layout is OpenSCQ30's. The list is private: it is not in a report. The app does not mark which entry is this phone, so PairFree cannot
+  hide it.
+- **The Frames:** OpenSurround `02 85` (on, level 0 to 4), voice commands `0A 81` (on, language), enhanced volume `0A 82`, manual shutdown `01 8F`. **VR P10:**
+  the light `0E 81` (colour 0 to 4, then mode: breathing, on, battery saving). **Space Q45 and Liberty 3 Pro:** the voice prompt language `01 8D`.
+- **The rest of the table** is in `data/soundcore/cmm2_unused.json`: commands no code of the app sends, its diagnostics and beta screens, its live decibel
+  meter and speaker equalizers, each with its reason; and the open ones (HearID, personal noise cancelling, wear calibration, daily care, the Sleep A10's
+  playback and alarms, the VR P10's dongle), listed in `data/completeness.json`.
+
+## Tests the earbuds run (2026-11-27)
+
+- **Wear detection calibration** (Space One, Space Q45, Space 2, Space 2 Pro pair): `20 84 00` with the headphones on a table, then `20 84 01` worn; the
+  reply's second and third bytes read 1 when the step passed (the app waits 15 s).
+- **Personal noise cancelling** (Liberty 3 Pro, Liberty 4 NC): `03 88` with 1 (start) or 0 (cancel), the time in seconds high byte first, and the room's noise
+  in dB. The app measures the noise with the phone's microphone; PairFree has no microphone permission and sends 255, the app's value for none. The reply's
+  first byte is the result's index, 255 none. `03 89` removes it. Neither has been tried on earbuds.
+
+## The VR P10's dongle (2026-11-27)
+
+`0F 01` lists the USB dongles (a count, then name 20, connected 1, type 1, firmware 5, address 6 each), `0F 02` the low power mode. `0F 82` sets what the
+connected dongle is plugged into (0 Oculus to 5 other), `0F 83` disconnects it, `0F 84` forgets and `0F 85` connects one by address, `0F 86` sets low power.
+Renaming (`0F 81`) is left out. Not tried.
+
+## Health (Liberty 4, 2026-11-27)
+
+`0D 82` starts and stops heart rate measurement; the earbuds then send `0D 01` (heart rate at byte 2, blood oxygen at 24, steps from 26). `0D 84` is the
+sedentary and `0D 83` the sitting posture reminder (state, after the spatial audio bytes). 5.0.35 reads the device colour and press sensitivity one byte later
+than 3.3.0, which PairFree's layout follows; a Liberty 4 report settles it. `0D 88` calibrates (1, 2 in-ear or 3 neck; reply: a byte,
+the kind, 0 on success), `0D 87` switches the neck report, `0D 04` answers 72 two byte counts (five degree bands from 90 to -90, front to back then
+sideways, the halves read from the field order of the app's upload), `0D 89` clears them and `0D 03` is the live angle. The app uploads the counts to
+Anker's server; PairFree shows them and sends them nowhere. Not tried.
+
+## The Sleep A10's player (2026-11-27)
+
+State: play time (byte 69, 255 no limit), whether a sound is on the earbuds, its volume (0 to 65) and the countdown (two bytes, high first, 0 off, FFFF keep
+playing). `01 AB` sets the play time, `01 B1` (0, volume), `01 B2` plays or pauses, `01 B3` the countdown. An alarm: `01 A6` with the time now (seconds since 1970, high
+byte first), then `01 A7` with up to three ring times (PairFree sends one; four zero bytes clear). Sleep records: blocked: the earbuds give only time stamps
+and type codes (`01 10`) and the report comes from Anker's server; checked: `A6610AnalysisService.G2`, `A6610SleepVM`, `netbean/a6610/StatisticsSleep`.
+Putting a sound on the earbuds: blocked: it travels by the firmware updater, which PairFree does not send; checked:
+`A6610OtaActivity` (`A6610WqOtaUpgrade`, then `01 A4`), `A6610WhiteNoiseApi`. Not tried.
+
+## HearID: the hearing test (2026-11-27)
+
+From the Soundcore app 5.0.35; built for the Space A40 (A3936), Liberty Air 2 Pro (A3951), Liberty 2 Pro+ (A3930), Liberty 3 Pro (A3952) and, as HearID 3,
+the Space One (A3035), Space Q45 (A3040), Space One Pro (A3062), Liberty 4 NC (A3947), P40i (A3955) and Sport X20 (A3968). Not tried on earbuds. Code: `SoundcoreHearing.kt`,
+`SoundcoreHearingScreen.kt`.
+
+**Running it.** `03 83 01` starts and `03 83 00` ends; the app waits 1.5 s after starting. The phone plays the tones, with media volume at the top, into one ear
+at a time, left first, in the order 3.2 kHz, 1.6 kHz, 6.4 kHz, 800, 400, 200, 100 Hz, 12.8 kHz (`A3936HearIdM`, `A3951HearIdM`, `A3952HearIdM`).
+
+- A3936, A3951, A3930: a steady sine (the app's files are full-scale sines), at amplitude 10^(level/20). Starting levels in that order: -75, -64, -72, -71,
+  -69, -59, -54, -72 dB, with first steps of +6, 0, +6, 0, +3, +6, +6, +6.
+- A3952: three short beeps in a 1.57 s loop, from recordings made at -12 to +12 dB in 3 dB steps (peak about -49.8 dBFS at 0 dB; -44.7 at 100 Hz, -46.7 at
+  12.8 kHz), played at a fixed gain of -27, -19, -25, -22, -22, -17, -14, -25 dB. PairFree makes the beeps itself at those levels; the app's recordings are not
+  shipped.
+
+**The staircase** (`HearingAlgorithm`, ported in `SoundcoreStaircase`): 3 dB up while unheard and down while heard, until a level is heard twice or the step
+reaches 12 dB, then a short re-check. Its result is 0 to 24, 12 being the starting level.
+
+**HearID 3** (`A3968HearidVM`, reached from `A3953HearIdDataActivity`) has no staircase: the beeps sound in both ears, eight tones in the same order, and the
+user moves each between -12 and +12 dB of its starting level (-38, -39, -39, -34, -25, -25, -44, -39 dB for these four models; `getHearIdVolumeCurve`) until
+it is just heard. A tone's result is `12 + offset`. The results are sorted by frequency and corrected by `dataUnification`: what is above 12, less the smallest
+of the eight, halved, plus 12; both ears get the same. The calls between the screen and the correction are still protected in 5.0.35; their order is as in
+Soundcore 3.3.0's `A3953HearId3TestActivity.testHearIdEnd`, which is not protected.
+
+**The correction.** A3936 family (`BaseHearId2VM.changeDataByAlgorithm`): both ears are moved so the better 1.6 kHz result reads 12, then held to 12 to 15
+(100, 200 Hz), 12 to 18 (400 Hz) and 6 to 18 (the rest). A3952: each ear against its own best, then `round(6 / (e^(15 - x) + 1) + 12)`.
+
+The Space One Pro starts from -32, -32, -20, -36, -30, -28, -30, -24.5 dB, and its app sends the curve that plays without the
+smoothing; the Space Q45 sends its one curve twice.
+
+**The write** is the model's EQ write with the HearID part filled in, `03 87` (`A3936CmdService.p6`, `A3951DeviceManager.d2`): preset, HearID genre index, the
+current EQ curves, gender, age, HearID on, the result, time, type 0, the result again, and the curves the earbuds are to play (the corrected result). In the
+result 12 is 0 dB; with ten bands the last two are sent as their lowest value, and the ninth plays at -1.2 dB (`HearId2Utils.l`). The A40's write is 92 bytes,
+as its recorded EQ write; 76 bytes on the 8-band models. The other models' services use the general builder (`CmmBtCmdService.p6`, or `o6` with one curve on
+the Space One), which ends with one more byte, the room's noise in dB; PairFree measures none and sends 0.
+
+**On, off, delete.** The same write with the switch byte changed (`W3`, `k2`): off plays the ordinary EQ's corrected curve, which is byte for byte PairFree's EQ
+write; on plays the result (type 0), the custom result (type 1) or the result mixed with the genre preset (type 2, `HearId2Utils.c`). Delete sends empty
+HearID parts (`CmmBtCmdService.Y`, `A3951DeviceManager.O1`). `03 81`, `03 82`, `03 84` are the same three actions on older models whose service does not
+override them; none of the four models above uses them.
+
+**The comparison over music** (`A3953HearIdPreferenceM`), offered after HearID 3: six rounds of A against B or no difference. Each variant is the result plus an
+offset, held within 6 dB, and is played by writing it with gender 1, age `FE` and no time. Rounds one and two compare fixed pairs of twelve starting offsets;
+later ones a random offset against the first unlike it (cosine similarity at most 0.354 to 0.6, rising by round). After a preference some offsets move towards
+it and the mean (inertia and both pulls 0.3, kept within 6 dB). The final offset is 0.4 of the last choice plus 0.8 of the mean, raised to a peak of 2.5 dB
+where smaller, plus 0.5 dB. The app plays its own clip (`liberty/hearid_preference.mp3`); PairFree asks the listener to play music of their own. Leaving without
+keeping a result writes back what the earbuds held.
+
+The Flutter test (Liberty 4 Pro family and Liberty 5): blocked: its gains come from a trained network the app bundles, which the owner decided (2026-11-27)
+PairFree does not ship; checked: `NL2Util` (native, `assets/model_parameters`), the Dart code of `hearing_test_vm`.
+
+**Not built:** HearID 5 (AeroFit 2 Pro), left out for now by the owner's decision (2026-11-27) and still open (data/completeness.json, `soundcore-hearid-other`);
+checked: `HidAppWrapper` (native), the exported symbols of `libhid_app.so` (a preference agent), the A3875 `hearid5` screens. The P41i's app opens no test; its stored result can be switched. The app also measures the room's noise with the microphone before the test; PairFree asks no
+microphone permission.
+
+## Charging cases (2026-11-27)
+
+From the Soundcore app 5.0.35. Three cases are Bluetooth devices of their own; the earbuds report each case's address (state record 41) and PairFree opens
+it beside the earbuds' channel (`SoundcoreCase.kt`). Not tried on a case.
+
+| Case | Link |
+|---|---|
+| Liberty 5 Pro (`D1203-Box`) | Bluetooth LE, service `0205F5DA-…`, notify `…8888`, write `…7777`, MTU 512 |
+| Liberty 5 Pro Max (`D1204-Box`) | serial, `0CF12D31-FAC3-4553-BD80-D6832E7B395D` |
+| Sleep Earbuds 4 Pro (`D1302-Box`) | Bluetooth LE, service `021CF5DA-…`, as above |
+
+Frames are the earbuds'. On connecting PairFree sets the case's clock (`01 A6`) and asks for its state (`01 01`, tag-length-value records).
+
+- **Clock.** Liberty 5 Pro cases: time (4 bytes, low first), zone ((hours from UTC + 12) × 2), time of the next change of the clocks and its zone (PairFree sends
+  `FF FF FF FF` and the same zone, as the app does where there is none). Sleep case (`D1302CmdService.E6`): record 70 with those ten bytes and a 12-hour flag,
+  record 71 with the app's type, region and version (PairFree sends zeros and no version).
+- **Records.** 7 serial, 8 charging and battery (scale not known, not shown), 9 version, 27 switch bits, 28 and 41 addresses (private), 98 the sound: playing,
+  id (8 bytes), kind.
+- **Sleep case switches** (`41 88 [id][on]`, bit `id` of record 27): 33 notifications, 34 case battery low, 35 charging reminder, 36 data synchronised, 37 sleep
+  report, 38 noise alert, 39 BioSync, 40 sleep detection. 39 and 40 are shown only when bit 50 or 51 says Anker's agreement was accepted in its app; PairFree
+  never sets 50 or 51.
+- **Sound.** `13 08` [playing][id][kind] pauses and resumes the sound the case reports.
+
+Putting a picture of your own on the Liberty 5 Pro's case screen: blocked: it goes through the case's firmware updater, which PairFree never sends; checked:
+`BleWallpaperOtaUploader` (BES `OTATask`), `A3956UploadService`. Choosing another sleep sound: blocked: the list of sounds comes from Anker's server, which no
+code here calls; checked: `D1302AmbienceManager`, `A6610WhiteNoiseApi`. The file commands `18 70` to `18 77` have no caller in the app (`BoxSppDeviceManager`
+`R0` to `Y0`).
+
+Removing pictures from the case screen: blocked: they are named by the ids of Anker's server list; checked: `A3956CustomPicPersonVM` (`WallPaperApi`).
+The breathing exercise: blocked: its sounds are downloaded from Anker's server; checked: `BreatheAudioDownloadManager`. The app has no voice language control
+for the Liberty 5 Pro: it sets it itself (`A3956MainActivity.setVoiceLanguage`).
+
+**The oldest test** (A3909, A3910, A3913; `BaseHearIdVM`, `A3909HearIdM`): seven steady tones in each ear, 6.4 kHz down to 100 Hz, from -75, -75, -70, -75,
+-70, -60, -55 dB (A3910 -73, -80, -70, -70, -63, -55, -52; A3913 -75, -75, -70, -72, -67, -55, -55), 6 dB up to start; the same staircase. Each ear is moved
+against its own 1.6 kHz result. The result is `03 82` [gender][age][left 8][right 8][time, high byte first] in whole values (12 flat; the eighth is 12), the
+switch `03 81 [on]`, delete `03 84` (`A3909DeviceManager`).
+
+## The remaining equalizers (2026-11-27)
+
+From the Soundcore app 5.0.35's command services; none tried. Presets are written with the curves of the app's tables.
+
+| Models | Write | Presets |
+|---|---|---|
+| Q20i Plus, Q21i NC, H30i | `02 83`, one curve and its correction (as the Q20i's) | the Q11i's |
+| AeroFit, AeroFit Pro, V30i | `02 83`, one curve and its correction (`q6`) | `AeroNew2EQGainValues` |
+| AeroFit 2, AeroFit 2 Pro | the same; the Pro twice, for two earbuds and for one (`A3875CmdService.r6`) | `AeroNew3EQGainValues` |
+| K20i | `02 83`, one curve | `K20IEQGainValues` |
+| Liberty Buds | `03 87` (`n6`, the P31i's) | standard |
+| VR P10 | `02 81`, both curves, no correction (`s6`) | standard without Bass Booster, which is its bass switch |
+| Sleep A10 | `02 83`, both curves and corrections (`A6`) | the same |
+| Frames | `02 81`: preset, nine bytes of tone, nine of curve, `58` (`A3600CmdService.s6`) | `A3600EqConstants` |
+| Life NC | `02 01` asks the preset, `02 81 [n]` sets it: 0 original, 1 bass boost, 2 office (3.3.0) | by number |
+
+The Sleep A30 and the Sleep Earbuds 4 pair have no equalizer screen in the app.

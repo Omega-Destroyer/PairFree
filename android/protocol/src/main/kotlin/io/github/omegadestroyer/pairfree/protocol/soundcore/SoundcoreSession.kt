@@ -10,6 +10,7 @@ import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.SettingGroup
 import io.github.omegadestroyer.pairfree.protocol.SettingTab
 import io.github.omegadestroyer.pairfree.protocol.Value
+import kotlin.time.Clock
 
 /**
  * One connection to Soundcore earbuds, shown on PairFree's screens. The screens work in the
@@ -35,6 +36,31 @@ public class SoundcoreSession(public val model: String) : FitTest {
     // The sound modes block as the earbuds last reported it; a noise mode change sends it back with byte 0 changed.
     private var soundModes: ByteArray? = null
 
+    private val peers = SoundcorePeers()
+
+    /** What the phone's clock reads, in seconds since midnight, for the Sleep A10's alarm; set by the app, which knows the time zone. */
+    public var secondOfDay: () -> Int? = { null }
+    private var alarmSet: String? = null
+    private val neck: SoundcoreNeck? = if (layout?.features?.contains(SoundcoreHealth.FEATURE) == true) SoundcoreNeck() else null
+    private val health: SoundcoreHealth? = if (layout?.features?.contains(SoundcoreHealth.FEATURE) == true) SoundcoreHealth() else null
+    private val dongle: SoundcoreDongle? = if (layout?.features?.contains(SoundcoreDongle.FEATURE) == true) SoundcoreDongle() else null
+
+    /** The requests for the lists the earbuds keep besides their state: the paired devices, and the VR P10's dongles. */
+    public fun requestLists(): List<ByteArray> = listOfNotNull(if (listsPeers) requestPeers() else null) +
+        // The Life NC's equalizer preset is not in its state: it is asked for by itself.
+        listOfNotNull(if (model == "A3201") SoundcorePacket.build(SoundcoreCommand.EQUALIZER_PRESET, checksum = checksum) else null) +
+        if (dongle == null) emptyList() else listOf(SoundcoreCommand.DONGLE_INFO, SoundcoreCommand.DONGLE_LOW_POWER_STATE).map { SoundcorePacket.build(it, checksum = checksum) }
+    private val tests = SoundcoreTests(layout?.features ?: emptySet())
+
+    /** The Life NC's preset number, once it has said. */
+    private var lifeNcPreset: Int? = null
+
+    /** Whether the earbuds' list of paired devices is worth asking for: their last state shows two devices at once, switched on. */
+    public val listsPeers: Boolean get() = lastState?.flag("dual_connections_enabled") == true
+
+    /** The request for the list of paired devices. */
+    public fun requestPeers(): ByteArray = SoundcorePacket.build(SoundcoreCommand.DUAL_CONNECTIONS_DEVICES, checksum = checksum)
+
     /**
      * Applies one packet from the earbuds. Returns true when [state] changed. Acknowledgements
      * (empty bodies) and packets PairFree does not use change nothing.
@@ -46,6 +72,15 @@ public class SoundcoreSession(public val model: String) : FitTest {
         // The Life NC asks for its state with `01 09` ([SoundcoreCommand.DEVICE_INFO]) and answers under it.
         val command = if (packet.command == SoundcoreCommand.DEVICE_INFO && layout?.stateCommand == SoundcoreCommand.DEVICE_INFO) SoundcoreCommand.STATE else packet.command
         when (command) {
+            SoundcoreCommand.EQUALIZER_PRESET -> if (model == "A3201") {
+                lifeNcPreset = body.u8(0).takeIf { it < LIFE_NC_PRESETS.size }
+                return true
+            }
+            SoundcoreCommand.DUAL_CONNECTIONS_DEVICES -> return peers.receive(body)
+            SoundcoreCommand.HEALTH_READINGS -> return health?.receive(body) == true
+            SoundcoreCommand.POSTURE_CALIBRATE, SoundcoreCommand.POSTURE_HISTORY, SoundcoreCommand.POSTURE_ANGLE -> return neck?.receive(command, body) == true
+            SoundcoreCommand.DONGLE_INFO, SoundcoreCommand.DONGLE_LOW_POWER_STATE -> return dongle?.receive(command, body) == true
+            SoundcoreCommand.WEAR_CALIBRATION, SoundcoreCommand.PERSONAL_ANC_TEST -> return tests.receive(command, body)
             SoundcoreCommand.STATE -> {
                 val l = layout ?: return false
                 val s = SoundcoreState.parse(l, body) ?: return false
@@ -64,6 +99,13 @@ public class SoundcoreSession(public val model: String) : FitTest {
                     s.flag("dual_connections_enabled")?.let { put(Command.MULTIPOINT, Value.Switch(it)) }
                 }
                 state = state.copy(values = state.values + values)
+            }
+            // Whether the earbuds are beeping (left, right, case), also when the Soundcore app or a touch stopped them.
+            SoundcoreCommand.DEVICE_INFO -> if (beeps && body.size >= 2) {
+                finding = body.u8(0) == 1 || body.u8(1) == 1
+                mutedLeft = finding && body.u8(0) != 1
+                mutedRight = finding && body.u8(1) != 1
+                return true
             }
             SoundcoreCommand.BATTERY -> {
                 // One level per earbud. OpenSCQ30 reads two more bytes it does not name; on the
@@ -94,8 +136,9 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 fun fit(code: Int) = if (code <= 1) FitResult.Fit.GOOD else FitResult.Fit.NOT_FIT
                 state = state.copy(fit = FitResult(fit(body.u8(0)), fit(body.u8(1))))
             }
-            SoundcoreCommand.GAMING_MODE_UPDATE -> put(Command.GAME_MODE, Value.Switch(body.u8(0) != 0))
-            SoundcoreCommand.LDAC_STATE -> put(Command.LDAC, Value.Switch(body.u8(0) != 0))
+            // Only where the state holds the field: a switch shown from a notice alone cannot be written (the Liberty Buds 2's LDAC did nothing, issue #76).
+            SoundcoreCommand.GAMING_MODE_UPDATE -> if (lastState?.flag("gaming_mode") != null) put(Command.GAME_MODE, Value.Switch(body.u8(0) != 0))
+            SoundcoreCommand.LDAC_STATE -> if (lastState?.flag("ldac") != null) put(Command.LDAC, Value.Switch(body.u8(0) != 0))
             // Whether both earbuds are in decides which touch actions apply (SoundcoreButtons).
             SoundcoreCommand.TWS_STATUS -> lastState?.let { s -> lastState = s.with("tws_status", body) }
         }
@@ -119,10 +162,22 @@ public class SoundcoreSession(public val model: String) : FitTest {
 
     /** [packets] as frames for these earbuds, with or without the checksum as the model needs. */
     public fun frames(packets: List<SoundcorePacket>): List<ByteArray> =
-        packets.filter { it.command !in SoundcoreCommand.NEVER_SEND }.map {
+        packets.map(::indexed).filter { it.command !in SoundcoreCommand.NEVER_SEND }.map {
             val body = if (model == "A3954" && it.command == SoundcoreCommand.SET_SOUND_MODES && it.body.size == 4) soundModesBody(it.body) else it.body
             SoundcorePacket.build(it.command, body, checksum)
         }
+
+    /**
+     * The newest models take a switch as its bit in the state's records and on or off (`41 87` the tones, `41 88` the rest; the app's `d6` branch,
+     * docs/soundcore/PROTOCOL.md section 14), not as the older models' command of its own. The rows build the older command; this turns it into theirs.
+     */
+    private fun indexed(packet: SoundcorePacket): SoundcorePacket {
+        val features = layout?.features ?: return packet
+        if (INDEXED_SWITCHES !in features || packet.body.size != 1) return packet
+        val (command, bit) = INDEXED[packet.command]
+            ?: (if (packet.command == SoundcoreCommand.DUAL_CONNECTIONS_ENABLED && INDEXED_DUAL in features) SoundcoreCommand.FUNCTION_SWITCH to 3 else return packet)
+        return SoundcorePacket(command, byteArrayOf(bit.toByte(), packet.body[0]))
+    }
 
     private fun soundModesBody(modes: ByteArray): ByteArray = when {
         model == "A3954" && modes.size == 4 -> modes + byteArrayOf(0xFF.toByte())
@@ -172,7 +227,8 @@ public class SoundcoreSession(public val model: String) : FitTest {
     public val groups: List<SettingGroup>
         get() {
             val s = lastState ?: return emptyList()
-            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s))
+            val find = findRows()
+            val switches = SWITCHES.mapNotNull { switchRow(s, it) } + listOfNotNull(pressRow(s), maxVolumeRow(s), balanceRow(s), doublePressRow(s), holdRow(s), languageRow(s), surroundRow(s), sensorRow(s)) + lightRows(s)
             val rows = listOfNotNull(sleepTimerRow(s)) + A30_FLAGS.filter { it.home.not() }.mapNotNull { flagRow(s, it) } +
                 listOfNotNull(listeningRow(s, A30_LISTENING_MODE), listeningRow(s, A30_DEFAULT_LISTENING_MODE))
             val home = A30_FLAGS.filter { it.home }.mapNotNull { flagRow(s, it) } + listOfNotNull(listeningRow(s, A30_LISTENING_MODE))
@@ -183,8 +239,54 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 (a3954SoundRows(s) ?: a3959SoundRows(s))?.takeIf { it.isNotEmpty() }?.let { SettingGroup("noise", SettingTab.HOME, it) },
                 a3959FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
                 a3954FeatureRows(s)?.takeIf { it.isNotEmpty() }?.let { SettingGroup("other", SettingTab.DEVICE, it) },
+                limitRows(s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_limit", SettingTab.SOUND, it) },
+                SoundcoreHearingId.rows(model, s).takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_hear_id", SettingTab.SOUND, it) },
+                lifeNcPreset?.let { SettingGroup("sc_life_nc", SettingTab.SOUND, listOf(Setting.Choice(LIFE_NC_EQ, LIFE_NC_PRESETS.getOrNull(it), LIFE_NC_PRESETS))) },
+                peerRows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_peers", SettingTab.DEVICE, it) },
+                dongle?.rows()?.takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_dongle", SettingTab.DEVICE, it) },
+                if (lastState != null) health?.rows()?.let { SettingGroup("sc_health", SettingTab.DEVICE, it) } else null,
+                if (model != "A6610") null else SettingGroup("sc_player", SettingTab.DEVICE, SoundcoreSleepPlayer.rows(s) +
+                    if (secondOfDay() == null) emptyList() else SoundcoreSleepPlayer.alarmRows(alarmSet)),
+                if (lastState != null) neck?.rows()?.let { SettingGroup("sc_neck", SettingTab.DEVICE, it) } else null,
+                tests.rows().takeIf { it.isNotEmpty() }?.let { SettingGroup("sc_tests", SettingTab.DEVICE, it) },
+                if (find.isEmpty()) null else SettingGroup("find", SettingTab.DEVICE, find),
             )
         }
+
+    // Find my earbuds: whether it is on, and the earbud left out of it. The earbuds beep on 10 89, or on some models the phone plays a sound through them.
+    private var finding = false
+    private var mutedLeft = false
+    private var mutedRight = false
+    private val beeps: Boolean get() = layout?.features?.contains("find_device") == true
+    private val phoneBeeps: Boolean get() = layout?.features?.contains("find_device_phone") == true
+
+    private fun findRows(): List<Setting> {
+        if (!beeps && !phoneBeeps) return emptyList()
+        val start = Setting.Action(if (beeps) FIND else FIND_PHONE, finding)
+        return listOf(start) + if (finding) listOf(Setting.Toggle(MUTE_LEFT, mutedLeft), Setting.Toggle(MUTE_RIGHT, mutedRight)) else emptyList()
+    }
+
+    /** The write for what the earbuds should be doing now, `10 89`: left, right, case (0 0 0 stops). Nothing to send where the phone makes the sound. */
+    private fun findPackets(): List<SoundcorePacket> =
+        if (!beeps) emptyList()
+        else listOf(SoundcorePacket(SoundcoreCommand.FIND_DEVICE, byteArrayOf(if (finding && !mutedLeft) 1 else 0, if (finding && !mutedRight) 1 else 0, 0)))
+
+    private fun findChange(change: SettingChange): List<SoundcorePacket>? {
+        if ((!beeps && !phoneBeeps) || lastState == null) return null
+        when {
+            change is SettingChange.Press && change.key == (if (beeps) FIND else FIND_PHONE) -> {
+                finding = !finding
+                if (!finding) {
+                    mutedLeft = false
+                    mutedRight = false
+                }
+            }
+            change is SettingChange.Toggle && change.key == MUTE_LEFT -> mutedLeft = change.on
+            change is SettingChange.Toggle && change.key == MUTE_RIGHT -> mutedRight = change.on
+            else -> return null
+        }
+        return findPackets()
+    }
 
     /**
      * The Liberty 4 Pro's noise control (OpenSCQ30's a3954 module, checked against the 5.0.35 app's reply parser and its sound modes write, which
@@ -284,10 +386,10 @@ public class SoundcoreSession(public val model: String) : FitTest {
 
     /** The P30i family's power-off durations (10, 20, 30 or 60 minutes, as the recording of the official app shows). */
     private fun a3959FeatureRows(s: SoundcoreState): List<Setting>? {
-        if (A3959_MODES !in s.layout.features) return null
+        if (A3959_MODES !in s.layout.features && AUTO_OFF_DURATIONS !in s.layout.features && AUTO_OFF_LONG !in s.layout.features) return null
         return listOfNotNull(
             s.field("auto_power_off")?.takeIf { it.size >= 2 }?.let {
-                val options = listOf("off", "10", "20", "30", "60")
+                val options = autoOffOptions(s.layout)
                 Setting.Choice("a3954_auto_power_off_duration", if (it.u8(0) == 0) "off" else options.getOrNull(it.u8(1) + 1), options)
             },
         )
@@ -332,13 +434,155 @@ public class SoundcoreSession(public val model: String) : FitTest {
      */
     private fun switchRow(s: SoundcoreState, w: Switch): Setting? =
         // The P30i family shows its power-off durations instead of the bare switch.
-        if (w.key == "sc_auto_power_off" && A3959_MODES in s.layout.features) null
+        if (w.key == "sc_auto_power_off" && listOf(A3959_MODES, AUTO_OFF_DURATIONS, AUTO_OFF_LONG).any { it in s.layout.features }) null
+        // A switch only the indexed models have (no command of its own) is not shown elsewhere.
+        else if (w.index != null && INDEXED_SWITCHES !in s.layout.features) null
         else if (s.layout.has(w.field) && s.flag(w.field) != null) Setting.Toggle(w.key, s.flag(w.field) == true) else null
 
-    /** The A3953's press sensitivity: five levels from softest (0) to firmest (4), set with both earbuds connected (its screen). */
+    /**
+     * The press sensitivity, set with both earbuds connected (the app's screen): five levels from softest (0) to firmest (4) on the A3953, or low (0),
+     * medium and high (2) on the Liberty Buds 2, where the app shows it only on firmware 1.77 to 1.99 and 2.77 to 2.99 (`D1206MoreDataProvider`).
+     */
     private fun pressRow(s: SoundcoreState): Setting? {
         val v = s.field("press_sensitivity")?.takeIf { it.isNotEmpty() }?.u8(0) ?: return null
-        return Setting.Choice(PRESS_SENSITIVITY, PRESS_LEVELS.getOrNull(v), PRESS_LEVELS)
+        val levels = pressLevels(s)
+        if (levels === PRESS_LEVELS_3) {
+            val version = s.firmware?.replace(".", "")?.toIntOrNull() ?: return null
+            if (v !in levels.indices || (version !in 177..199 && version !in 277..299)) return null
+        }
+        return Setting.Choice(PRESS_SENSITIVITY, levels.getOrNull(v), levels)
+    }
+
+    private fun pressLevels(s: SoundcoreState): List<String> = if (PRESS_3 in s.layout.features) PRESS_LEVELS_3 else PRESS_LEVELS
+
+    /** The Space 2 Pro pair's noise button pressed twice (`D1406CustomM`): nothing, or powerful bass. */
+    private fun doublePressRow(s: SoundcoreState): Setting? {
+        val v = s.field("nc_double_press")?.firstOrNull()?.let { it.toInt() and 0xFF } ?: return null
+        val option = when (v) { 255 -> "none"; 7 -> "bass"; else -> return null }
+        return Setting.Choice(DOUBLE_PRESS, option, DOUBLE_PRESS_OPTIONS)
+    }
+
+    /**
+     * The Space 2 Pro pair's multi-function button held (`D1406MfbM`). The app also offers its own assistant, translation and recording, which need the
+     * Soundcore app running; PairFree offers the rest, and shows no choice where one of those is set.
+     */
+    private fun holdRow(s: SoundcoreState): Setting? {
+        val v = s.field("mfb_long_press")?.firstOrNull()?.let { it.toInt() and 0xFF }?.takeIf { it <= 5 } ?: return null
+        return Setting.Choice(HOLD, HOLD_ACTIONS.firstOrNull { it.state == v }?.option, HOLD_ACTIONS.map { it.option })
+    }
+
+    private fun buttonChange(s: SoundcoreState, change: SettingChange.Choice): List<SoundcorePacket>? = when (change.key) {
+        DOUBLE_PRESS -> {
+            val v = when (change.option) { "none" -> 255; "bass" -> 7; else -> null }
+            if (v == null || doublePressRow(s) == null) null else {
+                lastState = s.with("nc_double_press", byteArrayOf(v.toByte()))
+                listOf(SoundcorePacket(SoundcoreCommand.BUTTON_ACTION_WIDE, byteArrayOf(0, 0, v.toByte(), 0)))
+            }
+        }
+        HOLD -> {
+            val action = HOLD_ACTIONS.firstOrNull { it.option == change.option }
+            if (action == null || holdRow(s) == null) null else {
+                lastState = s.with("mfb_long_press", byteArrayOf(action.state.toByte()))
+                listOf(SoundcorePacket(SoundcoreCommand.MFB_LONG_PRESS, byteArrayOf(0, 1, action.write.toByte())))
+            }
+        }
+        else -> null
+    }
+
+    /**
+     * The high volume limit of the models whose app has a hearing protection screen: a switch and the level in steps of 5 from 75 to 100 dB.
+     * The Liberty 4 Pro shows its own rows ([a3954FeatureRows]).
+     */
+    private fun limitRows(s: SoundcoreState): List<Setting> {
+        if (model == "A3954") return emptyList()
+        val b = s.field(LIMIT_FIELD)?.takeIf { it.size >= 2 && it.u8(0) <= 1 } ?: return emptyList()
+        return listOf(Setting.Toggle(LIMIT, b.u8(0) == 1), Setting.Level(LIMIT_DB, b.u8(1).coerceIn(75, 100) / 5 * 5, 75, 100, enabled = b.u8(0) == 1))
+    }
+
+    /** The Space Q45's and Liberty 3 Pro's voice prompt language. */
+    private fun languageRow(s: SoundcoreState): Setting? {
+        val v = s.field(LANGUAGE_FIELD)?.firstOrNull()?.toInt()?.takeIf { it in LANGUAGES.indices } ?: return null
+        return Setting.Choice(LANGUAGE, LANGUAGES[v], LANGUAGES)
+    }
+
+    /** The level of the Frames' OpenSurround, 0 to 4; the switch is one of [SWITCHES]. */
+    private fun surroundRow(s: SoundcoreState): Setting? {
+        val b = s.field(SURROUND_FIELD)?.takeIf { it.size == 2 && it.u8(1) <= 4 } ?: return null
+        return Setting.Level(SURROUND_LEVEL, b.u8(1), 0, 4, enabled = b.u8(0) == 1)
+    }
+
+    /** The VR P10's light: its mode and colour, the two bytes the earbuds report as colour then mode. */
+    private fun lightRows(s: SoundcoreState): List<Setting> {
+        val b = s.field(LIGHT_FIELD)?.takeIf { it.size == 2 && it.u8(0) in LIGHT_COLOURS.indices && it.u8(1) in LIGHT_MODES.indices } ?: return emptyList()
+        return listOf(Setting.Choice(LIGHT_MODE, LIGHT_MODES[b.u8(1)], LIGHT_MODES), Setting.Choice(LIGHT_COLOUR, LIGHT_COLOURS[b.u8(0)], LIGHT_COLOURS))
+    }
+
+    private fun extraChange(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
+        fun write(field: String, command: Int, body: ByteArray): List<SoundcorePacket> {
+            lastState = s.with(field, body)
+            return listOf(SoundcorePacket(command, body))
+        }
+        if (change is SettingChange.Level && change.key == SURROUND_LEVEL) {
+            if (surroundRow(s) == null) return null
+            val b = s.field(SURROUND_FIELD) ?: return null
+            b[1] = change.value.coerceIn(0, 4).toByte()
+            return write(SURROUND_FIELD, SoundcoreCommand.OPEN_SURROUND, b)
+        }
+        if (change !is SettingChange.Choice) return null
+        return when (change.key) {
+            LANGUAGE -> LANGUAGES.indexOf(change.option).takeIf { it >= 0 && languageRow(s) != null }
+                ?.let {
+                    val command = if (SLEEP_LANGUAGE in s.layout.features) SoundcoreCommand.SLEEP_VOICE_LANGUAGE else SoundcoreCommand.VOICE_LANGUAGE
+                    write(LANGUAGE_FIELD, command, byteArrayOf(it.toByte()))
+                }
+            LIGHT_MODE, LIGHT_COLOUR -> {
+                val options = if (change.key == LIGHT_MODE) LIGHT_MODES else LIGHT_COLOURS
+                val v = options.indexOf(change.option)
+                val b = s.field(LIGHT_FIELD)
+                if (v < 0 || b == null || lightRows(s).isEmpty()) null else {
+                    b[if (change.key == LIGHT_MODE) 1 else 0] = v.toByte()
+                    write(LIGHT_FIELD, SoundcoreCommand.LIGHT_EFFECT, b)
+                }
+            }
+            else -> null
+        }
+    }
+
+    /** The AeroFit 2 Pro's noise sensor enhancement, which the earbuds hold as 1 on or 2 off. */
+    private fun sensorRow(s: SoundcoreState): Setting? =
+        s.byte(SENSOR_FIELD)?.takeIf { it == 1 || it == 2 }?.let { Setting.Toggle(SENSOR, it == 1) }
+
+    private fun peerRows(): List<Setting> =
+        if (!listsPeers) emptyList() else peers.rows() + Setting.Action(SoundcorePeers.PAIRING)
+
+    private fun peerChange(change: SettingChange): List<SoundcorePacket>? {
+        if (!listsPeers) return null
+        return when {
+            change is SettingChange.Press && change.key == SoundcorePeers.PAIRING -> listOf(SoundcorePacket(SoundcoreCommand.PEER_PAIRING, ByteArray(0)))
+            change is SettingChange.Choice -> peers.change(change.key, change.option)?.let(::listOf)
+            else -> null
+        }
+    }
+
+    /** [wanted] in the app's steps of 5 dB: rounded up when it is above [held], so the plus button moves, else down. */
+    private fun limitStep(held: Int, wanted: Int): Int = ((wanted.coerceIn(75, 100) + if (wanted > held) 4 else 0) / 5 * 5).coerceIn(75, 100)
+
+    private fun limitChange(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
+        if (limitRows(s).isEmpty()) return null
+        val b = s.field(LIMIT_FIELD) ?: return null
+        when {
+            change is SettingChange.Toggle && change.key == LIMIT -> b[0] = if (change.on) 1 else 0
+            change is SettingChange.Level && change.key == LIMIT_DB -> b[1] = limitStep(b.u8(1), change.value).toByte()
+            else -> return null
+        }
+        lastState = s.with(LIMIT_FIELD, b)
+        return listOf(SoundcorePacket(SoundcoreCommand.VOLUME_LIMIT, b.copyOf(2)))
+    }
+
+    /** The AeroClip 2 pair's balance between the earbuds, -6 (left) to 6 (right), sent and reported as 100 plus it. */
+    private fun balanceRow(s: SoundcoreState): Setting? {
+        val v = s.field("volume_balance")?.firstOrNull()?.let { (it.toInt() and 0xFF) - BALANCE_CENTRE } ?: return null
+        return if (v in -BALANCE_STEPS..BALANCE_STEPS) Setting.Level(BALANCE, v, -BALANCE_STEPS, BALANCE_STEPS) else null
     }
 
     /** The Life NC's volume limit: 0 to 16 steps. */
@@ -366,13 +610,91 @@ public class SoundcoreSession(public val model: String) : FitTest {
         return Setting.Choice(SLEEP_TIMER, value, listOf(OFF) + SLEEP_TIMER_MINUTES.map { it.toString() })
     }
 
+    private fun hearIdChange(s: SoundcoreState, change: SettingChange): List<SoundcorePacket>? {
+        val packet = SoundcoreHearingId.change(model, s, change) ?: return null
+        val field = SoundcoreEqSpec.of(model)?.hearId?.field
+        if (change is SettingChange.Toggle && field != null) {
+            s.field(field)?.let { bytes ->
+                bytes[0] = (if (change.on) 1 else 0).toByte()
+                lastState = s.with(field, bytes)
+            }
+        }
+        return listOf(packet)
+    }
+
+    /** Tells the earbuds a hearing test ([SoundcoreHearingSpec]) starts or has ended (`03 83`). */
+    public fun hearingTest(running: Boolean): List<SoundcorePacket> =
+        if (SoundcoreHearingSpec.of(model) == null) emptyList()
+        else listOf(SoundcorePacket(SoundcoreCommand.HEARING_TEST, byteArrayOf(if (running) 1 else 0)))
+
+    /** What the earbuds held when the listener began comparing, to be put back if they leave without keeping a result. */
+    private var beforePreview: SoundcoreState? = null
+
+    /** The temporary write of one variant, or null when the last state cannot carry it. */
+    public fun hearingPreview(result: SoundcoreHearingResult): List<SoundcorePacket>? {
+        val before = beforePreview ?: lastState ?: return null
+        val packet = SoundcoreHearingId.preview(model, before, result) ?: return null
+        beforePreview = before
+        return listOf(packet)
+    }
+
+    /** Ends a comparison without keeping anything: what was held before, or null when nothing was previewed. */
+    public fun hearingRestore(): List<SoundcorePacket>? {
+        val before = beforePreview ?: return null
+        beforePreview = null
+        return SoundcoreHearingId.restore(model, before)?.let(::listOf)
+    }
+
+    /** The write that stores a finished test's [result] and turns HearID on, or null when the last state cannot carry it. */
+    public fun hearingSave(result: SoundcoreHearingResult): List<SoundcorePacket>? =
+        SoundcoreHearingId.save(model, beforePreview ?: lastState, result, Clock.System.now().epochSeconds)?.let {
+            beforePreview = null
+            listOf(it)
+        }
+
     /**
      * The packets for a change to one of [groups], or null when it is not one of them. The change shows at once;
      * the next state the earbuds send confirms it.
      */
     public fun change(change: SettingChange): List<SoundcorePacket>? {
+        if (change.key == FIND || change.key == FIND_PHONE || change.key == MUTE_LEFT || change.key == MUTE_RIGHT) return findChange(change)
         val s = lastState ?: return null
         a3959Change(s, change)?.let { return it }
+        if (change is SettingChange.Toggle && change.key == SENSOR) {
+            if (sensorRow(s) == null) return null
+            val body = byteArrayOf(if (change.on) 1 else 2)
+            lastState = s.with(SENSOR_FIELD, body)
+            return listOf(SoundcorePacket(SoundcoreCommand.ANC_SENSOR, body))
+        }
+        tests.change(change)?.let { return it }
+        if (change.key == SoundcoreHearingId.SWITCH || change.key == SoundcoreHearingId.DELETE) return hearIdChange(s, change)
+        if (change.key == LIFE_NC_EQ && change is SettingChange.Choice) {
+            val index = LIFE_NC_PRESETS.indexOf(change.option)
+            if (model != "A3201" || lifeNcPreset == null || index < 0) return null
+            lifeNcPreset = index
+            return listOf(SoundcorePacket(SoundcoreCommand.EQUALIZER, byteArrayOf(index.toByte())))
+        }
+        if (change.key == SoundcoreSleepPlayer.ALARM && change is SettingChange.Choice) {
+            val packets = secondOfDay()?.let { SoundcoreSleepPlayer.alarm(change.option, Clock.System.now().epochSeconds, it) } ?: return null
+            alarmSet = change.option.trim()
+            return packets.takeIf { model == "A6610" }
+        }
+        if (change.key == SoundcoreSleepPlayer.ALARM_CLEAR) {
+            alarmSet = null
+            return listOf(SoundcoreSleepPlayer.clearAlarm()).takeIf { model == "A6610" }
+        }
+        if (change.key.startsWith("sc_a10_")) {
+            val (packet, next) = lastState?.let { SoundcoreSleepPlayer.change(it, change) } ?: return null
+            lastState = next
+            return listOf(packet)
+        }
+        health?.change(change)?.let { return it }
+        neck?.change(change)?.let { return it }
+        if (change.key.startsWith("sc_dongle_")) return dongle?.change(change)
+        if (change.key in EXTRA_KEYS) return extraChange(s, change)
+        if (change.key.startsWith("sc_peer_") || change.key == SoundcorePeers.PAIRING) return peerChange(change)
+        if (change.key == LIMIT || change.key == LIMIT_DB) return limitChange(s, change)
+        if (change is SettingChange.Choice && (change.key == DOUBLE_PRESS || change.key == HOLD)) return buttonChange(s, change)
         if (change is SettingChange.Toggle) {
             if (model == "A3954" && change.key.startsWith("a3954_")) {
                 val f = when (change.key) {
@@ -405,7 +727,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
                 val held = s.field(w.field) ?: return null
                 val body = held.copyOf().also { it[0] = if (change.on) 1 else 0 }
                 lastState = s.with(w.field, body)
-                return listOf(SoundcorePacket(w.command, body))
+                return listOf(SoundcorePacket(w.command, if (w.index != null) byteArrayOf(w.index.toByte(), body[0]) else body))
             }
             val f = A30_FLAGS.firstOrNull { it.key == change.key } ?: return null
             if (flagRow(s, f) == null) return null
@@ -413,7 +735,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             return listOf(SoundcorePacket(f.command, byteArrayOf(if (change.on) 1 else 0)))
         }
         if (change is SettingChange.Choice && change.key == PRESS_SENSITIVITY) {
-            val v = PRESS_LEVELS.indexOf(change.option).takeIf { it >= 0 && pressRow(s) != null } ?: return null
+            val v = pressLevels(s).indexOf(change.option).takeIf { it >= 0 && pressRow(s) != null } ?: return null
             lastState = s.with("press_sensitivity", byteArrayOf(v.toByte()))
             return listOf(SoundcorePacket(SoundcoreCommand.PRESS_SENSITIVITY, byteArrayOf(v.toByte())))
         }
@@ -455,7 +777,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             }
             if (change.key == "a3954_auto_power_off_duration") {
                 val bytes = s.field("auto_power_off") ?: return null
-                val options = listOf("off", "10", "20", "30", "60")
+                val options = autoOffOptions(s.layout)
                 val selected = options.indexOf(change.option).takeIf { it >= 0 } ?: return null
                 if (selected == 0) bytes[0] = 0 else {
                     bytes[0] = 1
@@ -469,6 +791,12 @@ public class SoundcoreSession(public val model: String) : FitTest {
             lastState = s.with(c.field, byteArrayOf(v.toByte()))
             return listOf(SoundcorePacket(c.command, byteArrayOf(v.toByte())))
         }
+        if (change is SettingChange.Level && change.key == BALANCE) {
+            if (balanceRow(s) == null) return null
+            val body = byteArrayOf((BALANCE_CENTRE + change.value.coerceIn(-BALANCE_STEPS, BALANCE_STEPS)).toByte())
+            lastState = s.with("volume_balance", body)
+            return listOf(SoundcorePacket(SoundcoreCommand.VOLUME_BALANCE, body))
+        }
         if (change is SettingChange.Level && change.key == MAX_VOLUME) {
             if (maxVolumeRow(s) == null) return null
             val body = byteArrayOf(change.value.coerceIn(0, MAX_VOLUME_STEPS).toByte())
@@ -479,7 +807,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             if (change.key == "a3954_volume_limit_db") {
                 val bytes = s.field("limit_high_volume") ?: return null
                 // Three bytes, as the app writes them: the switch, the limit in dB (steps of 5) and the third byte (the reading refresh) as reported.
-                bytes[1] = (change.value.coerceIn(75, 100) / 5 * 5).toByte()
+                bytes[1] = limitStep(bytes.u8(1), change.value).toByte()
                 lastState = s.with("limit_high_volume", bytes)
                 return listOf(SoundcorePacket(0x2082, bytes))
             }
@@ -510,7 +838,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
     public fun requestState(): ByteArray = SoundcorePacket.build(layout?.stateCommand ?: SoundcoreCommand.STATE, checksum = checksum)
 
     private fun flag(command: Int, value: Int): ByteArray =
-        SoundcorePacket.build(command, byteArrayOf(if (value != 0) 1 else 0), checksum)
+        frames(listOf(SoundcorePacket(command, byteArrayOf(if (value != 0) 1 else 0)))).first()
 
     private fun put(command: Command, value: Value) {
         state = state.copy(values = state.values + (command to value))
@@ -528,8 +856,11 @@ public class SoundcoreSession(public val model: String) : FitTest {
     public companion object {
         public const val A3936: String = "A3936"
 
-        /** The models whose manager in Soundcore 2.9.9 sends the wear fit detection (`0901`): the A3951 family's `M0()` list that PairFree has. */
-        public val WEAR_FIT_MODELS: Set<String> = setOf("A3931", "A3935", "A3951", "A3959")
+        /**
+         * The models whose manager in Soundcore 2.9.9 sends the wear fit detection (`0901`): the A3951 family's `M0()` list that PairFree has; and the
+         * Liberty Buds 2 and Liberty 5 Pro pair, whose 5.0.35 fit test screens send the same command and play the sound on the earbuds.
+         */
+        public val WEAR_FIT_MODELS: Set<String> = setOf("A3931", "A3935", "A3951", "A3959", "D1203", "D1204", "D1206")
 
         /** Models whose state PairFree can read: every model with a layout in data/soundcore/devices.json. */
         public val SUPPORTED_MODELS: Set<String> get() = SoundcoreLayout.ALL.map { it.model }.toSet()
@@ -557,8 +888,56 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private const val MAX_VOLUME_STEPS = 16
         private const val PRESS_SENSITIVITY = "sc_press_sensitivity"
         private val PRESS_LEVELS = listOf("softest", "soft", "normal", "firm", "firmest")
+        private val PRESS_LEVELS_3 = listOf("low", "medium", "high")
+        private const val PRESS_3 = "press_sensitivity_3"
+        private const val DOUBLE_PRESS = "sc_nc_double_press"
+        private val DOUBLE_PRESS_OPTIONS = listOf("none", "bass")
+        private const val HOLD = "sc_mfb_hold"
+        private class Hold(val option: String, val state: Int, val write: Int)
 
-        private class Switch(val key: String, val field: String, val command: Int)
+        private const val LIFE_NC_EQ = "sc_life_nc_eq"
+
+        /** The Life NC's presets by number (`A3201EQPresenter`). */
+        private val LIFE_NC_PRESETS = listOf("sc_life_nc_original", "sc_life_nc_bass", "sc_life_nc_office")
+        private val HOLD_ACTIONS = listOf(Hold("assistant", 0, 5), Hold("nap", 3, 13), Hold("none", 5, 15))
+        private const val LANGUAGE_FIELD = "prompt_language"
+        private const val SLEEP_LANGUAGE = "voice_language_1307"
+        private const val LANGUAGE = "sc_voice_language"
+        private val LANGUAGES = listOf("english", "chinese")
+        private const val SURROUND_FIELD = "stereo_expansion"
+        private const val SURROUND_LEVEL = "sc_open_surround_level"
+        private const val LIGHT_FIELD = "light"
+        private const val LIGHT_MODE = "sc_light_mode"
+        private const val LIGHT_COLOUR = "sc_light_colour"
+        private val LIGHT_MODES = listOf("breathing", "on", "saving")
+        private val LIGHT_COLOURS = listOf("violet", "coral", "pink", "blue", "purple")
+        private val EXTRA_KEYS = setOf(LANGUAGE, SURROUND_LEVEL, LIGHT_MODE, LIGHT_COLOUR)
+        private const val SENSOR_FIELD = "anc_sensor"
+        private const val SENSOR = "sc_anc_sensor"
+        private const val LIMIT_FIELD = "limit_high_volume"
+        private const val LIMIT = "sc_volume_limit"
+        private const val LIMIT_DB = "sc_volume_limit_db"
+        private const val BALANCE = "sc_volume_balance"
+        private const val BALANCE_CENTRE = 100
+        private const val BALANCE_STEPS = 6
+        private const val INDEXED_SWITCHES = "indexed_switches"
+        private const val INDEXED_DUAL = "indexed_dual_connections"
+
+        /** The older models' switch commands, as the indexed models take them: the command and the switch's bit. */
+        private val INDEXED: Map<Int, Pair<Int, Int>> get() = mapOf(
+            SoundcoreCommand.TOUCH_TONE to (SoundcoreCommand.PROMPT_SWITCH to 0),
+            SoundcoreCommand.LOW_BATTERY_PROMPT to (SoundcoreCommand.PROMPT_SWITCH to 1),
+            SoundcoreCommand.SET_AUTO_POWER_OFF_PROMPT to (SoundcoreCommand.PROMPT_SWITCH to 2),
+            SoundcoreCommand.IN_EAR_TONE to (SoundcoreCommand.PROMPT_SWITCH to 3),
+            SoundcoreCommand.CONNECT_TONE to (SoundcoreCommand.PROMPT_SWITCH to 4),
+            SoundcoreCommand.AMBIENT_SOUND_PROMPT to (SoundcoreCommand.PROMPT_SWITCH to 6),
+            SoundcoreCommand.GAMING_MODE to (SoundcoreCommand.FUNCTION_SWITCH to 1),
+            SoundcoreCommand.LDAC to (SoundcoreCommand.FUNCTION_SWITCH to 2),
+            SoundcoreCommand.WEARING_DETECTION to (SoundcoreCommand.FUNCTION_SWITCH to 8),
+        )
+
+        /** A switch's row; [index] is its bit for a switch only the indexed models have, sent with [command] `41 88`. */
+        private class Switch(val key: String, val field: String, val command: Int, val index: Int? = null)
         private val SWITCHES = listOf(
             Switch("sc_wearing_detection", "wearing_detection", SoundcoreCommand.WEARING_DETECTION),
             Switch("sc_side_tone", "side_tone", SoundcoreCommand.SIDE_TONE),
@@ -577,6 +956,23 @@ public class SoundcoreSession(public val model: String) : FitTest {
             Switch("sc_surround_sound", "surround_sound", SoundcoreCommand.SURROUND_SOUND),
             Switch("sc_vibration", "vibration", SoundcoreCommand.VIBRATION),
             Switch("sc_max_volume_switch", "max_volume_switch", SoundcoreCommand.MAX_VOLUME_SWITCH),
+            Switch("sc_mode_voice_prompt", "sound_mode_voice_prompt", SoundcoreCommand.AMBIENT_SOUND_NOTICE),
+            Switch("sc_voice_prompt", "voice_prompt", SoundcoreCommand.AMBIENT_SOUND_NOTICE),
+            Switch("sc_voice_tone", "voice_tone", SoundcoreCommand.TOUCH_TONE),
+            Switch("sc_battery_alert", "battery_alert", SoundcoreCommand.POWER_ON_BATTERY_NOTICE),
+            Switch("sc_open_surround", "stereo_expansion", SoundcoreCommand.OPEN_SURROUND),
+            Switch("sc_voice_commands", "voice_control", SoundcoreCommand.VOICE_COMMANDS),
+            Switch("sc_super_volume", "super_volume", SoundcoreCommand.SUPER_VOLUME),
+            Switch("sc_manual_shutdown", "manual_shutdown", SoundcoreCommand.MANUAL_SHUTDOWN),
+            Switch("sc_sedentary", "sedentary_reminder", SoundcoreCommand.SEDENTARY_REMINDER),
+            Switch("sc_sitting_posture", "sitting_posture", SoundcoreCommand.SITTING_POSTURE_REMINDER),
+            Switch("sc_voice_wake", "audio_wakeup", SoundcoreCommand.VOICE_WAKE),
+            Switch("sc_power_off_tone", "power_off_tone", SoundcoreCommand.SET_AUTO_POWER_OFF_PROMPT),
+            Switch("sc_connect_tone", "connect_tone", SoundcoreCommand.CONNECT_TONE),
+            Switch("sc_easy_chat", "easy_chat", SoundcoreCommand.FUNCTION_SWITCH, 14),
+            Switch("sc_sound_field", "sound_field", SoundcoreCommand.FUNCTION_SWITCH, 29),
+            Switch("sc_call_noise", "call_noise", SoundcoreCommand.FUNCTION_SWITCH, 56),
+            Switch("sc_voice_pickup", "voice_pickup", SoundcoreCommand.FUNCTION_SWITCH, 57),
         )
 
         private class A30Flag(val key: String, val field: String, val feature: String, val command: Int, val home: Boolean)
@@ -593,6 +989,17 @@ public class SoundcoreSession(public val model: String) : FitTest {
         private val A30_MODES = listOf("bluetooth", "local")
         private val SPATIAL_MODES = listOf("fixed", "head_tracking", "podcast", "movie", "gaming")
 
+        public const val FIND: String = "find"
+        public const val FIND_PHONE: String = "find_phone"
+        private const val MUTE_LEFT = "find_mute_left"
+        private const val MUTE_RIGHT = "find_mute_right"
+        /** The model's power off offers the durations of the P30i family (the Liberty Buds 2). */
+        private const val AUTO_OFF_DURATIONS = "auto_power_off_durations"
+        /** ... or the longer ones of the AeroClip 2 and Space 2 Pro: 30 minutes, 1, 3 and 5 hours, by their index. */
+        private const val AUTO_OFF_LONG = "auto_power_off_long"
+
+        private fun autoOffOptions(layout: SoundcoreLayout): List<String> =
+            listOf("off") + if (AUTO_OFF_LONG in layout.features) listOf("30", "60", "180", "300") else listOf("10", "20", "30", "60")
         private val EARBUD_BATTERIES = listOf("dual_battery", "dual_battery_level", "single_battery", "single_battery_charging_first", "battery_level")
 
         // The noise modes by their names in data/soundpeats/commands.json, so no number is retyped.
@@ -602,7 +1009,7 @@ public class SoundcoreSession(public val model: String) : FitTest {
             AmbientMode.NORMAL -> ancNumber("off")
             AmbientMode.NOISE_CANCELLING -> ancNumber("anc")
             AmbientMode.TRANSPARENCY -> ancNumber("transparency")
-            null -> null
+            AmbientMode.ADAPTIVE, null -> null
         }
 
         private fun ambientFor(value: Int): AmbientMode? = when (value) {

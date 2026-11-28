@@ -758,7 +758,7 @@ class SoundcoreEqualizerTest {
     fun specsMatchTheData() {
         val withEq = devices.filter { "eq" in it }
         assertEquals(withEq.map { it.str("model") }, SoundcoreEqSpec.ALL.map { it.model })
-        assertEquals(55, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10 and the Life Q20+")
+        assertEquals(70, withEq.size, "every model PairFree reads but the Sleep A30 and the AeroClip, plus the C40i, the V40i, the A30i, the Life Note C, the R50i VI, the P41i, the Sport X10, the Life Q20+, the Liberty 4, the Space 2 and thirteen more read from the app 2026-11-27")
         for (d in withEq) {
             val eq = d.getValue("eq").jsonObject
             val spec = SoundcoreEqSpec.of(d.str("model"))!!
@@ -1076,7 +1076,7 @@ class SoundcoreButtonsTest {
     fun specsMatchTheData() {
         val withButtons = devices.filter { "buttons" in it }
         assertEquals(withButtons.map { it.str("model") }, SoundcoreButtonSpec.ALL.map { it.model })
-        assertEquals(58, withButtons.size)
+        assertEquals(59, withButtons.size)
         for (d in devices) {
             // OpenSCQ30, or for a model it lacks the Soundcore app, offers touch actions on exactly these models (the
             // A3031's state holds them, but OpenSCQ30 does not offer them), and a recording adds the Sleep A20's.
@@ -1229,9 +1229,11 @@ class SoundcoreButtonsTest {
     @Test
     fun noiseCycleAndReset() {
         val touch = SoundcoreTouch.of(a40)
+        // The A40's button takes three modes; Adaptive is only on models that list it (issue #76).
+        val three = setOf(AmbientMode.NOISE_CANCELLING, AmbientMode.TRANSPARENCY, AmbientMode.NORMAL)
         val all = touch.setNoiseCycle(AmbientMode.entries.toSet())!!
         assertEquals(listOf("0682" to "07"), packets(all.packets))
-        assertEquals(AmbientMode.entries.toSet(), SoundcoreTouch.of(all.state).noiseCycle)
+        assertEquals(three, SoundcoreTouch.of(all.state).noiseCycle)
         assertNull(touch.setNoiseCycle(emptySet()), "the cycle needs a mode")
         assertEquals("0482" to "", packets(listOf(touch.reset()!!)).single())
     }
@@ -1346,7 +1348,7 @@ class SoundcoreSleepA20Test {
     fun theSleepTimerIsABrandRow() {
         val session = SoundcoreSession("A6611")
         session.receive(SoundcorePacket(SoundcoreCommand.STATE, rec.str("state").hexBytes()))
-        val row = session.groups.single().settings.single() as Setting.Choice
+        val row = session.groups.single { it.key == "sleep" }.settings.single() as Setting.Choice
         assertEquals("sleep_timer", row.key)
         assertEquals("off", row.value, "02 78 00 01: off, 120 minutes kept")
         assertEquals("30", row.options[1])
@@ -1355,7 +1357,7 @@ class SoundcoreSleepA20Test {
             val packets = session.change(SettingChange.Choice("sleep_timer", step.str("option")))!!
             assertEquals(step.frames(), packets.map { SoundcorePacket.build(it.command, it.body).hex() }, step.toString())
         }
-        assertEquals("off", (session.groups.single().settings.single() as Setting.Choice).value)
+        assertEquals("off", (session.groups.single { it.key == "sleep" }.settings.single() as Setting.Choice).value)
         assertNull(SoundcoreSession("A3936").also { it.receive(SoundcorePacket(SoundcoreCommand.STATE, vectors.getValue("a3936_state").jsonObject.str("body").hexBytes())) }.groups.firstOrNull { it.key == "sleep" }, "the A40 has no sleep timer")
     }
 
@@ -1457,4 +1459,29 @@ class SoundcoreVirtualQ30Test {
     }
 
     private fun JsonObjectOf(frame: String): JsonObject = Json.parseToJsonElement("""{"frame":"$frame"}""").jsonObject
+
+    /**
+     * Issue #76: a switch the screens show must be one [SoundcoreSession.set] can write. The earbuds' LDAC and game mode notices (`01 7F`, `01 11`) must not add a switch to a
+     * model whose state holds no such field, and the Liberty Buds 2 holds LDAC in record 27 bit 2.
+     */
+    @Test
+    fun aNoticeNeverShowsASwitchThatCannotBeWritten() {
+        for (m in SoundcoreModels.ALL) {
+            val s = SoundcoreSession(m.code)
+            s.receive(SoundcorePacket(SoundcoreCommand.LDAC_STATE, byteArrayOf(1)))
+            s.receive(SoundcorePacket(SoundcoreCommand.GAMING_MODE_UPDATE, byteArrayOf(1)))
+            assertTrue(!s.state.supports(Command.LDAC) && !s.state.supports(Command.GAME_MODE), "${m.code}: a switch before any state")
+        }
+        assertTrue(SoundcoreLayout.of("D1206")!!.fields.any { it.name == "ldac" }, "the Liberty Buds 2 writes LDAC from record 27")
+    }
+
+    /** Issue #76: the Liberty Buds 2's button offers the app's ambient sound action with its four modes, and the transparency action. */
+    @Test
+    fun theLibertyBuds2sButtonActionsAndCycle() {
+        val layout = SoundcoreLayout.of("D1206")!!
+        assertTrue("ambient_sound_mode_cycle_tws" in layout.features && "ambient_sound_mode_cycle_adaptive" in layout.features)
+        val set = SoundcoreButtonSpec.of("D1206")!!.groups.single().presses.values.first { it.actions.any { a -> a.name == "ambient_sound_mode" } }.actions
+        assertEquals("transparency", set.single { it.id == 4 }.name)
+        assertEquals("ambient_sound_mode", set.single { it.id == 8 }.name)
+    }
 }

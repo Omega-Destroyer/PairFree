@@ -5,6 +5,8 @@ public enum class AmbientMode(public val value: Int) {
     NOISE_CANCELLING(0),
     TRANSPARENCY(1),
     NORMAL(2),
+    /** Only in the modes the noise-control button cycles through, on models that have it. */
+    ADAPTIVE(3),
     ;
 
     public companion object {

@@ -86,6 +86,7 @@ class AndroidTransport(private val context: Context?, private val adapter: Bluet
         return LocalTime(
             c.get(java.util.Calendar.YEAR), c.get(java.util.Calendar.MONTH) + 1, c.get(java.util.Calendar.DAY_OF_MONTH),
             c.get(java.util.Calendar.DAY_OF_WEEK) - 1, c.get(java.util.Calendar.HOUR_OF_DAY), c.get(java.util.Calendar.MINUTE), c.get(java.util.Calendar.SECOND),
+            context == null || android.text.format.DateFormat.is24HourFormat(context),
         )
     }
 

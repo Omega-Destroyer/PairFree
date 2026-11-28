@@ -1,0 +1,24 @@
+Issue #78. First the user's connection report from 0.18.0, which led to the fix in 0.18.1:
+
+PairFree connection report
+Paste this whole report into a new issue at
+https://github.com/Omega-Destroyer/PairFree/issues to help find out why
+PairFree could not reach these earbuds. It holds no serial number or full address.
+
+Bluetooth name:  OPPO Enco Buds2 Pro
+App:             PairFree 0.18.0
+Brand:           oneplus
+Model:           068010
+Service:         0000079A-D102-11E1-9B23-00025B00A5A5
+Failure:         could not open
+Device:          classic and LE, paired
+Its services:    00001107-d102-11e1-9b23-00025b00a5a5, 0000110b-0000-1000-8000-00805f9b34fb, 0000110e-0000-1000-8000-00805f9b34fb, 0000111e-0000-1000-8000-00805f9b34fb
+Phone:           Google Pixel 10 Pro XL, Android 17 (API 37), build CP4A.261105.040.A1
+
+What PairFree tried, in order (milliseconds since it began):
+  +0 serial channel 0000079A-D102-11E1-9B23-00025B00A5A5
+  +110 socket attempt 1 failed: IOException: read failed, socket might closed or timeout, read ret: -1
+  +952 socket attempt 2 failed: IOException: read failed, socket might closed or timeout, read ret: -1
+  +1656 failed: IOException: read failed, socket might closed or timeout, read ret: -1
+
+Then, on 0.18.1, 2026-11-28, the same user: "With the new update everything is working fine now, I tried every setting."

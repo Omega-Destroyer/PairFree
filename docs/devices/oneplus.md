@@ -1,7 +1,8 @@
 # OnePlus and OPPO
 
 PairFree is growing into one app for earbuds of several brands, with the same screens for each. OnePlus and OPPO support is new and
-has been tried on one pair, a user's OnePlus Buds 4 (it connected and the user reported everything working, issue #4; no frames were recorded), and on none other: nobody on the project owns a pair, so every other model relies on reports from people who do.
+has been tried on two pairs: a user's OnePlus Buds 4 (issue #4) and another's OPPO Enco Buds2 Pro (issue #78, on 0.18.1), both reported as fully
+working (no frames were recorded). Nobody on the project owns a pair, so every other model relies on reports from people who do.
 It is written from OnePlus's HeyMelody app (117.6.6, which also controls OPPO's earbuds), whose protocol and model catalog were read from the
 app (`docs/oneplus/PROTOCOL.md`). Two kinds of virtual checks exist, both separate from real earbuds: the official app was run against a
 virtual OnePlus Buds Pro 2 to record what it sends, and PairFree was run against a virtual one that answered as HeyMelody's parsers expect.
@@ -19,7 +20,7 @@ earbuds answer its read):
 - **Controls** also has tap sensitivity (1 to 5) and, where the model has head gestures, a switch and which gesture answers a call (the other declines).
 - **Device:** game mode, in-ear detection, dual connection (the switch, and a choice to connect or disconnect each other device the earbuds know; this phone is never offered), voice prompt volume, Swift Pair, sleep detection and the other switches the catalog gives the model, the ear tip fit test (the shared fit test screen), and a button that makes the earbuds play a sound so they can be found.
 
-All of these are written from HeyMelody's code and only exercised against invented replies (no OnePlus or OPPO earbuds have been tried).
+All of these are written from HeyMelody's code; apart from the two pairs above they have only been exercised against invented replies.
 
 Not yet: the hearing enhancement's ear scan, the bass engine's level, per-ear long-press cycles, personalized noise, zen mode and the
 codec choices (`docs/oneplus/CATALOG_MAPPING.md` says what was checked for each). LE audio is switched by the phone's own Bluetooth stack, not by a setting.
@@ -82,7 +83,7 @@ Say which phone and Android version you used and which settings worked.
 <tr><td>OPPO Enco X3</td><td><code>067410</code></td><td>battery; noise control: off, noise cancelling, transparency; 5 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco Air3s</td><td><code>067810</code></td><td>battery; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco Air4 Pro</td><td><code>067C10</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
-<tr><td>OPPO Enco Buds2 Pro</td><td><code>068010</code></td><td>battery; 3 equalizer presets; game mode</td><td>Not tested</td></tr>
+<tr><td>OPPO Enco Buds2 Pro</td><td><code>068010</code></td><td>battery; 3 equalizer presets; game mode</td><td><a href="../../data/oneplus/reports/OPPOEncoBuds2Pro_068010_0.18.1.txt">Tested</a> by a user report</td></tr>
 <tr><td>OnePlus Buds</td><td><code>068414</code></td><td>battery</td><td>Not tested</td></tr>
 <tr><td>OnePlus Buds Z</td><td><code>068814</code></td><td>battery</td><td>Not tested</td></tr>
 <tr><td>OPPO Enco Air4</td><td><code>069010</code></td><td>battery; noise control: off, noise cancelling, transparency; 3 equalizer presets; game mode</td><td>Not tested</td></tr>

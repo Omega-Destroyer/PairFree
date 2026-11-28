@@ -112,11 +112,11 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [1MORE](docs/devices/1more.md) | 48 | — |
 | [EarFun](docs/devices/earfun.md) | 26 | — |
 | [Cambridge Audio](docs/devices/cambridge.md) | 8 | — |
-| [OnePlus and OPPO](docs/devices/oneplus.md) | 53 | OnePlus Buds 4 |
+| [OnePlus and OPPO](docs/devices/oneplus.md) | 53 | OPPO Enco Buds2 Pro, OnePlus Buds 4 |
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | Momentum 5 Wireless |
 | [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
-| **Total: 17 brands** | **846** | **26 tried** |
+| **Total: 17 brands** | **846** | **27 tried** |
 <!-- devices-summary:end -->
 
 ## Coming next

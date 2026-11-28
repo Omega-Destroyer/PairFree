@@ -56,6 +56,7 @@ The project's own readings come from its owner's SOUNDPEATS H3 and Air5 Pro+ and
 | [@sreich](https://github.com/sreich) | The Galaxy Buds 3 controls typo ([#52](https://github.com/Omega-Destroyer/PairFree/issues/52)), fixed by their own pull request ([#53](https://github.com/Omega-Destroyer/PairFree/pull/53)), and the Soundcore Sleep A30 requests ([#23](https://github.com/Omega-Destroyer/PairFree/issues/23), [#24](https://github.com/Omega-Destroyer/PairFree/issues/24)) that led to its local sound upload and noise cancelling work |
 | [@THED4NIEL](https://github.com/THED4NIEL) | Nothing Ear | A device report ([#41](https://github.com/Omega-Destroyer/PairFree/issues/41)), and the retest that showed the earbuds listed after re-pairing ([#30](https://github.com/Omega-Destroyer/PairFree/issues/30)) |
 | [@vagasajid2](https://github.com/vagasajid2) | Soundcore P30i (A3959) and R50i NC | A recording of the official app ([#45](https://github.com/Omega-Destroyer/PairFree/issues/45)): the noise control, equalizer, touch, auto power off and fit test writes, and the requests that led to them ([#38](https://github.com/Omega-Destroyer/PairFree/issues/38), [#43](https://github.com/Omega-Destroyer/PairFree/issues/43)) |
+| [@Kamika242](https://github.com/Kamika242) | OPPO Enco Buds2 Pro | The connection report that showed which service these earbuds list, and the test of the fix ([#78](https://github.com/Omega-Destroyer/PairFree/issues/78)) |
 
 ## Translations
 

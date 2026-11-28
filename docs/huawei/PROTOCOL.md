@@ -304,5 +304,5 @@ files and the per-product plugin files the app asks for.
 Raw replies are in `server_dump/huawei/`, not committed.
 
 Huawei's earbuds have since moved to a separate app, HUAWEI Audio Connect. Version 2.0.7.390, downloaded from Huawei's AppGallery on 2026-11-28
-(SHA-256 `9a3837d4045cb4ff263a856c7f5dd03e161dc0e597dd28e2b6bbb25a0994d319`), is not packed and holds per-product configurations. It is not read yet;
-until it is, the newer models rest on the public projects (data/completeness.json, `huawei-current-product-scope`, open).
+(SHA-256 `9a3837d4045cb4ff263a856c7f5dd03e161dc0e597dd28e2b6bbb25a0994d319`), is not packed and holds per-product configurations. PairFree's newer
+models still rest on the public projects; reading this app is the open item `huawei-current-product-scope` in data/completeness.json.

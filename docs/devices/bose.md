@@ -1,8 +1,8 @@
 # Bose
 
 PairFree is growing into one app for earbuds of several brands, with the same screens for
-each. Bose support is new and has not been tried with PairFree on any headphones or earbuds
-yet: nobody on the project owns a pair, so every model relies on reports from people who do.
+each. The QC Ultra Headphones (2nd Gen) were tested with PairFree over USB-C on Windows.
+Device reports from people who own Bose devices help confirm Bluetooth and other model support.
 
 PairFree lists Bose headphones and earbuds among your paired devices when the phone shows one
 of Bose's services for them, or when "Bose" is in the name. Each one reports its product when
@@ -12,7 +12,8 @@ table works the same way.
 What it shows, where the model has it:
 - **Home:** the battery (each earbud and the case, or one for headphones), the listening mode
   (Quiet, Aware and the modes you set up in Bose's app), the noise cancelling level, and on the
-  QC35 noise cancelling off, low, high or wind.
+  QC35 noise cancelling off, low, high or wind. The QC Ultra Headphones (2nd Gen) also
+  have switches for noise cancellation and Wind Block.
 - **Sound:** the tone control: bass, mid and treble, from -10 to +10; and immersive audio (off,
   still or motion).
 - **Controls:** what the shortcut or action button does, from the actions the model lists. One

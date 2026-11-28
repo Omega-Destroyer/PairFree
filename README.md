@@ -75,6 +75,7 @@ The same screens and the same earbuds' settings, laid out for a window: a sideba
 battery and a menu for noise control and equalizer profiles. Settings live in one readable file, `PairFree.toml`, beside the program. It needs Windows 10
 (version 1809) or 11 and the earbuds paired in Windows' Bluetooth settings; every brand is there except AirPods and the Beats on Apple's chips, which
 Windows gives programs no way to reach. See [PairFree for Windows](docs/WINDOWS.md).
+On Windows, the Bose QuietComfort Ultra Headphones (2nd Gen) can also be set over their USB-C cable, from the next release on.
 
 ## Looks
 
@@ -117,6 +118,18 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
 | **Total: 17 brands** | **846** | **26 tried** |
 <!-- devices-summary:end -->
+
+## Coming next
+
+Brands PairFree does not support yet, in the order they are planned:
+
+1. Huawei
+2. Baseus
+3. Fairbuds
+4. Motorola (Moto Buds)
+5. Dell
+
+If you own a pair and want to help test one, [open an issue](https://github.com/Omega-Destroyer/PairFree/issues).
 
 ## Help add your model
 

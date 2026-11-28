@@ -6,13 +6,15 @@ Android app does for your earbuds, in a window made for a mouse. It is new in Pa
 ## Needs
 
 - Windows 10 (version 1809 or later) or Windows 11, 64-bit. On a PC with an ARM processor it runs through Windows' own emulation.
-- Your earbuds paired in Windows' Bluetooth settings first, and connected for audio while PairFree talks to them.
+- For Bluetooth control, pair your earbuds in Windows and connect them for audio. The Bose QC Ultra Headphones (2nd Gen) can also be controlled over USB-C.
 
 ## Starting it
 
 Put `PairFree.exe` anywhere you like and run it. Its settings are one readable file, `PairFree.toml`, in the same folder; copy both to take your settings with
 you, delete the file to start over. You may edit it while PairFree is closed. If the folder cannot be written (a protected folder), PairFree says so and keeps its
 settings in memory for that session.
+
+For the Bose QC Ultra Headphones (2nd Gen), connect a USB data cable, turn the headphones on, and select the **(USB)** entry in PairFree's sidebar.
 
 Windows may show a blue **Windows protected your PC** window the first time, because the program is not signed with a paid certificate. Choose **More info**,
 then **Run anyway**. Release notes list the file's SHA-256 checksum; check it if you like (`Get-FileHash PairFree.exe` in PowerShell).
@@ -30,8 +32,7 @@ The looks are the Android app's. The one that follows Android's wallpaper colour
 
 Every brand the Android app has, except **AirPods and the Beats on Apple's chips**, which Windows cannot reach: their settings channel is a kind of Bluetooth
 connection Windows gives programs no way to open, short of a driver of its own, and PairFree does not install drivers. Earbuds that speak Bluetooth LE
-(JBL's, QCY's and some of Sennheiser's) use Windows' Bluetooth LE support. Each brand's page under `docs/devices/` says which models people have tried; no
-model has been tried on Windows by anyone but the project's owner (SOUNDPEATS H3).
+(JBL's, QCY's and some of Sennheiser's) use Windows' Bluetooth LE support. Each brand's page under `docs/devices/` says which models people have tried; apart from the project's owner (SOUNDPEATS H3), one contributor has tried a model on Windows (the Bose QC Ultra Headphones (2nd Gen), over USB-C).
 
 ## Updates
 

@@ -19,8 +19,8 @@
         "newer AI Life audio accessories"
       ],
       "status": "open",
-      "what": "Expand the current AI Life audio catalogue and map protocol, transport and features for its catalogue-only models and regional variants.",
-      "reported": "AI Life APK and capture audit, 2026-11-27"
+      "what": "Newer models rest on public research: the supplied app and Huawei's current list for it (mainHelp.json of the guide server, fetched 2026-11-27, version 1936) hold only five headsets and two glasses. Their plugins sit on Huawei's server; a research fetch stopped at a 403 on config.json (E:/Builds/research/huawei-tools/fetch_guide.py). Waits on the owner: continue the fetch, or supply a newer app.",
+      "reported": "AI Life APK and server audit, 2026-11-27"
     },
     {
       "id": "huawei-legacy-settings",
@@ -56,16 +56,26 @@
       "needs": "Use device-scoped Bluetooth captures of wear detection, HD recording or Studio sound quality changed once and restored, with exact model and firmware.",
       "read": [
         {
-          "path": "docs/huawei/PROTOCOL.md",
-          "what": "The screen call sites delegate wear detection, audio codec preference and recording to phone APIs rather than giving a portable earbud command in the APK."
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid",
+          "what": "wear detection goes to the Huawei phone class BtTwsWearDetectionEx, not to an earbud command"
+        },
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/roc",
+          "what": "sound quality sets the phone's own Bluetooth codec preference (setCodecConfigPreference)"
         }
       ],
       "evidence": [
         {
-          "root": "docs/huawei",
-          "glob": "PROTOCOL\\.md$",
-          "expect": "some",
-          "pattern": "BtTwsWearDetectionEx|RocQualityModeModel|HDRecordActivity"
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid",
+          "glob": "\\.java$",
+          "pattern": "BtTwsWearDetectionEx",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/roc",
+          "glob": "\\.java$",
+          "pattern": "setCodecConfigPreference",
+          "expect": "some"
         }
       ]
     },
@@ -81,16 +91,20 @@
       "needs": "Use a matching vendor plugin or a device-scoped Bluetooth capture from the live smart-noise panel with model, firmware and one change per control.",
       "read": [
         {
-          "path": "docs/huawei/PROTOCOL.md",
-          "what": "The manifest references missing product activities, and the generic presenter forwards the smart noise parameters to an empty device-manager method."
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid/R.java",
+          "what": "resources for a smart noise control remain (btn_smart_noise_control), with no activity that shows them"
+        },
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/ui/mine/basenoisecontrol/BaseNoiseControlActivity.java",
+          "what": "the archived noise screen, reached from no product panel"
         }
       ],
       "evidence": [
         {
-          "root": "docs/huawei",
-          "glob": "PROTOCOL\\.md$",
-          "expect": "some",
-          "pattern": "BaseAudioDevice.*empty three-argument"
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/mermaid",
+          "glob": "R\\.java$",
+          "pattern": "smart_noise_control",
+          "expect": "some"
         }
       ]
     },
@@ -103,8 +117,8 @@
         "FreeArc",
         "FreeLace Pro 2"
       ],
-      "status": "open",
-      "what": "Complete per-model local settings covering ear tip fit, remaining variants of adaptive awareness and head actions, spatial audio, wind handling, case tones, reminders, remaining picks and audio connection centre peer controls.",
+      "status": "built",
+      "what": "Built from LibreBuds and HuaweiPods (GPL-3.0): find earbuds, rest reminders, HD calls, pickup mode, ear tip type, spatial audio and scenes, case prompt sounds, voice control, wind noise reduction, volume boost in noise, drop reminder, paired devices. None tried.",
       "reported": "AI Life APK and capture audit, 2026-11-27"
     },
     {
@@ -121,9 +135,39 @@
         "FreeClip 2",
         "FreeLace Pro 2"
       ],
-      "status": "open",
-      "what": "Check variant-specific private preset curves and extended preset IDs, remaining custom EQ layouts, and full user-directed on-device slot management.",
+      "status": "built",
+      "what": "The preset numbers LibreBuds lists per model, its Symphony, Hi-Fi Live and HUAWEI SOUND curves, and deleting a saved curve. None tried.",
       "reported": "AI Life APK and capture audit, 2026-11-27"
+    },
+    {
+      "id": "huawei-fit-test",
+      "brand": "huawei",
+      "models": [
+        "FreeBuds Pro and later with an ear tip fit test"
+      ],
+      "status": "needs-report",
+      "what": "The ear tip fit test. The supplied app has none and no open source has its commands (HuaweiPods only hides another app's row for it).",
+      "reported": "Huawei branch completed, 2026-11-27",
+      "needs": "A Bluetooth capture of Huawei's app running the fit test on a model that has it, with the model and firmware.",
+      "read": [
+        {
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/protocol/mbb/MbbProtocol.java",
+          "what": "every command builder of the bundled plugin: none starts a fit test"
+        }
+      ],
+      "evidence": [
+        {
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/protocol/mbb",
+          "glob": "MbbProtocol\\.java$",
+          "pattern": "packageGetBatteryPercentCmd",
+          "expect": "some"
+        },
+        {
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/protocol/mbb",
+          "glob": "\\.java$",
+          "pattern": "fitTest|FitTest|TipFit"
+        }
+      ]
     },
     {
       "id": "huawei-hardware-validation",
@@ -134,23 +178,19 @@
       "status": "needs-report",
       "what": "Confirm the PairFree service connection and state-changing settings on actual hardware, starting with the supplied APK models and the newer EQ variants.",
       "reported": "AI Life APK and capture audit, 2026-11-27",
-      "needs": "Ask for the PairFree connection report, model and firmware, and a vendor-app capture of each disputed setting changed once and restored.",
+      "needs": "A device report from any Huawei or Honor model (Device tab, Copy device report), and the connection report if it does not connect.",
       "read": [
         {
-          "path": "docs/huawei/VIRTUAL_TESTING.md",
-          "what": "The vendor emulator reached setup but established no Bluetooth MBB stream."
-        },
-        {
-          "path": "docs/huawei/MODELS.md",
-          "what": "Public captures and bundled vendor code identify model-specific settings but do not exercise PairFree's Bluetooth connection."
+          "path": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/datatransmanager",
+          "what": "the plugin opens a secure RFCOMM socket on the standard serial service, as PairFree does"
         }
       ],
       "evidence": [
         {
-          "root": "docs/huawei",
-          "glob": "VIRTUAL_TESTING\\.md$",
-          "expect": "some",
-          "pattern": "MBB"
+          "root": "E:/Builds/research/vendor-audit-2026-11-06/huawei/plugin-jadx/sources/com/huawei/accessory/datatransmanager",
+          "glob": "\\.java$",
+          "pattern": "createRfcommSocketToServiceRecord",
+          "expect": "some"
         }
       ]
     },

@@ -1611,7 +1611,7 @@
       }
     },
     {
-      "name": "JBL Endurance Peak 4",
+      "name": "JBL Endurance Peak 4", "reports": ["data/jbl/reports/2151_26.13.10.txt"],
       "pids": ["2151"],
       "kind": "earbuds",
       "connect": "BLE",
@@ -2766,7 +2766,7 @@
       }
     },
     {
-      "name": "JBL Tour Pro 3",
+      "name": "JBL Tour Pro 3", "reports": ["data/jbl/reports/20F2_v6.0.1.txt"],
       "pids": ["20F2"],
       "kind": "earbuds",
       "connect": "BT",

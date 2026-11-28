@@ -19,7 +19,7 @@ does what the Android app does for the same earbuds, in a window made for a mous
 | **Android** 12 or later | [F-Droid](https://f-droid.org/packages/io.github.omegadestroyer.pairfree/) or the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest) (the same signed APK) |
 | **Windows** 10 or 11, 64-bit | `PairFree.exe` from the [GitHub releases](https://github.com/Omega-Destroyer/PairFree/releases/latest). Put it anywhere and run it. |
 
-Latest release: v0.18.0. Your earbuds must be paired in the phone's or PC's Bluetooth settings first. A few brands need a newer Android:
+Latest release: v0.18.1. Your earbuds must be paired in the phone's or PC's Bluetooth settings first. A few brands need a newer Android:
 AirPods need Android 17, or one of the few phones on Android 16 that already open their settings channel
 ([AirPods and Beats](docs/devices/apple.md)); they are not on Windows.
 
@@ -103,8 +103,8 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Samsung Galaxy Buds](docs/devices/samsung.md) | 16 | — |
 | [Sony](docs/devices/sony.md) | 24 | WF-1000XM5, WF-1000XM6 |
 | [Bose](docs/devices/bose.md) | 22 | — |
-| [JBL](docs/devices/jbl.md) | 112 | Live Buds 3 |
-| [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Max 2, AirPods Pro 3 |
+| [JBL](docs/devices/jbl.md) | 112 | Endurance Peak 4, Live Buds 3, Tour Pro 3 |
+| [AirPods and Beats](docs/devices/apple.md) | 30 | AirPods Max 2, AirPods Pro 2 (USB-C), AirPods Pro 3 |
 | [Nothing and CMF](docs/devices/nothing.md) | 19 | Nothing Ear |
 | [Google Pixel Buds](docs/devices/pixel.md) | 5 | Pixel Buds Pro |
 | [QCY](docs/devices/qcy.md) | 194 | QCY H3 Pro, QCY MeloBuds Pro, QCY T13 ANC2 |
@@ -115,7 +115,7 @@ comes from the brands' own apps, other open-source projects and the reports of p
 | [Sennheiser](docs/devices/sennheiser.md) | 28 | Momentum 5 Wireless |
 | [Jabra](docs/devices/jabra.md) | 34 | Jabra Elite Active 75t |
 | [Skullcandy](docs/devices/skullcandy.md) | 56 | — |
-| **Total: 17 brands** | **846** | **23 tried** |
+| **Total: 17 brands** | **846** | **26 tried** |
 <!-- devices-summary:end -->
 
 ## Help add your model

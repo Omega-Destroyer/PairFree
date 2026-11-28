@@ -1,0 +1,34 @@
+Bluetooth name:  JBL Endurance Peak 4
+Brand:           JBL
+Model:           JBL Endurance Peak 4 (product 2151, Bluetooth LE)
+Firmware:        26.13.10
+App:             PairFree 0.18.0
+OS:              Android 15 (API 35)
+Captured:        2026-11-27 19:42 UTC
+
+The last answer to each of PairFree's reads (command, with the status type or feature id:
+payload as hex; the device info's name and address are blanked):
+  p4.000c: 1a 0d 0a
+  p4.0012: 08 87
+  p4.000d: 64
+  p4.000e: 64
+  p4.1f03: 45
+  p4.1f01: 19 20 0a
+  p4.0004: 51 21
+  p4.0018: 87
+  p4.0019: 07
+  p4.001a: 00
+  p4.1e00: ff
+  p4.1e01: 00
+  p4.1e02: 7f
+  p4.1e03: 7f
+  p4.1e04: 40 1f 00 00
+  p4.100f: 00 01 2e 00 18 01 90 01
+  p4.0c40: 7f
+  p4.0015: 32
+  p4.0023: 81
+  p4.0025: ff
+  p4.0022: 82
+  p4.0029: 00
+  p4.0027: ff
+  p4.0e02: 00 01 0a 00 00 00 00 30 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 42 00 00 00 00 00 00 80 3f 01 00 00 80 42 00 00 00 00 00 00 80 3f 01 00 00 fa 42 00 00 00 00 00 00 80 3f 01 00 00 7a 43 00 00 00 00 00 00 80 3f 01 00 00 fa 43 00 00 00 00 00 00 80 3f 01 00 00 7a 44 00 00 00 00 00 00 80 3f 01 00 00 fa 44 00 00 00 00 00 00 80 3f 01 00 00 7a 45 00 00 00 00 00 00 80 3f 01 00 00 fa 45 00 00 00 00 00 00 80 3f 01 00 00 7a 46 00 00 00 00 00 00 80 3f

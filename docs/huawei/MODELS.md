@@ -20,3 +20,10 @@ The eight catalogue rows came from the union of main_help.json, main_help_global
 [data/huawei/devices.json](../../data/huawei/devices.json) holds the exact model profiles, implemented settings and source flags. OpenFreebuds at 0b4f14c supplied the profile-level ANC, EQ and gesture variants. LibreBuds c7b0833, HuaweiPods e2cf07e and FreeBuddies supplied additional model and packet evidence. Classic transport is resolved by service UUID. For models that need unusual channels or a different control endpoint, a physical connection report remains necessary. [OpenFreebuds](https://github.com/melianmiko/OpenFreebuds/tree/0b4f14c0b500d491f0fb4ea38f2984ec334e3649) · [LibreBuds vectors](https://github.com/librebuds/librebuds/tree/c7b0833/test-vectors) · [HuaweiPods coverage](https://github.com/Nshpiter/HuaweiPods/blob/e2cf07e/docs/support/index.md) · [FreeBuddies captures](https://github.com/IAL32/freebuddies/blob/main/app/README.md)
 
 Huawei's current support guides also describe adaptive awareness, extended effects, audio connection centre, fit tests, spatial audio, case tones, reminders, configurable head actions and cloud finding. The [completeness registry](../../data/completeness.json) tracks the remaining model and feature work. [AI Life earbud cards](https://consumer.huawei.com/au/support/content/en-gb15828842/) · [Huawei EQ coverage](https://consumer.huawei.com/sg/support/content/en-gb15868545/)
+
+## Update, 2026-11-28
+
+LibreBuds' 38 model profiles and HuaweiPods' controllers added settings to most newer models (find earbuds, rest reminders, HD calls, pickup mode,
+spatial audio and more; PROTOCOL.md section 10) and three models (FreeBuds 4E with open fit, W Buds, W Buds 2, listed for a report). The table in
+`data/huawei/devices.json` is the current list; the rows above describe what the bundled app itself shows for its eight models.
+

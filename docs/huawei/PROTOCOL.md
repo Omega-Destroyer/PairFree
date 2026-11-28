@@ -247,3 +247,51 @@ loader methods. The reference folder supplies AI Life 11.0.2.305 as one complete
 
 See [the model audit](MODELS.md) for remaining features and [implementation](IMPLEMENTATION.md)
 for PairFree validation.
+
+## 10. The newer settings (2026-11-28)
+
+From LibreBuds (c7b0833) and HuaweiPods (e2cf07e), both GPL-3.0-or-later, from their authors' captures and probes. None was tried with PairFree.
+Numbers are in `data/huawei/commands.json`; frames in `data/huawei/test_vectors.json`.
+
+| Setting | Read / write | Payload |
+|---|---|---|
+| Rest reminders | `2B 61` / `2B 60` | tag 1, 0 or 1 |
+| HD calls | `2B 46` / `2B 45` | the read declares one byte for tag 1 and carries none; write tag 1 |
+| Pickup mode | `2B 42` / `2B 41` | read as HD calls; 0 surroundings, 1 voices |
+| Case prompt sounds | `2B B1` / `2B B1` | read tags 2 and 3, state in tag 2; write tag 1 |
+| Volume boost in noise | `2B 88` / `2B 87` | tag 1 |
+| Keyed settings | `2B B4` | tag 1 key: 3 voice control, 8 ear tip type (1 silicone, 2 memory foam), 24 spatial audio (tag 2: 0 off, 1 head tracking, 2 fixed; tag 3 the scene: 0 default, 1 theater, 2 cinema, 3 concert hall), 29 wind noise reduction |
+| Delete a saved sound | `2B 49` | the slot's own record with operation 2 |
+
+**Paired devices** (models with two devices at once): `2B 31` with an empty tag 1 answers one packet per host: tag 2 how many, tag 3 this one's index,
+tag 4 the address (least significant byte first), tag 5 connected (9 while playing), tag 7 preferred, tag 8 connects automatically, tag 9 the name.
+`2B 32` tag 1 = address sets the preferred device. `2B 33` acts on a device: the tag is the action (1 connect, 2 disconnect, 4 and 5 automatic
+connection on and off), the value its address. `2B 36` says the list changed. Action 3 (unpair) is never sent. The list stays out of the device report.
+
+**Software sounds.** Symphony, Hi-Fi Live and the HUAWEI SOUND Classical sound are curves the maker's app writes as a custom slot; PairFree does the same.
+
+## 11. What the bundled app does not send
+
+Its protocol class builds commands for voice recognition (`2B 01`/`02`), voice noise control (`2B 12`/`13`), touch sensitivity, cue volume and "is
+beside" (`CommandConfigEnum`, which reuses `2B 14` to `2B 19`), the legacy mode write (`2B 06`) and the clock (`01 05`): none has a caller in the
+plugin, so PairFree sends none (`data/unused_ids.json`). `2B 0A` reads the model, whose reply may hold serial numbers: not asked.
+
+## 12. What is never sent
+
+Factory reset (`01 0D`), connection legality (`01 13`), every command of the update service (`09`) and of the log service (`0A`), unpairing a device,
+and anything not on the session's own closed list (`HuaweiTalk.allowed`).
+
+## 13. The device report
+
+Only the answers to PairFree's own reads, by command: of the version reply the version number alone, custom equalizer slots with their names blanked,
+and never the paired devices' list. A catalogue model, and a newer FreeBuds, FreeClip, FreeLace or FreeArc the table lacks, is asked the settings'
+reads only, for its report; nothing is shown or written.
+
+## 14. Huawei's server (research, 2026-11-27)
+
+The app's product list and device plugins come from Huawei's guide server (`smarthome.hicloud.com/device/guide/`), which serves them to a plain `GET`
+with no token or signature. A research script outside the repo (`E:/Builds/research/huawei-tools/fetch_guide.py`) fetched the app's notification feed,
+list version and `mainHelp.json` (five headsets and two glasses, none newer than the bundled list). It stopped for good when `config.json`, a path the
+app requests, answered 403 (an earlier 403 was a path the app does not use). Raw replies are in `server_dump/huawei/`, not committed. The newer
+plugins were not fetched (open: data/completeness.json, `huawei-current-product-scope`).
+

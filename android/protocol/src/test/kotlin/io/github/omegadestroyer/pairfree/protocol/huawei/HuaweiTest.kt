@@ -7,6 +7,11 @@ import io.github.omegadestroyer.pairfree.protocol.Setting
 import io.github.omegadestroyer.pairfree.protocol.SettingChange
 import io.github.omegadestroyer.pairfree.protocol.deadControls
 import io.github.omegadestroyer.pairfree.protocol.hexBytes
+import io.github.omegadestroyer.pairfree.protocol.repoFile
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -230,6 +235,20 @@ class HuaweiTest {
         assertEquals("1.0.2.42", glasses.state.firmware?.version)
         val line = glasses.reportLines.single { it.startsWith("0107:") }
         assertTrue("09=" in line && "393837363534" !in line, "an unrequested field's bytes stay out of the report: $line")
+    }
+
+    /** data/huawei/test_vectors.json: every frame there is rebuilt byte for byte. */
+    @Test fun theVectorFramesAreRebuilt() {
+        val frames = Json.parseToJsonElement(repoFile("data/huawei/test_vectors.json").readText()).jsonObject.getValue("frames").jsonArray
+        assertTrue(frames.size >= 10)
+        for (frame in frames.map { it.jsonObject }) {
+            val op = frame.getValue("command").jsonPrimitive.content.toInt(16)
+            val fields = frame.getValue("fields").jsonArray.map { pair ->
+                val (tag, value) = pair.jsonArray.map { it.jsonPrimitive }
+                HuaweiTlv(tag.content.toInt(), value.content.hexBytes())
+            }
+            assertArrayEquals(frame.getValue("hex").jsonPrimitive.content.hexBytes(), huaweiPacket(op, fields).bytes(), frame.getValue("name").jsonPrimitive.content)
+        }
     }
 
     @Test fun theReportBlanksCustomEqualizerNames() {

@@ -1,0 +1,39 @@
+{
+ "name": "FreeBuds 3i / HONOR FlyPods 3 / HONOR Magic Earbuds / FreeBuds 4i",
+ "names": [
+  "FreeBuds 3i",
+  "HUAWEI FreeBuds 3i",
+  "WAL-CT025",
+  "HUAWEI WAL-CT025",
+  "HONOR FlyPods 3",
+  "FlyPods 3",
+  "HUAWEI FlyPods 3",
+  "HUAWEI Walrus",
+  "Walrus-AT020",
+  "HUAWEI Walrus-AT020",
+  "HONOR Magic Earbuds",
+  "Magic Earbuds",
+  "HUAWEI Magic Earbuds",
+  "FreeBuds 4i",
+  "HUAWEI FreeBuds 4i"
+ ],
+ "codes": [
+  "FreeBuds 3i",
+  "HONOR FlyPods 3",
+  "HONOR Magic Earbuds",
+  "FreeBuds 4i"
+ ],
+ "source": "Traced from the picture AI Life bundles for the FreeBuds 3i, the left earbud; the Honor pair share it, and the 4i is taken to, unchecked, not in the repo.",
+ "bud": {
+  "kind": "bud",
+  "body": "99,66 119,67 137,75 151,92 158,110 158,128 152,143 144,154 127,168 123,177 123,320 121,330 115,336 96,336 89,330 87,322 86,180 81,174 62,171 48,163 36,148 32,132 35,112 45,96 83,72",
+  "holes": [
+   "92,131 90,135 86,137 82,135 80,131 82,127 86,125 90,127"
+  ],
+  "axis": [
+   105.0,
+   138.9
+  ]
+ },
+ "case": "generic"
+}

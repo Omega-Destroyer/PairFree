@@ -270,11 +270,12 @@ connection on and off), the value its address. `2B 36` says the list changed. Ac
 
 **Software sounds.** Symphony, Hi-Fi Live and the HUAWEI SOUND Classical sound are curves the maker's app writes as a custom slot; PairFree does the same.
 
-## 11. What the bundled app does not send
+## 11. Commands in the bundled app that nothing calls
 
 Its protocol class builds commands for voice recognition (`2B 01`/`02`), voice noise control (`2B 12`/`13`), touch sensitivity, cue volume and "is
 beside" (`CommandConfigEnum`, which reuses `2B 14` to `2B 19`), the legacy mode write (`2B 06`) and the clock (`01 05`): none has a caller in the
-plugin, so PairFree sends none (`data/unused_ids.json`). `2B 0A` reads the model, whose reply may hold serial numbers: not asked.
+plugin, so PairFree sends none (`data/unused_ids.json`). `2B 0A` reads the model, whose reply may hold serial numbers, so it is left out (checked:
+the callers of every builder in `MbbProtocol`, and the `accessory/b/b/b` device manager).
 
 ## 12. What is never sent
 

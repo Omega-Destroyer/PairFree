@@ -9,7 +9,6 @@
   "01a4": "blocked: the sound is sent by the firmware updater (A6610WqOtaUpgrade), which is never sent; checked: A6610OtaActivity, A6610WhiteNoiseApi, 2026-11-27",
   "01ad": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "01b0": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
-  "0201": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0206": "not a control of the app: the table names it, no code builds or sends it; checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0287": "speakers only (the A313x and D5100 equalizer screens); speakers are held back (owner, 2026-10-30); checked: every CmdService, DeviceManager and screen of the Soundcore app 5.0.35 (restored 2026-11-19), 2026-11-27",
   "0385": "gap-audit 2026-11-27: open, data/completeness.json soundcore-hearid-other",
